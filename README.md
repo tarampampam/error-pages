@@ -39,9 +39,9 @@ Can be used for [Traefik error pages customization](https://docs.traefik.io/midd
 
 ## Templates
 
-Template name | Preview
-------------- | ----------
-`ghost`       | ![ghost](https://hsto.org/webt/zg/ul/cv/zgulcvxqzhazoebxhg8kpxla8lk.png)
+  Name   | Preview
+:------: | :-----:
+`ghost`  | ![ghost](https://hsto.org/webt/zg/ul/cv/zgulcvxqzhazoebxhg8kpxla8lk.png)
 
 ## Usage
 
