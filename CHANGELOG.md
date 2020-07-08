@@ -4,6 +4,24 @@ All notable changes to this package will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## UNRELEASED
+
+### Changed
+
+- `configuration.json` renamed to `config.json`
+- Makefile contains new targets (`install`, `gen`, `preview`)
+- Generator logging messages
+
+### Added
+
+- `docker-compose` for development
+
+### Fixed
+
+- Readme file content [#1]
+
+[#1]:https://github.com/tarampampam/error-pages/issues/1
+
 ## v1.0.0
 
 ### Changed

@@ -1,0 +1,17 @@
+version: '3.2'
+
+volumes:
+  tmp-data:
+
+services:
+  app:
+    image: node:12.16.2-alpine # Image page: <https://hub.docker.com/_/node>
+    working_dir: /src
+    environment:
+      HOME: /tmp
+      PS1: '\[\033[1;32m\]\[\033[1;36m\][\u@docker] \[\033[1;34m\]\w\[\033[0;35m\] \[\033[1;36m\]# \[\033[0m\]'
+    volumes:
+      - /etc/passwd:/etc/passwd:ro
+      - /etc/group:/etc/group:ro
+      - .:/src:cached
+      - tmp-data:/tmp:cached

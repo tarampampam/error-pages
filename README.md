@@ -2,64 +2,110 @@
   <img src="https://hsto.org/webt/rg/ys/c3/rgysc33oc7jiufdzmwrkohpmef8.png" width="94" alt="" />
 </p>
 
-# Static error pages in a Docker container
+# HTTP's error pages in :whale: image
 
 [![Build Status][badge_build_status]][link_build_status]
+[![Image size][badge_size_latest]][link_docker_hub]
 [![License][badge_license]][link_license]
 
-This repository contains a very simple generator for server error pages _(like `404: Not found`)_ and ready docker image with web server for error pages serving.
+This repository contains:
 
-Generator ([`bin/generator.js`](./bin/generator.js)) allows you:
+- A very simple [generator](./bin/generator.js) _(`nodejs`)_ for HTTP error pages _(like `404: Not found`)_ with different templates supports
+- Dockerfile for [docker image][link_docker_hub] with generated pages and `nginx` as web server
 
-- Use different templates (section `templates` in configuration file)
-- Generate pages with arbitrary content according to a specific template
+## Development
+
+> For project development we use `docker-ce` + `docker-compose`. Make sure you have them installed.
+
+Install `nodejs` dependencies:
+
+```bash
+$ make install
+```
+
+If you want to generate error pages on your machine _(after that look into output directory)_:
+
+```bash
+$ make gen
+```
+
+If you want to preview the pages using the Docker image:
+
+```bash
+$ make preview
+```
 
 Can be used for [Traefik error pages customization](https://docs.traefik.io/middlewares/errorpages/).
 
-### Usage
+## Usage
 
-Just execute (installed `nodejs` is required):
+Generated error pages in our [docker image][link_docker_hub] permanently located in directory `/opt/html/%THEME_NAME%`.
 
-```bash
-$ bin/generator.js -c ./configuration.json -o ./out
-```
+#### Supported environment variables
 
-And watch into `./out` directory:
+Name            | Description
+--------------- | -----------
+`TEMPLATE_NAME` | "default" pages template _(allows to use error pages without passing theme name in URL - `http://127.0.0.1/500.html` instead `http://127.0.0.1/ghost/500.html`)_
 
-```text
-./out
-└── ghost
-    ├── 400.html
-    ├── 401.html
-    ├── 403.html
-    ├── 404.html
-    ├── ...
-    └── 505.html
-```
+### HTTP server for error pages serving only
 
-Default configuration can be found in [`configuration.json`](./configuration.json) file.
-
-### Docker
-
-[![Image size][badge_size_latest]][link_docker_build]
-
-Start image (`nginx` inside):
+Execute in your shell:
 
 ```bash
-$ docker run --rm -p "8080:8080" tarampampam/error-pages:1.0.0
+$ docker run --rm -p "8082:8080" tarampampam/error-pages
 ```
 
-And open in your browser `http://127.0.0.1:8080/ghost/400.html`. Additionally, you can set "default" pages theme by passing `TEMPLATE_NAME` environment variable (eg.: `-e "TEMPLATE_NAME=ghost"`) - in this case all error pages will be accessible in root directory (eg.: `http://127.0.0.1:8080/400.html`).
+And open in your browser `http://127.0.0.1:8082/ghost/400.html`.
 
-Also you can use generated error pages in your own docker images:
+### Custom error pages for [nginx][link_nginx]
+
+You can build your own docker image with `nginx` and our error pages:
+
+```bash
+# File `./nginx.conf`
+
+server {
+  listen      80;
+  server_name localhost;
+
+  error_page 401 /_error-pages/401.html;
+  error_page 403 /_error-pages/403.html;
+  error_page 404 /_error-pages/404.html;
+  error_page 500 /_error-pages/500.html;
+  error_page 502 /_error-pages/502.html;
+  error_page 503 /_error-pages/503.html;
+
+  location ^~ /_error-pages/ {
+    internal;
+    root /usr/share/nginx/errorpages;
+  }
+
+  location / {
+    root  /usr/share/nginx/html;
+    index index.html index.htm;
+  }
+}
+```
 
 ```dockerfile
 FROM nginx:1.18-alpine
 
-COPY --from=tarampampam/error-pages:1.0.0 /opt/html/ghost /usr/share/nginx/html/error-pages
+COPY --chown=nginx \
+     ./nginx.conf /etc/nginx/conf.d/default.conf
+COPY --chown=nginx \
+     --from=tarampampam/error-pages:1.0.0 \
+     /opt/html/ghost /usr/share/nginx/errorpages/_error-pages
 ```
 
-> [`error_page` for `nginx` configuration](http://nginx.org/en/docs/http/ngx_http_core_module.html#error_page)
+> More info about `error_page` directive can be [found here](http://nginx.org/en/docs/http/ngx_http_core_module.html#error_page).
+
+### Custom error pages for [Traefik][link_traefik]
+
+Simple traefik service configuration for usage in [docker swarm][link_swarm] (**change with your needs**):
+
+```yaml
+# Work in progress
+```
 
 ## Changes log
 
@@ -94,4 +140,7 @@ This is open-sourced software licensed under the [MIT License][link_license].
 [link_build_status]:https://travis-ci.org/tarampampam/error-pages
 [link_create_issue]:https://github.com/tarampampam/error-pages/issues/new
 [link_license]:https://github.com/tarampampam/error-pages/blob/master/LICENSE
-[link_docker_build]:https://hub.docker.com/r/tarampampam/error-pages/
+[link_docker_hub]:https://hub.docker.com/r/tarampampam/error-pages/
+[link_nginx]:http://nginx.org/
+[link_traefik]:https://docs.traefik.io/
+[link_swarm]:https://docs.docker.com/engine/swarm/

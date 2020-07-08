@@ -46,7 +46,9 @@ try {
 
         // Loop over all pages
         configContent.pages.forEach((pageConfig) => {
-            console.info(`Page with code ${pageConfig.code} generation...`);
+            let outPath = path.join(templateOutDir, `${pageConfig.code}.${configContent.output.file_extension}`);
+
+            console.info(`  [${templateConfig.name}:${pageConfig.code}] Output: ${outPath}`);
 
             // Make replaces
             let result = layoutContent
@@ -55,7 +57,7 @@ try {
                 .replace(/{{\s?description\s?}}/g, pageConfig.description);
 
             // And write into result file
-            fs.writeFileSync(path.join(templateOutDir, `${pageConfig.code}.${configContent.output.file_extension}`), result, {
+            fs.writeFileSync(outPath, result, {
                 encoding: "utf8",
                 flag: "w+",
                 mode: 0o644

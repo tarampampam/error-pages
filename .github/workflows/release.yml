@@ -26,7 +26,7 @@ jobs:
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
 
       - name: Install dependencies
-        run: ./bin/generator.js -c ./configuration.json -o ./out
+        run: ./bin/generator.js -c ./config.json -o ./out
 
       - name: Upload artifact
         uses: actions/upload-artifact@v2

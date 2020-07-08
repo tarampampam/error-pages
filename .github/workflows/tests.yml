@@ -30,7 +30,7 @@ jobs: # Docs: <https://git.io/JvxXE>
         run: yarn install
 
       - name: Run generator
-        run: ./bin/generator.js -c ./configuration.json -o ./out
+        run: ./bin/generator.js -c ./config.json -o ./out
 
       - name: Test file creation
         run: test -f ./out/ghost/404.html

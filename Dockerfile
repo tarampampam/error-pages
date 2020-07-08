@@ -7,7 +7,7 @@ COPY . .
 
 RUN set -x \
     && yarn install --frozen-lockfile \
-    && ./bin/generator.js -c ./configuration.json -o ./out
+    && ./bin/generator.js -c ./config.json -o ./out
 
 # Image page: <https://hub.docker.com/_/nginx>
 FROM nginx:1.18-alpine
