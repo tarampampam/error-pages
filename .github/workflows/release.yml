@@ -54,7 +54,7 @@ jobs:
         run: git add .
 
       - name: Commit changes
-        run: git commit -m "Deploying ${GITHUB_SHA} to Github Pages"
+        run: git commit --allow-empty -m "Deploying ${GITHUB_SHA} to Github Pages"
 
       - name: Push changes
         run: git push github --force
