@@ -67,7 +67,7 @@ And open in your browser `http://127.0.0.1:8082/ghost/400.html`.
 
 You can build your own docker image with `nginx` and our error pages:
 
-```bash
+```nginx
 # File `./nginx.conf`
 
 server {
