@@ -41,6 +41,8 @@ Default configuration can be found in [`configuration.json`](./configuration.jso
 
 ### Docker
 
+[![Image size][badge_size_latest]][link_docker_build]
+
 Start image (`nginx` inside):
 
 ```bash
@@ -83,6 +85,7 @@ This is open-sourced software licensed under the [MIT License][link_license].
 [badge_issues]:https://img.shields.io/github/issues/tarampampam/error-pages-docker.svg?style=flat-square&maxAge=180
 [badge_pulls]:https://img.shields.io/github/issues-pr/tarampampam/error-pages-docker.svg?style=flat-square&maxAge=180
 [badge_license]:https://img.shields.io/github/license/tarampampam/error-pages-docker.svg?longCache=true
+[badge_size_latest]:https://img.shields.io/docker/image-size/tarampampam/error-pages/latest?maxAge=30
 [link_releases]:https://github.com/tarampampam/error-pages-docker/releases
 [link_commits]:https://github.com/tarampampam/error-pages-docker/commits
 [link_changes_log]:https://github.com/tarampampam/error-pages-docker/blob/master/CHANGELOG.md
@@ -91,3 +94,4 @@ This is open-sourced software licensed under the [MIT License][link_license].
 [link_build_status]:https://travis-ci.org/tarampampam/error-pages-docker
 [link_create_issue]:https://github.com/tarampampam/error-pages-docker/issues/new
 [link_license]:https://github.com/tarampampam/error-pages-docker/blob/master/LICENSE
+[link_docker_build]:https://hub.docker.com/r/tarampampam/error-pages/

@@ -36,11 +36,17 @@ jobs: # Docs: <https://git.io/JvxXE>
         run: test -f ./out/ghost/404.html
 
   docker-build:
-    name: Try to run generator
+    name: Build docker image
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
         uses: actions/checkout@v2
 
       - name: Build docker image
-        run: docker build -f ./Dockerfile .
+        run: docker build -f ./Dockerfile --tag image:local .
+
+      - name: Run docker image
+        run: docker run --rm -d -p "8080:8080" -e "TEMPLATE_NAME=ghost") image:local
+
+      - name: Send HTTP request
+        run: curl -sS --fail "http://127.0.0.1:8080/500.html"

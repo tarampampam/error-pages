@@ -68,9 +68,6 @@ jobs:
         with:
           fetch-depth: 1
 
-      - name: Generate version value
-        run: echo "::set-env name=APP_VERSION::${GITHUB_REF##*/}@`echo ${GITHUB_SHA} | cut -c1-8`"
-
       - name: Generate image tag value
         run: echo "::set-env name=IMAGE_TAG::${GITHUB_REF##*/[vV]}" # `/refs/tags/v1.2.3` -> `1.2.3`
 
@@ -78,10 +75,10 @@ jobs:
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_LOGIN }}" --password-stdin &> /dev/null
 
       - name: Build image
-        run: docker build --build-arg "APP_VERSION=${APP_VERSION}" --tag "tarampampam/tinifier:${IMAGE_TAG}" --tag "tarampampam/tinifier:latest" -f ./Dockerfile .
+        run: docker build --tag "tarampampam/error-pages:${IMAGE_TAG}" --tag "tarampampam/error-pages:latest" -f ./Dockerfile .
 
       - name: Push version image
-        run: docker push "tarampampam/tinifier:${IMAGE_TAG}"
+        run: docker push "tarampampam/error-pages:${IMAGE_TAG}"
 
       - name: Push latest image
-        run: docker push "tarampampam/tinifier:latest"
+        run: docker push "tarampampam/error-pages:latest"
