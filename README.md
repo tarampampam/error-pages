@@ -49,7 +49,7 @@ Can be used for [Traefik error pages customization](https://docs.traefik.io/midd
 
 ## Usage
 
-Generated error pages in our [docker image][link_docker_hub] permanently located in directory `/opt/html/%THEME_NAME%`.
+Generated error pages in our [docker image][link_docker_hub] permanently located in directory `/opt/html/%TEMPLATE_NAME%`. `nginx` in container listen for `8080` (`http`) port.
 
 #### Supported environment variables
 
