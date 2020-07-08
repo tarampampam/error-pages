@@ -13,6 +13,10 @@ This repository contains:
 - A very simple [generator](./bin/generator.js) _(`nodejs`)_ for HTTP error pages _(like `404: Not found`)_ with different templates supports
 - Dockerfile for [docker image][link_docker_hub] with generated pages and `nginx` as web server
 
+### Demo
+
+Generated pages (from the latest release) always [accessible here][link_branch_gh_pages] _(sources)_ and on GitHub pages [here][link_gh_pages].
+
 ## Development
 
 > For project development we use `docker-ce` + `docker-compose`. Make sure you have them installed.
@@ -150,3 +154,5 @@ This is open-sourced software licensed under the [MIT License][link_license].
 [link_nginx]:http://nginx.org/
 [link_traefik]:https://docs.traefik.io/
 [link_swarm]:https://docs.docker.com/engine/swarm/
+[link_branch_gh_pages]:https://github.com/tarampampam/error-pages/tree/gh-pages
+[link_gh_pages]:https://tarampampam.github.io/error-pages/
