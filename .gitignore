@@ -1,0 +1,18 @@
+## IDEs
+/.vscode
+/.idea
+
+## Vendors
+/node_modules
+
+## Lock files (use yarn only)
+/package-lock.json
+
+## Dist
+/out
+
+## Temp dirs & trash
+/npm-debug.log
+/yarn-error.log
+.DS_Store
+.env*

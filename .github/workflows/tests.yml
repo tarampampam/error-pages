@@ -1,0 +1,46 @@
+name: tests
+
+on:
+  push:
+    branches:
+      - master
+    tags-ignore:
+      - '**'
+  pull_request:
+
+jobs: # Docs: <https://git.io/JvxXE>
+  generate:
+    name: Try to run generator
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Setup NodeJS
+        uses: actions/setup-node@v1 # Action page: <https://github.com/actions/setup-node>
+        with:
+          node-version: 12
+
+      - uses: actions/cache@v2
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Run generator
+        run: ./bin/generator.js -c ./configuration.json -o ./out
+
+      - name: Test file creation
+        run: test -f ./out/ghost/404.html
+
+  docker-build:
+    name: Try to run generator
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Build docker image
+        run: docker build -f ./Dockerfile .

@@ -1,0 +1,10 @@
+{
+    "name": "error-pages",
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/tarampampam/error-pages-docker.git"
+    },
+    "dependencies": {
+        "yargs": "15.3"
+    }
+}

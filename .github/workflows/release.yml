@@ -1,0 +1,87 @@
+name: release
+
+on:
+  release: # Docs: <https://git.io/JeBz1#release-event-release>
+    types: [published]
+
+jobs:
+  demo:
+    name: Update demonstration, hosted on github pages
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Setup NodeJS
+        uses: actions/setup-node@v1 # Action page: <https://github.com/actions/setup-node>
+        with:
+          node-version: 12
+
+      - name: Generate version value
+        run: echo "::set-env name=PACKAGE_VERSION::${GITHUB_REF##*/v}"
+
+      - uses: actions/cache@v2
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+
+      - name: Install dependencies
+        run: ./bin/generator.js -c ./configuration.json -o ./out
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: content
+          path: out/
+
+      - name: Switch to github pages branch
+        uses: actions/checkout@v2
+        with:
+          ref: gh-pages
+
+      - name: Download artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: content
+
+      - name: Setup git
+        run: |
+          git config --global user.name "$GITHUB_ACTOR"
+          git config --global user.email 'actions@github.com'
+          git remote add github "https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git"
+
+      - name: Stage changes
+        run: git add .
+
+      - name: Commit changes
+        run: git commit -m "Deploying ${GITHUB_SHA} to Github Pages"
+
+      - name: Push changes
+        run: git push github --force
+
+  docker-image:
+    name: Build docker image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+
+      - name: Generate version value
+        run: echo "::set-env name=APP_VERSION::${GITHUB_REF##*/}@`echo ${GITHUB_SHA} | cut -c1-8`"
+
+      - name: Generate image tag value
+        run: echo "::set-env name=IMAGE_TAG::${GITHUB_REF##*/[vV]}" # `/refs/tags/v1.2.3` -> `1.2.3`
+
+      - name: Make docker login
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_LOGIN }}" --password-stdin &> /dev/null
+
+      - name: Build image
+        run: docker build --build-arg "APP_VERSION=${APP_VERSION}" --tag "tarampampam/tinifier:${IMAGE_TAG}" --tag "tarampampam/tinifier:latest" -f ./Dockerfile .
+
+      - name: Push version image
+        run: docker push "tarampampam/tinifier:${IMAGE_TAG}"
+
+      - name: Push latest image
+        run: docker push "tarampampam/tinifier:latest"
