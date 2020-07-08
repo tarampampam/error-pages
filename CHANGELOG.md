@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 ### Changed
 
+- Repository (not docker image) renamed from `error-pages-docker` to `error-pages`
 - `configuration.json` renamed to `config.json`
 - Makefile contains new targets (`install`, `gen`, `preview`)
 - Generator logging messages
