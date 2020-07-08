@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://hsto.org/webt/rg/ys/c3/rgysc33oc7jiufdzmwrkohpmef8.png" width="94" alt="" />
+  <img src="https://hsto.org/webt/rm/9y/ww/rm9ywwx3gjv9agwkcmllhsuyo7k.png" width="94" alt="" />
 </p>
 
 # HTTP's error pages in Docker image
