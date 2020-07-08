@@ -79,19 +79,19 @@ If you will find any package errors, please, [make an issue][link_create_issue] 
 
 This is open-sourced software licensed under the [MIT License][link_license].
 
-[badge_build_status]:https://img.shields.io/github/workflow/status/tarampampam/error-pages-docker/tests/master
-[badge_release_date]:https://img.shields.io/github/release-date/tarampampam/error-pages-docker.svg?style=flat-square&maxAge=180
-[badge_commits_since_release]:https://img.shields.io/github/commits-since/tarampampam/error-pages-docker/latest.svg?style=flat-square&maxAge=180
-[badge_issues]:https://img.shields.io/github/issues/tarampampam/error-pages-docker.svg?style=flat-square&maxAge=180
-[badge_pulls]:https://img.shields.io/github/issues-pr/tarampampam/error-pages-docker.svg?style=flat-square&maxAge=180
-[badge_license]:https://img.shields.io/github/license/tarampampam/error-pages-docker.svg?longCache=true
+[badge_build_status]:https://img.shields.io/github/workflow/status/tarampampam/error-pages/tests/master
+[badge_release_date]:https://img.shields.io/github/release-date/tarampampam/error-pages.svg?style=flat-square&maxAge=180
+[badge_commits_since_release]:https://img.shields.io/github/commits-since/tarampampam/error-pages/latest.svg?style=flat-square&maxAge=180
+[badge_issues]:https://img.shields.io/github/issues/tarampampam/error-pages.svg?style=flat-square&maxAge=180
+[badge_pulls]:https://img.shields.io/github/issues-pr/tarampampam/error-pages.svg?style=flat-square&maxAge=180
+[badge_license]:https://img.shields.io/github/license/tarampampam/error-pages.svg?longCache=true
 [badge_size_latest]:https://img.shields.io/docker/image-size/tarampampam/error-pages/latest?maxAge=30
-[link_releases]:https://github.com/tarampampam/error-pages-docker/releases
-[link_commits]:https://github.com/tarampampam/error-pages-docker/commits
-[link_changes_log]:https://github.com/tarampampam/error-pages-docker/blob/master/CHANGELOG.md
-[link_issues]:https://github.com/tarampampam/error-pages-docker/issues
-[link_pulls]:https://github.com/tarampampam/error-pages-docker/pulls
-[link_build_status]:https://travis-ci.org/tarampampam/error-pages-docker
-[link_create_issue]:https://github.com/tarampampam/error-pages-docker/issues/new
-[link_license]:https://github.com/tarampampam/error-pages-docker/blob/master/LICENSE
+[link_releases]:https://github.com/tarampampam/error-pages/releases
+[link_commits]:https://github.com/tarampampam/error-pages/commits
+[link_changes_log]:https://github.com/tarampampam/error-pages/blob/master/CHANGELOG.md
+[link_issues]:https://github.com/tarampampam/error-pages/issues
+[link_pulls]:https://github.com/tarampampam/error-pages/pulls
+[link_build_status]:https://travis-ci.org/tarampampam/error-pages
+[link_create_issue]:https://github.com/tarampampam/error-pages/issues/new
+[link_license]:https://github.com/tarampampam/error-pages/blob/master/LICENSE
 [link_docker_build]:https://hub.docker.com/r/tarampampam/error-pages/
