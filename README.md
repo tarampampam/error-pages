@@ -2,7 +2,7 @@
   <img src="https://hsto.org/webt/rg/ys/c3/rgysc33oc7jiufdzmwrkohpmef8.png" width="94" alt="" />
 </p>
 
-# HTTP's error pages in :whale: image
+# HTTP's error pages in Docker image
 
 [![Build Status][badge_build_status]][link_build_status]
 [![Image size][badge_size_latest]][link_docker_hub]
@@ -36,6 +36,12 @@ $ make preview
 ```
 
 Can be used for [Traefik error pages customization](https://docs.traefik.io/middlewares/errorpages/).
+
+## Templates
+
+Template name | Preview
+------------- | ----------
+`ghost`       | ![ghost](https://hsto.org/webt/zg/ul/cv/zgulcvxqzhazoebxhg8kpxla8lk.png)
 
 ## Usage
 
