@@ -48,5 +48,8 @@ jobs: # Docs: <https://git.io/JvxXE>
       - name: Run docker image
         run: docker run --rm -d -p "8080:8080" -e "TEMPLATE_NAME=ghost" image:local
 
+      - name: Pause
+        run: sleep 2
+
       - name: Send HTTP request
         run: curl -sS --fail "http://127.0.0.1:8080/500.html"
