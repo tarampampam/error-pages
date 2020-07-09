@@ -6,6 +6,7 @@
 
 [![Build Status][badge_build_status]][link_build_status]
 [![Image size][badge_size_latest]][link_docker_hub]
+[![Docker Pulls][badge_docker_pulls]][link_docker_hub]
 [![License][badge_license]][link_license]
 
 This repository contains:
@@ -142,6 +143,7 @@ This is open-sourced software licensed under the [MIT License][link_license].
 [badge_pulls]:https://img.shields.io/github/issues-pr/tarampampam/error-pages.svg?style=flat-square&maxAge=180
 [badge_license]:https://img.shields.io/github/license/tarampampam/error-pages.svg?longCache=true
 [badge_size_latest]:https://img.shields.io/docker/image-size/tarampampam/error-pages/latest?maxAge=30
+[badge_docker_pulls]:https://img.shields.io/docker/pulls/tarampampam/error-pages.svg
 [link_releases]:https://github.com/tarampampam/error-pages/releases
 [link_commits]:https://github.com/tarampampam/error-pages/commits
 [link_changes_log]:https://github.com/tarampampam/error-pages/blob/master/CHANGELOG.md
