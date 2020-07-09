@@ -50,20 +50,21 @@ $ make preview
 
 ## Usage
 
-Generated error pages in our [docker image][link_docker_hub] permanently located in directory `/opt/html/%TEMPLATE_NAME%`. `nginx` in container listen for `8080` (`http`) port.
+Generated error pages in our [docker image][link_docker_hub] permanently located in directory `/opt/html/%TEMPLATE_NAME%`. `nginx` in a container listen for `8080` (`http`) port.
 
 #### Supported environment variables
 
-Name            | Description
---------------- | -----------
-`TEMPLATE_NAME` | "default" pages template _(allows to use error pages without passing theme name in URL - `http://127.0.0.1/500.html` instead `http://127.0.0.1/ghost/500.html`)_
+Name                 | Description
+-------------------- | -----------
+`TEMPLATE_NAME`      | "default" pages template _(allows to use error pages without passing theme name in URL - `http://127.0.0.1/500.html` instead `http://127.0.0.1/ghost/500.html`)_
+`DEFAULT_ERROR_CODE` | (`404` by default) Code with passed error code will be used as default (index) page (can be used only with `TEMPLATE_NAME` variable)
 
 ### HTTP server for error pages serving only
 
 Execute in your shell:
 
 ```bash
-$ docker run --rm -p "8082:8080" tarampampam/error-pages
+$ docker run --rm -p "8082:8080" tarampampam/error-pages:1.1.0
 ```
 
 And open in your browser `http://127.0.0.1:8082/ghost/400.html`.
@@ -104,7 +105,7 @@ FROM nginx:1.18-alpine
 COPY --chown=nginx \
      ./nginx.conf /etc/nginx/conf.d/default.conf
 COPY --chown=nginx \
-     --from=tarampampam/error-pages:1.0.0 \
+     --from=tarampampam/error-pages:1.1.0 \
      /opt/html/ghost /usr/share/nginx/errorpages/_error-pages
 ```
 
@@ -112,10 +113,44 @@ COPY --chown=nginx \
 
 ### Custom error pages for [Traefik][link_traefik]
 
-Simple traefik service configuration for usage in [docker swarm][link_swarm] (**change with your needs**):
+Simple traefik (tested on `v2.2.1`) service configuration for usage in [docker swarm][link_swarm] (**change with your needs**):
 
 ```yaml
-# Work in progress
+version: '3.8'
+
+services:
+  error-pages:
+    image: tarampampam/error-pages:1.1.0
+    environment:
+      TEMPLATE_NAME: ghost
+    networks:
+      - traefik-public
+    deploy:
+      placement:
+        constraints:
+          - node.role == worker
+        max_replicas_per_node: 1
+      resources:
+        limits:
+          memory: 32M
+        reservations:
+          memory: 16M
+      labels:
+        - traefik.enable=true
+        - traefik.docker.network=traefik-public
+        - traefik.http.routers.error-pages-router.rule=HostRegexp(`{host:.+}`)
+        - traefik.http.routers.error-pages-router.tls=true
+        - traefik.http.routers.error-pages-router.priority=10
+        - traefik.http.routers.error-pages-router.entrypoints=https
+        - traefik.http.routers.error-pages-router.middlewares=error-pages-middleware@docker
+        - traefik.http.services.error-pages-service.loadbalancer.server.port=8080
+        - traefik.http.middlewares.error-pages-middleware.errors.status=400-599
+        - traefik.http.middlewares.error-pages-middleware.errors.service=error-pages-service@docker
+        - traefik.http.middlewares.error-pages-middleware.errors.query=/{status}.html
+
+networks:
+  traefik-public:
+    external: true
 ```
 
 ## Changes log
