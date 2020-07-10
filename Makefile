@@ -26,7 +26,7 @@ gen: ## Generate error pages
 preview: ## Build docker image and start preview
 	$(DOCKER_BIN) build -f ./Dockerfile -t $(APP_NAME):local .
 	@printf "\n   \e[30;42m %s \033[0m\n\n" 'Now open in your favorite browser <http://127.0.0.1:8081> and press CTRL+C for stopping'
-	$(DOCKER_BIN) run --rm -i -p 8081:8080 -e "TEMPLATE_NAME=ghost" $(APP_NAME):local
+	$(DOCKER_BIN) run --rm -i -p 8081:8080 -e "TEMPLATE_NAME=l7-light" $(APP_NAME):local
 
 shell: ## Start shell into container with node
 	$(DC_BIN) run $(DC_RUN_ARGS) app sh

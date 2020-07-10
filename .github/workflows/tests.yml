@@ -51,5 +51,8 @@ jobs: # Docs: <https://git.io/JvxXE>
       - name: Pause
         run: sleep 2
 
-      - name: Send HTTP request
+      - name: Verify 500.html error file exists in root
         run: curl -sS --fail "http://127.0.0.1:8080/500.html"
+
+      - name: Verify root request HTTP code
+        run: test $(curl --write-out %{http_code} --silent --output /dev/null http://127.0.0.1:8080/) -eq 404

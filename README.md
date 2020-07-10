@@ -44,9 +44,11 @@ $ make preview
 
 ## Templates
 
-  Name   | Preview
-:------: | :-----:
-`ghost`  | ![ghost](https://hsto.org/webt/zg/ul/cv/zgulcvxqzhazoebxhg8kpxla8lk.png)
+   Name    | Preview
+:--------: | :-----:
+`ghost`    | ![ghost](https://hsto.org/webt/zg/ul/cv/zgulcvxqzhazoebxhg8kpxla8lk.png)
+`l7-light` | ![ghost](https://hsto.org/webt/xc/iq/vt/xciqvty-aoj-rchfarsjhutpjny.png)
+`l7-dark`  | ![ghost](https://hsto.org/webt/s1/ih/yr/s1ihyrqs_y-sgraoimfhk6ypney.png)
 
 ## Usage
 
@@ -54,17 +56,16 @@ Generated error pages in our [docker image][link_docker_hub] permanently located
 
 #### Supported environment variables
 
-Name                 | Description
--------------------- | -----------
-`TEMPLATE_NAME`      | "default" pages template _(allows to use error pages without passing theme name in URL - `http://127.0.0.1/500.html` instead `http://127.0.0.1/ghost/500.html`)_
-`DEFAULT_ERROR_CODE` | (`404` by default) Code with passed error code will be used as default (index) page (can be used only with `TEMPLATE_NAME` variable)
+Name            | Description
+--------------- | -----------
+`TEMPLATE_NAME` | (`ghost` by default) "default" pages template _(allows to use error pages without passing theme name in URL - `http://127.0.0.1/500.html` instead `http://127.0.0.1/ghost/500.html`)_
 
 ### HTTP server for error pages serving only
 
 Execute in your shell:
 
 ```bash
-$ docker run --rm -p "8082:8080" tarampampam/error-pages:1.1.0
+$ docker run --rm -p "8082:8080" tarampampam/error-pages:1.2.0
 ```
 
 And open in your browser `http://127.0.0.1:8082/ghost/400.html`.
@@ -105,7 +106,7 @@ FROM nginx:1.18-alpine
 COPY --chown=nginx \
      ./nginx.conf /etc/nginx/conf.d/default.conf
 COPY --chown=nginx \
-     --from=tarampampam/error-pages:1.1.0 \
+     --from=tarampampam/error-pages:1.2.0 \
      /opt/html/ghost /usr/share/nginx/errorpages/_error-pages
 ```
 
@@ -120,7 +121,7 @@ version: '3.8'
 
 services:
   error-pages:
-    image: tarampampam/error-pages:1.1.0
+    image: tarampampam/error-pages:1.2.0
     environment:
       TEMPLATE_NAME: ghost
     networks:
@@ -136,17 +137,17 @@ services:
         reservations:
           memory: 16M
       labels:
-        - traefik.enable=true
-        - traefik.docker.network=traefik-public
-        - traefik.http.routers.error-pages-router.rule=HostRegexp(`{host:.+}`)
-        - traefik.http.routers.error-pages-router.tls=true
-        - traefik.http.routers.error-pages-router.priority=10
-        - traefik.http.routers.error-pages-router.entrypoints=https
-        - traefik.http.routers.error-pages-router.middlewares=error-pages-middleware@docker
-        - traefik.http.services.error-pages-service.loadbalancer.server.port=8080
-        - traefik.http.middlewares.error-pages-middleware.errors.status=400-599
-        - traefik.http.middlewares.error-pages-middleware.errors.service=error-pages-service@docker
-        - traefik.http.middlewares.error-pages-middleware.errors.query=/{status}.html
+        - traefik.enable: true
+        - traefik.docker.network: traefik-public
+        - traefik.http.routers.error-pages-router.rule: HostRegexp(`{host:.+}`)
+        - traefik.http.routers.error-pages-router.tls: true
+        - traefik.http.routers.error-pages-router.priority: 10
+        - traefik.http.routers.error-pages-router.entrypoints: https
+        - traefik.http.routers.error-pages-router.middlewares: error-pages-middleware@docker
+        - traefik.http.services.error-pages-service.loadbalancer.server.port: 8080
+        - traefik.http.middlewares.error-pages-middleware.errors.status: 400-599
+        - traefik.http.middlewares.error-pages-middleware.errors.service: error-pages-service@docker
+        - traefik.http.middlewares.error-pages-middleware.errors.query: /{status}.html
 
 networks:
   traefik-public:

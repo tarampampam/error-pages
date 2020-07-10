@@ -3,6 +3,14 @@
         {
             "name": "ghost",
             "path": "./templates/ghost.html"
+        },
+        {
+            "name": "l7-light",
+            "path": "./templates/l7-light.html"
+        },
+        {
+            "name": "l7-dark",
+            "path": "./templates/l7-dark.html"
         }
     ],
     "output": {

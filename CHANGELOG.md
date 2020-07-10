@@ -4,6 +4,24 @@ All notable changes to this package will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## v1.2.0
+
+### Fixed
+
+- By default `nginx` in docker container returns 404 http code instead 200 when `/` requested
+
+### Changed
+
+- Default value for `TEMPLATE_NAME` is `ghost` now
+
+### Removed
+
+- Environment variable `DEFAULT_ERROR_CODE` support in docker image
+
+### Added
+
+- Templates `l7-light` and `l7-dark`
+
 ## v1.1.0
 
 ### Added

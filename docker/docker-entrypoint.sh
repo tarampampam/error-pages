@@ -1,8 +1,7 @@
 #!/usr/bin/env sh
 set -e
 
-TEMPLATE_NAME=${TEMPLATE_NAME:-} # string|empty
-DEFAULT_ERROR_CODE=${DEFAULT_ERROR_CODE:-404} # numeric
+TEMPLATE_NAME=${TEMPLATE_NAME:-ghost} # string|empty
 
 if [ -n "$TEMPLATE_NAME" ]; then
   echo "$0: set pages for template '$TEMPLATE_NAME' as default (make accessible in root directory)";
@@ -13,13 +12,9 @@ if [ -n "$TEMPLATE_NAME" ]; then
 
   ln -f -s "/opt/html/$TEMPLATE_NAME/"* /opt/html;
 
-  if [ -L "/opt/html/$DEFAULT_ERROR_CODE.html" ]; then
-    echo "$0: set page with error code '$DEFAULT_ERROR_CODE' as default (index) page";
-
-    cp -f "/opt/html/$DEFAULT_ERROR_CODE.html" /opt/html/index.html;
-  else
-    (>&2 echo "$0: cannot set page with error code '$DEFAULT_ERROR_CODE' as default (index) page!");
-  fi;
+  # next directory is required for easy nginx `error_page` usage
+  mkdir /opt/html/nginx-error-pages;
+  ln -f -s "/opt/html/$TEMPLATE_NAME/"* /opt/html/nginx-error-pages;
 fi;
 
 exec "$@"
