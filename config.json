@@ -83,6 +83,11 @@
             "description": "The requested byte range is not available and is out of bounds"
         },
         {
+            "code": 418,
+            "message": "I'm a teapot",
+            "description": "Attempt to brew coffee with a teapot is not supported"
+        },
+        {
             "code": 429,
             "message": "Too Many Requests",
             "description": "Too many requests in a given amount of time"
