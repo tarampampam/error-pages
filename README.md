@@ -137,17 +137,17 @@ services:
         reservations:
           memory: 16M
       labels:
-        - traefik.enable: true
-        - traefik.docker.network: traefik-public
-        - traefik.http.routers.error-pages-router.rule: HostRegexp(`{host:.+}`)
-        - traefik.http.routers.error-pages-router.tls: true
-        - traefik.http.routers.error-pages-router.priority: 10
-        - traefik.http.routers.error-pages-router.entrypoints: https
-        - traefik.http.routers.error-pages-router.middlewares: error-pages-middleware@docker
-        - traefik.http.services.error-pages-service.loadbalancer.server.port: 8080
-        - traefik.http.middlewares.error-pages-middleware.errors.status: 400-599
-        - traefik.http.middlewares.error-pages-middleware.errors.service: error-pages-service@docker
-        - traefik.http.middlewares.error-pages-middleware.errors.query: /{status}.html
+        traefik.enable: 'true'
+        traefik.docker.network: traefik-public
+        traefik.http.routers.error-pages-router.rule: HostRegexp(`{host:.+}`)
+        traefik.http.routers.error-pages-router.tls: 'true'
+        traefik.http.routers.error-pages-router.priority: 10
+        traefik.http.routers.error-pages-router.entrypoints: https
+        traefik.http.routers.error-pages-router.middlewares: error-pages-middleware@docker
+        traefik.http.services.error-pages-service.loadbalancer.server.port: 8080
+        traefik.http.middlewares.error-pages-middleware.errors.status: 400-599
+        traefik.http.middlewares.error-pages-middleware.errors.service: error-pages-service@docker
+        traefik.http.middlewares.error-pages-middleware.errors.query: /{status}.html
 
 networks:
   traefik-public:
