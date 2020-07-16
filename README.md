@@ -65,7 +65,7 @@ Name            | Description
 Execute in your shell:
 
 ```bash
-$ docker run --rm -p "8082:8080" tarampampam/error-pages:1.2.0
+$ docker run --rm -p "8082:8080" tarampampam/error-pages:1.3.0
 ```
 
 And open in your browser `http://127.0.0.1:8082/ghost/400.html`.
@@ -106,7 +106,7 @@ FROM nginx:1.18-alpine
 COPY --chown=nginx \
      ./nginx.conf /etc/nginx/conf.d/default.conf
 COPY --chown=nginx \
-     --from=tarampampam/error-pages:1.2.0 \
+     --from=tarampampam/error-pages:1.3.0 \
      /opt/html/ghost /usr/share/nginx/errorpages/_error-pages
 ```
 
@@ -121,7 +121,7 @@ version: '3.4'
 
 services:
   error-pages:
-    image: tarampampam/error-pages:1.2.0
+    image: tarampampam/error-pages:1.3.0
     environment:
       TEMPLATE_NAME: l7-dark
     networks:
