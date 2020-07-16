@@ -123,18 +123,13 @@ services:
   error-pages:
     image: tarampampam/error-pages:1.2.0
     environment:
-      TEMPLATE_NAME: ghost
+      TEMPLATE_NAME: l7-dark
     networks:
       - traefik-public
     deploy:
       placement:
         constraints:
           - node.role == worker
-      resources:
-        limits:
-          memory: 32M
-        reservations:
-          memory: 16M
       labels:
         traefik.enable: 'true'
         traefik.docker.network: traefik-public
@@ -153,6 +148,8 @@ services:
 
   any-another-http-service:
     image: nginx:alpine
+    networks:
+      - traefik-public
     deploy:
       placement:
         constraints:
@@ -165,9 +162,7 @@ services:
         traefik.http.routers.another-service.entrypoints: https
         # next line is important
         traefik.http.routers.another-service.middlewares: error-pages-middleware@docker
-        traefik.http.services.another-service.loadbalancer.server.port: 8080
-    networks:
-      - traefik-public
+        traefik.http.services.another-service.loadbalancer.server.port: 80
 
 networks:
   traefik-public:
