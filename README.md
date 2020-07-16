@@ -117,7 +117,7 @@ COPY --chown=nginx \
 Simple traefik (tested on `v2.2.1`) service configuration for usage in [docker swarm][link_swarm] (**change with your needs**):
 
 ```yaml
-version: '3.8'
+version: '3.4'
 
 services:
   error-pages:
@@ -130,7 +130,6 @@ services:
       placement:
         constraints:
           - node.role == worker
-        max_replicas_per_node: 1
       resources:
         limits:
           memory: 32M
@@ -139,15 +138,36 @@ services:
       labels:
         traefik.enable: 'true'
         traefik.docker.network: traefik-public
+        # use as "fallback" for any non-registered services (with priority below normal)
         traefik.http.routers.error-pages-router.rule: HostRegexp(`{host:.+}`)
-        traefik.http.routers.error-pages-router.tls: 'true'
         traefik.http.routers.error-pages-router.priority: 10
+        # should say that all of your services work on https
+        traefik.http.routers.error-pages-router.tls: 'true'
         traefik.http.routers.error-pages-router.entrypoints: https
         traefik.http.routers.error-pages-router.middlewares: error-pages-middleware@docker
         traefik.http.services.error-pages-service.loadbalancer.server.port: 8080
+        # "errors" middleware settings
         traefik.http.middlewares.error-pages-middleware.errors.status: 400-599
         traefik.http.middlewares.error-pages-middleware.errors.service: error-pages-service@docker
         traefik.http.middlewares.error-pages-middleware.errors.query: /{status}.html
+
+  any-another-http-service:
+    image: nginx:alpine
+    deploy:
+      placement:
+        constraints:
+          - node.role == worker
+      labels:
+        traefik.enable: 'true'
+        traefik.docker.network: traefik-public
+        traefik.http.routers.another-service.rule: Host(`subdomain.example.com`)
+        traefik.http.routers.another-service.tls: 'true'
+        traefik.http.routers.another-service.entrypoints: https
+        # next line is important
+        traefik.http.routers.another-service.middlewares: error-pages-middleware@docker
+        traefik.http.services.another-service.loadbalancer.server.port: 8080
+    networks:
+      - traefik-public
 
 networks:
   traefik-public:
