@@ -4,11 +4,12 @@ All notable changes to this package will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
-## Unreleased
+## v1.3.0
 
 ### Added
 
-- 418 status code error page
+- `418` status code error page
+- Set `server_tokens off;` in `nginx` server configuration
 
 ## v1.2.0
 
