@@ -4,6 +4,14 @@ All notable changes to this package will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## v1.3.1
+
+### Fixed
+
+- `can't create directory '/opt/html/nginx-error-pages'` error [#3]
+
+[#3]:https://github.com/tarampampam/error-pages/issues/3
+
 ## v1.3.0
 
 ### Added
