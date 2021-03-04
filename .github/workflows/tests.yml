@@ -11,7 +11,7 @@ on:
 jobs: # Docs: <https://git.io/JvxXE>
   generate:
     name: Try to run generator
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - name: Check out code
         uses: actions/checkout@v2
@@ -37,7 +37,7 @@ jobs: # Docs: <https://git.io/JvxXE>
 
   docker-build:
     name: Build docker image
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - name: Check out code
         uses: actions/checkout@v2

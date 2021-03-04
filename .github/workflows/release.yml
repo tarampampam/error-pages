@@ -7,7 +7,7 @@ on:
 jobs:
   demo:
     name: Update demonstration, hosted on github pages
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - name: Check out code
         uses: actions/checkout@v2
@@ -67,7 +67,7 @@ jobs:
 
   docker-image:
     name: Build docker image
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - name: Check out code
         uses: actions/checkout@v2
