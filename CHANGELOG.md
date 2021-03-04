@@ -10,7 +10,7 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 - Template `shuffle` [#4]
 
-[#3]:https://github.com/tarampampam/error-pages/issues/4
+[#4]:https://github.com/tarampampam/error-pages/issues/4
 
 ## v1.3.1
 
