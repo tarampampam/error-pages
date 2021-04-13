@@ -4,8 +4,8 @@ volumes:
   tmp-data:
 
 services:
-  app:
-    image: node:12.16.2-alpine # Image page: <https://hub.docker.com/_/node>
+  node:
+    image: node:15.14-alpine # Image page: <https://hub.docker.com/_/node>
     working_dir: /src
     environment:
       HOME: /tmp
@@ -14,4 +14,3 @@ services:
       - /etc/passwd:/etc/passwd:ro
       - /etc/group:/etc/group:ro
       - .:/src:cached
-      - tmp-data:/tmp:cached

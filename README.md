@@ -11,7 +11,7 @@
 
 This repository contains:
 
-- A very simple [generator](./bin/generator.js) _(`nodejs`)_ for HTTP error pages _(like `404: Not found`)_ with different templates supports
+- A very simple [generator](generator/generator.js) _(`nodejs`)_ for HTTP error pages _(like `404: Not found`)_ with different templates supports
 - Dockerfile for [docker image][link_docker_hub] with generated pages and `nginx` as web server
 
 Can be used for [Traefik error pages customization](https://docs.traefik.io/middlewares/errorpages/).

@@ -4,9 +4,6 @@
 
 SHELL = /bin/sh
 
-DOCKER_BIN = $(shell command -v docker 2> /dev/null)
-DC_BIN = $(shell command -v docker-compose 2> /dev/null)
-
 DC_RUN_ARGS = --rm --user "$(shell id -u):$(shell id -g)"
 APP_NAME = $(notdir $(CURDIR))
 
@@ -18,15 +15,15 @@ help: ## Show this help
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "  \033[32m%-15s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 
 install: ## Install all dependencies
-	$(DC_BIN) run $(DC_RUN_ARGS) app yarn install
+	docker-compose run $(DC_RUN_ARGS) -w "/src/generator" node yarn install --frozen-lockfile --no-progress --non-interactive
 
 gen: ## Generate error pages
-	$(DC_BIN) run $(DC_RUN_ARGS) app nodejs ./bin/generator.js -c ./config.json -o ./out
+	docker-compose run $(DC_RUN_ARGS) node nodejs ./generator/generator.js -i -c ./config.json -o ./out
 
 preview: ## Build docker image and start preview
-	$(DOCKER_BIN) build -f ./Dockerfile -t $(APP_NAME):local .
+	docker build -f ./Dockerfile -t $(APP_NAME):local .
 	@printf "\n   \e[30;42m %s \033[0m\n\n" 'Now open in your favorite browser <http://127.0.0.1:8081> and press CTRL+C for stopping'
-	$(DOCKER_BIN) run --rm -i -p 8081:8080 -e "TEMPLATE_NAME=l7-light" $(APP_NAME):local
+	docker run --rm -i -p 8081:8080 -e "TEMPLATE_NAME=random" $(APP_NAME):local
 
 shell: ## Start shell into container with node
-	$(DC_BIN) run $(DC_RUN_ARGS) app sh
+	docker-compose run $(DC_RUN_ARGS) node sh

@@ -4,6 +4,19 @@ All notable changes to this package will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## UNRELEASED
+
+### Changed
+
+- Repository files structure
+- Nginx updated from `1.18` up to `1.19` in docker image
+- Docker image now uses default `nginx` entrypoint scripts and command
+
+### Added
+
+- Support for `linux/arm64`, `linux/arm/v6` and `linux/arm/v7` platforms for docker image
+- Random template selecting (use `random` as a template name) for docker image
+
 ## v1.4.0
 
 ### Added
