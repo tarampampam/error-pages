@@ -15,7 +15,7 @@ jobs:
       - name: Setup NodeJS
         uses: actions/setup-node@v1 # Action page: <https://github.com/actions/setup-node>
         with:
-          node-version: 12
+          node-version: 15
 
       - uses: actions/cache@v2
         with:
@@ -23,13 +23,11 @@ jobs:
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
 
       - name: Install dependencies
+        working-directory: generator
         run: yarn install
 
       - name: Generate pages
-        run: ./bin/generator.js -c ./config.json -o ./out
-
-      - name: Copy static files
-        run: cp ./static/* ./out
+        run: ./generator/generator.js -i -c ./config.json -o ./out
 
       - name: Upload artifact
         uses: actions/upload-artifact@v2
@@ -68,21 +66,31 @@ jobs:
     steps:
       - name: Check out code
         uses: actions/checkout@v2
-        with:
-          fetch-depth: 1
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1 # Action page: <https://github.com/docker/setup-qemu-action>
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1 # Action page: <https://github.com/docker/setup-buildx-action>
+
+      - name: Docker login in default registry
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_LOGIN }}" --password-stdin
+
+      - name: Docker login in ghcr.io # Auth docs: <https://git.io/JLDaw>
+        run: echo "${{ secrets.GHCR_PASSWORD }}" | docker login ghcr.io -u tarampampam --password-stdin
 
       - name: Generate builder values
         id: values
         run: echo "::set-output name=version::${GITHUB_REF##*/[vV]}" # `/refs/tags/v1.2.3` -> `1.2.3`
 
-      - name: Make docker login
-        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_LOGIN }}" --password-stdin &> /dev/null
-
       - name: Build image
-        run: docker build --tag "tarampampam/error-pages:${{ steps.values.outputs.version }}" --tag "tarampampam/error-pages:latest" -f ./Dockerfile .
-
-      - name: Push version image
-        run: docker push "tarampampam/error-pages:${{ steps.values.outputs.version }}"
-
-      - name: Push latest image
-        run: docker push "tarampampam/error-pages:latest"
+        run: |
+          docker buildx build \
+            --platform "linux/amd64,linux/386,linux/arm64/v8,linux/arm/v6,linux/arm/v7" \
+            --tag "tarampampam/error-pages:${{ steps.values.outputs.version }}" \
+            --tag "tarampampam/error-pages:latest" \
+            --tag "ghcr.io/tarampampam/error-pages:${{ steps.values.outputs.version }}" \
+            --tag "ghcr.io/tarampampam/error-pages:latest" \
+            --file ./Dockerfile \
+            --push \
+            .

@@ -13,6 +13,18 @@ on:
       - '**.md'
 
 jobs: # Docs: <https://git.io/JvxXE>
+  gitleaks:
+    name: Gitleaks
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Check for GitLeaks
+        uses: zricethezav/gitleaks-action@v1.5.0 # Action page: <https://github.com/zricethezav/gitleaks-action>
+
   generate:
     name: Try to run generator
     runs-on: ubuntu-20.04

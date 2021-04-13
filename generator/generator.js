@@ -109,6 +109,11 @@ try {
         });
 
         content += `</main>
+<footer class="footer">
+  <div class="container text-center text-muted mt-3 mb-3">
+    For online documentation and support please refer to the <a href="https://github.com/tarampampam/error-pages">project repository</a>.
+  </div>
+</footer>
 </body>
 </html>`;
 
