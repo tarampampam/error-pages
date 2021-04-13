@@ -24,10 +24,10 @@ Generated pages (from the latest release) always [accessible here][link_branch_g
 
    Name    | Preview
 :--------: | :-----:
-`ghost`    | ![ghost](https://hsto.org/webt/ya/gy/qw/yagyqwcs8-uulrwboatmmd5jbwi.gif)
+`ghost`    | ![ghost](https://hsto.org/webt/oj/cl/4k/ojcl4ko_cvusy5xuki6efffzsyo.gif)
 `l7-light` | ![l7-light](https://hsto.org/webt/xc/iq/vt/xciqvty-aoj-rchfarsjhutpjny.png)
 `l7-dark`  | ![l7-dark](https://hsto.org/webt/s1/ih/yr/s1ihyrqs_y-sgraoimfhk6ypney.png)
-`shuffle`  | ![shuffle](https://hsto.org/webt/m7/-p/az/m7-pazbcafvsemf47io5sqwwz8e.gif)
+`shuffle`  | ![shuffle](https://hsto.org/webt/7w/rk/3m/7wrk3mrzz3y8qfqwovmuvacu-bs.gif)
 
 ## Usage
 
