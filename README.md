@@ -39,6 +39,8 @@ Name            | Description
 --------------- | -----------
 `TEMPLATE_NAME` | (`ghost` by default) "default" pages template _(allows to use error pages without passing theme name in URL - `http://127.0.0.1/500.html` instead `http://127.0.0.1/ghost/500.html`)_
 
+Also, you can use a special template name `random` - in this case template will be selected randomly.
+
 ### Ready docker image
 
 Execute in your shell:
