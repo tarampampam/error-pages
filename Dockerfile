@@ -42,4 +42,6 @@ LABEL \
     org.opencontainers.image.licenses="MIT"
 
 # Import from builder
-COPY --from=builder --chown=nginx /tmp/rootfs /
+COPY --from=builder /tmp/rootfs /
+
+RUN chown -R nginx:nginx /opt/html
