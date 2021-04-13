@@ -4,7 +4,7 @@ All notable changes to this package will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
-## UNRELEASED
+## v1.5.0
 
 ### Changed
 
@@ -14,7 +14,7 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 ### Added
 
-- Support for `linux/386`, `linux/arm64/v8`, `linux/arm/v6` and `linux/arm/v7` platforms for docker image
+- Support for `linux/arm64/v8`, `linux/arm/v6` and `linux/arm/v7` platforms for docker image
 - Random template selecting (use `random` as a template name) for docker image
 
 ## v1.4.0

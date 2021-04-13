@@ -18,7 +18,7 @@ This repository contains:
 
 ## Demo
 
-Generated pages (from the latest release) always [accessible here][link_branch_gh_pages] _(sources)_ and on GitHub pages **[here][link_gh_pages]** _(live preview)_.
+Generated pages (from the latest release) always **[accessible here][link_gh_pages]** _(live preview)_.
 
 ## Templates
 
@@ -217,5 +217,4 @@ This is open-sourced software licensed under the [MIT License][link_license].
 [link_nginx]:http://nginx.org/
 [link_traefik]:https://docs.traefik.io/
 [link_swarm]:https://docs.docker.com/engine/swarm/
-[link_branch_gh_pages]:https://github.com/tarampampam/error-pages/tree/gh-pages
 [link_gh_pages]:https://tarampampam.github.io/error-pages/

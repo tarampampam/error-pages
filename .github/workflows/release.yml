@@ -86,7 +86,7 @@ jobs:
       - name: Build image
         run: |
           docker buildx build \
-            --platform "linux/amd64,linux/386,linux/arm64/v8,linux/arm/v6,linux/arm/v7" \
+            --platform "linux/amd64,linux/arm64/v8,linux/arm/v6,linux/arm/v7" \
             --tag "tarampampam/error-pages:${{ steps.values.outputs.version }}" \
             --tag "tarampampam/error-pages:latest" \
             --tag "ghcr.io/tarampampam/error-pages:${{ steps.values.outputs.version }}" \
