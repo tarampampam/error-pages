@@ -11,45 +11,23 @@
 
 This repository contains:
 
-- A very simple [generator](./bin/generator.js) _(`nodejs`)_ for HTTP error pages _(like `404: Not found`)_ with different templates supports
-- Dockerfile for [docker image][link_docker_hub] with generated pages and `nginx` as web server
+- A very simple [generator](generator/generator.js) _(`nodejs`)_ for HTTP error pages _(like `404: Not found`)_ with different templates supports
+- Dockerfile for docker image ([docker hub][link_docker_hub], [ghcr.io][link_ghcr]) with generated pages and `nginx` as a web server
 
-Can be used for [Traefik error pages customization](https://docs.traefik.io/middlewares/errorpages/).
+**Can be used for [Traefik error pages customization](https://docs.traefik.io/middlewares/errorpages/)**.
 
-### Demo
+## Demo
 
-Generated pages (from the latest release) always [accessible here][link_branch_gh_pages] _(sources)_ and on GitHub pages [here][link_gh_pages].
-
-## Development
-
-> For project development we use `docker-ce` + `docker-compose`. Make sure you have them installed.
-
-Install `nodejs` dependencies:
-
-```bash
-$ make install
-```
-
-If you want to generate error pages on your machine _(after that look into output directory)_:
-
-```bash
-$ make gen
-```
-
-If you want to preview the pages using the Docker image:
-
-```bash
-$ make preview
-```
+Generated pages (from the latest release) always [accessible here][link_branch_gh_pages] _(sources)_ and on GitHub pages **[here][link_gh_pages]** _(live preview)_.
 
 ## Templates
 
    Name    | Preview
 :--------: | :-----:
-`ghost`    | ![ghost](https://hsto.org/webt/zg/ul/cv/zgulcvxqzhazoebxhg8kpxla8lk.png)
+`ghost`    | ![ghost](https://hsto.org/webt/ya/gy/qw/yagyqwcs8-uulrwboatmmd5jbwi.gif)
 `l7-light` | ![l7-light](https://hsto.org/webt/xc/iq/vt/xciqvty-aoj-rchfarsjhutpjny.png)
 `l7-dark`  | ![l7-dark](https://hsto.org/webt/s1/ih/yr/s1ihyrqs_y-sgraoimfhk6ypney.png)
-`shuffle`  | ![shuffle](https://habrastorage.org/webt/ck/gk/lj/ckgkljezwegq5rbcocalykfgv3u.png)
+`shuffle`  | ![shuffle](https://hsto.org/webt/m7/-p/az/m7-pazbcafvsemf47io5sqwwz8e.gif)
 
 ## Usage
 
@@ -61,22 +39,24 @@ Name            | Description
 --------------- | -----------
 `TEMPLATE_NAME` | (`ghost` by default) "default" pages template _(allows to use error pages without passing theme name in URL - `http://127.0.0.1/500.html` instead `http://127.0.0.1/ghost/500.html`)_
 
-### HTTP server for error pages serving only
+### Ready docker image
 
 Execute in your shell:
 
 ```bash
-$ docker run --rm -p "8082:8080" tarampampam/error-pages:1.4.0
+$ docker run --rm -p "8082:8080" tarampampam/error-pages:X.X.X
 ```
+
+> Important notice: do **not** use the `latest` image tag _(this is bad practice)_. Use versioned tag (like `1.2.3`) instead.
 
 And open in your browser `http://127.0.0.1:8082/ghost/400.html`.
 
-### Custom error pages for [nginx][link_nginx]
+### Custom error pages for your image with [nginx][link_nginx]
 
 You can build your own docker image with `nginx` and our error pages:
 
 ```nginx
-# File `./nginx.conf`
+# File `nginx.conf`
 
 server {
   listen      80;
@@ -102,27 +82,33 @@ server {
 ```
 
 ```dockerfile
+# File `Dockerfile`
+
 FROM nginx:1.18-alpine
 
 COPY --chown=nginx \
      ./nginx.conf /etc/nginx/conf.d/default.conf
 COPY --chown=nginx \
-     --from=tarampampam/error-pages:1.4.0 \
+     --from=tarampampam/error-pages:1.5.0 \
      /opt/html/ghost /usr/share/nginx/errorpages/_error-pages
+```
+
+```shell
+$ docker build --tag your-nginx:local -f ./Dockerfile .
 ```
 
 > More info about `error_page` directive can be [found here](http://nginx.org/en/docs/http/ngx_http_core_module.html#error_page).
 
 ### Custom error pages for [Traefik][link_traefik]
 
-Simple traefik (tested on `v2.2.1`) service configuration for usage in [docker swarm][link_swarm] (**change with your needs**):
+Simple traefik (tested on `v2.4.8`) service configuration for usage in [docker swarm][link_swarm] (**change with your needs**):
 
 ```yaml
 version: '3.4'
 
 services:
   error-pages:
-    image: tarampampam/error-pages:1.4.0
+    image: tarampampam/error-pages:1.5.0
     environment:
       TEMPLATE_NAME: l7-dark
     networks:
@@ -170,6 +156,28 @@ networks:
     external: true
 ```
 
+## Development
+
+> For project development we use `docker-ce` + `docker-compose`. Make sure you have them installed.
+
+Install "generator" dependencies:
+
+```bash
+$ make install
+```
+
+If you want to generate error pages on your machine _(after that look into the output directory)_:
+
+```bash
+$ make gen
+```
+
+If you want to preview the pages using the Docker image:
+
+```bash
+$ make preview
+```
+
 ## Changes log
 
 [![Release date][badge_release_date]][link_releases]
@@ -205,6 +213,7 @@ This is open-sourced software licensed under the [MIT License][link_license].
 [link_create_issue]:https://github.com/tarampampam/error-pages/issues/new
 [link_license]:https://github.com/tarampampam/error-pages/blob/master/LICENSE
 [link_docker_hub]:https://hub.docker.com/r/tarampampam/error-pages/
+[link_ghcr]:https://github.com/users/tarampampam/packages/container/package/error-pages
 [link_nginx]:http://nginx.org/
 [link_traefik]:https://docs.traefik.io/
 [link_swarm]:https://docs.docker.com/engine/swarm/

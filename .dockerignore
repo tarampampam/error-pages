@@ -1,3 +1,7 @@
+.dockerignore
+.github
+.git
+.gitignore
+/generator/node_modules
+/generator/*.log
 /out
-/node_modules
-*.log

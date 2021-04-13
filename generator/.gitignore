@@ -1,0 +1,9 @@
+## Vendors
+/node_modules
+
+## Lock files (use yarn only)
+package-lock.json
+
+## Temp dirs & trash
+npm-debug.log
+yarn-error.log
