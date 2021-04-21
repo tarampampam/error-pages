@@ -4,11 +4,17 @@ All notable changes to this package will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
-## UNRELEASED
+## v1.6.0
+
+### Added
+
+- Template `noise` [#10]
 
 ### Fixed
 
 - File permissions in docker image
+
+[#10]:https://github.com/tarampampam/error-pages/issues/10
 
 ## v1.5.0
 
