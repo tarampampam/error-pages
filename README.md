@@ -30,6 +30,8 @@ Generated pages (from the latest release) always **[accessible here][link_gh_pag
 `shuffle`  | ![shuffle](https://hsto.org/webt/7w/rk/3m/7wrk3mrzz3y8qfqwovmuvacu-bs.gif)
 `noise`    | ![noise](https://hsto.org/webt/42/oq/8y/42oq8yok_i-arrafjt6hds_7ahy.gif)
 
+> Note: `noise` template highly uses the CPU, be careful
+
 ## Usage
 
 Generated error pages in our [docker image][link_docker_hub] permanently located in directory `/opt/html/%TEMPLATE_NAME%`. `nginx` in a container listen for `8080` (`http`) port.
