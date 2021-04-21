@@ -8,13 +8,13 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 ### Added
 
-- Template `noise` [#9]
+- Template `noise` [#10]
 
 ### Fixed
 
 - File permissions in docker image
 
-[#9]:https://github.com/tarampampam/error-pages/issues/9
+[#10]:https://github.com/tarampampam/error-pages/issues/10
 
 ## v1.5.0
 
