@@ -16,6 +16,10 @@
             "name": "shuffle",
             "path": "./templates/shuffle.html"
         }
+        {
+            "name": "noise",
+            "path": "./templates/noise.html"
+        }
     ],
     "output": {
         "file_extension": "html"
