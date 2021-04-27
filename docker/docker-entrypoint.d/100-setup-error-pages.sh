@@ -4,7 +4,7 @@ set -e
 # allows to use random template
 if [ ! -z "$TEMPLATE_NAME" ] && ([ "$TEMPLATE_NAME" = "random" ] || [ "$TEMPLATE_NAME" = "RANDOM" ]); then
   # find all templates in directory (only template directories must be located in /opt/html)
-  allowed_templates=$(find /opt/html/* -maxdepth 1 -type d -exec basename {} \;);
+  allowed_templates=$(find /opt/html/* -maxdepth 1 -type d ! -iname nginx-error-pages -exec basename {} \;);
 
   # pick random template name
   random_template_name=$(shuf -e -n1 $allowed_templates);
