@@ -22,7 +22,7 @@ Generated pages (from the latest release) always **[accessible here][link_gh_pag
 
 ## Templates
 
-       Name       | Preview
+Name              | Preview
 :---------------: | :-----:
 `ghost`           | [![ghost](https://hsto.org/webt/oj/cl/4k/ojcl4ko_cvusy5xuki6efffzsyo.gif)](https://tarampampam.github.io/error-pages/ghost/404.html)
 `l7-light`        | [![l7-light](https://hsto.org/webt/xc/iq/vt/xciqvty-aoj-rchfarsjhutpjny.png)](https://tarampampam.github.io/error-pages/l7-light/404.html)
