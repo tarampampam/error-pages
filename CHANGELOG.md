@@ -13,7 +13,6 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 [#10]:https://github.com/tarampampam/error-pages/pull/13
 
-
 ## v1.6.0
 
 ### Added
