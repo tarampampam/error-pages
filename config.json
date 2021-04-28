@@ -19,6 +19,10 @@
         {
             "name": "noise",
             "path": "./templates/noise.html"
+        },
+        {
+            "name": "hacker-terminal",
+            "path": "./templates/hacker-terminal.html"
         }
     ],
     "output": {

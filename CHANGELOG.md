@@ -4,6 +4,16 @@ All notable changes to this package will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## v1.7.0
+
+### Added
+
+- Template `hacker-terminal` [#13]
+- HTML comments with error code and description into each template (header and footer, it seems more readable for curl usage)
+
+[#10]:https://github.com/tarampampam/error-pages/pull/13
+
+
 ## v1.6.0
 
 ### Added

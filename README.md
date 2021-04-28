@@ -29,6 +29,7 @@ Generated pages (from the latest release) always **[accessible here][link_gh_pag
 `l7-dark`  | [![l7-dark](https://hsto.org/webt/s1/ih/yr/s1ihyrqs_y-sgraoimfhk6ypney.png)](https://tarampampam.github.io/error-pages/l7-dark/404.html)
 `shuffle`  | [![shuffle](https://hsto.org/webt/7w/rk/3m/7wrk3mrzz3y8qfqwovmuvacu-bs.gif)](https://tarampampam.github.io/error-pages/shuffle/404.html)
 `noise`    | [![noise](https://hsto.org/webt/42/oq/8y/42oq8yok_i-arrafjt6hds_7ahy.gif)](https://tarampampam.github.io/error-pages/noise/404.html)
+`hacker-terminal`    | [![noise](https://hsto.org/webt/5s/l0/p1/5sl0p1_ud_nalzjzsj5slz6dfda.gif)](https://tarampampam.github.io/error-pages/hacker-terminal/404.html)
 
 > Note: `noise` template highly uses the CPU, be careful
 
@@ -94,7 +95,7 @@ FROM nginx:1.18-alpine
 COPY --chown=nginx \
      ./nginx.conf /etc/nginx/conf.d/default.conf
 COPY --chown=nginx \
-     --from=tarampampam/error-pages:1.5.0 \
+     --from=tarampampam/error-pages:1.7.0 \
      /opt/html/ghost /usr/share/nginx/errorpages/_error-pages
 ```
 
@@ -113,7 +114,7 @@ version: '3.4'
 
 services:
   error-pages:
-    image: tarampampam/error-pages:1.5.0
+    image: tarampampam/error-pages:1.7.0
     environment:
       TEMPLATE_NAME: l7-dark
     networks:
