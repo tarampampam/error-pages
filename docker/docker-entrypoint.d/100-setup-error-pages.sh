@@ -1,6 +1,11 @@
 #!/usr/bin/env sh
 set -e
 
+# on `docker restart` next directory keep existing: <https://github.com/tarampampam/error-pages/issues/3>
+if [ -d /opt/html/nginx-error-pages ]; then
+  rm -Rf /opt/html/nginx-error-pages;
+fi;
+
 # allows to use random template
 if [ ! -z "$TEMPLATE_NAME" ] && ([ "$TEMPLATE_NAME" = "random" ] || [ "$TEMPLATE_NAME" = "RANDOM" ]); then
   # find all templates in directory (only template directories must be located in /opt/html)
@@ -26,11 +31,6 @@ fi;
 
 # allows "direct access" to the error pages using URLs like "/500.html"
 ln -f -s "/opt/html/$TEMPLATE_NAME/"* /opt/html;
-
-# on `docker restart` next directory keep existing: <https://github.com/tarampampam/error-pages/issues/3>
-if [ -d /opt/html/nginx-error-pages ]; then
-  rm -Rf /opt/html/nginx-error-pages;
-fi;
 
 # next directory is required for easy nginx `error_page` usage
 mkdir /opt/html/nginx-error-pages;
