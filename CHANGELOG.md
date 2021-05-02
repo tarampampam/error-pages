@@ -4,6 +4,14 @@ All notable changes to this package will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## v1.7.1
+
+### Fixed
+
+- Random template selecting (thx [@xpliz](https://github.com/xpliz)) [#12]
+
+[#12]:https://github.com/tarampampam/error-pages/pull/12
+
 ## v1.7.0
 
 ### Added
