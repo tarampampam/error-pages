@@ -47,13 +47,15 @@ Also, you can use a special template name `random` - in this case template will 
 
 ### Ready docker image
 
+[![image stats](https://dockeri.co/image/tarampampam/error-pages)][link_docker_hub]
+
 Execute in your shell:
 
 ```bash
 $ docker run --rm -p "8082:8080" tarampampam/error-pages:X.X.X
 ```
 
-> Important notice: do **not** use the `latest` image tag _(this is bad practice)_. Use versioned tag (like `1.2.3`) instead.
+> Important notice: do **not** use the `latest` image tag _(this is bad practice)_. Use versioned tag (like `1.2.3`) instead. Docker hub mirror located [here (ghcr.io)][link_ghcr].
 
 And open in your browser `http://127.0.0.1:8082/ghost/400.html`.
 
