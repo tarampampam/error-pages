@@ -4,6 +4,12 @@ All notable changes to this package will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## v1.7.2
+
+### Changed
+
+- Nginx updated up to `1.21` (from `1.19`)
+
 ## v1.7.1
 
 ### Fixed
