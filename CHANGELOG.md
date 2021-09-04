@@ -4,6 +4,10 @@ All notable changes to this package will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## UNRELEASED
+
+- Added secured Nginx healthcheck endpoint and updated Dockerfile to utilise.
+
 ## v1.7.2
 
 ### Changed
