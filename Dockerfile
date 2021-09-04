@@ -44,7 +44,9 @@ LABEL \
 # Import from builder
 COPY --from=builder /tmp/rootfs /
 
-HEALTHCHECK --interval=30s --timeout=10s --retries=3 --start-period=10s \
-    CMD curl -fSs 127.0.0.1:8080/nginx_status || exit 1
+# Docs: <https://docs.docker.com/engine/reference/builder/#healthcheck>
+HEALTHCHECK --interval=4s --timeout=2s --retries=2 --start-period=2s CMD [ \
+    "wget", "--spider", "-q", "http://127.0.0.1:8080/health/live" \
+]
 
 RUN chown -R nginx:nginx /opt/html
