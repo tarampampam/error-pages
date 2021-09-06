@@ -30,7 +30,7 @@ RUN set -x \
     && mv /src/docker/nginx-server.conf ./etc/nginx/conf.d/default.conf
 
 # Image page: <https://hub.docker.com/_/nginx>
-FROM nginx:1.21-alpine as runtime
+FROM nginx:1.21.1-alpine as runtime
 
 LABEL \
     # Docs: <https://github.com/opencontainers/image-spec/blob/master/annotations.md>
@@ -43,5 +43,10 @@ LABEL \
 
 # Import from builder
 COPY --from=builder /tmp/rootfs /
+
+# Docs: <https://docs.docker.com/engine/reference/builder/#healthcheck>
+HEALTHCHECK --interval=15s --timeout=2s --retries=2 --start-period=2s CMD [ \
+    "wget", "--spider", "-q", "http://127.0.0.1:8080/health/live" \
+]
 
 RUN chown -R nginx:nginx /opt/html

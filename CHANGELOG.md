@@ -4,6 +4,15 @@ All notable changes to this package will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## v1.8.0
+
+### Added
+
+- Nginx health-check endpoint (`/health/live`) and dockerfile `HEALTHCHECK` to utilise (thx [@modem7](https://github.com/modem7)) [#22], [#23]
+
+[#22]:https://github.com/tarampampam/error-pages/pull/22
+[#23]:https://github.com/tarampampam/error-pages/pull/23
+
 ## v1.7.2
 
 ### Changed
