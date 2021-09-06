@@ -30,7 +30,7 @@ RUN set -x \
     && mv /src/docker/nginx-server.conf ./etc/nginx/conf.d/default.conf
 
 # Image page: <https://hub.docker.com/_/nginx>
-FROM nginx:1.21-alpine as runtime
+FROM nginx:1.21.1-alpine as runtime
 
 LABEL \
     # Docs: <https://github.com/opencontainers/image-spec/blob/master/annotations.md>
