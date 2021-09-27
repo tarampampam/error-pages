@@ -1,0 +1,117 @@
+{
+  "admin": {
+    "disabled": true,
+    "config": {
+      "persist": false
+    }
+  },
+  "apps": {
+    "http": {
+      "grace_period": "2s",
+      "servers": {
+        "default-server": {
+          "listen": [":8080"],
+          "routes": [
+            {
+              "group": "metrics",
+              "match": [{
+                "method": ["GET"],
+                "path": ["/metrics"]
+              }],
+              "handle": [{
+                "handler": "metrics"
+              }]
+            },
+            {
+              "group": "health-check",
+              "match": [{
+                "method": ["GET"],
+                "path": ["/health/live"]
+              }],
+              "handle": [
+                {
+                  "handler": "headers",
+                  "response": {
+                    "delete": ["Server"]
+                  }
+                },
+                {
+                  "handler": "static_response",
+                  "status_code": 200,
+                  "body": "healthy\n",
+                  "close": true
+                }
+              ],
+              "terminal": true
+            },
+            {
+              "group": "robots",
+              "match": [{
+                "method": ["GET"],
+                "path": ["/robots.txt"]
+              }],
+              "handle": [
+                {
+                  "handler": "headers",
+                  "response": {
+                    "delete": ["Server"]
+                  }
+                },
+                {
+                  "handler": "static_response",
+                  "status_code": 200,
+                  "body": "User-agent: *\nDisallow: /\n",
+                  "close": true
+                }
+              ],
+              "terminal": true
+            },
+            {
+              "group": "file-server",
+              "handle": [
+                {
+                  "handler": "encode"
+                },
+                {
+                  "handler": "headers",
+                  "response": {
+                    "delete": ["Server"]
+                  }
+                },
+                {
+                  "handler": "file_server",
+                  "root": "/opt/html/{env.TEMPLATE_NAME}",
+                  "index_names": ["index.html", "index.htm"]
+                }
+              ]
+            }
+          ],
+          "errors": {
+            "routes": [
+              {
+                "group": "error-page",
+                "match": [{
+                  "expression": "{http.error.status_code} >= 400"
+                }],
+                "handle": [
+                  {
+                    "handler": "rewrite",
+                    "uri": "/{http.error.status_code}.html"
+                  },
+                  {
+                    "handler": "file_server",
+                    "root": "/opt/html/{env.TEMPLATE_NAME}"
+                  }
+                ]
+              }
+            ]
+          },
+          "automatic_https": {
+            "disable": true
+          },
+          "logs": {}
+        }
+      }
+    }
+  }
+}

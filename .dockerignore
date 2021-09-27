@@ -2,6 +2,9 @@
 .github
 .git
 .gitignore
-/generator/node_modules
-/generator/*.log
+node_modules
+*.log
 /out
+/tmp
+/temp
+/dist

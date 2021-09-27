@@ -4,6 +4,16 @@ All notable changes to this package will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## UNRELEASED
+
+### Changed
+
+- JS code has been completely rewritten
+
+### Added
+
+- WIP
+
 ## v1.8.0
 
 ### Added

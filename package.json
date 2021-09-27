@@ -1,0 +1,47 @@
+{
+  "name": "error-pages",
+  "main": "src/main.js",
+  "scripts": {
+    "lint": "eslint src",
+    "build": "ncc build src/main.js -o ./dist --minify --no-cache && chmod +x ./dist/index.js",
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tarampampam/error-pages.git"
+  },
+  "eslintConfig": {
+    "env": {
+      "commonjs": true,
+      "es6": true,
+      "jest": true,
+      "node": true
+    },
+    "extends": "eslint:recommended",
+    "globals": {
+      "Atomics": "readonly",
+      "SharedArrayBuffer": "readonly"
+    },
+    "parser": "babel-eslint",
+    "parserOptions": {
+      "ecmaVersion": 2018
+    },
+    "rules": {
+    }
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tarampampam/error-pages/issues"
+  },
+  "homepage": "https://github.com/tarampampam/error-pages#readme",
+  "dependencies": {
+    "commander": "^8.2.0",
+    "yaml": "^1.10.2"
+  },
+  "devDependencies": {
+    "@vercel/ncc": "^0.31.1",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^7.32.0",
+    "jest": "^27.2.1"
+  }
+}
