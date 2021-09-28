@@ -1,18 +1,47 @@
+# Docker-compose file is used only for local development. This is not production-ready example.
+
 version: '3.4'
 
 volumes:
   tmp-data: {}
+  golint-cache: {}
 
 services:
-  node:
-    image: node:16.9-alpine # Image page: <https://hub.docker.com/_/node>
+  app: &app-service
+    image: golang:1.17.1-buster # Image page: <https://hub.docker.com/_/golang>
+    working_dir: /src
     environment:
-      PS1: '\[\033[1;32m\]\[\033[1;36m\][\u@\h] \[\033[1;34m\]\w\[\033[0;35m\] \[\033[1;36m\]# \[\033[0m\]'
-      PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/app/node_modules/.bin"
       HOME: /tmp
-    working_dir: /app
+      GOPATH: /tmp
     volumes:
       - /etc/passwd:/etc/passwd:ro
       - /etc/group:/etc/group:ro
-      - .:/app:rw
+      - .:/src:rw
       - tmp-data:/tmp:rw
+
+  web:
+    <<: *app-service
+    ports:
+      - "8080:8080/tcp" # Open <http://127.0.0.1:8080>
+    command:
+      - go
+      - run
+      - ./cmd/error-pages
+      - serve
+      - --verbose
+      - --port=8080
+      - --public=./web
+    healthcheck:
+      test: ['CMD', 'wge', '--spider', '-q', 'http://127.0.0.1:8080/live']
+      interval: 5s
+      timeout: 2s
+
+  golint:
+    image: golangci/golangci-lint:v1.42-alpine # Image page: <https://hub.docker.com/r/golangci/golangci-lint>
+    environment:
+      GOLANGCI_LINT_CACHE: /tmp/golint # <https://github.com/golangci/golangci-lint/blob/v1.42.0/internal/cache/default.go#L68>
+    volumes:
+      - .:/src:ro
+      - golint-cache:/tmp/golint:rw
+    working_dir: /src
+    command: /bin/true

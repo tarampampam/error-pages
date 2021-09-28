@@ -1,27 +1,15 @@
-# IDEs
-/.vscode
+## IDEs
 /.idea
+/.vscode
 
-# Vendor
-/node_modules
+## Binaries
+error-pages
 
-# Environment files
-*.env
-
-# npm lock file (use yarn only)
-package-lock.json
-
-# Logs
-logs
-*.log
-yarn-debug.log*
-yarn-error.log*
-
-# Temp dirs & trash
+## Temp dirs & trash
 /temp
 /tmp
-/src/test_*
+*.env
 .DS_Store
-
-## Dist
-/dist
+*.cache
+*.out
+/cover*.*

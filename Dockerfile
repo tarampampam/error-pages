@@ -1,40 +1,49 @@
-# image page: <https://hub.docker.com/_/node>
-FROM node:16.9-alpine as builder
+# syntax=docker/dockerfile:1.2
 
-# use directory with application sources by default
-WORKDIR /app
+# Image page: <https://hub.docker.com/_/golang>
+FROM golang:1.17.1-alpine as builder
 
-# copy files, that required for the dependencies installing
-COPY ./yarn.lock ./package.json ./
+# can be passed with any prefix (like `v1.2.3@GITHASH`), e.g.: `docker build --build-arg "APP_VERSION=v1.2.3@GITHASH" .`
+ARG APP_VERSION="undefined@docker"
 
-# install nodejs dependencies
-RUN yarn install --frozen-lockfile --no-progress --non-interactive
+WORKDIR /src
 
-# copy all application sources
 COPY . .
 
-# build the frontend application
-RUN yarn build
+# arguments to pass on each go tool link invocation
+ENV LDFLAGS="-s -w -X github.com/tarampampam/error-pages/internal/version.version=$APP_VERSION"
 
-# generate error pages
-RUN ./dist/index.js build -c ./error-pages.yml ./error_pages
+RUN set -x \
+    && go version \
+    && CGO_ENABLED=0 go build -trimpath -ldflags "$LDFLAGS" -o ./error-pages ./cmd/error-pages/ \
+    && ./error-pages version \
+    && ./error-pages -h
 
-# create a directory for the future root filesystem
 WORKDIR /tmp/rootfs
 
-# prepare the root filesystem
+# prepare rootfs for runtime
 RUN set -x \
-    && mkdir -p ./bin ./etc ./home/runtime ./opt \
-    && echo 'runtime:x:10001:10001::/home/runtime:/sbin/nologin' > ./etc/passwd \
-    && echo 'runtime:x:10001:' > ./etc/group \
-    && mv /app/caddy.json ./etc/caddy.json \
-    && mv /app/error-pages.yml ./etc/error-pages.yml \
-    && mv /app/dist ./app \
-    && mv /app/error_pages ./opt/html \
-    && chown -R 10001:10001 ./home/runtime
+    && mkdir -p \
+        ./etc \
+        ./bin \
+        ./opt/html \
+    && echo 'appuser:x:10001:10001::/nonexistent:/sbin/nologin' > ./etc/passwd \
+    && echo 'appuser:x:10001:' > ./etc/group \
+    && mv /src/error-pages ./bin/error-pages \
+    && mv /src/templates ./opt/templates \
+    && mv /src/error-pages.yml ./opt/error-pages.yml
 
-# use distroless node for the result image: <https://github.com/astefanutti/scratch-node>
-FROM ghcr.io/astefanutti/scratch-node:16.9 as runtime
+WORKDIR /tmp/rootfs/opt
+
+# generate static error pages (for usage inside another docker images, for example)
+RUN set -x \
+    && ./../bin/error-pages --config-file ./error-pages.yml build ./html --verbose --index \
+    && ls -l ./html
+
+# use empty filesystem
+FROM scratch as runtime
+
+ARG APP_VERSION="undefined@docker"
 
 LABEL \
     # Docs: <https://github.com/opencontainers/image-spec/blob/master/annotations.md>
@@ -43,30 +52,25 @@ LABEL \
     org.opencontainers.image.url="https://github.com/tarampampam/error-pages" \
     org.opencontainers.image.source="https://github.com/tarampampam/error-pages" \
     org.opencontainers.image.vendor="tarampampam" \
+    org.opencontainers.version="$APP_VERSION" \
     org.opencontainers.image.licenses="MIT"
 
-# install curl
-COPY --from=tarampampam/curl:7.78.0 /bin/curl /bin/curl
-
-# install caddy file server (image page: <https://hub.docker.com/_/caddy>)
-COPY --from=caddy:2.4.5-alpine /usr/bin/caddy /bin/caddy
-
-# import the root filesystem
+# Import from builder
 COPY --from=builder /tmp/rootfs /
 
-ENV \
-  TEMPLATE_NAME=ghost \
-  CONFIG_FILE=/etc/error-pages.yml \
-  TEMPLATES_DIR=/opt/html
+# Use an unprivileged user
+USER appuser:appuser
 
-# use an unprivileged user
-USER runtime:runtime
+WORKDIR /opt
+
+ENV LISTEN_PORT="8080" \
+    TEMPLATE_NAME="ghost"
 
 # Docs: <https://docs.docker.com/engine/reference/builder/#healthcheck>
-HEALTHCHECK --interval=15s --timeout=2s --retries=2 --start-period=2s CMD [ \
-    "curl", "--fail", "--user-agent", "internal/healthcheck", "http://127.0.0.1:8080/health/live" \
+HEALTHCHECK --interval=7s --timeout=2s CMD [ \
+    "/bin/error-pages", "healthcheck", "--log-json" \
 ]
 
-ENTRYPOINT ["/bin/node", "/app/index.js", "init", "--log-json", "--"]
+ENTRYPOINT ["/bin/error-pages"]
 
-CMD ["/bin/caddy", "run", "-config", "/etc/caddy.json"]
+CMD ["serve", "--log-json"]

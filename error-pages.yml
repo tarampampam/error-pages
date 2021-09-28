@@ -1,6 +1,10 @@
 templates:
+  # - name: {string} Template name (optional, if path is defined)
+  #   path: {string} Path to the template file
+  #   content: {string} Template content, if path is not defined
   - path: ./templates/ghost.html
-    name: ghost # name is optional
+    name: ghost # name is optional, if path is defined
+    content: ${GHOST_TEMPLATE_CONTENT}
   - path: ./templates/l7-light.html
   - path: ./templates/l7-dark.html
   - path: ./templates/shuffle.html
