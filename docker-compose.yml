@@ -30,9 +30,8 @@ services:
       - serve
       - --verbose
       - --port=8080
-      - --public=./web
     healthcheck:
-      test: ['CMD', 'wge', '--spider', '-q', 'http://127.0.0.1:8080/live']
+      test: ['CMD', 'wget', '--method', 'GET', '--spider', '-q', 'http://127.0.0.1:8080/health/live']
       interval: 5s
       timeout: 2s
 

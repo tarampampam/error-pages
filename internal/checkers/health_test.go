@@ -18,7 +18,7 @@ func (f httpClientFunc) Do(req *http.Request) (*http.Response, error) { return f
 func TestHealthChecker_CheckSuccess(t *testing.T) {
 	var httpMock httpClientFunc = func(req *http.Request) (*http.Response, error) {
 		assert.Equal(t, http.MethodGet, req.Method)
-		assert.Equal(t, "http://127.0.0.1:123/live", req.URL.String())
+		assert.Equal(t, "http://127.0.0.1:123/health/live", req.URL.String())
 		assert.Equal(t, "HealthChecker/internal", req.Header.Get("User-Agent"))
 
 		return &http.Response{

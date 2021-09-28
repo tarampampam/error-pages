@@ -40,7 +40,6 @@ func NewServer(log *zap.Logger) Server {
 			Handler:               common.LogRequest(r.Handler, log),
 			NoDefaultServerHeader: true,
 			ReduceMemoryUsage:     true,
-			GetOnly:               true,
 			CloseOnShutdown:       true,
 			Logger:                zap.NewStdLog(log),
 		},
@@ -77,7 +76,7 @@ func (s *Server) Register(
 	}
 
 	s.router.GET("/version", versionHandler.NewHandler(version.Version()))
-	s.router.GET("/live", healthzHandler.NewHandler(checkers.NewLiveChecker()))
+	s.router.ANY("/health/live", healthzHandler.NewHandler(checkers.NewLiveChecker()))
 
 	if h, err := errorpageHandler.NewHandler(templateName, templates, codes); err != nil {
 		return err
