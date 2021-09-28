@@ -12,4 +12,5 @@ error-pages
 .DS_Store
 *.cache
 *.out
+/out
 /cover*.*

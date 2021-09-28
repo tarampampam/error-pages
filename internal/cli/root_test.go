@@ -17,6 +17,7 @@ func TestSubcommands(t *testing.T) {
 		{giveName: "build"},
 		{giveName: "version"},
 		{giveName: "healthcheck"},
+		{giveName: "serve"},
 	}
 
 	// get all existing subcommands and put into the map

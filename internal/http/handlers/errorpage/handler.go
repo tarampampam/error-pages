@@ -50,9 +50,7 @@ func NewHandler(
 			useTemplate = templateNames[rnd.Intn(len(templateNames))] // pick the randomized
 		}
 
-		userCode := ctx.UserValue("code")
-
-		if code, ok := userCode.(string); ok {
+		if code, ok := ctx.UserValue("code").(string); ok {
 			if content, err := pages.Get(useTemplate, code); err == nil {
 				ctx.SetStatusCode(fasthttp.StatusOK)
 				ctx.SetContentType("text/html; charset=utf-8")
