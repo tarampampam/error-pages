@@ -39,6 +39,25 @@ Registry                               | Image
 
 > Using the `latest` tag for the docker image is highly discouraged because of possible backward-incompatible changes during **major** upgrades. Please, use tags in `X.Y.Z` format
 
+To watch the docker image content you can use the [dive](https://github.com/wagoodman/dive):
+
+```bash
+$ docker run --rm -it \
+    -v "/var/run/docker.sock:/var/run/docker.sock:ro" \
+    wagoodman/dive:latest \
+      tarampampam/error-pages:latest
+```
+
+<details>
+  <summary>Dive screenshot</summary>
+
+<p align="center">
+  <img src="https://hsto.org/webt/mi/ak/uf/miakufsh2ibxtsa1nomfhyqombi.png" alt="" />
+</p>
+</details>
+
+
+
 ## Usage
 
 All of the examples below will use a docker image with the application, but you can also use a binary. By the way, our docker image uses the **unleveled user** by default and **distroless**.
