@@ -9,7 +9,7 @@ DC_RUN_ARGS = --rm --user "$(shell id -u):$(shell id -g)"
 APP_NAME = $(notdir $(CURDIR))
 
 .PHONY : help \
-         image build fmt lint gotest test shell \
+         image dive build fmt lint gotest test shell \
          up down restart \
          clean
 .DEFAULT_GOAL : help
@@ -24,6 +24,9 @@ image: ## Build docker image with app
 	docker build -f ./Dockerfile -t $(APP_NAME):local .
 	docker run --rm $(APP_NAME):local version
 	@printf "\n   \e[30;42m %s \033[0m\n\n" 'Now you can use image like `docker run --rm -p "8080:8080/tcp" $(APP_NAME):local ...`';
+
+dive: image ## Explore the docker image
+	docker run --rm -it -v "/var/run/docker.sock:/var/run/docker.sock:ro" wagoodman/dive:latest $(APP_NAME):local
 
 build: ## Build app binary file
 	docker-compose run $(DC_RUN_ARGS) -e "CGO_ENABLED=0" --no-deps app go build -trimpath -ldflags $(LDFLAGS) -o ./error-pages ./cmd/error-pages/

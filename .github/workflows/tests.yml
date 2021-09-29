@@ -66,8 +66,8 @@ jobs: # Docs: <https://git.io/JvxXE>
     strategy:
       fail-fast: false
       matrix:
-        os: [linux, windows, darwin] # linux, freebsd, darwin, windows
-        arch: [amd64]                # amd64, 386
+        os: [linux, darwin] # linux, freebsd, darwin, windows
+        arch: [amd64, 386]  # amd64, 386
     needs: [golangci-lint, go-test]
     steps:
       - uses: actions/setup-go@v2
@@ -92,7 +92,7 @@ jobs: # Docs: <https://git.io/JvxXE>
           GOOS: ${{ matrix.os }}
           GOARCH: ${{ matrix.arch }}
           CGO_ENABLED: 0
-          LDFLAGS: -s -w -X github.com/tarampampam/webhook-tester/internal/pkg/version.version=${{ steps.slug.outputs.branch-name-slug }}@${{ steps.slug.outputs.commit-hash-short }}
+          LDFLAGS: -s -w -X github.com/tarampampam/error-pages/internal/pkg/version.version=${{ steps.slug.outputs.branch-name-slug }}@${{ steps.slug.outputs.commit-hash-short }}
         run: go build -trimpath -ldflags "$LDFLAGS" -o ./error-pages ./cmd/error-pages/
 
       - name: Try to execute
