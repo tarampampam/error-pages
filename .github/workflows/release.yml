@@ -99,11 +99,11 @@ jobs:
           tag: ${{ github.ref }}
 
       - name: Generate error pages
-        if: matrix.os == 'linux' && matrix.arch == 'amd64'
+        if: ${{ matrix.os == 'linux' && matrix.arch == 'amd64' }}
         run: "./${{ steps.values.outputs.binary-name }}" build ./out --verbose --index
 
       - uses: actions/upload-artifact@v2
-        if: matrix.os == 'linux' && matrix.arch == 'amd64'
+        if: ${{ matrix.os == 'linux' && matrix.arch == 'amd64' }}
         with:
           name: generated-error-pages
           path: out/
