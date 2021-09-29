@@ -98,19 +98,6 @@ jobs:
           asset_name: ${{ steps.values.outputs.binary-name }}
           tag: ${{ github.ref }}
 
-      - name: Generate error pages
-        if: |
-          matrix.os == 'linux' && matrix.arch == 'amd64'
-        run: "./${{ steps.values.outputs.binary-name }}" build ./out --verbose --index
-
-      - uses: actions/upload-artifact@v2
-        if: |
-          matrix.os == 'linux' && matrix.arch == 'amd64'
-        with:
-          name: generated-error-pages
-          path: out/
-          retention-days: 1
-
   docker-image:
     name: Build docker image
     runs-on: ubuntu-20.04
@@ -148,3 +135,18 @@ jobs:
 
 #          tarampampam/error-pages:latest # TODO uncomment on release
 #          ghcr.io/${{ github.actor }}/${{ github.event.repository.name }}:latest
+
+  demo:
+    name: Update demonstration, hosted on github pages
+    runs-on: ubuntu-20.04
+    needs: [docker-image]
+    steps:
+      - uses: gacts/github-slug@v1
+        id: slug
+
+      - run: |
+          docker create --name img ghcr.io/${{ github.actor }}/${{ github.event.repository.name }}:${{ steps.slug.outputs.version }}
+          docker cp img:/opt/html ./out
+          docker rm -f img
+
+      - run: ls -la
