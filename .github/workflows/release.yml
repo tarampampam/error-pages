@@ -5,61 +5,61 @@ on:
     types: [published]
 
 jobs:
-#  demo:
-#    name: Update demonstration, hosted on github pages
-#    runs-on: ubuntu-20.04
-#    steps:
-#      - name: Check out code
-#        uses: actions/checkout@v2
-#
-#      - name: Setup NodeJS
-#        uses: actions/setup-node@v1 # Action page: <https://github.com/actions/setup-node>
-#        with:
-#          node-version: 15
-#
-#      - uses: actions/cache@v2
-#        with:
-#          path: '**/node_modules'
-#          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-#
-#      - name: Install dependencies
-#        working-directory: generator
-#        run: yarn install
-#
-#      - name: Generate pages
-#        run: ./generator/generator.js -i -c ./config.json -o ./out
-#
-#      - name: Upload artifact
-#        uses: actions/upload-artifact@v2
-#        with:
-#          name: content
-#          path: out/
-#          retention-days: 1
-#
-#      - name: Switch to github pages branch
-#        uses: actions/checkout@v2
-#        with:
-#          ref: gh-pages
-#
-#      - name: Download artifact
-#        uses: actions/download-artifact@v2
-#        with:
-#          name: content
-#
-#      - name: Setup git
-#        run: |
-#          git config --global user.name "$GITHUB_ACTOR"
-#          git config --global user.email 'actions@github.com'
-#          git remote add github "https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git"
-#
-#      - name: Stage changes
-#        run: git add .
-#
-#      - name: Commit changes
-#        run: git commit --allow-empty -m "Deploying ${GITHUB_SHA} to Github Pages"
-#
-#      - name: Push changes
-#        run: git push github --force
+  #  demo:
+  #    name: Update demonstration, hosted on github pages
+  #    runs-on: ubuntu-20.04
+  #    steps:
+  #      - name: Check out code
+  #        uses: actions/checkout@v2
+  #
+  #      - name: Setup NodeJS
+  #        uses: actions/setup-node@v1 # Action page: <https://github.com/actions/setup-node>
+  #        with:
+  #          node-version: 15
+  #
+  #      - uses: actions/cache@v2
+  #        with:
+  #          path: '**/node_modules'
+  #          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+  #
+  #      - name: Install dependencies
+  #        working-directory: generator
+  #        run: yarn install
+  #
+  #      - name: Generate pages
+  #        run: ./generator/generator.js -i -c ./config.json -o ./out
+  #
+  #      - name: Upload artifact
+  #        uses: actions/upload-artifact@v2
+  #        with:
+  #          name: content
+  #          path: out/
+  #          retention-days: 1
+  #
+  #      - name: Switch to github pages branch
+  #        uses: actions/checkout@v2
+  #        with:
+  #          ref: gh-pages
+  #
+  #      - name: Download artifact
+  #        uses: actions/download-artifact@v2
+  #        with:
+  #          name: content
+  #
+  #      - name: Setup git
+  #        run: |
+  #          git config --global user.name "$GITHUB_ACTOR"
+  #          git config --global user.email 'actions@github.com'
+  #          git remote add github "https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git"
+  #
+  #      - name: Stage changes
+  #        run: git add .
+  #
+  #      - name: Commit changes
+  #        run: git commit --allow-empty -m "Deploying ${GITHUB_SHA} to Github Pages"
+  #
+  #      - name: Push changes
+  #        run: git push github --force
 
   build:
     name: Build for ${{ matrix.os }} (${{ matrix.arch }})
@@ -99,11 +99,15 @@ jobs:
           tag: ${{ github.ref }}
 
       - name: Generate error pages
-        if: ( matrix.os == 'linux' && matrix.arch == 'amd64' )
+        if: |
+          matrix.os == 'linux' &&
+          matrix.arch == 'amd64'
         run: "./${{ steps.values.outputs.binary-name }}" build ./out --verbose --index
 
       - uses: actions/upload-artifact@v2
-        if: ( matrix.os == 'linux' && matrix.arch == 'amd64' )
+        if: |
+          matrix.os == 'linux' &&
+          matrix.arch == 'amd64'
         with:
           name: generated-error-pages
           path: out/
