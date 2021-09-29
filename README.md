@@ -2,7 +2,7 @@
   <img src="https://hsto.org/webt/rm/9y/ww/rm9ywwx3gjv9agwkcmllhsuyo7k.png" width="94" alt="" />
 </p>
 
-# HTTP's error pages in Docker image
+# HTTP's error pages
 
 [![Release version][badge_release_version]][link_releases]
 ![Project language][badge_language]
@@ -12,55 +12,161 @@
 [![Image size][badge_size_latest]][link_docker_hub]
 [![License][badge_license]][link_license]
 
-This repository contains:
+One day you may want to replace the standard error pages of your HTTP server with something more original and pretty. That's what this repository was created for :) It contains:
 
-- A very simple [generator](generator/generator.js) _(`nodejs`)_ for HTTP error pages _(like `404: Not found`)_ with different templates supports
-- Dockerfile for docker image ([docker hub][link_docker_hub], [ghcr.io][link_ghcr]) with generated pages and `nginx` as a web server
+- Simple error pages generator, written on Go
+- Single-page error page templates with different designs (located in the [templates](templates) directory)
+- Fast and lightweight HTTP server (written on Go also, with the [FastHTTP][fasthttp] under the hood)
+- Already generated error pages (sources can be [found here][preview-sources], the **demonstration** is always accessible [here][preview-demo])
+- Lightweight docker image _(~3.5Mb compressed size)_ with all the things described above
 
-**Can be used for [Traefik error pages customization](https://docs.traefik.io/middlewares/errorpages/)**.
+Also, this project can be used for the [**Traefik** error pages customization](https://doc.traefik.io/traefik/middlewares/http/errorpages/).
 
-## Demo
+<p align="center">
+  <img src="https://hsto.org/webt/bc/bt/9i/bcbt9i3jyvozequr1e4maz7i2q8.png" alt="" />
+</p>
 
-Generated pages (from the latest release) always **[accessible here][link_gh_pages]** _(live preview)_.
+## Installing
 
-## Templates
-
-Name              | Preview
-:---------------: | :-----:
-`ghost`           | [![ghost](https://hsto.org/webt/oj/cl/4k/ojcl4ko_cvusy5xuki6efffzsyo.gif)](https://tarampampam.github.io/error-pages/ghost/404.html)
-`l7-light`        | [![l7-light](https://hsto.org/webt/xc/iq/vt/xciqvty-aoj-rchfarsjhutpjny.png)](https://tarampampam.github.io/error-pages/l7-light/404.html)
-`l7-dark`         | [![l7-dark](https://hsto.org/webt/s1/ih/yr/s1ihyrqs_y-sgraoimfhk6ypney.png)](https://tarampampam.github.io/error-pages/l7-dark/404.html)
-`shuffle`         | [![shuffle](https://hsto.org/webt/7w/rk/3m/7wrk3mrzz3y8qfqwovmuvacu-bs.gif)](https://tarampampam.github.io/error-pages/shuffle/404.html)
-`noise`           | [![noise](https://hsto.org/webt/42/oq/8y/42oq8yok_i-arrafjt6hds_7ahy.gif)](https://tarampampam.github.io/error-pages/noise/404.html)
-`hacker-terminal` | [![hacker-terminal](https://hsto.org/webt/5s/l0/p1/5sl0p1_ud_nalzjzsj5slz6dfda.gif)](https://tarampampam.github.io/error-pages/hacker-terminal/404.html)
-
-> Note: `noise` template highly uses the CPU, be careful
-
-## Usage
-
-Generated error pages in our [docker image][link_docker_hub] permanently located in directory `/opt/html/%TEMPLATE_NAME%`. `nginx` in a container listen for `8080` (`http`) port.
-
-#### Supported environment variables
-
-Name            | Description
---------------- | -----------
-`TEMPLATE_NAME` | (`ghost` by default) "default" pages template _(allows to use error pages without passing theme name in URL - `http://127.0.0.1/500.html` instead `http://127.0.0.1/ghost/500.html`)_
-
-Also, you can use a special template name `random` - in this case template will be selected randomly.
-
-### Ready docker image
+Download the latest binary file for your os/arch from the [releases page][link_releases] or use our docker image:
 
 [![image stats](https://dockeri.co/image/tarampampam/error-pages)][link_docker_hub]
 
-Execute in your shell:
+Registry                               | Image
+-------------------------------------- | -----
+[Docker Hub][link_docker_hub]          | `tarampampam/error-pages`
+[GitHub Container Registry][link_ghcr] | `ghcr.io/tarampampam/error-pages`
+
+> Using the `latest` tag for the docker image is highly discouraged because of possible backward-incompatible changes during **major** upgrades. Please, use tags in `X.Y.Z` format
+
+## Usage
+
+All of the examples below will use a docker image with the application, but you can also use a binary. By the way, our docker image uses the **unleveled user** by default and **distroless**.
+
+### HTTP server
+
+As mentioned above - our application can be run as an HTTP server. It only needs to specify the path to the configuration file (it does not need statically generated error pages). The server uses [FastHTTP][fasthttp] and stores all necessary data in memory - so it does not use the file system and very fast. Oh yes, the image with the app also contains a configured **healthcheck** and **logs in JSON** format :)
+
+For the HTTP server running execute in your terminal:
 
 ```bash
-$ docker run --rm -p "8082:8080" tarampampam/error-pages:X.X.X
+$ docker run --rm \
+    -p "8080:8080/tcp" \
+    -e "TEMPLATE_NAME=random" \
+    tarampampam/error-pages
 ```
 
-> Important notice: do **not** use the `latest` image tag _(this is bad practice)_. Use versioned tag (like `1.2.3`) instead. Docker hub mirror located [here (ghcr.io)][link_ghcr].
+And open [`http://127.0.0.1:8080/404.html`](http://127.0.0.1:8080/404.html) in your favorite browser. Error pages are accessible by the following URLs: `http://127.0.0.1:8080/{page_code}.html`.
 
-And open in your browser `http://127.0.0.1:8082/ghost/400.html`.
+Environment variable `TEMPLATE_NAME` should be used for the theme switching (supported templates are described below).
+
+> **Cheat**: you can use `random` (to use the randomized theme on server start) or `i-said-random` (to use the randomized template on **each request**)
+
+To see the help run the following command:
+
+```bash
+$ docker run --rm tarampampam/error-pages serve --help
+```
+
+### Generator
+
+Create a config file (`error-pages.yml`) with the following content:
+
+```yaml
+templates:
+  - path: ./foo.html # Template name "foo" (same as file name),
+                     # content located in the file "foo.html"
+  - name: bar # Template name "bar", its content is described below:
+    content: "Error {{ code }}: {{ message }} ({{ description }})"
+
+pages:
+  400:
+    message: Bad Request
+    description: The server did not understand the request
+
+  401:
+    message: Unauthorized
+    description: The requested page needs a username and a password
+```
+
+Template file `foo.html`:
+
+```html
+<html>
+<title>{{ code }}</title>
+<body>
+    <h1>{{ message }}: {{ description }}</h1>
+</body>
+</html>
+```
+
+And run the generator:
+
+```bash
+$ docker run --rm \
+    -v "$(pwd):/opt:rw" \
+    -u "$(id -u):$(id -g)" \
+    tarampampam/error-pages build --config-file ./error-pages.yml ./out
+
+$ tree
+.
+├── error-pages.yml
+├── foo.html
+└── out
+    ├── bar
+    │   ├── 400.html
+    │   └── 401.html
+    └── foo
+        ├── 400.html
+        └── 401.html
+
+3 directories, 6 files
+
+$ cat ./out/foo/400.html
+<html>
+<title>400</title>
+<body>
+    <h1>Bad Request: The server did not understand the request</h1>
+</body>
+</html>
+
+$ cat ./out/bar/400.html
+Error 400: Bad Request (The server did not understand the request)
+```
+
+To see the usage help run the following command:
+
+```bash
+$ docker run --rm tarampampam/error-pages build --help
+```
+
+### Static error pages
+
+You may want to use the generated error pages somewhere else, and you can simply extract them from the docker image to your local directory for this purpose:
+
+```bash
+$ docker create --name error-pages tarampampam/error-pages:2.0.0-rc2
+$ docker cp error-pages:/opt/html ./out
+$ docker rm -f error-pages
+$ ls ./out
+ghost  hacker-terminal  index.html  l7-dark  l7-light  noise  shuffle
+$ tree
+.
+└── out
+    ├── ghost
+    │   ├── 400.html
+    │   ├── ...
+    │   └── 505.html
+    ├── hacker-terminal
+    │   ├── 400.html
+    │   ├── ...
+    │   └── 505.html
+    ├── index.html
+    ├── l7-dark
+    │   ├── 400.html
+    │   ├── ...
+    ...
+```
 
 ### Custom error pages for your image with [nginx][link_nginx]
 
@@ -95,12 +201,12 @@ server {
 ```dockerfile
 # File `Dockerfile`
 
-FROM nginx:1.18-alpine
+FROM nginx:1.21-alpine
 
 COPY --chown=nginx \
      ./nginx.conf /etc/nginx/conf.d/default.conf
 COPY --chown=nginx \
-     --from=tarampampam/error-pages:1.7.0 \
+     --from=tarampampam/error-pages:2.0.0 \
      /opt/html/ghost /usr/share/nginx/errorpages/_error-pages
 ```
 
@@ -110,16 +216,29 @@ $ docker build --tag your-nginx:local -f ./Dockerfile .
 
 > More info about `error_page` directive can be [found here](http://nginx.org/en/docs/http/ngx_http_core_module.html#error_page).
 
-### Custom error pages for [Traefik][link_traefik]
+## Templates
 
-Simple traefik (tested on `v2.4.8`) service configuration for usage in [docker swarm][link_swarm] (**change with your needs**):
+Name              | Preview
+:---------------: | :-----:
+`ghost`           | [![ghost](https://hsto.org/webt/oj/cl/4k/ojcl4ko_cvusy5xuki6efffzsyo.gif)](https://tarampampam.github.io/error-pages/ghost/404.html)
+`l7-light`        | [![l7-light](https://hsto.org/webt/xc/iq/vt/xciqvty-aoj-rchfarsjhutpjny.png)](https://tarampampam.github.io/error-pages/l7-light/404.html)
+`l7-dark`         | [![l7-dark](https://hsto.org/webt/s1/ih/yr/s1ihyrqs_y-sgraoimfhk6ypney.png)](https://tarampampam.github.io/error-pages/l7-dark/404.html)
+`shuffle`         | [![shuffle](https://hsto.org/webt/7w/rk/3m/7wrk3mrzz3y8qfqwovmuvacu-bs.gif)](https://tarampampam.github.io/error-pages/shuffle/404.html)
+`noise`           | [![noise](https://hsto.org/webt/42/oq/8y/42oq8yok_i-arrafjt6hds_7ahy.gif)](https://tarampampam.github.io/error-pages/noise/404.html)
+`hacker-terminal` | [![hacker-terminal](https://hsto.org/webt/5s/l0/p1/5sl0p1_ud_nalzjzsj5slz6dfda.gif)](https://tarampampam.github.io/error-pages/hacker-terminal/404.html)
+
+> Note: `noise` template highly uses the CPU, be careful
+
+## Custom error pages for [Traefik][link_traefik]
+
+Simple traefik (tested on `v2.5.3`) service configuration for usage in [docker swarm][link_swarm] (**change with your needs**):
 
 ```yaml
-version: '3.4'
+version: '3.8'
 
 services:
   error-pages:
-    image: tarampampam/error-pages:1.7.0
+    image: tarampampam/error-pages:2.0.0
     environment:
       TEMPLATE_NAME: l7-dark
     networks:
@@ -167,28 +286,6 @@ networks:
     external: true
 ```
 
-## Development
-
-> For project development we use `docker-ce` + `docker-compose`. Make sure you have them installed.
-
-Install "generator" dependencies:
-
-```bash
-$ make install
-```
-
-If you want to generate error pages on your machine _(after that look into the output directory)_:
-
-```bash
-$ make gen
-```
-
-If you want to preview the pages using the Docker image:
-
-```bash
-$ make preview
-```
-
 ## Changes log
 
 [![Release date][badge_release_date]][link_releases]
@@ -221,7 +318,7 @@ This is open-sourced software licensed under the [MIT License][link_license].
 
 [link_coverage]:https://codecov.io/gh/tarampampam/error-pages
 [link_build]:https://github.com/tarampampam/error-pages/actions
-[link_docker_hub]:https://hub.docker.com/r/tarampampam/error-pages/
+[link_docker_hub]:https://hub.docker.com/r/tarampampam/error-pages
 [link_docker_tags]:https://hub.docker.com/r/tarampampam/error-pages/tags
 [link_license]:https://github.com/tarampampam/error-pages/blob/master/LICENSE
 [link_releases]:https://github.com/tarampampam/error-pages/releases
@@ -231,6 +328,10 @@ This is open-sourced software licensed under the [MIT License][link_license].
 [link_create_issue]:https://github.com/tarampampam/error-pages/issues/new/choose
 [link_pulls]:https://github.com/tarampampam/error-pages/pulls
 [link_ghcr]:https://github.com/users/tarampampam/packages/container/package/error-pages
+
+[fasthttp]:https://github.com/valyala/fasthttp
+[preview-sources]:https://github.com/tarampampam/error-pages/tree/gh-pages
+[preview-demo]:https://tarampampam.github.io/error-pages/
 
 [link_nginx]:http://nginx.org/
 [link_traefik]:https://docs.traefik.io/
