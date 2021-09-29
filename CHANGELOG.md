@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 ### Changed
 
-- JS code has been completely rewritten
+- Application rewritten in Go
 
 ### Added
 

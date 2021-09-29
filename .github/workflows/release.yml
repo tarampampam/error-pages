@@ -5,62 +5,6 @@ on:
     types: [published]
 
 jobs:
-  #  demo:
-  #    name: Update demonstration, hosted on github pages
-  #    runs-on: ubuntu-20.04
-  #    steps:
-  #      - name: Check out code
-  #        uses: actions/checkout@v2
-  #
-  #      - name: Setup NodeJS
-  #        uses: actions/setup-node@v1 # Action page: <https://github.com/actions/setup-node>
-  #        with:
-  #          node-version: 15
-  #
-  #      - uses: actions/cache@v2
-  #        with:
-  #          path: '**/node_modules'
-  #          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-  #
-  #      - name: Install dependencies
-  #        working-directory: generator
-  #        run: yarn install
-  #
-  #      - name: Generate pages
-  #        run: ./generator/generator.js -i -c ./config.json -o ./out
-  #
-  #      - name: Upload artifact
-  #        uses: actions/upload-artifact@v2
-  #        with:
-  #          name: content
-  #          path: out/
-  #          retention-days: 1
-  #
-  #      - name: Switch to github pages branch
-  #        uses: actions/checkout@v2
-  #        with:
-  #          ref: gh-pages
-  #
-  #      - name: Download artifact
-  #        uses: actions/download-artifact@v2
-  #        with:
-  #          name: content
-  #
-  #      - name: Setup git
-  #        run: |
-  #          git config --global user.name "$GITHUB_ACTOR"
-  #          git config --global user.email 'actions@github.com'
-  #          git remote add github "https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git"
-  #
-  #      - name: Stage changes
-  #        run: git add .
-  #
-  #      - name: Commit changes
-  #        run: git commit --allow-empty -m "Deploying ${GITHUB_SHA} to Github Pages"
-  #
-  #      - name: Push changes
-  #        run: git push github --force
-
   build:
     name: Build for ${{ matrix.os }} (${{ matrix.arch }})
     runs-on: ubuntu-20.04
@@ -87,7 +31,7 @@ jobs:
           GOOS: ${{ matrix.os }}
           GOARCH: ${{ matrix.arch }}
           CGO_ENABLED: 0
-          LDFLAGS: -s -w -X github.com/tarampampam/error-pages/internal/pkg/version.version=${{ steps.slug.outputs.version }}
+          LDFLAGS: -s -w -X github.com/tarampampam/error-pages/internal/version.version=${{ steps.slug.outputs.version }}
         run: go build -trimpath -ldflags "$LDFLAGS" -o "./${{ steps.values.outputs.binary-name }}" ./cmd/error-pages/
 
       - name: Upload binary file to release
@@ -131,10 +75,9 @@ jobs:
           build-args: "APP_VERSION=${{ steps.slug.outputs.version }}"
           tags: |
             tarampampam/error-pages:${{ steps.slug.outputs.version }}
+            tarampampam/error-pages:latest
             ghcr.io/${{ github.actor }}/${{ github.event.repository.name }}:${{ steps.slug.outputs.version }}
-
-#          tarampampam/error-pages:latest # TODO uncomment on release
-#          ghcr.io/${{ github.actor }}/${{ github.event.repository.name }}:latest
+            ghcr.io/${{ github.actor }}/${{ github.event.repository.name }}:latest
 
   demo:
     name: Update the demonstration
@@ -144,17 +87,14 @@ jobs:
       - uses: gacts/github-slug@v1
         id: slug
 
-      - name: Take rendered templates from the build docker image
+      - name: Take rendered templates from the built docker image
         run: |
           docker create --name img ghcr.io/${{ github.actor }}/${{ github.event.repository.name }}:${{ steps.slug.outputs.version }}
           docker cp img:/opt/html ./out
           docker rm -f img
 
       - name: Deploy to GitHub Pages
-        uses: crazy-max/ghaction-github-pages@v2
+        uses: peaceiris/actions-gh-pages@v3
         with:
-          target_branch: gh-pages
-          build_dir: out
-          jekyll: false
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./out

@@ -4,9 +4,12 @@
 
 # HTTP's error pages in Docker image
 
-[![Build Status][badge_build_status]][link_build_status]
+[![Release version][badge_release_version]][link_releases]
+![Project language][badge_language]
+[![Build Status][badge_build]][link_build]
+[![Release Status][badge_release]][link_build]
+[![Coverage][badge_coverage]][link_coverage]
 [![Image size][badge_size_latest]][link_docker_hub]
-[![Docker Pulls][badge_docker_pulls]][link_docker_hub]
 [![License][badge_license]][link_license]
 
 This repository contains:
@@ -204,24 +207,31 @@ If you will find any package errors, please, [make an issue][link_create_issue] 
 
 This is open-sourced software licensed under the [MIT License][link_license].
 
-[badge_build_status]:https://img.shields.io/github/workflow/status/tarampampam/error-pages/tests/master
-[badge_release_date]:https://img.shields.io/github/release-date/tarampampam/error-pages.svg?style=flat-square&maxAge=180
-[badge_commits_since_release]:https://img.shields.io/github/commits-since/tarampampam/error-pages/latest.svg?style=flat-square&maxAge=180
-[badge_issues]:https://img.shields.io/github/issues/tarampampam/error-pages.svg?style=flat-square&maxAge=180
-[badge_pulls]:https://img.shields.io/github/issues-pr/tarampampam/error-pages.svg?style=flat-square&maxAge=180
-[badge_license]:https://img.shields.io/github/license/tarampampam/error-pages.svg?longCache=true
+[badge_build]:https://img.shields.io/github/workflow/status/tarampampam/error-pages/tests?maxAge=30&label=tests&logo=github
+[badge_release]:https://img.shields.io/github/workflow/status/tarampampam/error-pages/release?maxAge=30&label=release&logo=github
+[badge_coverage]:https://img.shields.io/codecov/c/github/tarampampam/error-pages/master.svg?maxAge=30
+[badge_release_version]:https://img.shields.io/github/release/tarampampam/error-pages.svg?maxAge=30
 [badge_size_latest]:https://img.shields.io/docker/image-size/tarampampam/error-pages/latest?maxAge=30
-[badge_docker_pulls]:https://img.shields.io/docker/pulls/tarampampam/error-pages.svg
+[badge_language]:https://img.shields.io/github/go-mod/go-version/tarampampam/error-pages?longCache=true
+[badge_license]:https://img.shields.io/github/license/tarampampam/error-pages.svg?longCache=true
+[badge_release_date]:https://img.shields.io/github/release-date/tarampampam/error-pages.svg?maxAge=180
+[badge_commits_since_release]:https://img.shields.io/github/commits-since/tarampampam/error-pages/latest.svg?maxAge=45
+[badge_issues]:https://img.shields.io/github/issues/tarampampam/error-pages.svg?maxAge=45
+[badge_pulls]:https://img.shields.io/github/issues-pr/tarampampam/error-pages.svg?maxAge=45
+
+[link_coverage]:https://codecov.io/gh/tarampampam/error-pages
+[link_build]:https://github.com/tarampampam/error-pages/actions
+[link_docker_hub]:https://hub.docker.com/r/tarampampam/error-pages/
+[link_docker_tags]:https://hub.docker.com/r/tarampampam/error-pages/tags
+[link_license]:https://github.com/tarampampam/error-pages/blob/master/LICENSE
 [link_releases]:https://github.com/tarampampam/error-pages/releases
 [link_commits]:https://github.com/tarampampam/error-pages/commits
 [link_changes_log]:https://github.com/tarampampam/error-pages/blob/master/CHANGELOG.md
 [link_issues]:https://github.com/tarampampam/error-pages/issues
+[link_create_issue]:https://github.com/tarampampam/error-pages/issues/new/choose
 [link_pulls]:https://github.com/tarampampam/error-pages/pulls
-[link_build_status]:https://travis-ci.org/tarampampam/error-pages
-[link_create_issue]:https://github.com/tarampampam/error-pages/issues/new
-[link_license]:https://github.com/tarampampam/error-pages/blob/master/LICENSE
-[link_docker_hub]:https://hub.docker.com/r/tarampampam/error-pages/
 [link_ghcr]:https://github.com/users/tarampampam/packages/container/package/error-pages
+
 [link_nginx]:http://nginx.org/
 [link_traefik]:https://docs.traefik.io/
 [link_swarm]:https://docs.docker.com/engine/swarm/

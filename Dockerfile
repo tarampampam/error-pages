@@ -48,7 +48,7 @@ ARG APP_VERSION="undefined@docker"
 LABEL \
     # Docs: <https://github.com/opencontainers/image-spec/blob/master/annotations.md>
     org.opencontainers.image.title="error-pages" \
-    org.opencontainers.image.description="Static server error pages in docker image" \
+    org.opencontainers.image.description="Static server error pages in the docker image" \
     org.opencontainers.image.url="https://github.com/tarampampam/error-pages" \
     org.opencontainers.image.source="https://github.com/tarampampam/error-pages" \
     org.opencontainers.image.vendor="tarampampam" \
