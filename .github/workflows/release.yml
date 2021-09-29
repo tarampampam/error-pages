@@ -67,8 +67,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [linux, darwin]
-        arch: [amd64, 386]
+        os: [linux, darwin] # linux, freebsd, darwin, windows
+        arch: [amd64]  # amd64, 386
     steps:
       - uses: actions/setup-go@v2
         with: {go-version: 1.17.1}
@@ -127,7 +127,7 @@ jobs:
           context: .
           file: Dockerfile
           push: true
-          platforms: linux/amd64,linux/386,linux/arm64,linux/arm/v6,linux/arm/v7
+          platforms: linux/amd64,linux/arm64,linux/arm/v6,linux/arm/v7
           build-args: "APP_VERSION=${{ steps.slug.outputs.version }}"
           tags: |
             tarampampam/error-pages:${{ steps.slug.outputs.version }}
@@ -137,16 +137,24 @@ jobs:
 #          ghcr.io/${{ github.actor }}/${{ github.event.repository.name }}:latest
 
   demo:
-    name: Update demonstration, hosted on github pages
+    name: Update the demonstration
     runs-on: ubuntu-20.04
     needs: [docker-image]
     steps:
       - uses: gacts/github-slug@v1
         id: slug
 
-      - run: |
+      - name: Take rendered templates from the build docker image
+        run: |
           docker create --name img ghcr.io/${{ github.actor }}/${{ github.event.repository.name }}:${{ steps.slug.outputs.version }}
           docker cp img:/opt/html ./out
           docker rm -f img
 
-      - run: ls -la
+      - name: Deploy to GitHub Pages
+        uses: crazy-max/ghaction-github-pages@v2
+        with:
+          target_branch: gh-pages
+          build_dir: out
+          jekyll: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

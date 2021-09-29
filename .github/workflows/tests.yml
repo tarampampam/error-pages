@@ -67,7 +67,7 @@ jobs: # Docs: <https://git.io/JvxXE>
       fail-fast: false
       matrix:
         os: [linux, darwin] # linux, freebsd, darwin, windows
-        arch: [amd64, 386]  # amd64, 386
+        arch: [amd64]  # amd64, 386
     needs: [golangci-lint, go-test]
     steps:
       - uses: actions/setup-go@v2
