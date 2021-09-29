@@ -1,52 +1,76 @@
-# Image page: <https://hub.docker.com/_/node>
-FROM node:15.14-alpine as builder
+# syntax=docker/dockerfile:1.2
 
-# copy required sources into builder image
-COPY ./generator /src/generator
-COPY ./config.json /src
-COPY ./templates /src/templates
-COPY ./docker /src/docker
+# Image page: <https://hub.docker.com/_/golang>
+FROM golang:1.17.1-alpine as builder
 
-# install generator dependencies
-WORKDIR /src/generator
-RUN yarn install --frozen-lockfile --no-progress --non-interactive
+# can be passed with any prefix (like `v1.2.3@GITHASH`), e.g.: `docker build --build-arg "APP_VERSION=v1.2.3@GITHASH" .`
+ARG APP_VERSION="undefined@docker"
 
-# run generator
 WORKDIR /src
-RUN ./generator/generator.js -c ./config.json -o ./out
+
+COPY . .
+
+# arguments to pass on each go tool link invocation
+ENV LDFLAGS="-s -w -X github.com/tarampampam/error-pages/internal/version.version=$APP_VERSION"
+
+RUN set -x \
+    && go version \
+    && CGO_ENABLED=0 go build -trimpath -ldflags "$LDFLAGS" -o ./error-pages ./cmd/error-pages/ \
+    && ./error-pages version \
+    && ./error-pages -h
+
+WORKDIR /tmp/rootfs
 
 # prepare rootfs for runtime
-RUN mkdir /tmp/rootfs
-WORKDIR /tmp/rootfs
 RUN set -x \
     && mkdir -p \
-        ./docker-entrypoint.d \
-        ./etc/nginx/conf.d \
-        ./opt \
-    && mv /src/out ./opt/html \
-    && echo -e "User-agent: *\nDisallow: /\n" > ./opt/html/robots.txt \
-    && touch ./opt/html/favicon.ico \
-    && mv /src/docker/docker-entrypoint.d/* ./docker-entrypoint.d \
-    && mv /src/docker/nginx-server.conf ./etc/nginx/conf.d/default.conf
+        ./etc \
+        ./bin \
+        ./opt/html \
+    && echo 'appuser:x:10001:10001::/nonexistent:/sbin/nologin' > ./etc/passwd \
+    && echo 'appuser:x:10001:' > ./etc/group \
+    && mv /src/error-pages ./bin/error-pages \
+    && mv /src/templates ./opt/templates \
+    && mv /src/error-pages.yml ./opt/error-pages.yml
 
-# Image page: <https://hub.docker.com/_/nginx>
-FROM nginx:1.21.1-alpine as runtime
+WORKDIR /tmp/rootfs/opt
+
+# generate static error pages (for usage inside another docker images, for example)
+RUN set -x \
+    && ./../bin/error-pages --config-file ./error-pages.yml build ./html --verbose --index \
+    && ls -l ./html
+
+# use empty filesystem
+FROM scratch as runtime
+
+ARG APP_VERSION="undefined@docker"
 
 LABEL \
     # Docs: <https://github.com/opencontainers/image-spec/blob/master/annotations.md>
     org.opencontainers.image.title="error-pages" \
-    org.opencontainers.image.description="Static server error pages in docker image" \
+    org.opencontainers.image.description="Static server error pages in the docker image" \
     org.opencontainers.image.url="https://github.com/tarampampam/error-pages" \
     org.opencontainers.image.source="https://github.com/tarampampam/error-pages" \
     org.opencontainers.image.vendor="tarampampam" \
+    org.opencontainers.version="$APP_VERSION" \
     org.opencontainers.image.licenses="MIT"
 
 # Import from builder
 COPY --from=builder /tmp/rootfs /
 
+# Use an unprivileged user
+USER appuser:appuser
+
+WORKDIR /opt
+
+ENV LISTEN_PORT="8080" \
+    TEMPLATE_NAME="ghost"
+
 # Docs: <https://docs.docker.com/engine/reference/builder/#healthcheck>
-HEALTHCHECK --interval=15s --timeout=2s --retries=2 --start-period=2s CMD [ \
-    "wget", "--spider", "-q", "http://127.0.0.1:8080/health/live" \
+HEALTHCHECK --interval=7s --timeout=2s CMD [ \
+    "/bin/error-pages", "healthcheck", "--log-json" \
 ]
 
-RUN chown -R nginx:nginx /opt/html
+ENTRYPOINT ["/bin/error-pages"]
+
+CMD ["serve", "--log-json"]

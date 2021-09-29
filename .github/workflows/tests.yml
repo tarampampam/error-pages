@@ -2,54 +2,130 @@ name: tests
 
 on:
   push:
-    branches:
-      - master
-    tags-ignore:
-      - '**'
-    paths-ignore:
-      - '**.md'
+    branches: [master, main]
+    tags-ignore: ['**']
+    paths-ignore: ['**.md']
   pull_request:
-    paths-ignore:
-      - '**.md'
+    paths-ignore: ['**.md']
 
 jobs: # Docs: <https://git.io/JvxXE>
   gitleaks:
     name: Gitleaks
     runs-on: ubuntu-20.04
     steps:
-      - name: Check out code
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
+      - uses: actions/checkout@v2
+        with: {fetch-depth: 0}
 
-      - name: Check for GitLeaks
-        uses: zricethezav/gitleaks-action@v1.5.0 # Action page: <https://github.com/zricethezav/gitleaks-action>
+      - uses: zricethezav/gitleaks-action@v1 # Action page: <https://github.com/zricethezav/gitleaks-action>
 
-  generate:
-    name: Try to run generator
+  golangci-lint:
+    name: Golang-CI (lint)
     runs-on: ubuntu-20.04
     steps:
-      - name: Check out code
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-      - name: Setup NodeJS
-        uses: actions/setup-node@v1 # Action page: <https://github.com/actions/setup-node>
+      - name: Run linter
+        uses: golangci/golangci-lint-action@v2 # Action page: <https://github.com/golangci/golangci-lint-action>
         with:
-          node-version: 15
+          version: v1.42 # without patch version
+          only-new-issues: false # show only new issues if it's a pull request
 
-      - uses: actions/cache@v2
+  go-test:
+    name: Unit tests
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/setup-go@v2
+        with: {go-version: 1.17}
+
+      - uses: actions/checkout@v2
+        with: {fetch-depth: 2} # Fixes codecov error 'Issue detecting commit SHA'
+
+      - name: Go modules Cache # Docs: <https://git.io/JfAKn#go---modules>
+        uses: actions/cache@v2
+        id: go-cache
         with:
-          path: '**/node_modules'
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: ${{ runner.os }}-go-
 
-      - name: Install dependencies
-        working-directory: generator
-        run: yarn install
+      - if: steps.go-cache.outputs.cache-hit != 'true'
+        run: go mod download
+
+      - name: Run Unit tests
+        run: go test -race -covermode=atomic -coverprofile /tmp/coverage.txt ./...
+
+      - uses: codecov/codecov-action@v2 # https://github.com/codecov/codecov-action
+        continue-on-error: true
+        with:
+          file: /tmp/coverage.txt
+          token: ${{ secrets.CODECOV_TOKEN }}
+
+  build:
+    name: Build for ${{ matrix.os }} (${{ matrix.arch }})
+    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [linux, darwin] # linux, freebsd, darwin, windows
+        arch: [amd64]  # amd64, 386
+    needs: [golangci-lint, go-test]
+    steps:
+      - uses: actions/setup-go@v2
+        with: {go-version: 1.17}
+
+      - uses: actions/checkout@v2
+
+      - uses: gacts/github-slug@v1
+        id: slug
+
+      - name: Go modules Cache # Docs: <https://git.io/JfAKn#go---modules>
+        uses: actions/cache@v2
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: ${{ runner.os }}-go-
+
+      - run: go mod download
+
+      - name: Build application
+        env:
+          GOOS: ${{ matrix.os }}
+          GOARCH: ${{ matrix.arch }}
+          CGO_ENABLED: 0
+          LDFLAGS: -s -w -X github.com/tarampampam/error-pages/internal/version.version=${{ steps.slug.outputs.branch-name-slug }}@${{ steps.slug.outputs.commit-hash-short }}
+        run: go build -trimpath -ldflags "$LDFLAGS" -o ./error-pages ./cmd/error-pages/
+
+      - name: Try to execute
+        if: matrix.os == 'linux'
+        run: ./error-pages version && ./error-pages -h
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: error-pages-${{ matrix.os }}-${{ matrix.arch }}
+          path: error-pages
+          if-no-files-found: error
+          retention-days: 1
+
+  generate:
+    name: Run templates generator
+    runs-on: ubuntu-20.04
+    needs: [build]
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/download-artifact@v2
+        with:
+          name: error-pages-linux-amd64
+          path: .artifact
+
+      - name: Prepare binary file to run
+        working-directory: .artifact
+        run: mv ./error-pages ./../error-pages && chmod +x ./../error-pages
 
       - name: Run generator
-        run: ./generator/generator.js -i -c ./config.json -o ./out
+        run: ./error-pages build ./out --verbose --index
 
-      - name: Test file creation
+      - name: Test files creation
         run: |
           test -f ./out/index.html
           test -f ./out/ghost/404.html
@@ -59,31 +135,76 @@ jobs: # Docs: <https://git.io/JvxXE>
           test -f ./out/noise/404.html
           test -f ./out/hacker-terminal/404.html
 
-  docker-build:
+  docker-image:
     name: Build docker image
     runs-on: ubuntu-20.04
+    needs: [golangci-lint, go-test]
     steps:
-      - name: Check out code
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-      - name: Build docker image
-        run: docker build -f ./Dockerfile --tag image:local .
+      - uses: gacts/github-slug@v1
+        id: slug
 
-      - name: Scan image
-        uses: anchore/scan-action@v2 # action page: <https://github.com/anchore/scan-action>
+      - uses: docker/build-push-action@v2 # Action page: <https://github.com/docker/build-push-action>
         with:
-          image: image:local
+          context: .
+          file: Dockerfile
+          push: false
+          build-args: "APP_VERSION=${{ steps.slug.outputs.branch-name-slug }}@${{ steps.slug.outputs.commit-hash-short }}"
+          tags: app:ci
+
+      - run: docker save app:ci > ./docker-image.tar
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: docker-image
+          path: ./docker-image.tar
+          retention-days: 1
+
+  scan-docker-image:
+    name: Scan the docker image
+    runs-on: ubuntu-20.04
+    needs: [docker-image]
+    steps:
+      - uses: actions/download-artifact@v2
+        with:
+          name: docker-image
+          path: .artifact
+
+      - working-directory: .artifact
+        run: docker load < docker-image.tar
+
+      - uses: anchore/scan-action@v3 # action page: <https://github.com/anchore/scan-action>
+        with:
+          image: app:ci
           fail-build: true
-          severity-cutoff: medium # negligible, low, medium, high or critical
+          severity-cutoff: low # negligible, low, medium, high or critical
 
-      - name: Run docker image
-        run: docker run --rm -d -p "8080:8080/tcp" -e "TEMPLATE_NAME=ghost" image:local
+  poke-docker-image:
+    name: Run the docker image
+    runs-on: ubuntu-20.04
+    needs: [docker-image]
+    timeout-minutes: 2
+    steps:
+      - uses: actions/download-artifact@v2
+        with:
+          name: docker-image
+          path: .artifact
 
-      - name: Pause
-        run: sleep 2
+      - working-directory: .artifact
+        run: docker load < docker-image.tar
 
-      - name: Verify 500.html error file exists in root
-        run: curl -sS --fail "http://127.0.0.1:8080/500.html"
+      - name: Run container with the app
+        run: docker run --rm -d -p "8080:8080/tcp" --name app app:ci
 
-      - name: Verify root request HTTP code
-        run: test $(curl --write-out %{http_code} --silent --output /dev/null http://127.0.0.1:8080/) -eq 404
+      - name: Wait for container "healthy" state
+        run: until [[ "`docker inspect -f {{.State.Health.Status}} app`" == "healthy" ]]; do echo "wait 1 sec.."; sleep 1; done
+
+      - run: curl --fail http://127.0.0.1:8080/500.html
+      - run: curl --fail http://127.0.0.1:8080/400.html
+      - run: curl --fail http://127.0.0.1:8080/health/live
+      - run: test $(curl --write-out %{http_code} --silent --output /dev/null http://127.0.0.1:8080/) -eq 404
+
+      - name: Stop the container
+        if: always()
+        run: docker kill app

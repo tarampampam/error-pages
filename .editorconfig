@@ -1,3 +1,5 @@
+# EditorConfig docs: <https://editorconfig.org/>
+
 root = true
 
 [*]
@@ -11,5 +13,5 @@ trim_trailing_whitespace = true
 [*.{yml, yaml, sh, conf}]
 indent_size = 2
 
-[Makefile]
+[{Makefile, go.mod, *.go}]
 indent_style = tab

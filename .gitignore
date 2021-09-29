@@ -1,9 +1,16 @@
 ## IDEs
-/.vscode
 /.idea
+/.vscode
 
-## Dist
-/out
+## Binaries
+error-pages
 
 ## Temp dirs & trash
+/temp
+/tmp
+*.env
 .DS_Store
+*.cache
+*.out
+/out
+/cover*.*

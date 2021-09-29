@@ -1,0 +1,13 @@
+templates:
+  - path: ./templates/ghost.html
+    name: ghost # name is optional
+  - path: ./templates/l7-light.html
+
+pages:
+  400:
+    message: Bad Request
+    description: The server did not understand the request
+
+  401:
+    message: Unauthorized
+    description: The requested page needs a username and a password
