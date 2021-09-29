@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<!--
+    Error 410: Gone
+    Description: The requested page is no longer available
+-->
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex, nofollow"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>410 - Gone</title>
+    <style>
+        html, body {
+            margin: 0;
+            background-color: #222;
+            color: #aaa;
+            font-family: 'Hack', monospace
+        }
+
+        .full-height {
+            height: 100vh
+        }
+
+        .flex-center {
+            align-items: center;
+            display: flex;
+            justify-content: center
+        }
+
+        #error_text {
+            font-size: 2em
+        }
+    </style>
+</head>
+<body>
+<div class="flex-center full-height">
+    <span id="error_text">410: Gone</span>
+</div>
+
+<script>
+    'use strict';
+
+    const $errorText = document.getElementById('error_text'),
+        text = $errorText.innerText,
+        characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890-=+<>,./?[{()}]!@#$%^&*~`\|'.split('');
+    let progress = 0;
+
+    const scrambleInterval = window.setInterval(function () {
+        let newText = text;
+
+        for (let i = 0; i < text.length; i++) {
+            if (i >= progress) {
+                newText = newText.substr(0, i) +
+                    characters[Math.round(Math.random() * (characters.length - 1))] +
+                    newText.substr(i + 1);
+            }
+        }
+
+        $errorText.innerText = newText;
+    }, 800 / 60);
+
+    window.setTimeout(function () {
+        let revealInterval = window.setInterval(function () {
+            if (progress < text.length) {
+                progress++;
+            } else {
+                window.clearInterval(revealInterval);
+                window.clearInterval(scrambleInterval);
+            }
+        }, 70);
+    }, 350);
+</script>
+</body>
+<!--
+    Error 410: Gone
+    Description: The requested page is no longer available
+-->
+</html>
