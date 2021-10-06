@@ -4,16 +4,16 @@ import (
 	"context"
 	"errors"
 	"os"
+	"sort"
 	"time"
-
-	"github.com/tarampampam/error-pages/internal/http/handlers/errorpage"
-	"github.com/tarampampam/error-pages/internal/tpl"
-	"go.uber.org/zap"
 
 	"github.com/spf13/cobra"
 	"github.com/tarampampam/error-pages/internal/breaker"
 	"github.com/tarampampam/error-pages/internal/config"
 	appHttp "github.com/tarampampam/error-pages/internal/http"
+	"github.com/tarampampam/error-pages/internal/pick"
+	"github.com/tarampampam/error-pages/internal/tpl"
+	"go.uber.org/zap"
 )
 
 // NewCommand creates `serve` command.
@@ -56,8 +56,6 @@ func NewCommand(ctx context.Context, log *zap.Logger, configFile *string) *cobra
 	return cmd
 }
 
-const serverShutdownTimeout = 15 * time.Second
-
 // run current command.
 func run(parentCtx context.Context, log *zap.Logger, f flags, cfg *config.Config) error { //nolint:funlen
 	var (
@@ -77,35 +75,78 @@ func run(parentCtx context.Context, log *zap.Logger, f flags, cfg *config.Config
 		oss.Stop() // stop system signals listening
 	}()
 
-	// load templates content
-	templates, loadingErr := cfg.LoadTemplates()
-	if loadingErr != nil {
-		return loadingErr
-	} else if len(templates) == 0 {
-		return errors.New("no loaded templates")
-	}
+	var (
+		errorPages    = tpl.NewErrorPages()
+		templateNames = make([]string, 0) // slice with all possible template names
+	)
 
-	if f.template.name != "" && f.template.name != errorpage.UseRandom && f.template.name != errorpage.UseRandomOnEachRequest { //nolint:lll
-		if _, found := templates[f.template.name]; !found {
-			return errors.New("requested nonexistent template: " + f.template.name) // requested unknown template
+	log.Debug("Loading templates")
+
+	if templates, err := cfg.LoadTemplates(); err == nil {
+		if len(templates) > 0 {
+			for templateName, content := range templates {
+				errorPages.AddTemplate(templateName, content)
+				templateNames = append(templateNames, templateName)
+			}
+
+			for code, desc := range cfg.Pages {
+				errorPages.AddPage(code, desc.Message, desc.Description)
+			}
+
+			log.Info("Templates loaded", zap.Int("templates", len(templates)), zap.Int("pages", len(cfg.Pages)))
+		} else {
+			return errors.New("no loaded templates")
 		}
+	} else {
+		return err
 	}
 
-	// burn the error codes map
-	codes := make(map[string]tpl.Annotator)
-	for code, desc := range cfg.Pages {
-		codes[code] = tpl.Annotator{Message: desc.Message, Description: desc.Description}
+	sort.Strings(templateNames) // sorting is important for the first template picking
+
+	var picker *pick.StringsSlice
+
+	switch f.template.name {
+	case useRandomTemplate:
+		log.Info("A random template will be used")
+
+		picker = pick.NewStringsSlice(templateNames, pick.RandomOnce)
+
+	case useRandomTemplateOnEachRequest:
+		log.Info("A random template on EACH request will be used")
+
+		picker = pick.NewStringsSlice(templateNames, pick.RandomEveryTime)
+
+	case "":
+		log.Info("The first template (ordered by name) will be used")
+
+		picker = pick.NewStringsSlice(templateNames, pick.First)
+
+	default:
+		var found bool
+
+		for i := 0; i < len(templateNames); i++ {
+			if templateNames[i] == f.template.name {
+				found = true
+
+				break
+			}
+		}
+
+		if !found {
+			return errors.New("requested nonexistent template: " + f.template.name)
+		}
+
+		log.Info("We will use the requested template", zap.String("name", f.template.name))
+		picker = pick.NewStringsSlice([]string{f.template.name}, pick.First)
 	}
 
 	// create HTTP server
 	server := appHttp.NewServer(log)
 
 	// register server routes, middlewares, etc.
-	if err := server.Register(f.template.name, templates, codes); err != nil {
-		return err
-	}
+	server.Register(&errorPages, picker, f.defaultErrorPage)
 
-	startingErrCh := make(chan error, 1) // channel for server starting error
+	startedAt, startingErrCh := time.Now(), make(chan error, 1) // channel for server starting error
 
 	// start HTTP server in separate goroutine
 	go func(errCh chan<- error) {
@@ -114,7 +155,7 @@ func run(parentCtx context.Context, log *zap.Logger, f flags, cfg *config.Config
 		log.Info("Server starting",
 			zap.String("addr", f.listen.ip),
 			zap.Uint16("port", f.listen.port),
-			zap.String("template name", f.template.name),
+			zap.String("default error page", f.defaultErrorPage),
 		)
 
 		if err := server.Start(f.listen.ip, f.listen.port); err != nil {
@@ -128,20 +169,12 @@ func run(parentCtx context.Context, log *zap.Logger, f flags, cfg *config.Config
 		return err
 
 	case <-ctx.Done(): // ..or context cancellation
-		log.Info("Gracefully server stopping")
-
-		stoppedAt := time.Now()
+		log.Info("Gracefully server stopping", zap.Duration("uptime", time.Since(startedAt)))
 
 		// stop the server using created context above
-		if err := server.Stop(serverShutdownTimeout); err != nil {
-			if errors.Is(err, context.DeadlineExceeded) {
-				log.Error("Server stopping timeout exceeded", zap.Duration("timeout", serverShutdownTimeout))
-			}
-
+		if err := server.Stop(); err != nil {
 			return err
 		}
-
-		log.Debug("Server stopped", zap.Duration("stopping duration", time.Since(stoppedAt)))
 	}
 
 	return nil

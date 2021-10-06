@@ -30,8 +30,6 @@ Also, this project can be used for the [**Traefik** error pages customization](h
 
 Download the latest binary file for your os/arch from the [releases page][link_releases] or use our docker image:
 
-[![image stats](https://dockeri.co/image/tarampampam/error-pages)][link_docker_hub]
-
 Registry                               | Image
 -------------------------------------- | -----
 [Docker Hub][link_docker_hub]          | `tarampampam/error-pages`
@@ -56,13 +54,25 @@ $ docker run --rm -it \
 </p>
 </details>
 
+## Templates
 
+Name              | Preview
+:---------------: | :-----:
+`ghost`           | [![ghost](https://hsto.org/webt/oj/cl/4k/ojcl4ko_cvusy5xuki6efffzsyo.gif)](https://tarampampam.github.io/error-pages/ghost/404.html)
+`l7-light`        | [![l7-light](https://hsto.org/webt/xc/iq/vt/xciqvty-aoj-rchfarsjhutpjny.png)](https://tarampampam.github.io/error-pages/l7-light/404.html)
+`l7-dark`         | [![l7-dark](https://hsto.org/webt/s1/ih/yr/s1ihyrqs_y-sgraoimfhk6ypney.png)](https://tarampampam.github.io/error-pages/l7-dark/404.html)
+`shuffle`         | [![shuffle](https://hsto.org/webt/7w/rk/3m/7wrk3mrzz3y8qfqwovmuvacu-bs.gif)](https://tarampampam.github.io/error-pages/shuffle/404.html)
+`noise`           | [![noise](https://hsto.org/webt/42/oq/8y/42oq8yok_i-arrafjt6hds_7ahy.gif)](https://tarampampam.github.io/error-pages/noise/404.html)
+`hacker-terminal` | [![hacker-terminal](https://hsto.org/webt/5s/l0/p1/5sl0p1_ud_nalzjzsj5slz6dfda.gif)](https://tarampampam.github.io/error-pages/hacker-terminal/404.html)
+
+> Note: `noise` template highly uses the CPU, be careful
 
 ## Usage
 
 All of the examples below will use a docker image with the application, but you can also use a binary. By the way, our docker image uses the **unleveled user** by default and **distroless**.
 
-### HTTP server
+<details>
+  <summary><strong>HTTP server</strong></summary>
 
 As mentioned above - our application can be run as an HTTP server. It only needs to specify the path to the configuration file (it does not need statically generated error pages). The server uses [FastHTTP][fasthttp] and stores all necessary data in memory - so it does not use the file system and very fast. Oh yes, the image with the app also contains a configured **healthcheck** and **logs in JSON** format :)
 
@@ -86,8 +96,10 @@ To see the help run the following command:
 ```bash
 $ docker run --rm tarampampam/error-pages serve --help
 ```
+</details>
 
-### Generator
+<details>
+  <summary><strong>Generator</strong></summary>
 
 Create a config file (`error-pages.yml`) with the following content:
 
@@ -158,13 +170,15 @@ To see the usage help run the following command:
 ```bash
 $ docker run --rm tarampampam/error-pages build --help
 ```
+</details>
 
-### Static error pages
+<details>
+  <summary><strong>Static error pages</strong></summary>
 
 You may want to use the generated error pages somewhere else, and you can simply extract them from the docker image to your local directory for this purpose:
 
 ```bash
-$ docker create --name error-pages tarampampam/error-pages:2.0.0-rc2
+$ docker create --name error-pages tarampampam/error-pages
 $ docker cp error-pages:/opt/html ./out
 $ docker rm -f error-pages
 $ ls ./out
@@ -187,7 +201,35 @@ $ tree
     ...
 ```
 
-### Custom error pages for your image with [nginx][link_nginx]
+Or inside another docker image:
+
+```dockerfile
+FROM alpine:latest
+
+COPY --from=tarampampam/error-pages /opt/html /error-pages
+
+RUN ls -l /error-pages
+```
+
+```bash
+$ docker build --rm .
+
+...
+Step 3/3 : RUN ls -l /error-pages
+ ---> Running in 30095dc344a9
+total 12
+drwxr-xr-x    2 root     root           326 Sep 29 15:44 ghost
+drwxr-xr-x    2 root     root           326 Sep 29 15:44 hacker-terminal
+-rw-r--r--    1 root     root         11241 Sep 29 15:44 index.html
+drwxr-xr-x    2 root     root           326 Sep 29 15:44 l7-dark
+drwxr-xr-x    2 root     root           326 Sep 29 15:44 l7-light
+drwxr-xr-x    2 root     root           326 Sep 29 15:44 noise
+drwxr-xr-x    2 root     root           326 Sep 29 15:44 shuffle
+```
+</details>
+
+<details>
+  <summary><strong>Custom error pages for your image with nginx</strong></summary>
 
 You can build your own docker image with `nginx` and our error pages:
 
@@ -234,19 +276,7 @@ $ docker build --tag your-nginx:local -f ./Dockerfile .
 ```
 
 > More info about `error_page` directive can be [found here](http://nginx.org/en/docs/http/ngx_http_core_module.html#error_page).
-
-## Templates
-
-Name              | Preview
-:---------------: | :-----:
-`ghost`           | [![ghost](https://hsto.org/webt/oj/cl/4k/ojcl4ko_cvusy5xuki6efffzsyo.gif)](https://tarampampam.github.io/error-pages/ghost/404.html)
-`l7-light`        | [![l7-light](https://hsto.org/webt/xc/iq/vt/xciqvty-aoj-rchfarsjhutpjny.png)](https://tarampampam.github.io/error-pages/l7-light/404.html)
-`l7-dark`         | [![l7-dark](https://hsto.org/webt/s1/ih/yr/s1ihyrqs_y-sgraoimfhk6ypney.png)](https://tarampampam.github.io/error-pages/l7-dark/404.html)
-`shuffle`         | [![shuffle](https://hsto.org/webt/7w/rk/3m/7wrk3mrzz3y8qfqwovmuvacu-bs.gif)](https://tarampampam.github.io/error-pages/shuffle/404.html)
-`noise`           | [![noise](https://hsto.org/webt/42/oq/8y/42oq8yok_i-arrafjt6hds_7ahy.gif)](https://tarampampam.github.io/error-pages/noise/404.html)
-`hacker-terminal` | [![hacker-terminal](https://hsto.org/webt/5s/l0/p1/5sl0p1_ud_nalzjzsj5slz6dfda.gif)](https://tarampampam.github.io/error-pages/hacker-terminal/404.html)
-
-> Note: `noise` template highly uses the CPU, be careful
+</details>
 
 ## Custom error pages for [Traefik][link_traefik]
 

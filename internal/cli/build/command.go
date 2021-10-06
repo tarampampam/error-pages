@@ -19,7 +19,7 @@ type historyItem struct {
 }
 
 // NewCommand creates `build` command.
-func NewCommand(log *zap.Logger, configFile *string) *cobra.Command { //nolint:funlen,gocognit
+func NewCommand(log *zap.Logger, configFile *string) *cobra.Command { //nolint:funlen,gocognit,gocyclo
 	var (
 		generateIndex bool
 		cfg           *config.Config
@@ -52,33 +52,34 @@ func NewCommand(log *zap.Logger, configFile *string) *cobra.Command { //nolint:f
 				return errors.New("wrong arguments count")
 			}
 
-			log.Info("loading templates")
+			errorPages := tpl.NewErrorPages()
 
-			templates, err := cfg.LoadTemplates()
-			if err != nil {
+			log.Info("loading templates")
+			if templates, err := cfg.LoadTemplates(); err == nil {
+				if len(templates) > 0 {
+					for templateName, content := range templates {
+						errorPages.AddTemplate(templateName, content)
+					}
+
+					for code, desc := range cfg.Pages {
+						errorPages.AddPage(code, desc.Message, desc.Description)
+					}
+				} else {
+					return errors.New("no loaded templates")
+				}
+			} else {
 				return err
-			} else if len(templates) == 0 {
-				return errors.New("no loaded templates")
 			}
 
 			log.Debug("the output directory preparing", zap.String("Path", args[0]))
-
-			if err = createDirectory(args[0]); err != nil {
+			if err := createDirectory(args[0]); err != nil {
 				return errors.Wrap(err, "cannot prepare output directory")
 			}
 
-			codes := make(map[string]tpl.Annotator)
-
-			for code, desc := range cfg.Pages {
-				codes[code] = tpl.Annotator{Message: desc.Message, Description: desc.Description}
-			}
-
-			history := make(map[string][]historyItem, len(templates))
+			history, startedAt := make(map[string][]historyItem), time.Now()
 
 			log.Info("saving the error pages")
-			startedAt := time.Now()
-
-			if err = tpl.NewErrors(templates, codes).VisitAll(func(template, code string, content []byte) error {
+			if err := errorPages.IteratePages(func(template, code string, content []byte) error {
 				if e := createDirectory(path.Join(args[0], template)); e != nil {
 					return e
 				}
@@ -90,18 +91,18 @@ func NewCommand(log *zap.Logger, configFile *string) *cobra.Command { //nolint:f
 				}
 
 				if _, ok := history[template]; !ok {
-					history[template] = make([]historyItem, 0, len(codes))
+					history[template] = make([]historyItem, 0, len(cfg.Pages))
 				}
 
 				history[template] = append(history[template], historyItem{
 					Code:    code,
-					Message: codes[code].Message,
+					Message: cfg.Pages[code].Message,
 					Path:    path.Join(template, fileName),
 				})
 
 				return nil
 			}); err != nil {
-				return nil
+				return err
 			}
 
 			log.Debug("saved", zap.Duration("duration", time.Since(startedAt)))
@@ -110,7 +111,7 @@ func NewCommand(log *zap.Logger, configFile *string) *cobra.Command { //nolint:f
 				log.Info("index file generation")
 				startedAt = time.Now()
 
-				if err = writeIndexFile(path.Join(args[0], "index.html"), history); err != nil {
+				if err := writeIndexFile(path.Join(args[0], "index.html"), history); err != nil {
 					return err
 				}
 

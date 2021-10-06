@@ -1,7 +1,6 @@
 package http
 
 import (
-	"context"
 	"strconv"
 	"time"
 
@@ -10,8 +9,9 @@ import (
 	"github.com/tarampampam/error-pages/internal/http/common"
 	errorpageHandler "github.com/tarampampam/error-pages/internal/http/handlers/errorpage"
 	healthzHandler "github.com/tarampampam/error-pages/internal/http/handlers/healthz"
+	indexHandler "github.com/tarampampam/error-pages/internal/http/handlers/index"
+	notfoundHandler "github.com/tarampampam/error-pages/internal/http/handlers/notfound"
 	versionHandler "github.com/tarampampam/error-pages/internal/http/handlers/version"
-	"github.com/tarampampam/error-pages/internal/tpl"
 	"github.com/tarampampam/error-pages/internal/version"
 	"github.com/valyala/fasthttp"
 	"go.uber.org/zap"
@@ -23,9 +23,9 @@ type Server struct {
 }
 
 const (
-	defaultWriteTimeout = time.Second * 7
-	defaultReadTimeout  = time.Second * 7
-	defaultIdleTimeout  = time.Second * 15
+	defaultWriteTimeout = time.Second * 4
+	defaultReadTimeout  = time.Second * 4
+	defaultIdleTimeout  = time.Second * 6
 )
 
 func NewServer(log *zap.Logger) Server {
@@ -52,55 +52,28 @@ func (s *Server) Start(ip string, port uint16) error {
 	return s.fast.ListenAndServe(ip + ":" + strconv.Itoa(int(port)))
 }
 
+type (
+	errorsPager interface {
+		// GetPage with passed template name and error code.
+		GetPage(templateName, code string) ([]byte, error)
+	}
+
+	templatePicker interface {
+		// Pick the template name for responding.
+		Pick() string
+	}
+)
+
 // Register server routes, middlewares, etc.
 // Router docs: <https://github.com/fasthttp/router>
-func (s *Server) Register(
-	templateName string,
-	templates map[string][]byte,
-	codes map[string]tpl.Annotator,
-) error {
-	s.router.GET("/", func(ctx *fasthttp.RequestCtx) {
-		common.HandleInternalHTTPError(
-			ctx,
-			fasthttp.StatusNotFound,
-			"Hi there! Error pages are available at the following URLs: /{code}.html",
-		)
-	})
-
-	s.router.NotFound = func(ctx *fasthttp.RequestCtx) {
-		common.HandleInternalHTTPError(
-			ctx,
-			fasthttp.StatusNotFound,
-			"Wrong request URL. Error pages are available at the following URLs: /{code}.html",
-		)
-	}
-
+func (s *Server) Register(errorsPager errorsPager, templatePicker templatePicker, defaultPageCode string) {
+	s.router.GET("/", indexHandler.NewHandler(errorsPager, templatePicker, defaultPageCode))
 	s.router.GET("/version", versionHandler.NewHandler(version.Version()))
 	s.router.ANY("/health/live", healthzHandler.NewHandler(checkers.NewLiveChecker()))
+	s.router.GET("/{code}.html", errorpageHandler.NewHandler(errorsPager, templatePicker))
 
-	if h, err := errorpageHandler.NewHandler(templateName, templates, codes); err != nil {
-		return err
-	} else {
-		s.router.GET("/{code}.html", h)
-	}
-
-	return nil
+	s.router.NotFound = notfoundHandler.NewHandler()
 }
 
 // Stop server.
-func (s *Server) Stop(timeout time.Duration) error {
-	ctx, cancel := context.WithTimeout(context.Background(), timeout) // TODO replace with simple time.After
-	defer cancel()
-
-	ch := make(chan error, 1) // channel for server stopping error
-
-	go func() { defer close(ch); ch <- s.fast.Shutdown() }()
-
-	select {
-	case err := <-ch:
-		return err
-
-	case <-ctx.Done():
-		return ctx.Err()
-	}
-}
+func (s *Server) Stop() error { return s.fast.Shutdown() }

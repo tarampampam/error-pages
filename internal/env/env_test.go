@@ -12,6 +12,7 @@ func TestConstants(t *testing.T) {
 	assert.Equal(t, "LISTEN_PORT", string(ListenPort))
 	assert.Equal(t, "TEMPLATE_NAME", string(TemplateName))
 	assert.Equal(t, "CONFIG_FILE", string(ConfigFilePath))
+	assert.Equal(t, "DEFAULT_ERROR_PAGE", string(DefaultErrorPage))
 }
 
 func TestEnvVariable_Lookup(t *testing.T) {
@@ -22,6 +23,7 @@ func TestEnvVariable_Lookup(t *testing.T) {
 		{giveEnv: ListenPort},
 		{giveEnv: TemplateName},
 		{giveEnv: ConfigFilePath},
+		{giveEnv: DefaultErrorPage},
 	}
 
 	for _, tt := range cases {

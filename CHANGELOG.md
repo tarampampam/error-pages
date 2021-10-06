@@ -4,6 +4,18 @@ All notable changes to this package will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## UNRELEASED
+
+### Added
+
+- `referer` field in access log records
+- Flag `--default-error-page` for the `serve` subcommand (`404` is used by default, environment name `DEFAULT_ERROR_PAGE`)
+
+### Changed
+
+- The source code has been refactored
+- The index page (`/`) now returns the error page with a code, declared using `--default-error-page` flag (HTTP code 200, when a page code exists)
+
 ## v2.0.0
 
 ### Changed

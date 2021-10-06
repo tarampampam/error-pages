@@ -6,10 +6,11 @@ import "os"
 type envVariable string
 
 const (
-	ListenAddr     envVariable = "LISTEN_ADDR"   // IP address for listening
-	ListenPort     envVariable = "LISTEN_PORT"   // port number for listening
-	TemplateName   envVariable = "TEMPLATE_NAME" // template name
-	ConfigFilePath envVariable = "CONFIG_FILE"   // path to the config file
+	ListenAddr       envVariable = "LISTEN_ADDR"        // IP address for listening
+	ListenPort       envVariable = "LISTEN_PORT"        // port number for listening
+	TemplateName     envVariable = "TEMPLATE_NAME"      // template name
+	ConfigFilePath   envVariable = "CONFIG_FILE"        // path to the config file
+	DefaultErrorPage envVariable = "DEFAULT_ERROR_PAGE" // default error page (code)
 )
 
 // String returns environment variable name in the string representation.
