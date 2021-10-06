@@ -25,6 +25,7 @@ func LogRequest(h fasthttp.RequestHandler, log *zap.Logger) fasthttp.RequestHand
 			zap.String("useragent", ua),
 			zap.String("method", string(ctx.Method())),
 			zap.String("url", string(ctx.RequestURI())),
+			zap.String("referer", string(ctx.Referer())),
 			zap.Int("status_code", ctx.Response.StatusCode()),
 			zap.Bool("connection_close", ctx.Response.ConnectionClose()),
 			zap.Duration("duration", time.Since(startedAt)),

@@ -1,85 +1,38 @@
 package errorpage
 
 import (
-	"math/rand"
-	"sort"
-	"time"
-
-	"github.com/pkg/errors"
-	"github.com/tarampampam/error-pages/internal/http/common"
-	"github.com/tarampampam/error-pages/internal/tpl"
 	"github.com/valyala/fasthttp"
 )
 
-const (
-	UseRandom              = "random"
-	UseRandomOnEachRequest = "i-said-random"
+type (
+	errorsPager interface {
+		// GetPage with passed template name and error code.
+		GetPage(templateName, code string) ([]byte, error)
+	}
+
+	templatePicker interface {
+		// Pick the template name for responding.
+		Pick() string
+	}
 )
 
 // NewHandler creates handler for error pages serving.
-func NewHandler(
-	templateName string,
-	templates map[string][]byte,
-	codes map[string]tpl.Annotator,
-) (fasthttp.RequestHandler, error) {
-	if len(templates) == 0 {
-		return nil, errors.New("empty templates map")
-	}
-
-	var (
-		rnd           = rand.New(rand.NewSource(time.Now().UnixNano())) //nolint:gosec
-		templateNames = templateTames(templates)
-	)
-
-	if templateName == "" { // on empty template name
-		templateName = templateNames[0] // pick the first
-	} else if templateName == UseRandom { // on "random" template name
-		templateName = templateNames[rnd.Intn(len(templateNames))] // pick the randomized
-	}
-
-	if _, found := templates[templateName]; !found && templateName != UseRandomOnEachRequest {
-		return nil, errors.New("wrong template name passed")
-	}
-
-	var pages = tpl.NewErrors(templates, codes)
-
+func NewHandler(e errorsPager, p templatePicker) fasthttp.RequestHandler {
 	return func(ctx *fasthttp.RequestCtx) {
-		var useTemplate = templateName // default
-
-		if templateName == UseRandomOnEachRequest {
-			useTemplate = templateNames[rnd.Intn(len(templateNames))] // pick the randomized
-		}
+		ctx.SetContentType("text/plain; charset=utf-8") // default content type
 
 		if code, ok := ctx.UserValue("code").(string); ok {
-			if content, err := pages.Get(useTemplate, code); err == nil {
+			if content, err := e.GetPage(p.Pick(), code); err == nil {
 				ctx.SetStatusCode(fasthttp.StatusOK)
 				ctx.SetContentType("text/html; charset=utf-8")
 				_, _ = ctx.Write(content)
 			} else {
-				common.HandleInternalHTTPError(
-					ctx,
-					fasthttp.StatusNotFound,
-					"requested code not available: "+err.Error(),
-				)
+				ctx.SetStatusCode(fasthttp.StatusNotFound)
+				_, _ = ctx.WriteString("requested code not available: " + err.Error()) // TODO customize the output?
 			}
 		} else { // will never happen
-			common.HandleInternalHTTPError(
-				ctx,
-				fasthttp.StatusInternalServerError,
-				"cannot extract requested code from the request",
-			)
+			ctx.SetStatusCode(fasthttp.StatusInternalServerError)
+			_, _ = ctx.WriteString("cannot extract requested code from the request") // TODO customize the output?
 		}
-	}, nil
-}
-
-func templateTames(templates map[string][]byte) []string {
-	var templateNames = make([]string, 0, len(templates))
-
-	for name := range templates {
-		templateNames = append(templateNames, name)
 	}
-
-	sort.Strings(templateNames)
-
-	return templateNames
 }

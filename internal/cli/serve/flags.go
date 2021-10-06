@@ -6,8 +6,6 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/tarampampam/error-pages/internal/http/handlers/errorpage"
-
 	"github.com/spf13/pflag"
 	"github.com/tarampampam/error-pages/internal/env"
 )
@@ -20,12 +18,19 @@ type flags struct {
 	template struct {
 		name string
 	}
+	defaultErrorPage string
 }
 
 const (
-	listenFlagName       = "listen"
-	portFlagName         = "port"
-	templateNameFlagName = "template-name"
+	listenFlagName           = "listen"
+	portFlagName             = "port"
+	templateNameFlagName     = "template-name"
+	defaultErrorPageFlagName = "default-error-page"
+)
+
+const (
+	useRandomTemplate              = "random"
+	useRandomTemplateOnEachRequest = "i-said-random"
 )
 
 func (f *flags) init(flagSet *pflag.FlagSet) {
@@ -46,9 +51,15 @@ func (f *flags) init(flagSet *pflag.FlagSet) {
 		templateNameFlagName, "t",
 		"",
 		fmt.Sprintf(
-			"template name (set \"%s\" to use the randomized or \"%s\" to use the randomized template on each request) [$%s]", //nolint:lll
-			errorpage.UseRandom, errorpage.UseRandomOnEachRequest, env.TemplateName,
+			"template name (set \"%s\" to use a randomized or \"%s\" to use a randomized template on each request) [$%s]", //nolint:lll
+			useRandomTemplate, useRandomTemplateOnEachRequest, env.TemplateName,
 		),
+	)
+	flagSet.StringVarP(
+		&f.defaultErrorPage,
+		defaultErrorPageFlagName, "",
+		"404",
+		fmt.Sprintf("default error page [$%s]", env.DefaultErrorPage),
 	)
 }
 
@@ -74,6 +85,11 @@ func (f *flags) overrideUsingEnv(flagSet *pflag.FlagSet) (lastErr error) {
 			case templateNameFlagName:
 				if envVar, exists := env.TemplateName.Lookup(); exists {
 					f.template.name = strings.TrimSpace(envVar)
+				}
+
+			case defaultErrorPageFlagName:
+				if envVar, exists := env.DefaultErrorPage.Lookup(); exists {
+					f.defaultErrorPage = strings.TrimSpace(envVar)
 				}
 			}
 		}

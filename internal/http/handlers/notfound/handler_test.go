@@ -1,4 +1,4 @@
-package common_test
+package notfound_test
 
 import "testing"
 
