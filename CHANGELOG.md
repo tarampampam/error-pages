@@ -14,7 +14,7 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 ### Changed
 
 - The source code has been refactored
-- The index page (`/`) now returns the error page with a code, declared using `--default-error-page` flag
+- The index page (`/`) now returns the error page with a code, declared using `--default-error-page` flag (HTTP code 200, when a page code exists)
 
 ## v2.0.0
 
