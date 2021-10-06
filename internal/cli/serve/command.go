@@ -3,18 +3,17 @@ package serve
 import (
 	"context"
 	"errors"
-	"github.com/tarampampam/error-pages/internal/pick"
 	"os"
 	"sort"
 	"time"
-
-	"github.com/tarampampam/error-pages/internal/tpl"
-	"go.uber.org/zap"
 
 	"github.com/spf13/cobra"
 	"github.com/tarampampam/error-pages/internal/breaker"
 	"github.com/tarampampam/error-pages/internal/config"
 	appHttp "github.com/tarampampam/error-pages/internal/http"
+	"github.com/tarampampam/error-pages/internal/pick"
+	"github.com/tarampampam/error-pages/internal/tpl"
+	"go.uber.org/zap"
 )
 
 // NewCommand creates `serve` command.
@@ -58,7 +57,7 @@ func NewCommand(ctx context.Context, log *zap.Logger, configFile *string) *cobra
 }
 
 // run current command.
-func run(parentCtx context.Context, log *zap.Logger, f flags, cfg *config.Config) error { //nolint:funlen,gocyclo
+func run(parentCtx context.Context, log *zap.Logger, f flags, cfg *config.Config) error { //nolint:funlen
 	var (
 		ctx, cancel = context.WithCancel(parentCtx) // serve context creation
 		oss         = breaker.NewOSSignals(ctx)     // OS signals listener
