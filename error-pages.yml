@@ -10,6 +10,8 @@ templates:
   - path: ./templates/shuffle.html
   - path: ./templates/noise.html
   - path: ./templates/hacker-terminal.html
+  - path: ./templates/cat.html
+    name: cat
 
 pages:
   400:
