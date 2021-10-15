@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"os"
 	"path"
+	"sort"
 	"text/template"
 	"time"
 
@@ -108,6 +109,12 @@ func NewCommand(log *zap.Logger, configFile *string) *cobra.Command { //nolint:f
 			log.Debug("saved", zap.Duration("duration", time.Since(startedAt)))
 
 			if generateIndex {
+				for _, h := range history {
+					sort.Slice(h, func(i, j int) bool {
+						return h[i].Code < h[j].Code
+					})
+				}
+
 				log.Info("index file generation")
 				startedAt = time.Now()
 
