@@ -8,7 +8,9 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 ### Added
 
-- Added `cat` error template
+- Template `cats` [#31]
+
+[#31]:https://github.com/tarampampam/error-pages/pull/31
 
 ## v2.1.0
 

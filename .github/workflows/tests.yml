@@ -134,6 +134,7 @@ jobs: # Docs: <https://git.io/JvxXE>
           test -f ./out/shuffle/404.html
           test -f ./out/noise/404.html
           test -f ./out/hacker-terminal/404.html
+          test -f ./out/cats/404.html
 
   docker-image:
     name: Build docker image

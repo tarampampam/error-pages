@@ -64,7 +64,7 @@ Name              | Preview
 `shuffle`         | [![shuffle](https://hsto.org/webt/7w/rk/3m/7wrk3mrzz3y8qfqwovmuvacu-bs.gif)](https://tarampampam.github.io/error-pages/shuffle/404.html)
 `noise`           | [![noise](https://hsto.org/webt/42/oq/8y/42oq8yok_i-arrafjt6hds_7ahy.gif)](https://tarampampam.github.io/error-pages/noise/404.html)
 `hacker-terminal` | [![hacker-terminal](https://hsto.org/webt/5s/l0/p1/5sl0p1_ud_nalzjzsj5slz6dfda.gif)](https://tarampampam.github.io/error-pages/hacker-terminal/404.html)
-`cat` | [![cat](https://http.cat/100)](https://tarampampam.github.io/error-pages/cat/100.html)
+`cats`            | [![cats](https://hsto.org/webt/_g/y-/ke/_gy-keqinz-3867jbw36v37-iwe.jpeg)](https://tarampampam.github.io/error-pages/cats/100.html)
 
 > Note: `noise` template highly uses the CPU, be careful
 
