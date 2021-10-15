@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<!--
+    Error {{ code }}: {{ message }}
+    Description: {{ description }}
+-->
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex, nofollow" />
+    <title>{{ message }}</title>
+    <style>
+        .image {
+            -webkit-user-select: none;
+            user-select: none;
+            display: block;
+            margin: auto;
+            padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+        }
+
+        .mar0 {
+            margin: 0px;
+        }
+    </style>
+</head>
+
+<body class="mar0">
+    <img class="image" src="https://http.cat/{{code}}">
+</body>
+<!--
+    Error {{ code }}: {{ message }}
+    Description: {{ description }}
+-->
+
+</html>
