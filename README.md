@@ -64,7 +64,7 @@ Name              | Preview
 `shuffle`         | [![shuffle](https://hsto.org/webt/7w/rk/3m/7wrk3mrzz3y8qfqwovmuvacu-bs.gif)](https://tarampampam.github.io/error-pages/shuffle/404.html)
 `noise`           | [![noise](https://hsto.org/webt/42/oq/8y/42oq8yok_i-arrafjt6hds_7ahy.gif)](https://tarampampam.github.io/error-pages/noise/404.html)
 `hacker-terminal` | [![hacker-terminal](https://hsto.org/webt/5s/l0/p1/5sl0p1_ud_nalzjzsj5slz6dfda.gif)](https://tarampampam.github.io/error-pages/hacker-terminal/404.html)
-`cats`            | [![cats](https://hsto.org/webt/_g/y-/ke/_gy-keqinz-3867jbw36v37-iwe.jpeg)](https://tarampampam.github.io/error-pages/cats/100.html)
+`cats`            | [![cats](https://hsto.org/webt/_g/y-/ke/_gy-keqinz-3867jbw36v37-iwe.jpeg)](https://tarampampam.github.io/error-pages/cats/404.html)
 
 > Note: `noise` template highly uses the CPU, be careful
 
@@ -263,12 +263,12 @@ server {
 ```dockerfile
 # File `Dockerfile`
 
-FROM nginx:1.21-alpine
+FROM nginx:1.23-alpine
 
 COPY --chown=nginx \
      ./nginx.conf /etc/nginx/conf.d/default.conf
 COPY --chown=nginx \
-     --from=tarampampam/error-pages:2.0.0 \
+     --from=tarampampam/error-pages:2.2.0 \
      /opt/html/ghost /usr/share/nginx/errorpages/_error-pages
 ```
 
@@ -288,7 +288,7 @@ version: '3.8'
 
 services:
   error-pages:
-    image: tarampampam/error-pages:2.0.0
+    image: tarampampam/error-pages:2.2.0
     environment:
       TEMPLATE_NAME: l7-dark
     networks:
