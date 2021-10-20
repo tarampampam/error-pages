@@ -263,12 +263,12 @@ server {
 ```dockerfile
 # File `Dockerfile`
 
-FROM nginx:1.21-alpine
+FROM nginx:1.23-alpine
 
 COPY --chown=nginx \
      ./nginx.conf /etc/nginx/conf.d/default.conf
 COPY --chown=nginx \
-     --from=tarampampam/error-pages:2.0.0 \
+     --from=tarampampam/error-pages:2.2.0 \
      /opt/html/ghost /usr/share/nginx/errorpages/_error-pages
 ```
 
@@ -288,7 +288,7 @@ version: '3.8'
 
 services:
   error-pages:
-    image: tarampampam/error-pages:2.0.0
+    image: tarampampam/error-pages:2.2.0
     environment:
       TEMPLATE_NAME: l7-dark
     networks:

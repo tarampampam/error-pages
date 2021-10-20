@@ -1,6 +1,6 @@
 # Docker-compose file is used only for local development. This is not production-ready example.
 
-version: '3.4'
+version: '3.8'
 
 volumes:
   tmp-data: {}
