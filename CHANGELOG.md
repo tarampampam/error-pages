@@ -4,11 +4,6 @@ All notable changes to this package will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
-### Changed
-
-- Docker images to the latest available version (golang 1.17.1)
-- README.md Docker image tags to the latest version (nginx 1.23, error-pages 2.2.0)
-
 ## v2.2.0
 
 ### Added
