@@ -66,8 +66,13 @@ type (
 
 // Register server routes, middlewares, etc.
 // Router docs: <https://github.com/fasthttp/router>
-func (s *Server) Register(errorsPager errorsPager, templatePicker templatePicker, defaultPageCode string) {
-	s.router.GET("/", indexHandler.NewHandler(errorsPager, templatePicker, defaultPageCode))
+func (s *Server) Register(
+	errorsPager errorsPager,
+	templatePicker templatePicker,
+	defaultPageCode string,
+	defaultHTTPCode uint16,
+) {
+	s.router.GET("/", indexHandler.NewHandler(errorsPager, templatePicker, defaultPageCode, defaultHTTPCode))
 	s.router.GET("/version", versionHandler.NewHandler(version.Version()))
 	s.router.ANY("/health/live", healthzHandler.NewHandler(checkers.NewLiveChecker()))
 	s.router.GET("/{code}.html", errorpageHandler.NewHandler(errorsPager, templatePicker))
