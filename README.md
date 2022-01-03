@@ -268,7 +268,7 @@ FROM nginx:1.23-alpine
 COPY --chown=nginx \
      ./nginx.conf /etc/nginx/conf.d/default.conf
 COPY --chown=nginx \
-     --from=tarampampam/error-pages:2.2.0 \
+     --from=tarampampam/error-pages:2.3.0 \
      /opt/html/ghost /usr/share/nginx/errorpages/_error-pages
 ```
 
@@ -288,7 +288,7 @@ version: '3.8'
 
 services:
   error-pages:
-    image: tarampampam/error-pages:2.2.0
+    image: tarampampam/error-pages:2.3.0
     environment:
       TEMPLATE_NAME: l7-dark
     networks:
@@ -298,7 +298,7 @@ services:
         constraints:
           - node.role == worker
       labels:
-        traefik.enable: 'true'
+        traefik.enable: true
         traefik.docker.network: traefik-public
         # use as "fallback" for any non-registered services (with priority below normal)
         traefik.http.routers.error-pages-router.rule: HostRegexp(`{host:.+}`)
@@ -306,11 +306,11 @@ services:
         # should say that all of your services work on https
         traefik.http.routers.error-pages-router.tls: 'true'
         traefik.http.routers.error-pages-router.entrypoints: https
-        traefik.http.routers.error-pages-router.middlewares: error-pages-middleware@docker
+        traefik.http.routers.error-pages-router.middlewares: error-pages-middleware
         traefik.http.services.error-pages-service.loadbalancer.server.port: 8080
         # "errors" middleware settings
         traefik.http.middlewares.error-pages-middleware.errors.status: 400-599
-        traefik.http.middlewares.error-pages-middleware.errors.service: error-pages-service@docker
+        traefik.http.middlewares.error-pages-middleware.errors.service: error-pages-service
         traefik.http.middlewares.error-pages-middleware.errors.query: /{status}.html
 
   any-another-http-service:
@@ -322,19 +322,84 @@ services:
         constraints:
           - node.role == worker
       labels:
-        traefik.enable: 'true'
+        traefik.enable: true
         traefik.docker.network: traefik-public
         traefik.http.routers.another-service.rule: Host(`subdomain.example.com`)
         traefik.http.routers.another-service.tls: 'true'
         traefik.http.routers.another-service.entrypoints: https
         # next line is important
-        traefik.http.routers.another-service.middlewares: error-pages-middleware@docker
+        traefik.http.routers.another-service.middlewares: error-pages-middleware
         traefik.http.services.another-service.loadbalancer.server.port: 80
 
 networks:
   traefik-public:
     external: true
 ```
+
+### Docker-compose + Traefik
+
+```yaml
+# docker-compose.yml
+version: '3.8'
+
+services:
+  traefik:
+    image: traefik:v2.5
+    command:
+      #- --log.level=DEBUG
+      - --api.dashboard=true # activate dashboard
+      - --api.insecure=true # enable the API in insecure mode
+      - --providers.docker=true # enable Docker backend with default settings
+      - --providers.docker.exposedbydefault=false # do not expose containers by default
+      - --entrypoints.web.address=:80 # --entrypoints.<name>.address for ports, 80 (i.e., name = web)
+    ports:
+      - "80:80/tcp" # HTTP (web)
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    labels:
+      traefik.enable: true
+      # dashboard
+      traefik.http.routers.traefik.rule: Host(`traefik.localtest.me`)
+      traefik.http.routers.traefik.service: api@internal
+      traefik.http.routers.traefik.entrypoints: web
+      traefik.http.routers.traefik.middlewares: error-pages-middleware
+
+  error-pages:
+    image: tarampampam/error-pages:2.3.0
+    environment:
+      TEMPLATE_NAME: l7-dark # set the error pages template
+    labels:
+      traefik.enable: true
+      # use as "fallback" for any NON-registered services (with priority below normal)
+      traefik.http.routers.error-pages-router.rule: HostRegexp(`{host:.+}`)
+      traefik.http.routers.error-pages-router.priority: 10
+      # should say that all of your services work on https
+      traefik.http.routers.error-pages-router.entrypoints: web
+      traefik.http.routers.error-pages-router.middlewares: error-pages-middleware
+      # "errors" middleware settings
+      traefik.http.middlewares.error-pages-middleware.errors.status: 400-599
+      traefik.http.middlewares.error-pages-middleware.errors.service: error-pages-service
+      traefik.http.middlewares.error-pages-middleware.errors.query: /{status}.html
+      # define service properties
+      traefik.http.services.error-pages-service.loadbalancer.server.port: 8080
+    depends_on:
+      - traefik
+
+  nginx-or-any-another-service:
+    image: nginx:1.21-alpine
+    labels:
+      traefik.enable: true
+      traefik.http.routers.test-service.rule: Host(`test.localtest.me`)
+      traefik.http.routers.test-service.entrypoints: web
+      traefik.http.routers.test-service.middlewares: error-pages-middleware
+```
+
+After executing `docker-compose up` you can:
+
+- Open Traefik dashboard [on a domain `traefik.localtest.me`](http://traefik.localtest.me/dashboard/#/)
+- [View customized error pages on the Traefik dashboard](http://traefik.localtest.me/foobar404)
+- Open nginx index page [on a domain `test.localtest.me`](http://test.localtest.me/)
+- View customized error pages for non-existing [pages](http://test.localtest.me/404) and [domains](http://404.localtest.me/)
 
 ## Changes log
 
