@@ -6,13 +6,15 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 ## UNRELEASED
 
+### Added
+
+- Flag `--default-http-code` for the `serve` subcommand (`404` is used by default instead of `200`, environment name `DEFAULT_HTTP_CODE`) [#41]
+
 ### Changed
 
 - Go updated from `1.17.1` up to `1.17.5`
 
-### Added
-
-- Flag `--default-http-code` for the `serve` subcommand (`404` is used by default instead of `200`, environment name `DEFAULT_HTTP_CODE`)
+[#41]:https://github.com/tarampampam/error-pages/issues/41
 
 ## v2.2.0
 
