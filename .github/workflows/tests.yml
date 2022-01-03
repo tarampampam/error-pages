@@ -196,7 +196,7 @@ jobs: # Docs: <https://git.io/JvxXE>
         run: docker load < docker-image.tar
 
       - name: Run container with the app
-        run: docker run --rm -d -p "8080:8080/tcp" --name app app:ci --default-http-code 401
+        run: docker run --rm -d -p "8080:8080/tcp" -e "DEFAULT_HTTP_CODE=401" --name app app:ci
 
       - name: Wait for container "healthy" state
         run: until [[ "`docker inspect -f {{.State.Health.Status}} app`" == "healthy" ]]; do echo "wait 1 sec.."; sleep 1; done
