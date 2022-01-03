@@ -17,13 +17,18 @@ type (
 )
 
 // NewHandler creates handler for the index page serving.
-func NewHandler(e errorsPager, p templatePicker, defaultPageCode string) fasthttp.RequestHandler {
+func NewHandler(
+	e errorsPager,
+	p templatePicker,
+	defaultPageCode string,
+	defaultHTTPCode uint16,
+) fasthttp.RequestHandler {
 	return func(ctx *fasthttp.RequestCtx) {
 		content, err := e.GetPage(p.Pick(), defaultPageCode)
 
 		if err == nil {
 			ctx.SetContentType("text/html; charset=utf-8")
-			ctx.SetStatusCode(fasthttp.StatusOK)
+			ctx.SetStatusCode(int(defaultHTTPCode))
 			_, _ = ctx.Write(content)
 
 			return

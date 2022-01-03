@@ -10,6 +10,10 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 - Go updated from `1.17.1` up to `1.17.5`
 
+### Added
+
+- Flag `--default-http-code` for the `serve` subcommand (`404` is used by default instead of `200`, environment name `DEFAULT_HTTP_CODE`)
+
 ## v2.2.0
 
 ### Added
