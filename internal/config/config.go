@@ -58,7 +58,7 @@ func (c Config) Validate() error {
 
 // LoadTemplates loading templates content from the local files and return it.
 func (c Config) LoadTemplates() (map[string][]byte, error) {
-	var templates = make(map[string][]byte)
+	var templates = make(map[string][]byte) // map[template_name]template_content
 
 	for i := 0; i < len(c.Templates); i++ {
 		var name string

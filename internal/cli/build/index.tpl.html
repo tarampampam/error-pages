@@ -1,0 +1,35 @@
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>Error pages list</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.1/css/bootstrap.min.css"
+          integrity="sha512-6KY5s6UI5J7SVYuZB4S/CZMyPylqyyNZco376NM2Z8Sb8OxEdp02e1jkKk/wZxIEmjQ6DRCEBhni+gpr9c4tvA=="
+          crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body class="bg-light">
+<div class="container">
+    <main>
+        <div class="py-5 text-center">
+            <img class="d-block mx-auto mb-4" src="https://hsto.org/webt/rm/9y/ww/rm9ywwx3gjv9agwkcmllhsuyo7k.png"
+                 alt="" width="94">
+            <h2>Error pages index</h2>
+        </div>
+        {{- range $template, $item := . -}}
+        <h2 class="mb-3">Template name: <Code>{{ $template }}</Code></h2>
+        <ul class="mb-5">
+            {{ range $item -}}
+            <li><a href="{{ .Path }}"><strong>{{ .Code }}</strong>: {{ .Message }}</a></li>
+            {{ end -}}
+        </ul>
+        {{ end }}
+    </main>
+</div>
+<footer class="footer">
+    <div class="container text-center text-muted mt-3 mb-3">
+        For online documentation and support please refer to the
+        <a href="https://github.com/tarampampam/error-pages">project repository</a>.
+    </div>
+</footer>
+</body>
+</html>
