@@ -12,6 +12,16 @@ templates:
   - path: ./templates/hacker-terminal.html
   - path: ./templates/cats.html
 
+formats:
+  json:
+    content: |
+      {
+        "error": true,
+        "code": "{{ code }}",
+        "message": "{{ message }}",
+        "description": "{{ description }}"
+      }
+
 pages:
   400:
     message: Bad Request

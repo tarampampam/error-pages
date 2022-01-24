@@ -27,23 +27,17 @@ func NewCommand(ctx context.Context, log *zap.Logger, configFile *string) *cobra
 		Use:     "serve",
 		Aliases: []string{"s", "server"},
 		Short:   "Start HTTP server",
-		PreRunE: func(cmd *cobra.Command, _ []string) error {
+		PreRunE: func(cmd *cobra.Command, _ []string) (err error) {
 			if configFile == nil {
 				return errors.New("path to the config file is required for this command")
 			}
 
-			if err := f.overrideUsingEnv(cmd.Flags()); err != nil {
+			if err = f.overrideUsingEnv(cmd.Flags()); err != nil {
 				return err
 			}
 
-			if c, err := config.FromYamlFile(*configFile); err != nil {
+			if cfg, err = config.FromYamlFile(*configFile); err != nil {
 				return err
-			} else {
-				if err = c.Validate(); err != nil {
-					return err
-				}
-
-				cfg = c
 			}
 
 			return f.validate()
@@ -82,23 +76,19 @@ func run(parentCtx context.Context, log *zap.Logger, f flags, cfg *config.Config
 
 	log.Debug("Loading templates")
 
-	if templates, err := cfg.LoadTemplates(); err == nil {
-		if len(templates) > 0 {
-			for templateName, content := range templates {
-				errorPages.AddTemplate(templateName, content)
-				templateNames = append(templateNames, templateName)
-			}
-
-			for code, desc := range cfg.Pages {
-				errorPages.AddPage(code, desc.Message, desc.Description)
-			}
-
-			log.Info("Templates loaded", zap.Int("templates", len(templates)), zap.Int("pages", len(cfg.Pages)))
-		} else {
-			return errors.New("no loaded templates")
+	if len(cfg.Templates) > 0 {
+		for _, template := range cfg.Templates {
+			errorPages.AddTemplate(template.Name(), template.Content())
+			templateNames = append(templateNames, template.Name())
 		}
+
+		for _, page := range cfg.Pages {
+			errorPages.AddPage(page.Code(), page.Message(), page.Description())
+		}
+
+		log.Info("Templates loaded", zap.Int("templates", len(cfg.Templates)), zap.Int("pages", len(cfg.Pages)))
 	} else {
-		return err
+		return errors.New("no loaded templates")
 	}
 
 	sort.Strings(templateNames) // sorting is important for the first template picking

@@ -23,22 +23,16 @@ func NewCommand(log *zap.Logger, configFile *string) *cobra.Command {
 		Aliases: []string{"b"},
 		Short:   "Build the error pages",
 		Args:    cobra.ExactArgs(1),
-		PreRunE: func(*cobra.Command, []string) error {
+		PreRunE: func(*cobra.Command, []string) (err error) {
 			if configFile == nil {
 				return errors.New("path to the config file is required for this command")
 			}
 
-			if c, err := config.FromYamlFile(*configFile); err != nil {
+			if cfg, err = config.FromYamlFile(*configFile); err != nil {
 				return err
-			} else {
-				if err = c.Validate(); err != nil {
-					return err
-				}
-
-				cfg = c
 			}
 
-			return nil
+			return
 		},
 		RunE: func(_ *cobra.Command, args []string) error {
 			if len(args) != 1 {
@@ -67,51 +61,54 @@ const (
 )
 
 func run(log *zap.Logger, cfg *config.Config, outDirectoryPath string, generateIndex bool) error {
-	log.Info("loading templates")
-
-	templates, tplLoadingErr := cfg.LoadTemplates()
-	if tplLoadingErr != nil {
-		return tplLoadingErr
-	} else if len(templates) == 0 {
+	if len(cfg.Templates) == 0 {
 		return errors.New("no loaded templates")
 	}
 
-	log.Info("output directory preparing", zap.String("Path", outDirectoryPath))
+	log.Info("output directory preparing", zap.String("path", outDirectoryPath))
 
-	if err := createDirectory(outDirectoryPath); err != nil {
+	if err := createDirectory(outDirectoryPath, outDirPerm); err != nil {
 		return errors.Wrap(err, "cannot prepare output directory")
 	}
 
 	history := newBuildingHistory()
 
-	for templateName, templateContent := range templates {
-		log.Debug("template processing", zap.String("name", templateName))
+	for _, template := range cfg.Templates {
+		log.Debug("template processing", zap.String("name", template.Name()))
 
-		for pageCode, pageProperties := range cfg.Pages {
-			if err := createDirectory(path.Join(outDirectoryPath, templateName)); err != nil {
+		for _, page := range cfg.Pages {
+			if err := createDirectory(path.Join(outDirectoryPath, template.Name()), outDirPerm); err != nil {
 				return err
 			}
 
-			var fileName = pageCode + outHTMLFileExt
-
-			if err := os.WriteFile(
-				path.Join(outDirectoryPath, templateName, fileName),
-				tpl.Render(templateContent, tpl.Properties{
-					Code:        pageCode,
-					Message:     pageProperties.Message,
-					Description: pageProperties.Description,
-				}),
-				outFilePerm,
-			); err != nil {
-				return err
-			}
-
-			history.Append(
-				templateName,
-				pageCode,
-				cfg.Pages[pageCode].Message,
-				path.Join(templateName, fileName),
+			var (
+				fileName = page.Code() + outHTMLFileExt
+				filePath = path.Join(outDirectoryPath, template.Name(), fileName)
 			)
+
+			content, renderingErr := tpl.RenderHTML(template.Content(), tpl.Properties{
+				Code:        page.Code(),
+				Message:     page.Message(),
+				Description: page.Description(),
+			})
+			if renderingErr != nil {
+				return renderingErr
+			}
+
+			if err := os.WriteFile(filePath, content, outFilePerm); err != nil {
+				return err
+			}
+
+			log.Debug("page rendered", zap.String("path", filePath))
+
+			if generateIndex {
+				history.Append(
+					template.Name(),
+					page.Code(),
+					page.Message(),
+					path.Join(template.Name(), fileName),
+				)
+			}
 		}
 	}
 
@@ -125,14 +122,16 @@ func run(log *zap.Logger, cfg *config.Config, outDirectoryPath string, generateI
 		}
 	}
 
+	log.Info("job is done")
+
 	return nil
 }
 
-func createDirectory(path string) error {
+func createDirectory(path string, perm os.FileMode) error {
 	stat, err := os.Stat(path)
 	if err != nil {
 		if os.IsNotExist(err) {
-			return os.MkdirAll(path, outDirPerm)
+			return os.MkdirAll(path, perm)
 		}
 
 		return err
