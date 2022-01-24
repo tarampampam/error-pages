@@ -2,7 +2,7 @@ package tpl
 
 import "reflect"
 
-type Properties struct {
+type Properties struct { // only string properties with a "token" tag, please
 	Code        string `token:"code"`
 	Message     string `token:"message"`
 	Description string `token:"description"`

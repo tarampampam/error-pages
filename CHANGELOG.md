@@ -4,6 +4,16 @@ All notable changes to this package will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## UNRELEASED
+
+### Added
+
+- Possibility to use the [Go template markup tags](https://pkg.go.dev/text/template) in the error page templates
+
+### Fixed
+
+- Potential race condition (in the `pick.StringsSlice` struct)
+
 ## v2.3.0
 
 ### Added
