@@ -2,6 +2,7 @@ package tpl
 
 import "reflect"
 
+// TODO Move to the "pkg" package (in the root directory)
 type Properties struct { // only string properties with a "token" tag, please
 	Code        string `token:"code"`
 	Message     string `token:"message"`

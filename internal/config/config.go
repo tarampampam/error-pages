@@ -35,6 +35,17 @@ func (c *Config) Template(name string) (*Template, bool) {
 	return &Template{}, false
 }
 
+// TemplateNames returns all template names.
+func (c *Config) TemplateNames() []string {
+	n := make([]string, len(c.Templates))
+
+	for i, t := range c.Templates {
+		n[i] = t.name
+	}
+
+	return n
+}
+
 // Template describes HTTP error page template.
 type Template struct {
 	name    string

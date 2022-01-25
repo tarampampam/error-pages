@@ -3,7 +3,7 @@ package tpl
 import (
 	"bytes"
 	"encoding/json"
-	HTMLTemplate "html/template"
+	"text/template"
 )
 
 // RenderHTML makes a replaces in the HTML-formatted content. Tokens for the replacement must be wrapped in double
@@ -23,7 +23,7 @@ func RenderHTML(content []byte, props Properties) ([]byte, error) {
 		content = bytes.ReplaceAll(content, []byte("{{ "+what+" }}"), n)
 	}
 
-	t, err := HTMLTemplate.New("").Parse(string(content))
+	t, err := template.New("").Parse(string(content))
 	if err != nil {
 		return nil, err
 	}
