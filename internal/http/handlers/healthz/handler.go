@@ -19,5 +19,6 @@ func NewHandler(checker checker) fasthttp.RequestHandler {
 		}
 
 		ctx.SetStatusCode(fasthttp.StatusOK)
+		_, _ = ctx.WriteString("OK")
 	}
 }

@@ -97,6 +97,16 @@
             content: "> ";
         }
 
+        .output.small {
+            font-size: .6em;
+            margin-top: .5em;
+            margin-bottom: .5em;
+        }
+
+        .output.small::before {
+            content: "$ ";
+        }
+
         a {
             color: #fff;
             text-decoration: none;
@@ -121,6 +131,16 @@
     <h1>Error <span class="error_code">{{ code }}</span></h1>
     <p class="output">{{ description }}.</p>
     <p class="output">Good luck.</p>
+    {{ if show_details }}
+    <p class="output small"><strong>Details:</strong></p>
+    {{ if original_uri }}<p class="output small">Original URI: <code>{{ original_uri }}</code></p>{{ end }}
+    {{ if namespace }}<p class="output small">Namespace: <code>{{ namespace }}</code></p>{{ end }}
+    {{ if ingress_name }}<p class="output small">Ingress name: <code>{{ ingress_name }}</code></p>{{ end }}
+    {{ if service_name }}<p class="output small">Service name: <code>{{ service_name }}</code></p>{{ end }}
+    {{ if service_port }}<p class="output small">Service port: <code>{{ service_port }}</code></p>{{ end }}
+    {{ if request_id }}<p class="output small">Request ID: <code>{{ request_id }}</code></p>{{ end }}
+    <p class="output small">Timestamp: <code>{{ now.Unix }}</code></p>
+    {{ end }}
 </div>
 </body>
 <!--

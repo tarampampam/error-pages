@@ -2,11 +2,17 @@ package tpl
 
 import "reflect"
 
-// TODO Move to the "pkg" package (in the root directory)
 type Properties struct { // only string properties with a "token" tag, please
-	Code        string `token:"code"`
-	Message     string `token:"message"`
-	Description string `token:"description"`
+	Code               string `token:"code"`
+	Message            string `token:"message"`
+	Description        string `token:"description"`
+	OriginalURI        string `token:"original_uri"`
+	Namespace          string `token:"namespace"`
+	IngressName        string `token:"ingress_name"`
+	ServiceName        string `token:"service_name"`
+	ServicePort        string `token:"service_port"`
+	RequestID          string `token:"request_id"`
+	ShowRequestDetails bool
 }
 
 // Replaces return a map with strings for the replacing, where the map key is a token.

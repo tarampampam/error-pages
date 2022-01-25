@@ -30,6 +30,8 @@ services:
       - serve
       - --verbose
       - --port=8080
+      - --template-name=l7-dark
+      - --show-details
     healthcheck:
       test: ['CMD', 'wget', '--spider', '-q', 'http://127.0.0.1:8080/health/live']
       interval: 5s

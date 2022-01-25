@@ -14,6 +14,7 @@ func TestConstants(t *testing.T) {
 	assert.Equal(t, "CONFIG_FILE", string(ConfigFilePath))
 	assert.Equal(t, "DEFAULT_ERROR_PAGE", string(DefaultErrorPage))
 	assert.Equal(t, "DEFAULT_HTTP_CODE", string(DefaultHTTPCode))
+	assert.Equal(t, "SHOW_DETAILS", string(ShowDetails))
 }
 
 func TestEnvVariable_Lookup(t *testing.T) {
@@ -26,6 +27,7 @@ func TestEnvVariable_Lookup(t *testing.T) {
 		{giveEnv: ConfigFilePath},
 		{giveEnv: DefaultErrorPage},
 		{giveEnv: DefaultHTTPCode},
+		{giveEnv: ShowDetails},
 	}
 
 	for _, tt := range cases {

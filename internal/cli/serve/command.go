@@ -101,7 +101,7 @@ func run(parentCtx context.Context, log *zap.Logger, f flags, cfg *config.Config
 	server := appHttp.NewServer(log)
 
 	// register server routes, middlewares, etc.
-	server.Register(cfg, picker, f.defaultErrorPage, f.defaultHTTPCode)
+	server.Register(cfg, picker, f.defaultErrorPage, f.defaultHTTPCode, f.showDetails)
 
 	startedAt, startingErrCh := time.Now(), make(chan error, 1) // channel for server starting error
 
@@ -114,7 +114,7 @@ func run(parentCtx context.Context, log *zap.Logger, f flags, cfg *config.Config
 			zap.Uint16("port", f.listen.port),
 			zap.String("default error page", f.defaultErrorPage),
 			zap.Uint16("default HTTP response code", f.defaultHTTPCode),
-			zap.Strings("all_templates", templateNames),
+			zap.Bool("show request details", f.showDetails),
 		)
 
 		if err := server.Start(f.listen.ip, f.listen.port); err != nil {

@@ -6,9 +6,14 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 ## UNRELEASED
 
+### Changed
+
+- It is now possible to use [golang-tags of templates](https://pkg.go.dev/text/template) in error page templates and formatted (`json`, `xml`) responses
+
 ### Added
 
-- Possibility to use the [Go template markup tags](https://pkg.go.dev/text/template) in the error page templates
+- Formatted response templates (`json`, `xml`) - the server responds with a formatted response depending on the `Content-Type` request header value
+- HTTP header `X-Robots-Tag: noindex` for the error pages
 
 ### Fixed
 

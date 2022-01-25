@@ -3,27 +3,55 @@ package tpl
 import (
 	"bytes"
 	"encoding/json"
+	"os"
+	"strconv"
 	"text/template"
+	"time"
+
+	"github.com/tarampampam/error-pages/internal/version"
 )
 
-// RenderHTML makes a replaces in the HTML-formatted content. Tokens for the replacement must be wrapped in double
-// braces (with a single space or without it). Token examples:
-//	{{ foo }}
-//	{{bar}}
-// Additionally, the Go template codes are fully supported in the template content.
-func RenderHTML(content []byte, props Properties) ([]byte, error) {
+var tplFnMap = template.FuncMap{ //nolint:gochecknoglobals // these functions can be used in templates
+	"now":      time.Now,
+	"hostname": os.Hostname,
+	"json":     func(v interface{}) string { b, _ := json.Marshal(v); return string(b) }, //nolint:nlreturn
+	"version":  version.Version,
+	"int": func(v interface{}) int {
+		if s, ok := v.(string); ok {
+			if i, err := strconv.Atoi(s); err == nil {
+				return i
+			}
+		} else if i, ok := v.(int); ok {
+			return i
+		}
+
+		return 0
+	},
+}
+
+func Render(content []byte, props Properties) ([]byte, error) {
 	if len(content) == 0 {
 		return content, nil
 	}
 
-	for what, with := range props.Replaces() {
-		var n = []byte(with)
-
-		content = bytes.ReplaceAll(content, []byte("{{"+what+"}}"), n)
-		content = bytes.ReplaceAll(content, []byte("{{ "+what+" }}"), n)
+	var funcMap = template.FuncMap{
+		"show_details": func() bool { return props.ShowRequestDetails },
+		"hide_details": func() bool { return !props.ShowRequestDetails },
 	}
 
-	t, err := template.New("").Parse(string(content))
+	// make a copy of template functions map
+	for s, i := range tplFnMap {
+		funcMap[s] = i
+	}
+
+	// and allow the direct calling of Properties tokens, e.g. `{{ code | json }}`
+	for what, with := range props.Replaces() {
+		var n, s = what, with
+
+		funcMap[n] = func() string { return s }
+	}
+
+	t, err := template.New("").Funcs(funcMap).Parse(string(content))
 	if err != nil {
 		return nil, err
 	}
@@ -35,26 +63,4 @@ func RenderHTML(content []byte, props Properties) ([]byte, error) {
 	}
 
 	return buf.Bytes(), nil
-}
-
-func RenderJSON(content []byte, props Properties) ([]byte, error) {
-	if len(content) == 0 {
-		return content, nil
-	}
-
-	for what, with := range props.Replaces() {
-		n, err := json.Marshal(with) // escape characters
-		if err != nil {
-			return nil, err
-		}
-
-		if len(n) >= 2 {
-			n = n[1 : len(n)-1] // truncate the first and last characters - quotes
-		}
-
-		content = bytes.ReplaceAll(content, []byte("{{"+what+"}}"), n)
-		content = bytes.ReplaceAll(content, []byte("{{ "+what+" }}"), n)
-	}
-
-	return content, nil
 }

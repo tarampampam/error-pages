@@ -19,8 +19,9 @@ func NewHandler(
 	p templatePicker,
 	defaultPageCode string,
 	defaultHTTPCode uint16,
+	showRequestDetails bool,
 ) fasthttp.RequestHandler {
 	return func(ctx *fasthttp.RequestCtx) {
-		utils.RespondWithErrorPage(ctx, cfg, p, defaultPageCode, int(defaultHTTPCode))
+		utils.RespondWithErrorPage(ctx, cfg, p, defaultPageCode, int(defaultHTTPCode), showRequestDetails)
 	}
 }

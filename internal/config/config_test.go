@@ -74,7 +74,7 @@ pages:
 
 				format, found := cfg.Formats["json"]
 				assert.True(t, found)
-				assert.Equal(t, `{"code": "{{code}}"}`+"\n", string(format.Content()))
+				assert.Equal(t, `{"code": "{{code}}"}`, string(format.Content()))
 
 				format, found = cfg.Formats["Avada_Kedavra"]
 				assert.True(t, found)
@@ -108,7 +108,6 @@ pages:
 	}
 
 	for name, tt := range cases {
-		tt := tt
 		t.Run(name, func(t *testing.T) {
 			if tt.giveEnv != nil {
 				for key, value := range tt.giveEnv {
@@ -182,7 +181,6 @@ func TestFromYamlFile(t *testing.T) {
 	}
 
 	for name, tt := range cases {
-		tt := tt
 		t.Run(name, func(t *testing.T) {
 			conf, err := config.FromYamlFile(tt.giveYamlFilePath)
 

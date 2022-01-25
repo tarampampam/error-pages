@@ -66,11 +66,12 @@ func (s *Server) Register(
 	templatePicker templatePicker,
 	defaultPageCode string,
 	defaultHTTPCode uint16,
+	showDetails bool,
 ) {
-	s.router.GET("/", indexHandler.NewHandler(cfg, templatePicker, defaultPageCode, defaultHTTPCode))
+	s.router.GET("/", indexHandler.NewHandler(cfg, templatePicker, defaultPageCode, defaultHTTPCode, showDetails))
 	s.router.GET("/version", versionHandler.NewHandler(version.Version()))
 	s.router.ANY("/health/live", healthzHandler.NewHandler(checkers.NewLiveChecker()))
-	s.router.GET("/{code}.html", errorpageHandler.NewHandler(cfg, templatePicker))
+	s.router.GET("/{code}.html", errorpageHandler.NewHandler(cfg, templatePicker, showDetails))
 
 	s.router.NotFound = notfoundHandler.NewHandler()
 }

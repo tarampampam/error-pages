@@ -7,7 +7,7 @@ import (
 	"github.com/tarampampam/error-pages/internal/tpl"
 )
 
-func Test_RenderHTML(t *testing.T) {
+func Test_Render(t *testing.T) {
 	for name, tt := range map[string]struct {
 		giveContent string
 		giveProps   tpl.Properties
@@ -20,9 +20,9 @@ func Test_RenderHTML(t *testing.T) {
 			wantContent: "404: Not found Blah",
 		},
 		"html markup": {
-			giveContent: "<html><body>{{code}}: {{ message }} {{description}}</body></html>",
+			giveContent: "<!-- comment --><html><body>{{code}}: {{ message }} {{description}}</body></html>",
 			giveProps:   tpl.Properties{Code: "201", Message: "lorem ipsum"},
-			wantContent: "<html><body>201: lorem ipsum </body></html>",
+			wantContent: "<!-- comment --><html><body>201: lorem ipsum </body></html>",
 		},
 		"with line breakers": {
 			giveContent: "\t {{code}}: {{ message }} {{description}}\n",
@@ -39,41 +39,26 @@ func Test_RenderHTML(t *testing.T) {
 			giveProps:   tpl.Properties{},
 			wantError:   true,
 		},
-	} {
-		t.Run(name, func(t *testing.T) {
-			content, err := tpl.RenderHTML([]byte(tt.giveContent), tt.giveProps)
 
-			if tt.wantError == true {
-				assert.Error(t, err)
-			} else {
-				assert.NoError(t, err)
-				assert.Equal(t, []byte(tt.wantContent), content)
-			}
-		})
-	}
-}
-
-func TestRenderJSON(t *testing.T) {
-	for name, tt := range map[string]struct {
-		giveContent string
-		giveProps   tpl.Properties
-		wantContent string
-		wantError   bool
-	}{
-		"common case": {
-			giveContent: `{"code": "{{code}}", "message": {"here":[ "{{ message }}" ]}, "desc": "{{description}}"}`,
+		"json common case": {
+			giveContent: `{"code": {{code | json}}, "message": {"here":[ {{ message | json }} ]}, "desc": "{{description}}"}`,
 			giveProps:   tpl.Properties{Code: `404'"{`, Message: "Not found\t\r\n"},
 			wantContent: `{"code": "404'\"{", "message": {"here":[ "Not found\t\r\n" ]}, "desc": ""}`,
 		},
+		"json golang template": {
+			giveContent: `{"code": "{{code}}", "message": {"here":[ "{{ if .Message }} Yeah {{end}}" ]}}`,
+			giveProps:   tpl.Properties{Code: "201", Message: "lorem ipsum"},
+			wantContent: `{"code": "201", "message": {"here":[ " Yeah " ]}}`,
+		},
 	} {
 		t.Run(name, func(t *testing.T) {
-			content, err := tpl.RenderJSON([]byte(tt.giveContent), tt.giveProps)
+			content, err := tpl.Render([]byte(tt.giveContent), tt.giveProps)
 
 			if tt.wantError == true {
 				assert.Error(t, err)
 			} else {
 				assert.NoError(t, err)
-				assert.Equal(t, []byte(tt.wantContent), content)
+				assert.Equal(t, tt.wantContent, string(content))
 			}
 		})
 	}
@@ -83,7 +68,7 @@ func BenchmarkRenderHTML(b *testing.B) {
 	b.ReportAllocs()
 
 	for i := 0; i < b.N; i++ {
-		_, _ = tpl.RenderHTML(
+		_, _ = tpl.Render(
 			[]byte("{{code}}: {{ message }} {{description}}"),
 			tpl.Properties{Code: "404", Message: "Not found", Description: "Blah"},
 		)

@@ -1,9 +1,10 @@
 package pick_test
 
 import (
+	"testing"
+
 	"github.com/stretchr/testify/assert"
 	"github.com/tarampampam/error-pages/internal/pick"
-	"testing"
 )
 
 func TestStringsSlice_Pick(t *testing.T) {

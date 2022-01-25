@@ -13,10 +13,6 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-const (
-	FormatJSON = "json"
-)
-
 // Config is a main (exportable) config struct.
 type Config struct {
 	Templates []Template
@@ -33,6 +29,19 @@ func (c *Config) Template(name string) (*Template, bool) {
 	}
 
 	return &Template{}, false
+}
+
+func (c *Config) JSONFormat() (*Format, bool) { return c.format("json") }
+func (c *Config) XMLFormat() (*Format, bool)  { return c.format("xml") }
+
+func (c *Config) format(name string) (*Format, bool) {
+	if f, ok := c.Formats[name]; ok {
+		if len(f.content) > 0 {
+			return &f, true
+		}
+	}
+
+	return &Format{}, false
 }
 
 // TemplateNames returns all template names.
@@ -94,7 +103,7 @@ func (f Format) Name() string { return f.name }
 // Content returns the format content.
 func (f Format) Content() []byte { return f.content }
 
-// config is internal struct for marshalling/unmarshalling configuration file content.
+// config is internal struct for marshaling/unmarshaling configuration file content.
 type config struct {
 	Templates []struct {
 		Path    string `yaml:"path"`
@@ -190,7 +199,7 @@ func (c *config) Export() (*Config, error) {
 	cfg.Formats = make(map[string]Format, len(c.Formats))
 
 	for name, f := range c.Formats {
-		cfg.Formats[name] = Format{name: name, content: []byte(f.Content)}
+		cfg.Formats[name] = Format{name: name, content: []byte(strings.TrimSpace(f.Content))}
 	}
 
 	return cfg, nil

@@ -60,7 +60,7 @@ const (
 	outDirPerm       = os.FileMode(0775)
 )
 
-func run(log *zap.Logger, cfg *config.Config, outDirectoryPath string, generateIndex bool) error {
+func run(log *zap.Logger, cfg *config.Config, outDirectoryPath string, generateIndex bool) error { //nolint:funlen
 	if len(cfg.Templates) == 0 {
 		return errors.New("no loaded templates")
 	}
@@ -86,10 +86,11 @@ func run(log *zap.Logger, cfg *config.Config, outDirectoryPath string, generateI
 				filePath = path.Join(outDirectoryPath, template.Name(), fileName)
 			)
 
-			content, renderingErr := tpl.RenderHTML(template.Content(), tpl.Properties{
-				Code:        page.Code(),
-				Message:     page.Message(),
-				Description: page.Description(),
+			content, renderingErr := tpl.Render(template.Content(), tpl.Properties{
+				Code:               page.Code(),
+				Message:            page.Message(),
+				Description:        page.Description(),
+				ShowRequestDetails: false,
 			})
 			if renderingErr != nil {
 				return renderingErr
