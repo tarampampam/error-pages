@@ -30,7 +30,6 @@ services:
       - serve
       - --verbose
       - --port=8080
-      - --template-name=shuffle
       - --show-details
     healthcheck:
       test: ['CMD', 'wget', '--spider', '-q', 'http://127.0.0.1:8080/health/live']

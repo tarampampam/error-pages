@@ -22,13 +22,13 @@ func TestFromYaml(t *testing.T) {
 			},
 			giveYaml: []byte(`
 templates:
- - path: ${__FOO_TPL_PATH}
-   name: ${__FOO_TPL_NAME:-default_value} # name is optional
- - path: ./testdata/bar-tpl.html
- - name: Baz
-   content: |
-     Some content {{ code }}
-     New line
+  - path: ${__FOO_TPL_PATH}
+    name: ${__FOO_TPL_NAME:-default_value} # name is optional
+  - path: ./testdata/bar-tpl.html
+  - name: Baz
+    content: |
+      Some content {{ code }}
+      New line
 
 formats:
   json:
@@ -38,13 +38,13 @@ formats:
     content: "{{ message }}"
 
 pages:
- 400:
-   message: Bad Request
-   description: The server did not understand the request
+  400:
+    message: Bad Request
+    description: The server did not understand the request
 
- 401:
-   message: Unauthorized
-   description: The requested page needs a username and a password
+  401:
+    message: Unauthorized
+    description: The requested page needs a username and a password
 `),
 			wantErr: false,
 			checkResultFn: func(t *testing.T, cfg *config.Config) {

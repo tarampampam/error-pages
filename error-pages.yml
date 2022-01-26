@@ -17,7 +17,7 @@ formats:
     content: |
       {
         "error": true,
-        "code": {{ code | int }},
+        "code": {{ code | json }},
         "message": {{ message | json }},
         "description": {{ description | json }}{{ if show_details }},
         "details": {

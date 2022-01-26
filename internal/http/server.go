@@ -4,10 +4,9 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/tarampampam/error-pages/internal/config"
-
 	"github.com/fasthttp/router"
 	"github.com/tarampampam/error-pages/internal/checkers"
+	"github.com/tarampampam/error-pages/internal/config"
 	"github.com/tarampampam/error-pages/internal/http/common"
 	errorpageHandler "github.com/tarampampam/error-pages/internal/http/handlers/errorpage"
 	healthzHandler "github.com/tarampampam/error-pages/internal/http/handlers/healthz"
