@@ -12,21 +12,65 @@
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
     <style>
-        html,body {background-color:#fff;color:#636b6f;font-family:'Nunito',sans-serif;font-weight:100;height:100vh;margin:0}
+        html,body {background-color:#fff;color:#636b6f;font-family:'Nunito',sans-serif;font-weight:100;height:100vh;margin:0;font-size:0}
         .full-height {height:100vh}
         .flex-center {align-items:center;display:flex;justify-content:center}
         .position-ref {position:relative}
         .code {border-right:2px solid;font-size:26px;padding:0 10px 0 15px;text-align:center}
         .message {font-size:18px;text-align:center;padding:10px}
+        /* {{ if show_details }} */
+        .details table {width:100%;border-collapse:collapse;box-sizing:border-box;margin-top:20px}
+        .details td {font-size:11px;color:#777}
+        .details td.name {text-align:right;padding-right:.6em;width:50%;border-right:2px solid;border-color:#aaa}
+        .details td.value {text-align:left;padding-left:.6em;font-family:'Lucida Console','Courier New',monospace}
+        /* {{ end }} */
     </style>
 </head>
 <body>
 <div class="flex-center position-ref full-height">
-    <div class="code">
-        {{ code }}
-    </div>
-    <div class="message">
-        {{ message }}
+    <div>
+        <div class="flex-center">
+            <div class="code">
+                {{ code }}
+            </div>
+            <div class="message">
+                {{ message }}
+            </div>
+        </div>
+        {{ if show_details }}
+        <div class="details">
+            <table>
+                {{- if original_uri }}<tr>
+                    <td class="name">Original URI</td>
+                    <td class="value">{{ original_uri }}</td>
+                </tr>{{ end -}}
+                {{- if namespace }}<tr>
+                    <td class="name">Namespace</td>
+                    <td class="value">{{ namespace }}</td>
+                </tr>{{ end -}}
+                {{- if ingress_name }}<tr>
+                    <td class="name">Ingress name</td>
+                    <td class="value">{{ ingress_name }}</td>
+                </tr>{{ end -}}
+                {{- if service_name }}<tr>
+                    <td class="name">Service name</td>
+                    <td class="value">{{ service_name }}</td>
+                </tr>{{ end -}}
+                {{- if service_port }}<tr>
+                    <td class="name">Service port</td>
+                    <td class="value">{{ service_port }}</td>
+                </tr>{{ end -}}
+                {{- if request_id }}<tr>
+                    <td class="name">Request ID</td>
+                    <td class="value">{{ request_id }}</td>
+                </tr>{{ end -}}
+                <tr>
+                    <td class="name">Timestamp</td>
+                    <td class="value">{{ now.Unix }}</td>
+                </tr>
+            </table>
+        </div>
+        {{ end }}
     </div>
 </div>
 </body>

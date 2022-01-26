@@ -11,7 +11,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
     <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" />
     <style>
-        html,body {background-color:#1a1a1a;color:#fff;font-family:'Open Sans',sans-serif;height:100vh;margin:0}
+        html,body {background-color:#1a1a1a;color:#fff;font-family:'Open Sans',sans-serif;height:100vh;margin:0;font-size:0}
         .container {height:100vh;align-items:center;display:flex;justify-content:center;position:relative}
         .wrap {text-align:center}
         .ghost {animation:float 3s ease-out infinite}
@@ -19,12 +19,15 @@
         .shadowFrame {width:130px;margin: 10px auto 0 auto}
         .shadow {animation:shrink 3s ease-out infinite;transform-origin:center center}
         @keyframes shrink {0%{width:90%;margin:0 5%} 50% {width:60%;margin:0 18%} 100% {width:90%;margin:0 5%}}
-        h3 {font-size:1.05em;text-transform: uppercase;margin:0.3em auto}
-        .description {font-size:0.8em;color:#aaa}
-        .details {font-size:0.7em;color:#999;width:100%}
-        .details td {white-space: nowrap}
-        .details .name {text-align:right;padding-right:.6em}
+        h3 {font-size:17px;text-transform: uppercase;margin:0.3em auto}
+        .description {font-size:13px;color:#aaa}
+        /* {{ if show_details }} */
+        .details {color:#999;width:100%}
+        .details table {width:100%}
+        .details td {white-space:nowrap;font-size:11px}
+        .details .name {text-align:right;padding-right:.6em;width:50%}
         .details .value {text-align:left;padding-left:.6em;font-family:'Lucida Console','Courier New',monospace}
+        /* {{ end }} */
     </style>
 </head>
 <body>
@@ -50,55 +53,38 @@
         <h3>Error {{ code }}</h3>
         <p class="description">{{ description }}</p>
         {{ if show_details }}
-        <table class="details">
-            <thead>
-            <tr>
-                <th colspan="2" class="title">Details</th>
-            </tr>
-            </thead>
-            <tbody>
-            {{ if original_uri }}
-            <tr>
-                <td class="name">Original URI</td>
-                <td class="value">{{ original_uri }}</td>
-            </tr>
-            {{ end }}
-            {{ if namespace }}
-            <tr>
-                <td class="name">Namespace</td>
-                <td class="value">{{ namespace }}</td>
-            </tr>
-            {{ end }}
-            {{ if ingress_name }}
-            <tr>
-                <td class="name">Ingress name</td>
-                <td class="value">{{ ingress_name }}</td>
-            </tr>
-            {{ end }}
-            {{ if service_name }}
-            <tr>
-                <td class="name">Service name</td>
-                <td class="value">{{ service_name }}</td>
-            </tr>
-            {{ end }}
-            {{ if service_port }}
-            <tr>
-                <td class="name">Service port</td>
-                <td class="value">{{ service_port }}</td>
-            </tr>
-            {{ end }}
-            {{ if request_id }}
-            <tr>
-                <td class="name">Request ID</td>
-                <td class="value">{{ request_id }}</td>
-            </tr>
-            {{ end }}
-            <tr>
-                <td class="name">Timestamp</td>
-                <td class="value">{{ now.Unix }}</td>
-            </tr>
-            </tbody>
-        </table>
+        <div class="details">
+            <table>
+                {{- if original_uri }}<tr>
+                    <td class="name">Original URI</td>
+                    <td class="value">{{ original_uri }}</td>
+                </tr>{{ end -}}
+                {{- if namespace }}<tr>
+                    <td class="name">Namespace</td>
+                    <td class="value">{{ namespace }}</td>
+                </tr>{{ end -}}
+                {{- if ingress_name }}<tr>
+                    <td class="name">Ingress name</td>
+                    <td class="value">{{ ingress_name }}</td>
+                </tr>{{ end -}}
+                {{- if service_name }}<tr>
+                    <td class="name">Service name</td>
+                    <td class="value">{{ service_name }}</td>
+                </tr>{{ end -}}
+                {{- if service_port }}<tr>
+                    <td class="name">Service port</td>
+                    <td class="value">{{ service_port }}</td>
+                </tr>{{ end -}}
+                {{- if request_id }}<tr>
+                    <td class="name">Request ID</td>
+                    <td class="value">{{ request_id }}</td>
+                </tr>{{ end -}}
+                <tr>
+                    <td class="name">Timestamp</td>
+                    <td class="value">{{ now.Unix }}</td>
+                </tr>
+            </table>
+        </div>
         {{ end }}
     </div>
 </div>

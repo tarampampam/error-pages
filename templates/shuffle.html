@@ -15,27 +15,111 @@
             margin: 0;
             background-color: #222;
             color: #aaa;
-            font-family: 'Hack', monospace
+            font-family: 'Hack', monospace;
+            font-size: 0;
         }
 
         .full-height {
-            height: 100vh
+            height: 100vh;
         }
 
         .flex-center {
             align-items: center;
             display: flex;
-            justify-content: center
+            justify-content: center;
         }
 
         #error_text {
-            font-size: 2em
+            font-size: 32px;
         }
+
+        /* {{ if show_details }} */
+        #details table {
+            width: 100%;
+            border-collapse: collapse;
+            box-sizing: border-box;
+            margin-top: 20px;
+        }
+
+        #details.hidden td {
+            opacity: 0;
+            font-size: 0;
+            color: #222;
+        }
+
+        #details td {
+            font-size: 11px;
+            color: #999;
+            padding-top: .5em;
+            transition: opacity 1.4s, font-size .3s, color 1.2s;
+            opacity: 1;
+        }
+
+        #details td.name {
+            text-align: right;
+            padding-right: .3em;
+            width: 50%;
+        }
+
+        #details td.value {
+            text-align: left;
+            padding-left: .3em;
+            font-family: 'Lucida Console', 'Courier New', monospace;
+        }
+        /* {{ end }} */
     </style>
 </head>
 <body>
 <div class="flex-center full-height">
-    <span id="error_text">{{ code }}: {{ message }}</span>
+    <div>
+        <span id="error_text">{{ code }}: {{ message }}</span>
+        {{ if show_details }}
+        <div class="hidden" id="details">
+            <table>
+                {{- if original_uri }}
+                <tr>
+                    <td class="name">Original URI:</td>
+                    <td class="value">{{ original_uri }}</td>
+                </tr>
+                {{ end -}}
+                {{- if namespace }}
+                <tr>
+                    <td class="name">Namespace:</td>
+                    <td class="value">{{ namespace }}</td>
+                </tr>
+                {{ end -}}
+                {{- if ingress_name }}
+                <tr>
+                    <td class="name">Ingress name:</td>
+                    <td class="value">{{ ingress_name }}</td>
+                </tr>
+                {{ end -}}
+                {{- if service_name }}
+                <tr>
+                    <td class="name">Service name:</td>
+                    <td class="value">{{ service_name }}</td>
+                </tr>
+                {{ end -}}
+                {{- if service_port }}
+                <tr>
+                    <td class="name">Service port:</td>
+                    <td class="value">{{ service_port }}</td>
+                </tr>
+                {{ end -}}
+                {{- if request_id }}
+                <tr>
+                    <td class="name">Request ID:</td>
+                    <td class="value">{{ request_id }}</td>
+                </tr>
+                {{ end -}}
+                <tr>
+                    <td class="name">Timestamp:</td>
+                    <td class="value">{{ now.Unix }}</td>
+                </tr>
+            </table>
+        </div>
+        {{ end }}
+    </div>
 </div>
 
 <script>
@@ -58,7 +142,13 @@
         }
 
         $errorText.innerText = newText;
-    }, 800 / 60);
+    }, 450 / 60);
+
+    // {{ if show_details }}
+    window.setTimeout(function () {
+        document.getElementById('details').classList.remove('hidden');
+    }, 550);
+    // {{ end }}
 
     window.setTimeout(function () {
         let revealInterval = window.setInterval(function () {

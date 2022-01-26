@@ -17,21 +17,21 @@ func RespondWithErrorPage( //nolint:funlen
 	ctx *fasthttp.RequestCtx,
 	cfg *config.Config,
 	p templatePicker,
-	code string,
+	pageCode string,
 	httpCode int,
 	showRequestDetails bool,
 ) {
 	ctx.Response.Header.Set("X-Robots-Tag", "noindex") // block Search indexing
 
 	if returnCode, ok := extractCodeToReturn(ctx); ok {
-		code, httpCode = strconv.Itoa(returnCode), returnCode
+		pageCode, httpCode = strconv.Itoa(returnCode), returnCode
 	}
 
 	var (
 		clientWant    = ClientWantFormat(ctx)
 		json, canJSON = cfg.JSONFormat()
 		xml, canXML   = cfg.XMLFormat()
-		props         = tpl.Properties{Code: code, ShowRequestDetails: showRequestDetails}
+		props         = tpl.Properties{Code: pageCode, ShowRequestDetails: showRequestDetails}
 	)
 
 	if showRequestDetails {
@@ -43,10 +43,10 @@ func RespondWithErrorPage( //nolint:funlen
 		props.RequestID = string(ctx.Request.Header.Peek(RequestID))
 	}
 
-	if page, exists := cfg.Pages[code]; exists {
+	if page, exists := cfg.Pages[pageCode]; exists {
 		props.Message = page.Message()
 		props.Description = page.Description()
-	} else if c, err := strconv.Atoi(code); err == nil {
+	} else if c, err := strconv.Atoi(pageCode); err == nil {
 		if s := fasthttp.StatusMessage(c); s != "Unknown Status Code" { // as a fallback
 			props.Message = s
 		}
@@ -56,7 +56,7 @@ func RespondWithErrorPage( //nolint:funlen
 
 	if props.Message == "" {
 		ctx.SetStatusCode(fasthttp.StatusNotFound)
-		_, _ = ctx.WriteString("requested code (" + code + ") not available")
+		_, _ = ctx.WriteString("requested pageCode (" + pageCode + ") not available")
 
 		return
 	}

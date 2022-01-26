@@ -14,8 +14,9 @@
             margin: 0;
             height: 100vh;
             background-color: #000;
-            color: #aaa;
+            color: #ddd;
             font-family: 'Open Sans', sans-serif;
+            font-size: 0;
         }
 
         .centered {
@@ -30,26 +31,27 @@
             width: 100%;
         }
 
-        .details {
-            font-size: 0.7em;
-            color: #999;
-            width: 100%
+        /* {{ if show_details }} */
+        .details table {
+            width: 100%;
         }
 
         .details td {
-            white-space: nowrap
+            font-size: 11px;
         }
 
-        .details .name {
+        .details td.name {
             text-align: right;
-            padding-right: .6em
+            padding-right: .6em;
+            width: 50%;
         }
 
-        .details .value {
+        .details td.value {
             text-align: left;
             padding-left: .6em;
-            font-family: 'Lucida Console', 'Courier New', monospace
+            font-family: 'Lucida Console', 'Courier New', monospace;
         }
+        /* {{ end }} */
     </style>
 </head>
 <body>
@@ -58,50 +60,38 @@
     <div>
         <img src="https://http.cat/{{ code }}.jpg" alt="{{ message }}">
         {{ if show_details }}
-        <table class="details">
-            <tbody>
-            {{ if original_uri }}
-            <tr>
-                <td class="name">Original URI</td>
-                <td class="value">{{ original_uri }}</td>
-            </tr>
-            {{ end }}
-            {{ if namespace }}
-            <tr>
-                <td class="name">Namespace</td>
-                <td class="value">{{ namespace }}</td>
-            </tr>
-            {{ end }}
-            {{ if ingress_name }}
-            <tr>
-                <td class="name">Ingress name</td>
-                <td class="value">{{ ingress_name }}</td>
-            </tr>
-            {{ end }}
-            {{ if service_name }}
-            <tr>
-                <td class="name">Service name</td>
-                <td class="value">{{ service_name }}</td>
-            </tr>
-            {{ end }}
-            {{ if service_port }}
-            <tr>
-                <td class="name">Service port</td>
-                <td class="value">{{ service_port }}</td>
-            </tr>
-            {{ end }}
-            {{ if request_id }}
-            <tr>
-                <td class="name">Request ID</td>
-                <td class="value">{{ request_id }}</td>
-            </tr>
-            {{ end }}
-            <tr>
-                <td class="name">Timestamp</td>
-                <td class="value">{{ now.Unix }}</td>
-            </tr>
-            </tbody>
-        </table>
+        <div class="details">
+            <table>
+                {{- if original_uri }}<tr>
+                    <td class="name">Original URI</td>
+                    <td class="value">{{ original_uri }}</td>
+                </tr>{{ end -}}
+                {{- if namespace }}<tr>
+                    <td class="name">Namespace</td>
+                    <td class="value">{{ namespace }}</td>
+                </tr>{{ end -}}
+                {{- if ingress_name }}<tr>
+                    <td class="name">Ingress name</td>
+                    <td class="value">{{ ingress_name }}</td>
+                </tr>{{ end -}}
+                {{- if service_name }}<tr>
+                    <td class="name">Service name</td>
+                    <td class="value">{{ service_name }}</td>
+                </tr>{{ end -}}
+                {{- if service_port }}<tr>
+                    <td class="name">Service port</td>
+                    <td class="value">{{ service_port }}</td>
+                </tr>{{ end -}}
+                {{- if request_id }}<tr>
+                    <td class="name">Request ID</td>
+                    <td class="value">{{ request_id }}</td>
+                </tr>{{ end -}}
+                <tr>
+                    <td class="name">Timestamp</td>
+                    <td class="value">{{ now.Unix }}</td>
+                </tr>
+            </table>
+        </div>
         {{ end }}
     </div>
 </div>

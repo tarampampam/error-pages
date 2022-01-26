@@ -12,6 +12,12 @@ func TestProperties_Replaces(t *testing.T) {
 		Code:        "foo",
 		Message:     "bar",
 		Description: "baz",
+		OriginalURI: "aaa",
+		Namespace:   "bbb",
+		IngressName: "ccc",
+		ServiceName: "ddd",
+		ServicePort: "eee",
+		RequestID:   "fff",
 	}
 
 	r := props.Replaces()
@@ -19,6 +25,12 @@ func TestProperties_Replaces(t *testing.T) {
 	assert.Equal(t, "foo", r["code"])
 	assert.Equal(t, "bar", r["message"])
 	assert.Equal(t, "baz", r["description"])
+	assert.Equal(t, "aaa", r["original_uri"])
+	assert.Equal(t, "bbb", r["namespace"])
+	assert.Equal(t, "ccc", r["ingress_name"])
+	assert.Equal(t, "ddd", r["service_name"])
+	assert.Equal(t, "eee", r["service_port"])
+	assert.Equal(t, "fff", r["request_id"])
 
 	props.Code, props.Message, props.Description = "", "", ""
 

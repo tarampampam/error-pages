@@ -12,8 +12,11 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 ### Added
 
-- Formatted response templates (`json`, `xml`) - the server responds with a formatted response depending on the `Content-Type` request header value
+- The templates contain details block now (can be enabled using `--show-details` flag for the `serve` command or environment variable `SHOW_DETAILS=true`)
+- Formatted response templates (`json`, `xml`) - the server responds with a formatted response depending on the `Content-Type` (and `X-Format`) request header value
 - HTTP header `X-Robots-Tag: noindex` for the error pages
+- Possibility to pass the needed error page code using `X-Code` HTTP header
+- Possibility to integrate with [ingress-nginx](https://kubernetes.github.io/ingress-nginx/)
 
 ### Fixed
 
