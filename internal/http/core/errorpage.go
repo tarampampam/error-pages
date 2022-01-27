@@ -1,4 +1,4 @@
-package utils
+package core
 
 import (
 	"strconv"
@@ -22,10 +22,6 @@ func RespondWithErrorPage( //nolint:funlen
 	showRequestDetails bool,
 ) {
 	ctx.Response.Header.Set("X-Robots-Tag", "noindex") // block Search indexing
-
-	if returnCode, ok := extractCodeToReturn(ctx); ok {
-		pageCode, httpCode = strconv.Itoa(returnCode), returnCode
-	}
 
 	var (
 		clientWant    = ClientWantFormat(ctx)
@@ -108,18 +104,4 @@ func RespondWithErrorPage( //nolint:funlen
 			}
 		}
 	}
-}
-
-func extractCodeToReturn(ctx *fasthttp.RequestCtx) (int, bool) { // for the Ingress support
-	var ch = ctx.Request.Header.Peek(CodeHeader)
-
-	if len(ch) > 0 && len(ch) <= 3 {
-		if code, err := strconv.Atoi(string(ch)); err == nil {
-			if code > 0 && code <= 599 {
-				return code, true
-			}
-		}
-	}
-
-	return 0, false
 }

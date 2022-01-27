@@ -1,4 +1,4 @@
-package utils
+package core
 
 import (
 	"bytes"
@@ -18,7 +18,7 @@ const (
 
 func ClientWantFormat(ctx *fasthttp.RequestCtx) ContentType {
 	var (
-		ct = bytes.ToLower(ctx.Request.Header.Peek(fasthttp.HeaderContentType))
+		ct = bytes.ToLower(ctx.Request.Header.ContentType())
 		f  = bytes.ToLower(ctx.Request.Header.Peek(FormatHeader)) // for the Ingress support
 	)
 

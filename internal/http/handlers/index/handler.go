@@ -1,8 +1,10 @@
 package index
 
 import (
+	"strconv"
+
 	"github.com/tarampampam/error-pages/internal/config"
-	"github.com/tarampampam/error-pages/internal/http/utils"
+	"github.com/tarampampam/error-pages/internal/http/core"
 	"github.com/valyala/fasthttp"
 )
 
@@ -22,6 +24,26 @@ func NewHandler(
 	showRequestDetails bool,
 ) fasthttp.RequestHandler {
 	return func(ctx *fasthttp.RequestCtx) {
-		utils.RespondWithErrorPage(ctx, cfg, p, defaultPageCode, int(defaultHTTPCode), showRequestDetails)
+		pageCode, httpCode := defaultPageCode, int(defaultHTTPCode)
+
+		if returnCode, ok := extractCodeToReturn(ctx); ok {
+			pageCode, httpCode = strconv.Itoa(returnCode), returnCode
+		}
+
+		core.RespondWithErrorPage(ctx, cfg, p, pageCode, httpCode, showRequestDetails)
 	}
+}
+
+func extractCodeToReturn(ctx *fasthttp.RequestCtx) (int, bool) { // for the Ingress support
+	var ch = ctx.Request.Header.Peek(core.CodeHeader)
+
+	if len(ch) > 0 && len(ch) <= 3 {
+		if code, err := strconv.Atoi(string(ch)); err == nil {
+			if code > 0 && code <= 599 {
+				return code, true
+			}
+		}
+	}
+
+	return 0, false
 }

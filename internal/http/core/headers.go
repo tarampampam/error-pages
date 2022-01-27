@@ -1,4 +1,4 @@
-package utils
+package core
 
 const (
 	// FormatHeader name of the header used to extract the format

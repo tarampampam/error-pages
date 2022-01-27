@@ -17,8 +17,10 @@ One day you may want to replace the standard error pages of your HTTP server wit
 - Simple error pages generator, written on Go
 - Single-page error page templates with different designs (located in the [templates](templates) directory)
 - Fast and lightweight HTTP server (written on Go also, with the [FastHTTP][fasthttp] under the hood)
+- HTTP server respects the `Content-Type` HTTP header (and `X-Format`) value and responds with the corresponding format
 - Already generated error pages (sources can be [found here][preview-sources], the **demonstration** is always accessible [here][preview-demo])
-- Lightweight docker image _(~3.5Mb compressed size)_ with all the things described above
+- Lightweight docker image _(~3.7Mb compressed size)_ with all the things described above
+- Ready to integrate with the Traefik and Ingress-nginx
 
 Also, this project can be used for the [**Traefik** error pages customization](https://doc.traefik.io/traefik/middlewares/http/errorpages/).
 
@@ -86,7 +88,7 @@ $ docker run --rm \
     tarampampam/error-pages
 ```
 
-And open [`http://127.0.0.1:8080/404.html`](http://127.0.0.1:8080/404.html) in your favorite browser. Error pages are accessible by the following URLs: `http://127.0.0.1:8080/{page_code}.html`. Another way is to pass the needed error page code (not HTTP response code, just error page) using the HTTP header `X-Code`.
+And open [`http://127.0.0.1:8080/404.html`](http://127.0.0.1:8080/404.html) in your favorite browser. Error pages are accessible by the following URLs: `http://127.0.0.1:8080/{page_code}.html`. Another way is to pass the needed error page code (and HTTP response code) using the HTTP header `X-Code` when requesting an index page.
 
 Additionally, the server respects the `Content-Type` HTTP header (and `X-Format`) value and responds with the corresponding format instead of the HTML-formatted response only. The `xml` and `json` content types (formats) are allowed at this moment, and its format can be fully customized using a configuration file!
 
