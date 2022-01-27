@@ -187,6 +187,8 @@ jobs: # Docs: <https://git.io/JvxXE>
     needs: [docker-image]
     timeout-minutes: 2
     steps:
+      - uses: actions/checkout@v2
+
       - uses: actions/download-artifact@v2
         with:
           name: docker-image
@@ -195,17 +197,21 @@ jobs: # Docs: <https://git.io/JvxXE>
       - working-directory: .artifact
         run: docker load < docker-image.tar
 
+      - name: Download hurl
+        env:
+          VERSION: 1.4.0
+        run: curl -LO -o hurl.deb https://github.com/Orange-OpenSource/hurl/releases/download/${VERSION}/hurl_${VERSION}_amd64.deb
+
+      - name: Install hurl
+        run: sudo dpkg -i hurl.deb
+
       - name: Run container with the app
-        run: docker run --rm -d -p "8080:8080/tcp" -e "DEFAULT_HTTP_CODE=401" --name app app:ci
+        run: docker run --rm -d -p "8080:8080/tcp" --name app app:ci
 
       - name: Wait for container "healthy" state
         run: until [[ "`docker inspect -f {{.State.Health.Status}} app`" == "healthy" ]]; do echo "wait 1 sec.."; sleep 1; done
 
-      - run: test $(curl --write-out %{http_code} --silent --output /dev/null http://127.0.0.1:8080/) -eq 401
-      - run: curl --fail http://127.0.0.1:8080/500.html
-      - run: curl --fail http://127.0.0.1:8080/400.html
-      - run: curl --fail http://127.0.0.1:8080/healthz
-      - run: test $(curl --write-out %{http_code} --silent --output /dev/null http://127.0.0.1:8080/foobar) -eq 404
+      - run: hurl --color --no-output --fail-at-end --file-root ./test/hurl --variable host=127.0.0.1 --variable port=8080 --summary ./test/hurl/*.hurl
 
       - name: Stop the container
         if: always()

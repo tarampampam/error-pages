@@ -45,3 +45,12 @@ services:
       - golint-cache:/tmp/golint:rw
     working_dir: /src
     command: /bin/true
+
+  hurl:
+    image: orangeopensource/hurl:1.5.0
+    volumes:
+      - .:/src:ro
+    working_dir: /src
+    depends_on:
+      web:
+        condition: service_healthy
