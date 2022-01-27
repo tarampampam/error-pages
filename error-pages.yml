@@ -12,6 +12,8 @@ templates:
   - path: ./templates/hacker-terminal.html
   - path: ./templates/cats.html
 
+foo: {}
+
 formats:
   json:
     content: |

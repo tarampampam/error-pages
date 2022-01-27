@@ -138,8 +138,6 @@ pages:
 }
 
 func TestFromYamlFile(t *testing.T) {
-	t.Parallel()
-
 	var cases = map[string]struct { //nolint:maligned
 		giveYamlFilePath string
 		wantErr          bool
@@ -188,8 +186,6 @@ func TestFromYamlFile(t *testing.T) {
 
 	for name, tt := range cases {
 		t.Run(name, func(t *testing.T) {
-			t.Parallel()
-
 			conf, err := config.FromYamlFile(tt.giveYamlFilePath)
 
 			if tt.wantErr {
