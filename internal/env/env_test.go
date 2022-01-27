@@ -8,6 +8,8 @@ import (
 )
 
 func TestConstants(t *testing.T) {
+	t.Parallel()
+
 	assert.Equal(t, "LISTEN_ADDR", string(ListenAddr))
 	assert.Equal(t, "LISTEN_PORT", string(ListenPort))
 	assert.Equal(t, "TEMPLATE_NAME", string(TemplateName))
@@ -18,6 +20,8 @@ func TestConstants(t *testing.T) {
 }
 
 func TestEnvVariable_Lookup(t *testing.T) {
+	t.Parallel()
+
 	cases := []struct {
 		giveEnv envVariable
 	}{

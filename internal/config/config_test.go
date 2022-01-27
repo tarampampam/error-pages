@@ -9,6 +9,8 @@ import (
 )
 
 func TestFromYaml(t *testing.T) {
+	t.Parallel()
+
 	var cases = map[string]struct { //nolint:maligned
 		giveYaml      []byte
 		giveEnv       map[string]string
@@ -134,6 +136,8 @@ pages:
 }
 
 func TestFromYamlFile(t *testing.T) {
+	t.Parallel()
+
 	var cases = map[string]struct { //nolint:maligned
 		giveYamlFilePath string
 		wantErr          bool

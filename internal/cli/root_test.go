@@ -9,6 +9,8 @@ import (
 )
 
 func TestSubcommands(t *testing.T) {
+	t.Parallel()
+
 	cmd := cli.NewCommand("unit test")
 
 	cases := []struct {
@@ -37,6 +39,8 @@ func TestSubcommands(t *testing.T) {
 }
 
 func TestFlags(t *testing.T) {
+	t.Parallel()
+
 	cmd := cli.NewCommand("unit test")
 
 	cases := []struct {
@@ -68,6 +72,8 @@ func TestFlags(t *testing.T) {
 }
 
 func TestExecuting(t *testing.T) {
+	t.Parallel()
+
 	cmd := cli.NewCommand("unit test")
 	cmd.SetArgs([]string{})
 

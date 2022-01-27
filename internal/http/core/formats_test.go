@@ -9,6 +9,8 @@ import (
 )
 
 func TestClientWantFormat(t *testing.T) {
+	t.Parallel()
+
 	for name, tt := range map[string]struct {
 		giveContentTypeHeader string
 		giveFormatHeader      string
@@ -75,6 +77,8 @@ func TestClientWantFormat(t *testing.T) {
 }
 
 func TestSetClientFormat(t *testing.T) {
+	t.Parallel()
+
 	for name, tt := range map[string]struct {
 		giveContentType core.ContentType
 		wantHeaderValue string

@@ -8,6 +8,8 @@ import (
 )
 
 func TestStringsSlice_Pick(t *testing.T) {
+	t.Parallel()
+
 	t.Run("first", func(t *testing.T) {
 		for i := uint8(0); i < 100; i++ {
 			assert.Equal(t, "", pick.NewStringsSlice([]string{}, pick.First).Pick())

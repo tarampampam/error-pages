@@ -8,6 +8,8 @@ import (
 )
 
 func Test_Render(t *testing.T) {
+	t.Parallel()
+
 	for name, tt := range map[string]struct {
 		giveContent string
 		giveProps   tpl.Properties
