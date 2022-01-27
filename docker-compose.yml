@@ -32,7 +32,7 @@ services:
       - --port=8080
       - --show-details
     healthcheck:
-      test: ['CMD', 'wget', '--spider', '-q', 'http://127.0.0.1:8080/health/live']
+      test: ['CMD', 'wget', '--spider', '-q', 'http://127.0.0.1:8080/healthz']
       interval: 5s
       timeout: 2s
 

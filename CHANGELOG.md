@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 ### Changed
 
 - It is now possible to use [golang-tags of templates](https://pkg.go.dev/text/template) in error page templates and formatted (`json`, `xml`) responses
+- Health-check route become `/healthz` (instead `/health/live`, previous route marked ad deprecated)
 
 ### Added
 

@@ -204,7 +204,7 @@ jobs: # Docs: <https://git.io/JvxXE>
       - run: test $(curl --write-out %{http_code} --silent --output /dev/null http://127.0.0.1:8080/) -eq 401
       - run: curl --fail http://127.0.0.1:8080/500.html
       - run: curl --fail http://127.0.0.1:8080/400.html
-      - run: curl --fail http://127.0.0.1:8080/health/live
+      - run: curl --fail http://127.0.0.1:8080/healthz
       - run: test $(curl --write-out %{http_code} --silent --output /dev/null http://127.0.0.1:8080/foobar) -eq 404
 
       - name: Stop the container

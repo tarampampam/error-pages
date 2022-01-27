@@ -68,9 +68,12 @@ func (s *Server) Register(
 	showDetails bool,
 ) {
 	s.router.GET("/", indexHandler.NewHandler(cfg, templatePicker, defaultPageCode, defaultHTTPCode, showDetails))
-	s.router.GET("/version", versionHandler.NewHandler(version.Version()))
-	s.router.ANY("/health/live", healthzHandler.NewHandler(checkers.NewLiveChecker()))
 	s.router.GET("/{code}.html", errorpageHandler.NewHandler(cfg, templatePicker, showDetails))
+	s.router.GET("/version", versionHandler.NewHandler(version.Version()))
+
+	liveHandler := healthzHandler.NewHandler(checkers.NewLiveChecker())
+	s.router.ANY("/healthz", liveHandler)
+	s.router.ANY("/health/live", liveHandler) // deprecated
 
 	s.router.NotFound = notfoundHandler.NewHandler()
 }
