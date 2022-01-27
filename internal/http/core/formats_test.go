@@ -61,13 +61,15 @@ func TestClientWantFormat(t *testing.T) {
 		},
 	} {
 		t.Run(name, func(t *testing.T) {
+			t.Parallel()
+
 			h := &fasthttp.RequestHeader{}
 			h.Set(fasthttp.HeaderContentType, tt.giveContentTypeHeader)
 			h.Set(core.FormatHeader, tt.giveFormatHeader)
 
 			ctx := &fasthttp.RequestCtx{
 				Request: fasthttp.Request{
-					Header: *h,
+					Header: *h, //nolint:govet
 				},
 			}
 
@@ -90,6 +92,8 @@ func TestSetClientFormat(t *testing.T) {
 		"plain":            {giveContentType: core.PlainTextContentType, wantHeaderValue: "text/plain; charset=utf-8"},
 	} {
 		t.Run(name, func(t *testing.T) {
+			t.Parallel()
+
 			ctx := &fasthttp.RequestCtx{
 				Response: fasthttp.Response{
 					Header: fasthttp.ResponseHeader{},

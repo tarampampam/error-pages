@@ -11,6 +11,8 @@ func TestStringsSlice_Pick(t *testing.T) {
 	t.Parallel()
 
 	t.Run("first", func(t *testing.T) {
+		t.Parallel()
+
 		for i := uint8(0); i < 100; i++ {
 			assert.Equal(t, "", pick.NewStringsSlice([]string{}, pick.First).Pick())
 		}
@@ -23,6 +25,8 @@ func TestStringsSlice_Pick(t *testing.T) {
 	})
 
 	t.Run("random once", func(t *testing.T) {
+		t.Parallel()
+
 		for i := uint8(0); i < 100; i++ {
 			assert.Equal(t, "", pick.NewStringsSlice([]string{}, pick.RandomOnce).Pick())
 		}
@@ -38,6 +42,8 @@ func TestStringsSlice_Pick(t *testing.T) {
 	})
 
 	t.Run("random every time", func(t *testing.T) {
+		t.Parallel()
+
 		for i := uint8(0); i < 100; i++ {
 			assert.Equal(t, "", pick.NewStringsSlice([]string{}, pick.RandomEveryTime).Pick())
 		}

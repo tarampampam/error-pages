@@ -20,8 +20,6 @@ func TestConstants(t *testing.T) {
 }
 
 func TestEnvVariable_Lookup(t *testing.T) {
-	t.Parallel()
-
 	cases := []struct {
 		giveEnv envVariable
 	}{

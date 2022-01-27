@@ -111,6 +111,8 @@ pages:
 
 	for name, tt := range cases {
 		t.Run(name, func(t *testing.T) {
+			t.Parallel()
+
 			if tt.giveEnv != nil {
 				for key, value := range tt.giveEnv {
 					assert.NoError(t, os.Setenv(key, value))
@@ -186,6 +188,8 @@ func TestFromYamlFile(t *testing.T) {
 
 	for name, tt := range cases {
 		t.Run(name, func(t *testing.T) {
+			t.Parallel()
+
 			conf, err := config.FromYamlFile(tt.giveYamlFilePath)
 
 			if tt.wantErr {

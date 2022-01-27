@@ -54,6 +54,8 @@ func Test_Render(t *testing.T) {
 		},
 	} {
 		t.Run(name, func(t *testing.T) {
+			t.Parallel()
+
 			content, err := tpl.Render([]byte(tt.giveContent), tt.giveProps)
 
 			if tt.wantError == true {
