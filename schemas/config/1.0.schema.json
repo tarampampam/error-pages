@@ -1,0 +1,108 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Error-Pages config file schema",
+    "description": "Error-Pages config file schema.",
+    "type": "object",
+    "properties": {
+        "templates": {
+            "type": "array",
+            "description": "Templates list",
+            "items": {
+                "type": "object",
+                "description": "Template properties",
+                "properties": {
+                    "path": {
+                        "type": "string",
+                        "description": "Path to the template file",
+                        "examples": [
+                            "./templates/ghost.html",
+                            "/opt/tpl/ghost.htm"
+                        ]
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "Template name (optional, if path is defined)",
+                        "examples": [
+                            "ghost"
+                        ]
+                    },
+                    "content": {
+                        "type": "string",
+                        "description": "Template content, if path is not defined",
+                        "examples": [
+                            "<html><body>{{ code }}: {{ message }}</body></html>"
+                        ]
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "formats": {
+            "type": "object",
+            "description": "Responses, based on requested content-type format",
+            "properties": {
+                "json": {
+                    "type": "object",
+                    "description": "JSON format",
+                    "properties": {
+                        "content": {
+                            "type": "string",
+                            "description": "JSON response body (template tags are allowed here)",
+                            "examples": [
+                                "{\"error\": true, \"code\": {{ code | json }}, \"message\": {{ message | json }}}"
+                            ]
+                        }
+                    },
+                    "additionalProperties": false
+                },
+                "xml": {
+                    "type": "object",
+                    "description": "XML format",
+                    "properties": {
+                        "content": {
+                            "type": "string",
+                            "description": "XML response body (template tags are allowed here)",
+                            "examples": [
+                                "<?xml version=\"1.0\" encoding=\"utf-8\"?><error><code>{{ code }}</code><message>{{ message }}</message></error>"
+                            ]
+                        }
+                    },
+                    "additionalProperties": false
+                }
+            },
+            "additionalProperties": false
+        },
+        "pages": {
+            "type": "object",
+            "description": "Error pages (codes)",
+            "patternProperties": {
+                "^[a-zA-Z0-9_-]+$": {
+                    "type": "object",
+                    "description": "Error page (code)",
+                    "properties": {
+                        "message": {
+                            "type": "string",
+                            "description": "Error page message (title)",
+                            "examples": [
+                                "Bad Request"
+                            ]
+                        },
+                        "description": {
+                            "type": "string",
+                            "description": "Error page description",
+                            "examples": [
+                                "The server did not understand the request"
+                            ]
+                        }
+                    },
+                    "additionalProperties": false
+                }
+            },
+            "additionalProperties": false
+        }
+    },
+    "additionalProperties": false,
+    "required": [
+        "templates"
+    ]
+}

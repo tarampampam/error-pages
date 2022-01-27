@@ -43,7 +43,7 @@ gotest: ## Run app tests
 	docker-compose run $(DC_RUN_ARGS) --no-deps app go test -v -race -timeout 10s ./...
 
 int-test: ## Run integration tests (docs: https://hurl.dev/docs/man-page.html#options)
-	docker-compose run --rm hurl --color --test --fail-at-end --file-root ./test/hurl --variable host=web --variable port=8080 --summary ./test/hurl/*.hurl
+	docker-compose run --rm hurl --color --test --fail-at-end --variable host=web --variable port=8080 --summary ./test/hurl/*.hurl
 
 test: lint gotest int-test ## Run app tests and linters
 

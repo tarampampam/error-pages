@@ -30,6 +30,21 @@ jobs: # Docs: <https://git.io/JvxXE>
           version: v1.44 # without patch version
           only-new-issues: false # show only new issues if it's a pull request
 
+  validate-config-file:
+    name: Validate config file
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/setup-node@v2
+        with: {node-version: '16'}
+
+      - name: Install linter
+        run: npm install -g ajv-cli # Package page: <https://www.npmjs.com/package/ajv-cli>
+
+      - name: Run linter
+        run: ajv validate --all-errors --verbose -s ./schemas/config/1.0.schema.json -d ./error-pages.y*ml
+
   go-test:
     name: Unit tests
     runs-on: ubuntu-20.04
@@ -211,7 +226,7 @@ jobs: # Docs: <https://git.io/JvxXE>
       - name: Wait for container "healthy" state
         run: until [[ "`docker inspect -f {{.State.Health.Status}} app`" == "healthy" ]]; do echo "wait 1 sec.."; sleep 1; done
 
-      - run: hurl --color --test --fail-at-end --file-root ./test/hurl --variable host=127.0.0.1 --variable port=8080 --summary ./test/hurl/*.hurl
+      - run: hurl --color --test --fail-at-end --variable host=127.0.0.1 --variable port=8080 --summary ./test/hurl/*.hurl
 
       - name: Stop the container
         if: always()
