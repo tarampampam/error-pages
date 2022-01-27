@@ -39,7 +39,7 @@ func (bh *buildingHistory) Append(templateName, pageCode, message, path string) 
 }
 
 //go:embed index.tpl.html
-var indexPageTemplate string //nolint:gochecknoglobals
+var indexPageTemplate string
 
 func (bh *buildingHistory) WriteIndexFile(path string, perm os.FileMode) error {
 	t, err := template.New("index").Parse(indexPageTemplate)
