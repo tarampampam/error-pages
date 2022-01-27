@@ -12,6 +12,7 @@ const (
 	ConfigFilePath   envVariable = "CONFIG_FILE"        // path to the config file
 	DefaultErrorPage envVariable = "DEFAULT_ERROR_PAGE" // default error page (code)
 	DefaultHTTPCode  envVariable = "DEFAULT_HTTP_CODE"  // default HTTP response code
+	ShowDetails      envVariable = "SHOW_DETAILS"       // show request details in response
 )
 
 // String returns environment variable name in the string representation.

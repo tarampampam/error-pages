@@ -6,6 +6,7 @@ import (
 
 	"github.com/fasthttp/router"
 	"github.com/tarampampam/error-pages/internal/checkers"
+	"github.com/tarampampam/error-pages/internal/config"
 	"github.com/tarampampam/error-pages/internal/http/common"
 	errorpageHandler "github.com/tarampampam/error-pages/internal/http/handlers/errorpage"
 	healthzHandler "github.com/tarampampam/error-pages/internal/http/handlers/healthz"
@@ -52,30 +53,27 @@ func (s *Server) Start(ip string, port uint16) error {
 	return s.fast.ListenAndServe(ip + ":" + strconv.Itoa(int(port)))
 }
 
-type (
-	errorsPager interface {
-		// GetPage with passed template name and error code.
-		GetPage(templateName, code string) ([]byte, error)
-	}
-
-	templatePicker interface {
-		// Pick the template name for responding.
-		Pick() string
-	}
-)
+type templatePicker interface {
+	// Pick the template name for responding.
+	Pick() string
+}
 
 // Register server routes, middlewares, etc.
 // Router docs: <https://github.com/fasthttp/router>
 func (s *Server) Register(
-	errorsPager errorsPager,
+	cfg *config.Config,
 	templatePicker templatePicker,
 	defaultPageCode string,
 	defaultHTTPCode uint16,
+	showDetails bool,
 ) {
-	s.router.GET("/", indexHandler.NewHandler(errorsPager, templatePicker, defaultPageCode, defaultHTTPCode))
+	s.router.GET("/", indexHandler.NewHandler(cfg, templatePicker, defaultPageCode, defaultHTTPCode, showDetails))
+	s.router.GET("/{code}.html", errorpageHandler.NewHandler(cfg, templatePicker, showDetails))
 	s.router.GET("/version", versionHandler.NewHandler(version.Version()))
-	s.router.ANY("/health/live", healthzHandler.NewHandler(checkers.NewLiveChecker()))
-	s.router.GET("/{code}.html", errorpageHandler.NewHandler(errorsPager, templatePicker))
+
+	liveHandler := healthzHandler.NewHandler(checkers.NewLiveChecker())
+	s.router.ANY("/healthz", liveHandler)
+	s.router.ANY("/health/live", liveHandler) // deprecated
 
 	s.router.NotFound = notfoundHandler.NewHandler()
 }

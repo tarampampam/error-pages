@@ -30,13 +30,14 @@ services:
       - serve
       - --verbose
       - --port=8080
+      - --show-details
     healthcheck:
-      test: ['CMD', 'wget', '--spider', '-q', 'http://127.0.0.1:8080/health/live']
+      test: ['CMD', 'wget', '--spider', '-q', 'http://127.0.0.1:8080/healthz']
       interval: 5s
       timeout: 2s
 
   golint:
-    image: golangci/golangci-lint:v1.42-alpine # Image page: <https://hub.docker.com/r/golangci/golangci-lint>
+    image: golangci/golangci-lint:v1.44-alpine # Image page: <https://hub.docker.com/r/golangci/golangci-lint>
     environment:
       GOLANGCI_LINT_CACHE: /tmp/golint # <https://github.com/golangci/golangci-lint/blob/v1.42.0/internal/cache/default.go#L68>
     volumes:
@@ -44,3 +45,12 @@ services:
       - golint-cache:/tmp/golint:rw
     working_dir: /src
     command: /bin/true
+
+  hurl:
+    image: orangeopensource/hurl:1.5.0
+    volumes:
+      - .:/src:ro
+    working_dir: /src
+    depends_on:
+      web:
+        condition: service_healthy

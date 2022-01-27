@@ -4,6 +4,25 @@ All notable changes to this package will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## UNRELEASED
+
+### Changed
+
+- It is now possible to use [golang-tags of templates](https://pkg.go.dev/text/template) in error page templates and formatted (`json`, `xml`) responses
+- Health-check route become `/healthz` (instead `/health/live`, previous route marked ad deprecated)
+
+### Added
+
+- The templates contain details block now (can be enabled using `--show-details` flag for the `serve` command or environment variable `SHOW_DETAILS=true`)
+- Formatted response templates (`json`, `xml`) - the server responds with a formatted response depending on the `Content-Type` (and `X-Format`) request header value
+- HTTP header `X-Robots-Tag: noindex` for the error pages
+- Possibility to pass the needed error page code using `X-Code` HTTP header
+- Possibility to integrate with [ingress-nginx](https://kubernetes.github.io/ingress-nginx/)
+
+### Fixed
+
+- Potential race condition (in the `pick.StringsSlice` struct)
+
 ## v2.3.0
 
 ### Added

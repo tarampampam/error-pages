@@ -1,15 +1,14 @@
 package index
 
 import (
+	"strconv"
+
+	"github.com/tarampampam/error-pages/internal/config"
+	"github.com/tarampampam/error-pages/internal/http/core"
 	"github.com/valyala/fasthttp"
 )
 
 type (
-	errorsPager interface {
-		// GetPage with passed template name and error code.
-		GetPage(templateName, code string) ([]byte, error)
-	}
-
 	templatePicker interface {
 		// Pick the template name for responding.
 		Pick() string
@@ -18,24 +17,33 @@ type (
 
 // NewHandler creates handler for the index page serving.
 func NewHandler(
-	e errorsPager,
+	cfg *config.Config,
 	p templatePicker,
 	defaultPageCode string,
 	defaultHTTPCode uint16,
+	showRequestDetails bool,
 ) fasthttp.RequestHandler {
 	return func(ctx *fasthttp.RequestCtx) {
-		content, err := e.GetPage(p.Pick(), defaultPageCode)
+		pageCode, httpCode := defaultPageCode, int(defaultHTTPCode)
 
-		if err == nil {
-			ctx.SetContentType("text/html; charset=utf-8")
-			ctx.SetStatusCode(int(defaultHTTPCode))
-			_, _ = ctx.Write(content)
-
-			return
+		if returnCode, ok := extractCodeToReturn(ctx); ok {
+			pageCode, httpCode = strconv.Itoa(returnCode), returnCode
 		}
 
-		ctx.SetContentType("text/plain; charset=utf-8")
-		ctx.SetStatusCode(fasthttp.StatusNotAcceptable)
-		_, _ = ctx.WriteString("default page code " + defaultPageCode + " is not available: " + err.Error())
+		core.RespondWithErrorPage(ctx, cfg, p, pageCode, httpCode, showRequestDetails)
 	}
+}
+
+func extractCodeToReturn(ctx *fasthttp.RequestCtx) (int, bool) { // for the Ingress support
+	var ch = ctx.Request.Header.Peek(core.CodeHeader)
+
+	if len(ch) > 0 && len(ch) <= 3 {
+		if code, err := strconv.Atoi(string(ch)); err == nil {
+			if code > 0 && code <= 599 {
+				return code, true
+			}
+		}
+	}
+
+	return 0, false
 }

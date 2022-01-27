@@ -12,6 +12,8 @@ import (
 )
 
 func TestNewOSSignals(t *testing.T) {
+	t.Parallel()
+
 	oss := breaker.NewOSSignals(context.Background())
 
 	gotSignal := make(chan os.Signal, 1)
@@ -33,6 +35,8 @@ func TestNewOSSignals(t *testing.T) {
 }
 
 func TestNewOSSignalCtxCancel(t *testing.T) {
+	t.Parallel()
+
 	ctx, cancel := context.WithCancel(context.Background())
 
 	oss := breaker.NewOSSignals(ctx)

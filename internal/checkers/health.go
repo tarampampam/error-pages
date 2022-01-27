@@ -34,7 +34,7 @@ func NewHealthChecker(ctx context.Context, client ...httpClient) *HealthChecker 
 
 // Check application using liveness probe.
 func (c *HealthChecker) Check(port uint16) error {
-	req, err := http.NewRequestWithContext(c.ctx, http.MethodGet, fmt.Sprintf("http://127.0.0.1:%d/health/live", port), nil) //nolint:lll
+	req, err := http.NewRequestWithContext(c.ctx, http.MethodGet, fmt.Sprintf("http://127.0.0.1:%d/healthz", port), nil) //nolint:lll
 	if err != nil {
 		return err
 	}

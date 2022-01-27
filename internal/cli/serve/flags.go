@@ -20,6 +20,7 @@ type flags struct {
 	}
 	defaultErrorPage string
 	defaultHTTPCode  uint16
+	showDetails      bool
 }
 
 const (
@@ -28,6 +29,7 @@ const (
 	templateNameFlagName     = "template-name"
 	defaultErrorPageFlagName = "default-error-page"
 	defaultHTTPCodeFlagName  = "default-http-code"
+	showDetailsFlagName      = "show-details"
 )
 
 const (
@@ -69,9 +71,15 @@ func (f *flags) init(flagSet *pflag.FlagSet) {
 		404, //nolint:gomnd
 		fmt.Sprintf("default HTTP response code [$%s]", env.DefaultHTTPCode),
 	)
+	flagSet.BoolVarP(
+		&f.showDetails,
+		showDetailsFlagName, "",
+		false,
+		fmt.Sprintf("show request details in response [$%s]", env.ShowDetails),
+	)
 }
 
-func (f *flags) overrideUsingEnv(flagSet *pflag.FlagSet) (lastErr error) { //nolint:gocognit
+func (f *flags) overrideUsingEnv(flagSet *pflag.FlagSet) (lastErr error) { //nolint:gocognit,gocyclo
 	flagSet.VisitAll(func(flag *pflag.Flag) {
 		// flag was NOT defined using CLI (flags should have maximal priority)
 		if !flag.Changed { //nolint:nestif
@@ -106,6 +114,13 @@ func (f *flags) overrideUsingEnv(flagSet *pflag.FlagSet) (lastErr error) { //nol
 						f.defaultHTTPCode = uint16(code)
 					} else {
 						lastErr = fmt.Errorf("wrong default HTTP response code environment variable [%s] value", envVar)
+					}
+				}
+
+			case showDetailsFlagName:
+				if envVar, exists := env.ShowDetails.Lookup(); exists {
+					if b, err := strconv.ParseBool(envVar); err == nil {
+						f.showDetails = b
 					}
 				}
 			}

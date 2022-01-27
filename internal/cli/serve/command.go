@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"os"
-	"sort"
 	"time"
 
 	"github.com/spf13/cobra"
@@ -12,7 +11,6 @@ import (
 	"github.com/tarampampam/error-pages/internal/config"
 	appHttp "github.com/tarampampam/error-pages/internal/http"
 	"github.com/tarampampam/error-pages/internal/pick"
-	"github.com/tarampampam/error-pages/internal/tpl"
 	"go.uber.org/zap"
 )
 
@@ -27,23 +25,17 @@ func NewCommand(ctx context.Context, log *zap.Logger, configFile *string) *cobra
 		Use:     "serve",
 		Aliases: []string{"s", "server"},
 		Short:   "Start HTTP server",
-		PreRunE: func(cmd *cobra.Command, _ []string) error {
+		PreRunE: func(cmd *cobra.Command, _ []string) (err error) {
 			if configFile == nil {
 				return errors.New("path to the config file is required for this command")
 			}
 
-			if err := f.overrideUsingEnv(cmd.Flags()); err != nil {
+			if err = f.overrideUsingEnv(cmd.Flags()); err != nil {
 				return err
 			}
 
-			if c, err := config.FromYamlFile(*configFile); err != nil {
+			if cfg, err = config.FromYamlFile(*configFile); err != nil {
 				return err
-			} else {
-				if err = c.Validate(); err != nil {
-					return err
-				}
-
-				cfg = c
 			}
 
 			return f.validate()
@@ -76,34 +68,9 @@ func run(parentCtx context.Context, log *zap.Logger, f flags, cfg *config.Config
 	}()
 
 	var (
-		errorPages    = tpl.NewErrorPages()
-		templateNames = make([]string, 0) // slice with all possible template names
+		templateNames = cfg.TemplateNames()
+		picker        *pick.StringsSlice
 	)
-
-	log.Debug("Loading templates")
-
-	if templates, err := cfg.LoadTemplates(); err == nil {
-		if len(templates) > 0 {
-			for templateName, content := range templates {
-				errorPages.AddTemplate(templateName, content)
-				templateNames = append(templateNames, templateName)
-			}
-
-			for code, desc := range cfg.Pages {
-				errorPages.AddPage(code, desc.Message, desc.Description)
-			}
-
-			log.Info("Templates loaded", zap.Int("templates", len(templates)), zap.Int("pages", len(cfg.Pages)))
-		} else {
-			return errors.New("no loaded templates")
-		}
-	} else {
-		return err
-	}
-
-	sort.Strings(templateNames) // sorting is important for the first template picking
-
-	var picker *pick.StringsSlice
 
 	switch f.template.name {
 	case useRandomTemplate:
@@ -122,29 +89,19 @@ func run(parentCtx context.Context, log *zap.Logger, f flags, cfg *config.Config
 		picker = pick.NewStringsSlice(templateNames, pick.First)
 
 	default:
-		var found bool
-
-		for i := 0; i < len(templateNames); i++ {
-			if templateNames[i] == f.template.name {
-				found = true
-
-				break
-			}
-		}
-
-		if !found {
+		if t, found := cfg.Template(f.template.name); found {
+			log.Info("We will use the requested template", zap.String("name", t.Name()))
+			picker = pick.NewStringsSlice([]string{t.Name()}, pick.First)
+		} else {
 			return errors.New("requested nonexistent template: " + f.template.name)
 		}
-
-		log.Info("We will use the requested template", zap.String("name", f.template.name))
-		picker = pick.NewStringsSlice([]string{f.template.name}, pick.First)
 	}
 
 	// create HTTP server
 	server := appHttp.NewServer(log)
 
 	// register server routes, middlewares, etc.
-	server.Register(&errorPages, picker, f.defaultErrorPage, f.defaultHTTPCode)
+	server.Register(cfg, picker, f.defaultErrorPage, f.defaultHTTPCode, f.showDetails)
 
 	startedAt, startingErrCh := time.Now(), make(chan error, 1) // channel for server starting error
 
@@ -157,6 +114,7 @@ func run(parentCtx context.Context, log *zap.Logger, f flags, cfg *config.Config
 			zap.Uint16("port", f.listen.port),
 			zap.String("default error page", f.defaultErrorPage),
 			zap.Uint16("default HTTP response code", f.defaultHTTPCode),
+			zap.Bool("show request details", f.showDetails),
 		)
 
 		if err := server.Start(f.listen.ip, f.listen.port); err != nil {

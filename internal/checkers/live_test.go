@@ -8,5 +8,7 @@ import (
 )
 
 func TestLiveChecker_Check(t *testing.T) {
+	t.Parallel()
+
 	assert.NoError(t, checkers.NewLiveChecker().Check())
 }

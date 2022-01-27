@@ -17,8 +17,10 @@ One day you may want to replace the standard error pages of your HTTP server wit
 - Simple error pages generator, written on Go
 - Single-page error page templates with different designs (located in the [templates](templates) directory)
 - Fast and lightweight HTTP server (written on Go also, with the [FastHTTP][fasthttp] under the hood)
+- HTTP server respects the `Content-Type` HTTP header (and `X-Format`) value and responds with the corresponding format
 - Already generated error pages (sources can be [found here][preview-sources], the **demonstration** is always accessible [here][preview-demo])
-- Lightweight docker image _(~3.5Mb compressed size)_ with all the things described above
+- Lightweight docker image _(~3.7Mb compressed size)_ with all the things described above
+- Ready to integrate with the Traefik and Ingress-nginx
 
 Also, this project can be used for the [**Traefik** error pages customization](https://doc.traefik.io/traefik/middlewares/http/errorpages/).
 
@@ -30,10 +32,10 @@ Also, this project can be used for the [**Traefik** error pages customization](h
 
 Download the latest binary file for your os/arch from the [releases page][link_releases] or use our docker image:
 
-Registry                               | Image
--------------------------------------- | -----
-[Docker Hub][link_docker_hub]          | `tarampampam/error-pages`
-[GitHub Container Registry][link_ghcr] | `ghcr.io/tarampampam/error-pages`
+| Registry                                   | Image                             |
+|--------------------------------------------|-----------------------------------|
+| [Docker Hub][link_docker_hub]              | `tarampampam/error-pages`         |
+| [GitHub Container Registry][link_ghcr]     | `ghcr.io/tarampampam/error-pages` |
 
 > Using the `latest` tag for the docker image is highly discouraged because of possible backward-incompatible changes during **major** upgrades. Please, use tags in `X.Y.Z` format
 
@@ -56,21 +58,21 @@ $ docker run --rm -it \
 
 ## Templates
 
-Name              | Preview
-:---------------: | :-----:
-`ghost`           | [![ghost](https://hsto.org/webt/oj/cl/4k/ojcl4ko_cvusy5xuki6efffzsyo.gif)](https://tarampampam.github.io/error-pages/ghost/404.html)
-`l7-light`        | [![l7-light](https://hsto.org/webt/xc/iq/vt/xciqvty-aoj-rchfarsjhutpjny.png)](https://tarampampam.github.io/error-pages/l7-light/404.html)
-`l7-dark`         | [![l7-dark](https://hsto.org/webt/s1/ih/yr/s1ihyrqs_y-sgraoimfhk6ypney.png)](https://tarampampam.github.io/error-pages/l7-dark/404.html)
-`shuffle`         | [![shuffle](https://hsto.org/webt/7w/rk/3m/7wrk3mrzz3y8qfqwovmuvacu-bs.gif)](https://tarampampam.github.io/error-pages/shuffle/404.html)
-`noise`           | [![noise](https://hsto.org/webt/42/oq/8y/42oq8yok_i-arrafjt6hds_7ahy.gif)](https://tarampampam.github.io/error-pages/noise/404.html)
-`hacker-terminal` | [![hacker-terminal](https://hsto.org/webt/5s/l0/p1/5sl0p1_ud_nalzjzsj5slz6dfda.gif)](https://tarampampam.github.io/error-pages/hacker-terminal/404.html)
-`cats`            | [![cats](https://hsto.org/webt/_g/y-/ke/_gy-keqinz-3867jbw36v37-iwe.jpeg)](https://tarampampam.github.io/error-pages/cats/404.html)
+|       Name        |                                                                         Preview                                                                          |
+|:-----------------:|:--------------------------------------------------------------------------------------------------------------------------------------------------------:|
+|      `ghost`      |           [![ghost](https://hsto.org/webt/oj/cl/4k/ojcl4ko_cvusy5xuki6efffzsyo.gif)](https://tarampampam.github.io/error-pages/ghost/404.html)           |
+|    `l7-light`     |        [![l7-light](https://hsto.org/webt/xc/iq/vt/xciqvty-aoj-rchfarsjhutpjny.png)](https://tarampampam.github.io/error-pages/l7-light/404.html)        |
+|     `l7-dark`     |         [![l7-dark](https://hsto.org/webt/s1/ih/yr/s1ihyrqs_y-sgraoimfhk6ypney.png)](https://tarampampam.github.io/error-pages/l7-dark/404.html)         |
+|     `shuffle`     |         [![shuffle](https://hsto.org/webt/7w/rk/3m/7wrk3mrzz3y8qfqwovmuvacu-bs.gif)](https://tarampampam.github.io/error-pages/shuffle/404.html)         |
+|      `noise`      |           [![noise](https://hsto.org/webt/42/oq/8y/42oq8yok_i-arrafjt6hds_7ahy.gif)](https://tarampampam.github.io/error-pages/noise/404.html)           |
+| `hacker-terminal` | [![hacker-terminal](https://hsto.org/webt/5s/l0/p1/5sl0p1_ud_nalzjzsj5slz6dfda.gif)](https://tarampampam.github.io/error-pages/hacker-terminal/404.html) |
+|      `cats`       |           [![cats](https://hsto.org/webt/_g/y-/ke/_gy-keqinz-3867jbw36v37-iwe.jpeg)](https://tarampampam.github.io/error-pages/cats/404.html)            |
 
 > Note: `noise` template highly uses the CPU, be careful
 
 ## Usage
 
-All of the examples below will use a docker image with the application, but you can also use a binary. By the way, our docker image uses the **unleveled user** by default and **distroless**.
+All the examples below will use a docker image with the application, but you can also use a binary. By the way, our docker image uses the **unleveled user** by default and **distroless**.
 
 <details>
   <summary><strong>HTTP server</strong></summary>
@@ -86,7 +88,11 @@ $ docker run --rm \
     tarampampam/error-pages
 ```
 
-And open [`http://127.0.0.1:8080/404.html`](http://127.0.0.1:8080/404.html) in your favorite browser. Error pages are accessible by the following URLs: `http://127.0.0.1:8080/{page_code}.html`.
+And open [`http://127.0.0.1:8080/404.html`](http://127.0.0.1:8080/404.html) in your favorite browser. Error pages are accessible by the following URLs: `http://127.0.0.1:8080/{page_code}.html`. Another way is to pass the needed error page code (and HTTP response code) using the HTTP header `X-Code` when requesting an index page.
+
+Additionally, the server respects the `Content-Type` HTTP header (and `X-Format`) value and responds with the corresponding format instead of the HTML-formatted response only. The `xml` and `json` content types (formats) are allowed at this moment, and its format can be fully customized using a configuration file!
+
+For the integration with [ingress-nginx](https://kubernetes.github.io/ingress-nginx/) you can start the server with the flag `--show-details` (environment variable `SHOW_DETAILS=true`) - in this case, the error pages (`json`, `xml` responses too) will contain additional information that passed from the upstream reverse proxy!
 
 Environment variable `TEMPLATE_NAME` should be used for the theme switching (supported templates are described below).
 

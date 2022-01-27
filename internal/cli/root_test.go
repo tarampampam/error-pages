@@ -9,6 +9,8 @@ import (
 )
 
 func TestSubcommands(t *testing.T) {
+	t.Parallel()
+
 	cmd := cli.NewCommand("unit test")
 
 	cases := []struct {
@@ -29,6 +31,8 @@ func TestSubcommands(t *testing.T) {
 	for _, tt := range cases {
 		tt := tt
 		t.Run(tt.giveName, func(t *testing.T) {
+			t.Parallel()
+
 			if _, exists := subcommands[tt.giveName]; !exists {
 				assert.Failf(t, "command not found", "command [%s] was not found", tt.giveName)
 			}
@@ -37,6 +41,8 @@ func TestSubcommands(t *testing.T) {
 }
 
 func TestFlags(t *testing.T) {
+	t.Parallel()
+
 	cmd := cli.NewCommand("unit test")
 
 	cases := []struct {
@@ -53,6 +59,8 @@ func TestFlags(t *testing.T) {
 	for _, tt := range cases {
 		tt := tt
 		t.Run(tt.giveName, func(t *testing.T) {
+			t.Parallel()
+
 			flag := cmd.Flag(tt.giveName)
 
 			if flag == nil {
@@ -68,6 +76,8 @@ func TestFlags(t *testing.T) {
 }
 
 func TestExecuting(t *testing.T) {
+	t.Parallel()
+
 	cmd := cli.NewCommand("unit test")
 	cmd.SetArgs([]string{})
 

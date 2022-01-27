@@ -3,7 +3,7 @@
 /.vscode
 
 ## Binaries
-error-pages
+/error-pages
 
 ## Temp dirs & trash
 /temp

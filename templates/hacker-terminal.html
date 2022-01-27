@@ -18,6 +18,7 @@
             overflow: hidden;
             margin: 0;
             padding: 0;
+            font-size: 0;
         }
 
         body {
@@ -27,10 +28,9 @@
             background-repeat: no-repeat;
             background-size: cover;
             font-family: 'Inconsolata', Helvetica, sans-serif;
-            font-size: 1.5rem;
             color: rgba(128, 255, 128, 0.8);
             text-shadow:
-                0 0 1ex rgba(51, 255, 51, 1),
+                0 0 11px rgba(51, 255, 51, 1),
                 0 0 2px rgba(255, 255, 255, 0.8);
         }
 
@@ -82,8 +82,16 @@
             height: 100%;
             width: 1000px;
             max-width: 100%;
-            padding: 4rem;
+            padding: 64px;
             text-transform: uppercase;
+        }
+
+        h1 {
+            font-size: 48px;
+        }
+
+        p {
+            font-size: 24px;
         }
 
         .output {
@@ -113,6 +121,25 @@
         .error_code {
             color: white;
         }
+
+        /* {{ if show_details }} */
+        .details p {
+            margin-top: .5em;
+            margin-bottom: .5em;
+        }
+
+        .details * {
+            font-size: 15px;
+        }
+
+        .details p::before {
+            content: "$ ";
+        }
+
+        .details code {
+            font-size: 0.9em;
+        }
+        /* {{ end }} */
     </style>
 </head>
 <body>
@@ -121,6 +148,17 @@
     <h1>Error <span class="error_code">{{ code }}</span></h1>
     <p class="output">{{ description }}.</p>
     <p class="output">Good luck.</p>
+    {{ if show_details }}
+    <div class="details">
+        {{- if original_uri }}<p class="output small">Original URI: <code>{{ original_uri }}</code></p>{{ end -}}
+        {{- if namespace }}<p class="output small">Namespace: <code>{{ namespace }}</code></p>{{ end -}}
+        {{- if ingress_name }}<p class="output small">Ingress name: <code>{{ ingress_name }}</code></p>{{ end -}}
+        {{- if service_name }}<p class="output small">Service name: <code>{{ service_name }}</code></p>{{ end -}}
+        {{- if service_port }}<p class="output small">Service port: <code>{{ service_port }}</code></p>{{ end -}}
+        {{- if request_id }}<p class="output small">Request ID: <code>{{ request_id }}</code></p>{{ end -}}
+        <p class="output small">Timestamp: <code>{{ now.Unix }}</code></p>
+    </div>
+    {{ end }}
 </div>
 </body>
 <!--

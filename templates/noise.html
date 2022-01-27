@@ -2,6 +2,15 @@
 <!--
     Error {{ code }}: {{ message }}
     Description: {{ description }}
+{{ if show_details }}
+    {{ if original_uri }}Original URI: {{ original_uri }}{{ end }}
+    {{ if namespace }}Namespace: {{ namespace }}{{ end }}
+    {{ if ingress_name }}Ingress name: {{ ingress_name }}{{ end }}
+    {{ if service_name }}Service name: {{ service_name }}{{ end }}
+    {{ if service_port }}Service port: {{ service_port }}{{ end }}
+    {{ if request_id }}Request ID: {{ request_id }}{{ end }}
+    Timestamp: {{ now.Unix }}
+{{ end }}
 -->
 <html lang="en">
 <head>

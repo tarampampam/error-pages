@@ -1,7 +1,7 @@
 templates:
-  - path: ./templates/ghost.html
+  - path: ./foo-tpl.html
     name: ghost # name is optional
-  - path: ./templates/l7-light.html
+  - path: ./bar-tpl.html
 
 pages:
   400:
