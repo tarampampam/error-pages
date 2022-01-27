@@ -31,6 +31,7 @@ RUN set -x \
     && echo 'appuser:x:10001:' > ./etc/group \
     && mv /src/error-pages ./bin/error-pages \
     && mv /src/templates ./opt/templates \
+    && rm ./opt/templates/*.md \
     && mv /src/error-pages.yml ./opt/error-pages.yml
 
 WORKDIR /tmp/rootfs/opt
