@@ -200,7 +200,7 @@ jobs: # Docs: <https://git.io/JvxXE>
       - name: Download hurl
         env:
           VERSION: 1.4.0
-        run: curl -LO -o hurl.deb https://github.com/Orange-OpenSource/hurl/releases/download/${VERSION}/hurl_${VERSION}_amd64.deb
+        run: curl -SL -o hurl.deb https://github.com/Orange-OpenSource/hurl/releases/download/${VERSION}/hurl_${VERSION}_amd64.deb
 
       - name: Install hurl
         run: sudo dpkg -i hurl.deb
