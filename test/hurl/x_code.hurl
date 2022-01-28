@@ -13,7 +13,7 @@ body contains "Gone"
 # X-Code with X-Format
 GET http://{{ host }}:{{ port }}/
 X-Code: 410
-X-Format: text/json
+X-Format: text/html;q=0.9,application/xhtml+xml;q=0.9,application/json,image/avif,image/webp,*/*;q=0.8
 
 HTTP/* 410
 

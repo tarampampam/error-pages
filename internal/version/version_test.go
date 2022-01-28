@@ -5,8 +5,6 @@ import (
 )
 
 func TestVersion(t *testing.T) {
-	t.Parallel()
-
 	for give, want := range map[string]string{
 		// without changes
 		"vvv":     "vvv",
