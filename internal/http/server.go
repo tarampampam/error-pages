@@ -60,7 +60,7 @@ type templatePicker interface {
 }
 
 // Register server routes, middlewares, etc.
-// Router docs: <https://github.com/nfasthttp/router>
+// Router docs: <https://github.com/fasthttp/router>
 func (s *Server) Register(
 	cfg *config.Config,
 	templatePicker templatePicker,
