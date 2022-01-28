@@ -11,14 +11,17 @@ import (
 	errorpageHandler "github.com/tarampampam/error-pages/internal/http/handlers/errorpage"
 	healthzHandler "github.com/tarampampam/error-pages/internal/http/handlers/healthz"
 	indexHandler "github.com/tarampampam/error-pages/internal/http/handlers/index"
+	metricsHandler "github.com/tarampampam/error-pages/internal/http/handlers/metrics"
 	notfoundHandler "github.com/tarampampam/error-pages/internal/http/handlers/notfound"
 	versionHandler "github.com/tarampampam/error-pages/internal/http/handlers/version"
+	"github.com/tarampampam/error-pages/internal/metrics"
 	"github.com/tarampampam/error-pages/internal/version"
 	"github.com/valyala/fasthttp"
 	"go.uber.org/zap"
 )
 
 type Server struct {
+	log    *zap.Logger
 	fast   *fasthttp.Server
 	router *router.Router
 }
@@ -30,21 +33,19 @@ const (
 )
 
 func NewServer(log *zap.Logger) Server {
-	r := router.New()
-
 	return Server{
 		// fasthttp docs: <https://github.com/valyala/fasthttp>
 		fast: &fasthttp.Server{
 			WriteTimeout:          defaultWriteTimeout,
 			ReadTimeout:           defaultReadTimeout,
 			IdleTimeout:           defaultIdleTimeout,
-			Handler:               common.LogRequest(r.Handler, log),
 			NoDefaultServerHeader: true,
 			ReduceMemoryUsage:     true,
 			CloseOnShutdown:       true,
 			Logger:                zap.NewStdLog(log),
 		},
-		router: r,
+		router: router.New(),
+		log:    log,
 	}
 }
 
@@ -66,7 +67,15 @@ func (s *Server) Register(
 	defaultPageCode string,
 	defaultHTTPCode uint16,
 	showDetails bool,
-) {
+) error {
+	reg, m := metrics.NewRegistry(), metrics.NewMetrics()
+
+	if err := m.Register(reg); err != nil {
+		return err
+	}
+
+	s.fast.Handler = common.DurationMetrics(common.LogRequest(s.router.Handler, s.log), &m)
+
 	s.router.GET("/", indexHandler.NewHandler(cfg, templatePicker, defaultPageCode, defaultHTTPCode, showDetails))
 	s.router.GET("/{code}.html", errorpageHandler.NewHandler(cfg, templatePicker, showDetails))
 	s.router.GET("/version", versionHandler.NewHandler(version.Version()))
@@ -75,7 +84,11 @@ func (s *Server) Register(
 	s.router.ANY("/healthz", liveHandler)
 	s.router.ANY("/health/live", liveHandler) // deprecated
 
+	s.router.GET("/metrics", metricsHandler.NewHandler(reg))
+
 	s.router.NotFound = notfoundHandler.NewHandler()
+
+	return nil
 }
 
 // Stop server.
