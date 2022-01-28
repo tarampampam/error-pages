@@ -407,6 +407,30 @@ After executing `docker-compose up` you can:
 - Open nginx index page [on a domain `test.localtest.me`](http://test.localtest.me/)
 - View customized error pages for non-existing [pages](http://test.localtest.me/404) and [domains](http://404.localtest.me/)
 
+### Kubernetes + ingress-nginx
+
+This can be configured to work with the [ingress-nginx](https://github.com/kubernetes/ingress-nginx/tree/main/charts/ingress-nginx) helm chart in Kubernetes.
+
+1. Set the `custom-http-errors` config value
+2. Enable default backend
+3. Set the default backend image
+
+```yaml
+controller:
+  config:
+    custom-http-errors: >-
+      401,403,404,500,501,502,503
+defaultBackend:
+  enabled: true
+  image:
+    repository: ghcr.io/tarampampam/error-pages
+    tag: latest
+  # optional: change the default theme
+  extraEnvs:
+  - name: TEMPLATE_NAME
+    value: l7-dark
+```
+
 ## Changes log
 
 [![Release date][badge_release_date]][link_releases]
