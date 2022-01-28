@@ -8,8 +8,6 @@ import (
 )
 
 func TestProperties_Replaces(t *testing.T) {
-	t.Parallel()
-
 	props := tpl.Properties{
 		Code:        "foo",
 		Message:     "bar",

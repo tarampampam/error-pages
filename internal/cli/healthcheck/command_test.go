@@ -16,8 +16,6 @@ type fakeChecker struct{ err error }
 func (c *fakeChecker) Check(port uint16) error { return c.err }
 
 func TestProperties(t *testing.T) {
-	t.Parallel()
-
 	cmd := healthcheck.NewCommand(&fakeChecker{err: nil})
 
 	assert.Equal(t, "healthcheck", cmd.Use)

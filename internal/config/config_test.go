@@ -9,8 +9,6 @@ import (
 )
 
 func TestFromYaml(t *testing.T) {
-	t.Parallel()
-
 	var cases = map[string]struct { //nolint:maligned
 		giveYaml      []byte
 		giveEnv       map[string]string
@@ -111,8 +109,6 @@ pages:
 
 	for name, tt := range cases {
 		t.Run(name, func(t *testing.T) {
-			t.Parallel()
-
 			if tt.giveEnv != nil {
 				for key, value := range tt.giveEnv {
 					assert.NoError(t, os.Setenv(key, value))

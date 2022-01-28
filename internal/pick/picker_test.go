@@ -8,8 +8,6 @@ import (
 )
 
 func TestPicker_NextIndex_First(t *testing.T) {
-	t.Parallel()
-
 	for i := uint32(0); i < 100; i++ {
 		p := pick.NewPicker(i, pick.First)
 
@@ -20,8 +18,6 @@ func TestPicker_NextIndex_First(t *testing.T) {
 }
 
 func TestPicker_NextIndex_RandomOnce(t *testing.T) {
-	t.Parallel()
-
 	for i := uint8(0); i < 10; i++ {
 		assert.Equal(t, uint32(0), pick.NewPicker(0, pick.RandomOnce).NextIndex())
 	}
@@ -39,8 +35,6 @@ func TestPicker_NextIndex_RandomOnce(t *testing.T) {
 }
 
 func TestPicker_NextIndex_RandomEveryTime(t *testing.T) {
-	t.Parallel()
-
 	for i := uint8(0); i < 10; i++ {
 		assert.Equal(t, uint32(0), pick.NewPicker(0, pick.RandomEveryTime).NextIndex())
 	}
@@ -59,7 +53,5 @@ func TestPicker_NextIndex_RandomEveryTime(t *testing.T) {
 }
 
 func TestPicker_NextIndex_Unsupported(t *testing.T) {
-	t.Parallel()
-
 	assert.Panics(t, func() { pick.NewPicker(1, 255).NextIndex() })
 }

@@ -10,8 +10,6 @@ import (
 )
 
 func TestProperties(t *testing.T) {
-	t.Parallel()
-
 	cmd := version.NewCommand("")
 
 	assert.Equal(t, "version", cmd.Use)
@@ -20,8 +18,6 @@ func TestProperties(t *testing.T) {
 }
 
 func TestCommandRun(t *testing.T) {
-	t.Parallel()
-
 	cmd := version.NewCommand("1.2.3@foobar")
 	cmd.SetArgs([]string{})
 

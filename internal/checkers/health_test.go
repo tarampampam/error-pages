@@ -16,8 +16,6 @@ type httpClientFunc func(*http.Request) (*http.Response, error)
 func (f httpClientFunc) Do(req *http.Request) (*http.Response, error) { return f(req) }
 
 func TestHealthChecker_CheckSuccess(t *testing.T) {
-	t.Parallel()
-
 	var httpMock httpClientFunc = func(req *http.Request) (*http.Response, error) {
 		assert.Equal(t, http.MethodGet, req.Method)
 		assert.Equal(t, "http://127.0.0.1:123/healthz", req.URL.String())
@@ -35,8 +33,6 @@ func TestHealthChecker_CheckSuccess(t *testing.T) {
 }
 
 func TestHealthChecker_CheckFail(t *testing.T) {
-	t.Parallel()
-
 	var httpMock httpClientFunc = func(req *http.Request) (*http.Response, error) {
 		return &http.Response{
 			Body:       ioutil.NopCloser(bytes.NewReader([]byte{})),
