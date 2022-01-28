@@ -38,9 +38,9 @@ Download the latest binary file for your os/arch from the [releases page][releas
 
 [![image stats](https://dockeri.co/image/tarampampam/error-pages)][docker-hub-tags]
 
-| Registry                               | Image                             |
-|----------------------------------------|-----------------------------------|
-| [Docker Hub][docker-hub]               | `tarampampam/error-pages`         |
+| Registry                          | Image                             |
+|-----------------------------------|-----------------------------------|
+| [Docker Hub][docker-hub]          | `tarampampam/error-pages`         |
 | [GitHub Container Registry][ghcr] | `ghcr.io/tarampampam/error-pages` |
 
 > Using the `latest` tag for the docker image is highly discouraged because of possible backward-incompatible changes during **major** upgrades. Please, use tags in `X.Y.Z` format
@@ -65,6 +65,40 @@ Please, take a look at [our Wiki][wiki] for the common usage stories:
 [wiki-traefik-swarm]:https://github.com/tarampampam/error-pages/wiki/Traefik-(docker-swarm)
 [wiki-traefik-docker-compose]:https://github.com/tarampampam/error-pages/wiki/Traefik-(docker-compose)
 [wiki-k8s-ingress-nginx]:https://github.com/tarampampam/error-pages/wiki/Kubernetes-&-ingress-nginx
+
+## 🦾 Performance
+
+Used hardware:
+
+- Intel® Core™ i7-10510U CPU @ 1.80GHz × 8
+- 16 GiB RAM
+
+```shell
+$ ulimit -aH | grep file
+-f: file size (blocks)              unlimited
+-c: core file size (blocks)         unlimited
+-n: file descriptors                1048576
+-x: file locks                      unlimited
+
+$ wrk --version | head -n 1
+wrk 4.2.0 [epoll] Copyright (C) 2012 Will Glozer
+
+$ wrk -t12 -c400 -d30s http://127.0.0.1:8080/500.html
+Running 30s test @ http://127.0.0.1:8080/500.html
+  12 threads and 400 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency    50.06ms   61.15ms 655.79ms   85.54%
+    Req/Sec     1.07k   363.14     2.40k    69.24%
+  383014 requests in 30.08s, 2.14GB read
+Requests/sec:  12731.07
+Transfer/sec:     72.79MB
+```
+
+FS & memory usage stats during the test:
+
+<p align="center">
+  <img src="https://hsto.org/webt/dy/2e/_8/dy2e_8xkefxre7z5w7xcorjldmm.png" alt="" />
+</p>
 
 ## 🪂 Templates
 
