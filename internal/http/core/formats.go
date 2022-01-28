@@ -50,16 +50,17 @@ func ClientWantFormat(ctx *fasthttp.RequestCtx) ContentType {
 			}
 		}
 
-		var mimeType []byte
+		switch l := len(formats); {
+		case l == 0:
+			return UnknownContentType
 
-		if l := len(formats); l == 1 {
-			mimeType = formats[0].mimeType
-		} else if l > 1 {
+		case l == 1:
+			return mimeTypeToContentType(formats[0].mimeType)
+			
+		default:
 			sort.SliceStable(formats, func(i, j int) bool { return formats[i].weight > formats[j].weight })
-			mimeType = formats[0].mimeType
+			return mimeTypeToContentType(formats[0].mimeType)
 		}
-
-		return mimeTypeToContentType(mimeType)
 	}
 
 	return UnknownContentType
