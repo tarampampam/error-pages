@@ -26,7 +26,7 @@ One day you may want to replace the standard error pages of your HTTP server wit
   - Writes logs in `json` format
   - Contains healthcheck endpoint (`/healthz`)
   - Contains metrics endpoint (`/metrics`) in Prometheus format
-- Lightweight docker image _(~3.7Mb compressed size)_, distroless and uses the unleveled user by default
+- Lightweight docker image _(~4.3Mb compressed size)_, distroless and uses the unleveled user by default
 - [Go-template](https://pkg.go.dev/text/template) tags are allowed in the templates
 - Ready for integration with [Traefik][traefik] ([error pages customization](https://doc.traefik.io/traefik/middlewares/http/errorpages/)) and [Ingress-nginx][ingress-nginx]
 - Fully configurable (take a look at the [configuration file](https://github.com/tarampampam/error-pages/blob/master/error-pages.yml) and [project Wiki][wiki])
