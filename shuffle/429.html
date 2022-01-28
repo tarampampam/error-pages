@@ -15,27 +15,33 @@
             margin: 0;
             background-color: #222;
             color: #aaa;
-            font-family: 'Hack', monospace
+            font-family: 'Hack', monospace;
+            font-size: 0;
         }
 
         .full-height {
-            height: 100vh
+            height: 100vh;
         }
 
         .flex-center {
             align-items: center;
             display: flex;
-            justify-content: center
+            justify-content: center;
         }
 
         #error_text {
-            font-size: 2em
+            font-size: 32px;
         }
+
+        /*  */
     </style>
 </head>
 <body>
 <div class="flex-center full-height">
-    <span id="error_text">429: Too Many Requests</span>
+    <div>
+        <span id="error_text">429: Too Many Requests</span>
+        
+    </div>
 </div>
 
 <script>
@@ -58,7 +64,9 @@
         }
 
         $errorText.innerText = newText;
-    }, 800 / 60);
+    }, 450 / 60);
+
+    // 
 
     window.setTimeout(function () {
         let revealInterval = window.setInterval(function () {
