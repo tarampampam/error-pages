@@ -15,6 +15,11 @@ func TestClientWantFormat(t *testing.T) {
 		giveReqCtx            func() *fasthttp.RequestCtx
 		wantFormat            core.ContentType
 	}{
+		"priority": {
+			giveFormatHeader:      "application/xml",
+			giveContentTypeHeader: "text/plain",
+			wantFormat:            core.PlainTextContentType,
+		},
 		"format respects weight": {
 			giveFormatHeader: "text/html;q=0.5,application/xhtml+xml;q=0.9,application/xml;q=1,*/*;q=0.8",
 			wantFormat:       core.XMLContentType,
