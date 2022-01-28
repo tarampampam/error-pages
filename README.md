@@ -94,11 +94,13 @@ Requests/sec:  12731.07
 Transfer/sec:     72.79MB
 ```
 
-FS & memory usage stats during the test:
+<details>
+  <summary>FS & memory usage stats during the test</summary>
 
-<p align="center">
-  <img src="https://hsto.org/webt/dy/2e/_8/dy2e_8xkefxre7z5w7xcorjldmm.png" alt="" />
-</p>
+  <p align="center">
+    <img src="https://hsto.org/webt/dy/2e/_8/dy2e_8xkefxre7z5w7xcorjldmm.png" alt="" />
+  </p>
+</details>
 
 ## 🪂 Templates
 
