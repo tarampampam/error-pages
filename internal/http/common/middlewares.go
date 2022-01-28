@@ -33,3 +33,19 @@ func LogRequest(h fasthttp.RequestHandler, log *zap.Logger) fasthttp.RequestHand
 		)
 	}
 }
+
+type metrics interface {
+	IncrementTotalRequests()
+	ObserveRequestDuration(t time.Duration)
+}
+
+func DurationMetrics(h fasthttp.RequestHandler, m metrics) fasthttp.RequestHandler {
+	return func(ctx *fasthttp.RequestCtx) {
+		var startedAt = time.Now()
+
+		h(ctx)
+
+		m.IncrementTotalRequests()
+		m.ObserveRequestDuration(time.Since(startedAt))
+	}
+}

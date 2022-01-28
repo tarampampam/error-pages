@@ -77,7 +77,7 @@ All the examples below will use a docker image with the application, but you can
 <details>
   <summary><strong>HTTP server</strong></summary>
 
-As mentioned above - our application can be run as an HTTP server. It only needs to specify the path to the configuration file (it does not need statically generated error pages). The server uses [FastHTTP][fasthttp] and stores all necessary data in memory - so it does not use the file system and very fast. Oh yes, the image with the app also contains a configured **healthcheck** and **logs in JSON** format :)
+As mentioned above - our application can be run as an HTTP server. It only needs to specify the path to the configuration file (it does not need statically generated error pages). The server uses [FastHTTP][fasthttp] and stores all necessary data in memory - so it does not use the file system and very fast. Oh yes, the image with the app also contains a configured **healthcheck**, **logs in JSON** format and **metrics** endpoint :)
 
 For the HTTP server running execute in your terminal:
 
