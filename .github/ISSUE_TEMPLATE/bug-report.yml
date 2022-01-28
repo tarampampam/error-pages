@@ -32,15 +32,16 @@ body:
   - type: textarea
     id: configs
     attributes:
-      label: Traefik, docker-compose, helm, etc. configs
-      description: This will be automatically formatted into code (yaml), so no need for backticks.
+      label: Configuration files
+      description: Please copy and paste any relevant configuration files. This will be automatically formatted into code (yaml), so no need for backticks.
       render: yaml
+      placeholder: Traefik, docker-compose, helm, etc.
 
   - type: textarea
     id: logs
     attributes:
       label: Relevant log output
-      description: Please copy and paste any relevant log output. This will be automatically formatted into code, so no need for backticks.
+      description: Please copy and paste any relevant log output. This will be automatically formatted into code (shell), so no need for backticks.
       render: shell
 
   - type: textarea
