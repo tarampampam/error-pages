@@ -56,9 +56,10 @@ func ClientWantFormat(ctx *fasthttp.RequestCtx) ContentType {
 
 		case l == 1:
 			return mimeTypeToContentType(formats[0].mimeType)
-			
+
 		default:
 			sort.SliceStable(formats, func(i, j int) bool { return formats[i].weight > formats[j].weight })
+
 			return mimeTypeToContentType(formats[0].mimeType)
 		}
 	}
