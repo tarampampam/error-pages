@@ -1,0 +1,50 @@
+# Docs: <https://git.io/JR5E4>
+
+name: 🐞 Bug report
+description: File a bug/issue
+labels: ['type:bug']
+assignees: [tarampampam]
+body:
+  - type: checkboxes
+    attributes:
+      label: Is there an existing issue for this?
+      description: Please search to see if an issue already exists for the bug you encountered
+      options:
+        - label: I have searched the existing issues
+          required: true
+
+  - type: textarea
+    attributes:
+      label: Describe the bug
+      description: A clear and concise description of what the bug is
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Steps to reproduce
+      description: Steps to reproduce the behavior
+      placeholder: |
+        1. Start the container using command ...
+        2. Send an HTTP request using this curl command ...
+        3. See error
+
+  - type: textarea
+    id: configs
+    attributes:
+      label: Traefik, docker-compose, helm, etc. configs
+      description: This will be automatically formatted into code (yaml), so no need for backticks.
+      render: yaml
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant log output
+      description: Please copy and paste any relevant log output. This will be automatically formatted into code, so no need for backticks.
+      render: shell
+
+  - type: textarea
+    attributes:
+      label: Anything else?
+      description: Links? References? Anything that will give us more context about the issue you are encountering!
+      placeholder: You can attach images or log files by clicking this area to highlight it and then dragging files in
