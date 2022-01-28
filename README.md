@@ -53,7 +53,7 @@ Please, take a look at [our Wiki][wiki] for the common usage stories:
 - [Pages generator][wiki-generator] (build your own error page set)
 - [Static error pages][wiki-static-error-pages] (extract generated static error pages from the docker image)
 - [Usage with nginx][wiki-usage-with-nginx] (include our error pages into an image with nginx)
-- [Usage with Traekik and local Docker Compose][wiki-traefik-docker-compose] (it's a good starting point for the tests)
+- [Usage with Traefik and local Docker Compose][wiki-traefik-docker-compose] (it's a good starting point for the tests)
 - [Usage with Traefik and Docker Swarm][wiki-traefik-swarm]
 - [Kubernetes & ingress nginx][wiki-k8s-ingress-nginx]
 
