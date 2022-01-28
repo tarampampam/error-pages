@@ -424,11 +424,12 @@ defaultBackend:
   enabled: true
   image:
     repository: ghcr.io/tarampampam/error-pages
-    tag: latest
-  # optional: change the default theme
+    tag: latest # Using the latest tag is highly discouraged. Please, use tags in X.Y.Z format
   extraEnvs:
-  - name: TEMPLATE_NAME
+  - name: TEMPLATE_NAME # Optional: change the default theme
     value: l7-dark
+  - name: SHOW_DETAILS # Optional: enables the output of additional information on error pages
+    value: 'true'
 ```
 
 ## Changes log
