@@ -52,7 +52,9 @@ func Test_Render(t *testing.T) {
 		},
 	} {
 		t.Run(name, func(t *testing.T) {
-			content, err := tpl.Render([]byte(tt.giveContent), tt.giveProps)
+			renderer := tpl.NewTemplateRenderer()
+
+			content, err := renderer.Render([]byte(tt.giveContent), tt.giveProps)
 
 			if tt.wantError == true {
 				assert.Error(t, err)
@@ -67,8 +69,10 @@ func Test_Render(t *testing.T) {
 func BenchmarkRenderHTML(b *testing.B) {
 	b.ReportAllocs()
 
+	renderer := tpl.NewTemplateRenderer()
+
 	for i := 0; i < b.N; i++ {
-		_, _ = tpl.Render(
+		_, _ = renderer.Render(
 			[]byte("{{code}}: {{ message }} {{description}}"),
 			tpl.Properties{Code: "404", Message: "Not found", Description: "Blah"},
 		)

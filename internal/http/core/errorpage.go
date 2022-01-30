@@ -13,6 +13,8 @@ type templatePicker interface {
 	Pick() string
 }
 
+var renderer = tpl.NewTemplateRenderer() //nolint:gochecknoglobals
+
 func RespondWithErrorPage( //nolint:funlen
 	ctx *fasthttp.RequestCtx,
 	cfg *config.Config,
@@ -62,7 +64,7 @@ func RespondWithErrorPage( //nolint:funlen
 		{
 			SetClientFormat(ctx, JSONContentType)
 
-			if content, err := tpl.Render(json.Content(), props); err == nil {
+			if content, err := renderer.Render(json.Content(), props); err == nil {
 				ctx.SetStatusCode(httpCode)
 				_, _ = ctx.Write(content)
 			} else {
@@ -75,7 +77,7 @@ func RespondWithErrorPage( //nolint:funlen
 		{
 			SetClientFormat(ctx, XMLContentType)
 
-			if content, err := tpl.Render(xml.Content(), props); err == nil {
+			if content, err := renderer.Render(xml.Content(), props); err == nil {
 				ctx.SetStatusCode(httpCode)
 				_, _ = ctx.Write(content)
 			} else {
@@ -91,7 +93,7 @@ func RespondWithErrorPage( //nolint:funlen
 			var templateName = p.Pick()
 
 			if template, exists := cfg.Template(templateName); exists {
-				if content, err := tpl.Render(template.Content(), props); err == nil {
+				if content, err := renderer.Render(template.Content(), props); err == nil {
 					ctx.SetStatusCode(httpCode)
 					_, _ = ctx.Write(content)
 				} else {

@@ -6,7 +6,13 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 ### UNRELEASED
 
+### Changed
+
 - Go updated from `1.17.5` up to `1.17.6`
+
+### Fixed
+
+- Performance issue, that affects template rendering. Now templates are cached in memory, and it has improved performance by more than 320% (woof!)
 
 ## v2.4.0
 

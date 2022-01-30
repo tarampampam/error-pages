@@ -5,13 +5,15 @@ import (
 	"encoding/json"
 	"os"
 	"strconv"
+	"sync"
 	"text/template"
 	"time"
 
 	"github.com/tarampampam/error-pages/internal/version"
 )
 
-var tplFnMap = template.FuncMap{ //nolint:gochecknoglobals // these functions can be used in templates
+// These functions are always allowed in the templates.
+var tplFnMap = template.FuncMap{ //nolint:gochecknoglobals
 	"now":      time.Now,
 	"hostname": os.Hostname,
 	"json":     func(v interface{}) string { b, _ := json.Marshal(v); return string(b) }, //nolint:nlreturn
@@ -29,9 +31,37 @@ var tplFnMap = template.FuncMap{ //nolint:gochecknoglobals // these functions ca
 	},
 }
 
-func Render(content []byte, props Properties) ([]byte, error) {
+type cacheEntryHash = [hashLength * 2]byte // two md5 hashes
+
+type TemplateRenderer struct {
+	cacheMu sync.Mutex
+	cache   map[cacheEntryHash][]byte // map key is a unique hash
+}
+
+func NewTemplateRenderer() TemplateRenderer {
+	return TemplateRenderer{cache: make(map[cacheEntryHash][]byte)}
+}
+
+func (tr *TemplateRenderer) Render(content []byte, props Properties) ([]byte, error) {
 	if len(content) == 0 {
 		return content, nil
+	}
+
+	var (
+		cacheKey     cacheEntryHash
+		cacheKeyInit bool
+	)
+
+	if propsHash, err := props.Hash(); err == nil {
+		cacheKeyInit, cacheKey = true, tr.mixHashes(propsHash, HashBytes(content))
+
+		tr.cacheMu.Lock()
+		item, hit := tr.cache[cacheKey]
+		tr.cacheMu.Unlock()
+
+		if hit {
+			return item, nil
+		}
 	}
 
 	var funcMap = template.FuncMap{
@@ -62,5 +92,25 @@ func Render(content []byte, props Properties) ([]byte, error) {
 		return nil, err
 	}
 
-	return buf.Bytes(), nil
+	b := buf.Bytes()
+
+	if cacheKeyInit {
+		tr.cacheMu.Lock()
+		tr.cache[cacheKey] = b
+		tr.cacheMu.Unlock()
+	}
+
+	return b, nil
+}
+
+func (tr *TemplateRenderer) mixHashes(a, b Hash) (result cacheEntryHash) {
+	for i := 0; i < len(a); i++ {
+		result[i] = a[i]
+	}
+
+	for i := 0; i < len(b); i++ {
+		result[i+len(a)] = b[i]
+	}
+
+	return
 }

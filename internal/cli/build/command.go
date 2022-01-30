@@ -71,7 +71,7 @@ func run(log *zap.Logger, cfg *config.Config, outDirectoryPath string, generateI
 		return errors.Wrap(err, "cannot prepare output directory")
 	}
 
-	history := newBuildingHistory()
+	history, renderer := newBuildingHistory(), tpl.NewTemplateRenderer()
 
 	for _, template := range cfg.Templates {
 		log.Debug("template processing", zap.String("name", template.Name()))
@@ -86,7 +86,7 @@ func run(log *zap.Logger, cfg *config.Config, outDirectoryPath string, generateI
 				filePath = path.Join(outDirectoryPath, template.Name(), fileName)
 			)
 
-			content, renderingErr := tpl.Render(template.Content(), tpl.Properties{
+			content, renderingErr := renderer.Render(template.Content(), tpl.Properties{
 				Code:               page.Code(),
 				Message:            page.Message(),
 				Description:        page.Description(),
