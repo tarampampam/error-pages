@@ -33,6 +33,7 @@ var tplFnMap = template.FuncMap{ //nolint:gochecknoglobals
 
 type cacheEntryHash = [hashLength * 2]byte // two md5 hashes
 
+// FIXME cache size must be limited, otherwise there will be memory leaks (e.g. with unique RequestIDs in props)
 type TemplateRenderer struct {
 	cacheMu sync.Mutex
 	cache   map[cacheEntryHash][]byte // map key is a unique hash
