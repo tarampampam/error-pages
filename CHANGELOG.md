@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 ### UNRELEASED
 
 - Go updated from `1.17.5` up to `1.17.6`
+- Add "Host" and "X-Forwarded-For" Header to error pages
 
 ## v2.4.0
 
