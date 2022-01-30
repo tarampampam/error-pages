@@ -37,6 +37,8 @@ func RespondWithErrorPage( //nolint:funlen
 		props.ServiceName = string(ctx.Request.Header.Peek(ServiceName))
 		props.ServicePort = string(ctx.Request.Header.Peek(ServicePort))
 		props.RequestID = string(ctx.Request.Header.Peek(RequestID))
+		props.ForwardedFor = string(ctx.Request.Header.Peek(ForwardedFor))
+		props.Host = string(ctx.Request.Header.Peek(Host))
 	}
 
 	if page, exists := cfg.Pages[pageCode]; exists {
