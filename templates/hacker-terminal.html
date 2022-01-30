@@ -150,7 +150,9 @@
     <p class="output">Good luck.</p>
     {{ if show_details }}
     <div class="details">
+        {{- if host }}<p class="output small">Host: <code>{{ host }}</code></p>{{ end -}}
         {{- if original_uri }}<p class="output small">Original URI: <code>{{ original_uri }}</code></p>{{ end -}}
+        {{- if forwarded_for }}<p class="output small">Forwarded for: <code>{{ forwarded_for }}</code></p>{{ end -}}
         {{- if namespace }}<p class="output small">Namespace: <code>{{ namespace }}</code></p>{{ end -}}
         {{- if ingress_name }}<p class="output small">Ingress name: <code>{{ ingress_name }}</code></p>{{ end -}}
         {{- if service_name }}<p class="output small">Service name: <code>{{ service_name }}</code></p>{{ end -}}

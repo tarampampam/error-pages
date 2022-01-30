@@ -76,10 +76,22 @@
         {{ if show_details }}
         <div class="hidden" id="details">
             <table>
+                {{- if host }}
+                <tr>
+                    <td class="name">Host:</td>
+                    <td class="value">{{ host }}</td>
+                </tr>
+                {{ end -}}
                 {{- if original_uri }}
                 <tr>
                     <td class="name">Original URI:</td>
                     <td class="value">{{ original_uri }}</td>
+                </tr>
+                {{ end -}}
+                {{- if forwarded_for }}
+                <tr>
+                    <td class="name">Forwarded for:</td>
+                    <td class="value">{{ forwarded_for }}</td>
                 </tr>
                 {{ end -}}
                 {{- if namespace }}
