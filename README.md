@@ -87,18 +87,18 @@ $ wrk -t12 -c400 -d30s http://127.0.0.1:8080/500.html
 Running 30s test @ http://127.0.0.1:8080/500.html
   12 threads and 400 connections
   Thread Stats   Avg      Stdev     Max   +/- Stdev
-    Latency    50.06ms   61.15ms 655.79ms   85.54%
-    Req/Sec     1.07k   363.14     2.40k    69.24%
-  383014 requests in 30.08s, 2.14GB read
-Requests/sec:  12731.07
-Transfer/sec:     72.79MB
+    Latency    10.62ms   10.17ms 111.65ms   83.02%
+    Req/Sec     3.81k     0.90k    8.09k    66.92%
+  1365973 requests in 30.09s, 7.63GB read
+Requests/sec:  45390.02
+Transfer/sec:    259.51MB
 ```
 
 <details>
   <summary>FS & memory usage stats during the test</summary>
 
   <p align="center">
-    <img src="https://hsto.org/webt/dy/2e/_8/dy2e_8xkefxre7z5w7xcorjldmm.png" alt="" />
+    <img src="https://hsto.org/webt/jn/oo/un/jnooun2jarb5_aetnvixs4mumui.png" alt="" />
   </p>
 </details>
 
