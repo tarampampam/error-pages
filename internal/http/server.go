@@ -100,6 +100,8 @@ func (s *Server) Register(
 // Stop server.
 func (s *Server) Stop() error {
 	if err := s.rdr.Close(); err != nil {
+		defer func() { _ = s.fast.Shutdown() }()
+
 		return err
 	}
 
