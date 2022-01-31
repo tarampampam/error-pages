@@ -3,7 +3,9 @@
     Error {{ code }}: {{ message }}
     Description: {{ description }}
 {{ if show_details }}
+    {{ if host }}Host: {{ host }}{{ end }}
     {{ if original_uri }}Original URI: {{ original_uri }}{{ end }}
+    {{ if forwarded_for }}Forwarded for: {{ forwarded_for }}{{ end }}
     {{ if namespace }}Namespace: {{ namespace }}{{ end }}
     {{ if ingress_name }}Ingress name: {{ ingress_name }}{{ end }}
     {{ if service_name }}Service name: {{ service_name }}{{ end }}

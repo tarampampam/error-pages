@@ -24,4 +24,10 @@ const (
 
 	// RequestID is a unique ID that identifies the request - same as for backend service
 	RequestID = "X-Request-ID"
+
+	// ForwardedFor identifies the user of this session
+	ForwardedFor = "X-Forwarded-For"
+
+	// Host identifies the hosts origin
+	Host = "Host"
 )

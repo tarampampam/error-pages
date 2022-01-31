@@ -10,11 +10,16 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 - Go updated from `1.17.5` up to `1.17.6`
 
+### Added
+
+- `Host` and `X-Forwarded-For` Header to error pages [#61]
+
 ### Fixed
 
 - Performance issue, that affects template rendering. Now templates are cached in memory, and it has improved performance by more than 320% (woof!) [#60]
 
 [#60]:https://github.com/tarampampam/error-pages/pull/60
+[#61]:https://github.com/tarampampam/error-pages/pull/61
 
 ## v2.4.0
 
