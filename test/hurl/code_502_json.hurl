@@ -7,6 +7,8 @@ X-Ingress-Name: baz
 X-Service-Name: aaa
 X-Service-Port: bbb
 X-Request-ID: ccc
+X-Forwarded-For: ddd
+Host: eee
 
 HTTP/* 200
 
@@ -23,6 +25,8 @@ jsonpath "$.details.ingress_name" == "baz"
 jsonpath "$.details.service_name" == "aaa"
 jsonpath "$.details.service_port" == "bbb"
 jsonpath "$.details.request_id" == "ccc"
+jsonpath "$.details.forwarded_for" == "ddd"
+jsonpath "$.details.host" == "eee"
 jsonpath "$.details.timestamp" isInteger
 
 # X-Format in the action

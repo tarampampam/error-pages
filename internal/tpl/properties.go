@@ -13,7 +13,7 @@ type Properties struct { // only string properties with a "token" tag, please
 	ServicePort        string `token:"service_port"`
 	RequestID          string `token:"request_id"`
 	ForwardedFor       string `token:"forwarded_for"`
-	Host       		   string `token:"host"`
+	Host               string `token:"host"`
 	ShowRequestDetails bool
 }
 

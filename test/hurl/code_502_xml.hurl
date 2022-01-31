@@ -7,6 +7,8 @@ X-Ingress-Name: baz
 X-Service-Name: aaa
 X-Service-Port: bbb
 X-Request-ID: ccc
+X-Forwarded-For: ddd
+Host: eee
 
 HTTP/* 200
 
@@ -23,7 +25,7 @@ xpath "string(//error/details/serviceName)" == "aaa"
 xpath "string(//error/details/servicePort)" == "bbb"
 xpath "string(//error/details/requestID)" == "ccc"
 xpath "string(//error/details/forwardedFor)" == "ddd"
-xpath "string(//error/details/host)" == "fff"
+xpath "string(//error/details/host)" == "eee"
 xpath "string(//error/details/timestamp)" exists
 
 # X-Format in the action

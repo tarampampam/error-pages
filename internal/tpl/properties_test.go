@@ -9,17 +9,17 @@ import (
 
 func TestProperties_Replaces(t *testing.T) {
 	props := tpl.Properties{
-		Code:        "foo",
-		Message:     "bar",
-		Description: "baz",
-		OriginalURI: "aaa",
-		Namespace:   "bbb",
-		IngressName: "ccc",
-		ServiceName: "ddd",
-		ServicePort: "eee",
-		RequestID:   "fff",
-		ForwardedFor:"ggg",
-		Host:  		 "hhh",
+		Code:         "foo",
+		Message:      "bar",
+		Description:  "baz",
+		OriginalURI:  "aaa",
+		Namespace:    "bbb",
+		IngressName:  "ccc",
+		ServiceName:  "ddd",
+		ServicePort:  "eee",
+		RequestID:    "fff",
+		ForwardedFor: "ggg",
+		Host:         "hhh",
 	}
 
 	r := props.Replaces()
