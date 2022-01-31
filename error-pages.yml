@@ -21,7 +21,9 @@ formats:
         "message": {{ message | json }},
         "description": {{ description | json }}{{ if show_details }},
         "details": {
+          "host": {{ host | json }},
           "original_uri": {{ original_uri | json }},
+          "forwarded_for": {{ forwarded_for | json }},
           "namespace": {{ namespace | json }},
           "ingress_name": {{ ingress_name | json }},
           "service_name": {{ service_name | json }},
@@ -39,7 +41,9 @@ formats:
         <message>{{ message }}</message>
         <description>{{ description }}</description>{{ if show_details }}
         <details>
+          <host>{{ host }}</host>
           <originalURI>{{ original_uri }}</originalURI>
+          <forwardedFor>{{ forwarded_for }}</forwardedFor>
           <namespace>{{ namespace }}</namespace>
           <ingressName>{{ ingress_name }}</ingressName>
           <serviceName>{{ service_name }}</serviceName>

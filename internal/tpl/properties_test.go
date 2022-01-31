@@ -18,6 +18,8 @@ func TestProperties_Replaces(t *testing.T) {
 		ServiceName: "ddd",
 		ServicePort: "eee",
 		RequestID:   "fff",
+		ForwardedFor:"ggg",
+		Host:  		 "hhh",
 	}
 
 	r := props.Replaces()
@@ -31,6 +33,8 @@ func TestProperties_Replaces(t *testing.T) {
 	assert.Equal(t, "ddd", r["service_name"])
 	assert.Equal(t, "eee", r["service_port"])
 	assert.Equal(t, "fff", r["request_id"])
+	assert.Equal(t, "ggg", r["forwarded_for"])
+	assert.Equal(t, "hhh", r["host"])
 
 	props.Code, props.Message, props.Description = "", "", ""
 
