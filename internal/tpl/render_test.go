@@ -98,6 +98,10 @@ func TestTemplateRenderer_Render_Concurrent(t *testing.T) {
 
 	assert.NoError(t, renderer.Close())
 	assert.EqualError(t, renderer.Close(), tpl.ErrClosed.Error())
+
+	content, err := renderer.Render([]byte{}, tpl.Properties{})
+	assert.Nil(t, content)
+	assert.EqualError(t, err, tpl.ErrClosed.Error())
 }
 
 func BenchmarkRenderHTML(b *testing.B) {
