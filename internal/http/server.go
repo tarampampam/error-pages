@@ -4,8 +4,6 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/tarampampam/error-pages/internal/tpl"
-
 	"github.com/fasthttp/router"
 	"github.com/tarampampam/error-pages/internal/checkers"
 	"github.com/tarampampam/error-pages/internal/config"
@@ -17,6 +15,7 @@ import (
 	notfoundHandler "github.com/tarampampam/error-pages/internal/http/handlers/notfound"
 	versionHandler "github.com/tarampampam/error-pages/internal/http/handlers/version"
 	"github.com/tarampampam/error-pages/internal/metrics"
+	"github.com/tarampampam/error-pages/internal/tpl"
 	"github.com/tarampampam/error-pages/internal/version"
 	"github.com/valyala/fasthttp"
 	"go.uber.org/zap"

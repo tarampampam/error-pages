@@ -44,3 +44,23 @@ func TestProperties_Replaces(t *testing.T) {
 	assert.Equal(t, "", r["message"])
 	assert.Equal(t, "", r["description"])
 }
+
+func TestProperties_Hash(t *testing.T) {
+	props1 := tpl.Properties{Code: "123"}
+	props2 := tpl.Properties{Code: "123"}
+
+	hash1, err := props1.Hash()
+	assert.NoError(t, err)
+
+	hash2, err := props2.Hash()
+	assert.NoError(t, err)
+
+	assert.Equal(t, hash1, hash2)
+
+	props2.Code = "321"
+
+	hash2, err = props2.Hash()
+	assert.NoError(t, err)
+
+	assert.NotEqual(t, hash1, hash2)
+}
