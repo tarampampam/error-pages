@@ -72,6 +72,7 @@ func run(log *zap.Logger, cfg *config.Config, outDirectoryPath string, generateI
 	}
 
 	history, renderer := newBuildingHistory(), tpl.NewTemplateRenderer()
+	defer func() { _ = renderer.Close() }()
 
 	for _, template := range cfg.Templates {
 		log.Debug("template processing", zap.String("name", template.Name()))
