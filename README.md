@@ -80,25 +80,24 @@ $ ulimit -aH | grep file
 -n: file descriptors                1048576
 -x: file locks                      unlimited
 
-$ wrk --version | head -n 1
-wrk 4.2.0 [epoll] Copyright (C) 2012 Will Glozer
+$ docker run --rm -p "8080:8080/tcp" -e "SHOW_DETAILS=true" error-pages:local # in separate terminal
 
-$ wrk -t12 -c400 -d30s http://127.0.0.1:8080/500.html
-Running 30s test @ http://127.0.0.1:8080/500.html
+$ wrk --timeout 1s -t12 -c400 -d30s -s ./test/wrk/request.lua http://127.0.0.1:8080/
+Running 30s test @ http://127.0.0.1:8080/
   12 threads and 400 connections
   Thread Stats   Avg      Stdev     Max   +/- Stdev
-    Latency    50.06ms   61.15ms 655.79ms   85.54%
-    Req/Sec     1.07k   363.14     2.40k    69.24%
-  383014 requests in 30.08s, 2.14GB read
-Requests/sec:  12731.07
-Transfer/sec:     72.79MB
+    Latency    10.84ms    7.89ms 135.91ms   79.36%
+    Req/Sec     3.23k   785.11     6.30k    70.04%
+  1160567 requests in 30.10s, 4.12GB read
+Requests/sec:  38552.04
+Transfer/sec:    140.23MB
 ```
 
 <details>
   <summary>FS & memory usage stats during the test</summary>
 
   <p align="center">
-    <img src="https://hsto.org/webt/dy/2e/_8/dy2e_8xkefxre7z5w7xcorjldmm.png" alt="" />
+    <img src="https://hsto.org/webt/ts/w-/lz/tsw-lznvru0ngjneiimkwq7ysyc.png" alt="" />
   </p>
 </details>
 

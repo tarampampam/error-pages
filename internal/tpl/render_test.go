@@ -1,6 +1,9 @@
 package tpl_test
 
 import (
+	"math/rand"
+	"strconv"
+	"sync"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -8,6 +11,9 @@ import (
 )
 
 func Test_Render(t *testing.T) {
+	renderer := tpl.NewTemplateRenderer()
+	defer func() { _ = renderer.Close() }()
+
 	for name, tt := range map[string]struct {
 		giveContent string
 		giveProps   tpl.Properties
@@ -52,7 +58,7 @@ func Test_Render(t *testing.T) {
 		},
 	} {
 		t.Run(name, func(t *testing.T) {
-			content, err := tpl.Render([]byte(tt.giveContent), tt.giveProps)
+			content, err := renderer.Render([]byte(tt.giveContent), tt.giveProps)
 
 			if tt.wantError == true {
 				assert.Error(t, err)
@@ -64,11 +70,48 @@ func Test_Render(t *testing.T) {
 	}
 }
 
+func TestTemplateRenderer_Render_Concurrent(t *testing.T) {
+	renderer := tpl.NewTemplateRenderer()
+
+	var wg sync.WaitGroup
+
+	for i := 0; i < 100; i++ {
+		wg.Add(1)
+
+		go func() {
+			defer wg.Done()
+
+			props := tpl.Properties{
+				Code:        strconv.Itoa(rand.Intn(599-300+1) + 300), //nolint:gosec
+				Message:     "Not found",
+				Description: "Blah",
+			}
+
+			content, err := renderer.Render([]byte("{{code}}: {{ message }} {{description}}"), props)
+
+			assert.NoError(t, err)
+			assert.NotEmpty(t, content)
+		}()
+	}
+
+	wg.Wait()
+
+	assert.NoError(t, renderer.Close())
+	assert.EqualError(t, renderer.Close(), tpl.ErrClosed.Error())
+
+	content, err := renderer.Render([]byte{}, tpl.Properties{})
+	assert.Nil(t, content)
+	assert.EqualError(t, err, tpl.ErrClosed.Error())
+}
+
 func BenchmarkRenderHTML(b *testing.B) {
 	b.ReportAllocs()
 
+	renderer := tpl.NewTemplateRenderer()
+	defer func() { _ = renderer.Close() }()
+
 	for i := 0; i < b.N; i++ {
-		_, _ = tpl.Render(
+		_, _ = renderer.Render(
 			[]byte("{{code}}: {{ message }} {{description}}"),
 			tpl.Properties{Code: "404", Message: "Not found", Description: "Blah"},
 		)

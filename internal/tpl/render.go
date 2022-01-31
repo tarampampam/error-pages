@@ -5,13 +5,17 @@ import (
 	"encoding/json"
 	"os"
 	"strconv"
+	"sync"
 	"text/template"
 	"time"
+
+	"github.com/pkg/errors"
 
 	"github.com/tarampampam/error-pages/internal/version"
 )
 
-var tplFnMap = template.FuncMap{ //nolint:gochecknoglobals // these functions can be used in templates
+// These functions are always allowed in the templates.
+var tplFnMap = template.FuncMap{ //nolint:gochecknoglobals
 	"now":      time.Now,
 	"hostname": os.Hostname,
 	"json":     func(v interface{}) string { b, _ := json.Marshal(v); return string(b) }, //nolint:nlreturn
@@ -29,9 +33,111 @@ var tplFnMap = template.FuncMap{ //nolint:gochecknoglobals // these functions ca
 	},
 }
 
-func Render(content []byte, props Properties) ([]byte, error) {
+var ErrClosed = errors.New("closed")
+
+type TemplateRenderer struct {
+	cacheMu sync.RWMutex
+	cache   map[cacheEntryHash]cacheItem // map key is a unique hash
+
+	cacheCleanupInterval time.Duration
+	cacheItemLifetime    time.Duration
+
+	close    chan struct{}
+	closedMu sync.RWMutex
+	closed   bool
+}
+
+type (
+	cacheEntryHash = [hashLength * 2]byte // two md5 hashes
+	cacheItem      struct {
+		data          []byte
+		expiresAtNano int64
+	}
+)
+
+const (
+	cacheCleanupInterval = time.Second
+	cacheItemLifetime    = time.Second * 2
+)
+
+// NewTemplateRenderer returns new template renderer. Don't forget to call Close() function!
+func NewTemplateRenderer() *TemplateRenderer {
+	tr := &TemplateRenderer{
+		cache:                make(map[cacheEntryHash]cacheItem),
+		cacheCleanupInterval: cacheCleanupInterval,
+		cacheItemLifetime:    cacheItemLifetime,
+		close:                make(chan struct{}, 1),
+	}
+
+	go tr.cleanup()
+
+	return tr
+}
+
+func (tr *TemplateRenderer) cleanup() {
+	defer close(tr.close)
+
+	timer := time.NewTimer(tr.cacheCleanupInterval)
+	defer timer.Stop()
+
+	for {
+		select {
+		case <-tr.close:
+			tr.cacheMu.Lock()
+			for hash := range tr.cache {
+				delete(tr.cache, hash)
+			}
+			tr.cacheMu.Unlock()
+
+			return
+
+		case <-timer.C:
+			tr.cacheMu.Lock()
+			var now = time.Now().UnixNano()
+
+			for hash, item := range tr.cache {
+				if now > item.expiresAtNano {
+					delete(tr.cache, hash)
+				}
+			}
+			tr.cacheMu.Unlock()
+
+			timer.Reset(tr.cacheCleanupInterval)
+		}
+	}
+}
+
+func (tr *TemplateRenderer) Render(content []byte, props Properties) ([]byte, error) { //nolint:funlen
+	if tr.isClosed() {
+		return nil, ErrClosed
+	}
+
 	if len(content) == 0 {
 		return content, nil
+	}
+
+	var (
+		cacheKey     cacheEntryHash
+		cacheKeyInit bool
+	)
+
+	if propsHash, err := props.Hash(); err == nil {
+		cacheKeyInit, cacheKey = true, tr.mixHashes(propsHash, HashBytes(content))
+
+		tr.cacheMu.RLock()
+		item, hit := tr.cache[cacheKey]
+		tr.cacheMu.RUnlock()
+
+		if hit {
+			// cache item has been expired?
+			if time.Now().UnixNano() > item.expiresAtNano {
+				tr.cacheMu.Lock()
+				delete(tr.cache, cacheKey)
+				tr.cacheMu.Unlock()
+			} else {
+				return item.data, nil
+			}
+		}
 	}
 
 	var funcMap = template.FuncMap{
@@ -62,5 +168,50 @@ func Render(content []byte, props Properties) ([]byte, error) {
 		return nil, err
 	}
 
-	return buf.Bytes(), nil
+	b := buf.Bytes()
+
+	if cacheKeyInit {
+		tr.cacheMu.Lock()
+		tr.cache[cacheKey] = cacheItem{
+			data:          b,
+			expiresAtNano: time.Now().UnixNano() + tr.cacheItemLifetime.Nanoseconds(),
+		}
+		tr.cacheMu.Unlock()
+	}
+
+	return b, nil
+}
+
+func (tr *TemplateRenderer) isClosed() (closed bool) {
+	tr.closedMu.RLock()
+	closed = tr.closed
+	tr.closedMu.RUnlock()
+
+	return
+}
+
+func (tr *TemplateRenderer) Close() error {
+	if tr.isClosed() {
+		return ErrClosed
+	}
+
+	tr.closedMu.Lock()
+	tr.closed = true
+	tr.closedMu.Unlock()
+
+	tr.close <- struct{}{}
+
+	return nil
+}
+
+func (tr *TemplateRenderer) mixHashes(a, b Hash) (result cacheEntryHash) {
+	for i := 0; i < len(a); i++ {
+		result[i] = a[i]
+	}
+
+	for i := 0; i < len(b); i++ {
+		result[i+len(a)] = b[i]
+	}
+
+	return
 }

@@ -4,6 +4,8 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/tarampampam/error-pages/internal/tpl"
+
 	"github.com/fasthttp/router"
 	"github.com/tarampampam/error-pages/internal/checkers"
 	"github.com/tarampampam/error-pages/internal/config"
@@ -24,6 +26,7 @@ type Server struct {
 	log    *zap.Logger
 	fast   *fasthttp.Server
 	router *router.Router
+	rdr    *tpl.TemplateRenderer
 }
 
 const (
@@ -33,6 +36,8 @@ const (
 )
 
 func NewServer(log *zap.Logger) Server {
+	rdr := tpl.NewTemplateRenderer()
+
 	return Server{
 		// fasthttp docs: <https://github.com/valyala/fasthttp>
 		fast: &fasthttp.Server{
@@ -46,6 +51,7 @@ func NewServer(log *zap.Logger) Server {
 		},
 		router: router.New(),
 		log:    log,
+		rdr:    rdr,
 	}
 }
 
@@ -76,8 +82,8 @@ func (s *Server) Register(
 
 	s.fast.Handler = common.DurationMetrics(common.LogRequest(s.router.Handler, s.log), &m)
 
-	s.router.GET("/", indexHandler.NewHandler(cfg, templatePicker, defaultPageCode, defaultHTTPCode, showDetails))
-	s.router.GET("/{code}.html", errorpageHandler.NewHandler(cfg, templatePicker, showDetails))
+	s.router.GET("/", indexHandler.NewHandler(cfg, templatePicker, s.rdr, defaultPageCode, defaultHTTPCode, showDetails)) //nolint:lll
+	s.router.GET("/{code}.html", errorpageHandler.NewHandler(cfg, templatePicker, s.rdr, showDetails))
 	s.router.GET("/version", versionHandler.NewHandler(version.Version()))
 
 	liveHandler := healthzHandler.NewHandler(checkers.NewLiveChecker())
@@ -92,4 +98,12 @@ func (s *Server) Register(
 }
 
 // Stop server.
-func (s *Server) Stop() error { return s.fast.Shutdown() }
+func (s *Server) Stop() error {
+	if err := s.rdr.Close(); err != nil {
+		defer func() { _ = s.fast.Shutdown() }()
+
+		return err
+	}
+
+	return s.fast.Shutdown()
+}

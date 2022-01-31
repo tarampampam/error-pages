@@ -5,6 +5,7 @@ import (
 
 	"github.com/tarampampam/error-pages/internal/config"
 	"github.com/tarampampam/error-pages/internal/http/core"
+	"github.com/tarampampam/error-pages/internal/tpl"
 	"github.com/valyala/fasthttp"
 )
 
@@ -13,12 +14,17 @@ type (
 		// Pick the template name for responding.
 		Pick() string
 	}
+
+	renderer interface {
+		Render(content []byte, props tpl.Properties) ([]byte, error)
+	}
 )
 
 // NewHandler creates handler for the index page serving.
 func NewHandler(
 	cfg *config.Config,
 	p templatePicker,
+	rdr renderer,
 	defaultPageCode string,
 	defaultHTTPCode uint16,
 	showRequestDetails bool,
@@ -30,7 +36,7 @@ func NewHandler(
 			pageCode, httpCode = strconv.Itoa(returnCode), returnCode
 		}
 
-		core.RespondWithErrorPage(ctx, cfg, p, pageCode, httpCode, showRequestDetails)
+		core.RespondWithErrorPage(ctx, cfg, p, rdr, pageCode, httpCode, showRequestDetails)
 	}
 }
 

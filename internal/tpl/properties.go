@@ -1,6 +1,8 @@
 package tpl
 
-import "reflect"
+import (
+	"reflect"
+)
 
 type Properties struct { // only string properties with a "token" tag, please
 	Code               string `token:"code"`
@@ -33,3 +35,5 @@ func (p *Properties) Replaces() map[string]string {
 
 	return replaces
 }
+
+func (p *Properties) Hash() (Hash, error) { return HashStruct(p) }
