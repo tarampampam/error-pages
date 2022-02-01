@@ -51,33 +51,38 @@ func (p *picker) NextIndex() uint32 {
 
 	case RandomOnce:
 		if p.lastIdx == unsetIdx {
-			p.mu.Lock()
-			defer p.mu.Unlock()
-
-			p.lastIdx = uint32(p.rand.Intn(int(p.maxIdx)))
+			return p.randomizeNext()
 		}
 
 		return p.lastIdx
 
 	case RandomEveryTime:
-		var idx = uint32(p.rand.Intn(int(p.maxIdx + 1)))
-
-		p.mu.Lock()
-		defer p.mu.Unlock()
-
-		if idx == p.lastIdx {
-			p.lastIdx++
-		} else {
-			p.lastIdx = idx
-		}
-
-		if p.lastIdx > p.maxIdx { // overflow?
-			p.lastIdx = 0
-		}
-
-		return p.lastIdx
+		return p.randomizeNext()
 
 	default:
 		panic("picker.NextIndex(): unsupported mode")
 	}
+}
+
+func (p *picker) randomizeNext() uint32 {
+	var idx = uint32(p.rand.Intn(int(p.maxIdx + 1)))
+
+	p.mu.Lock()
+	defer p.mu.Unlock()
+
+	if idx == p.lastIdx {
+		p.lastIdx++
+	} else {
+		p.lastIdx = idx
+	}
+
+	if p.lastIdx > p.maxIdx { // overflow?
+		p.lastIdx = 0
+	}
+
+	if p.lastIdx == unsetIdx {
+		p.lastIdx--
+	}
+
+	return p.lastIdx
 }
