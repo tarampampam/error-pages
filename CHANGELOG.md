@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 ### Added
 
-- Possibility to change the template to the random once a day using "special" template name `random-daily` [#48]
+- Possibility to change the template to the random once a day using "special" template name `random-daily` (or hourly, using `random-hourly`) [#48]
 
 [#48]:https://github.com/tarampampam/error-pages/issues/48
 

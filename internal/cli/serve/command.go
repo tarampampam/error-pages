@@ -88,6 +88,11 @@ func run(parentCtx context.Context, log *zap.Logger, f flags, cfg *config.Config
 
 		picker = pick.NewStringsSliceWithInterval(templateNames, pick.RandomEveryTime, time.Hour*24) //nolint:gomnd
 
+	case useRandomTemplateHourly:
+		log.Info("A random template will be used and changed hourly")
+
+		picker = pick.NewStringsSliceWithInterval(templateNames, pick.RandomEveryTime, time.Hour)
+
 	case "":
 		log.Info("The first template (ordered by name) will be used")
 
