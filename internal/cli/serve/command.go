@@ -69,7 +69,7 @@ func run(parentCtx context.Context, log *zap.Logger, f flags, cfg *config.Config
 
 	var (
 		templateNames = cfg.TemplateNames()
-		picker        *pick.StringsSlice
+		picker        interface{ Pick() string }
 	)
 
 	switch f.template.name {
@@ -82,6 +82,16 @@ func run(parentCtx context.Context, log *zap.Logger, f flags, cfg *config.Config
 		log.Info("A random template on EACH request will be used")
 
 		picker = pick.NewStringsSlice(templateNames, pick.RandomEveryTime)
+
+	case useRandomTemplateDaily:
+		log.Info("A random template will be used and changed once a day")
+
+		picker = pick.NewStringsSliceWithInterval(templateNames, pick.RandomEveryTime, time.Hour*24) //nolint:gomnd
+
+	case useRandomTemplateHourly:
+		log.Info("A random template will be used and changed hourly")
+
+		picker = pick.NewStringsSliceWithInterval(templateNames, pick.RandomEveryTime, time.Hour)
 
 	case "":
 		log.Info("The first template (ordered by name) will be used")
@@ -131,6 +141,12 @@ func run(parentCtx context.Context, log *zap.Logger, f flags, cfg *config.Config
 
 	case <-ctx.Done(): // ..or context cancellation
 		log.Info("Gracefully server stopping", zap.Duration("uptime", time.Since(startedAt)))
+
+		if p, ok := picker.(interface{ Close() error }); ok {
+			if err := p.Close(); err != nil {
+				return err
+			}
+		}
 
 		// stop the server using created context above
 		if err := server.Stop(); err != nil {

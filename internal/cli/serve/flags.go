@@ -35,6 +35,8 @@ const (
 const (
 	useRandomTemplate              = "random"
 	useRandomTemplateOnEachRequest = "i-said-random"
+	useRandomTemplateDaily         = "random-daily"
+	useRandomTemplateHourly        = "random-hourly"
 )
 
 func (f *flags) init(flagSet *pflag.FlagSet) {
@@ -55,8 +57,13 @@ func (f *flags) init(flagSet *pflag.FlagSet) {
 		templateNameFlagName, "t",
 		"",
 		fmt.Sprintf(
-			"template name (set \"%s\" to use a randomized or \"%s\" to use a randomized template on each request) [$%s]", //nolint:lll
-			useRandomTemplate, useRandomTemplateOnEachRequest, env.TemplateName,
+			"template name (set \"%s\" to use a randomized or \"%s\" to use a randomized template on each request "+
+				"or \"%s/%s\" daily/hourly randomized) [$%s]",
+			useRandomTemplate,
+			useRandomTemplateOnEachRequest,
+			useRandomTemplateDaily,
+			useRandomTemplateHourly,
+			env.TemplateName,
 		),
 	)
 	flagSet.StringVarP(
