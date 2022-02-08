@@ -22,7 +22,7 @@ One day you may want to replace the standard error pages of your HTTP server wit
 ## 🔥 Features list
 
 - HTTP server written on Go, with the extremely fast [FastHTTP][fasthttp] under the hood
-  - Respects the `Content-Type` HTTP header (and `X-Format`) value and responds with the corresponding format (supported formats is `json` and `xml`)
+  - Respects the `Content-Type` HTTP header (and `X-Format`) value and responds with the corresponding format (supported formats are `json` and `xml`)
   - Writes logs in `json` format
   - Contains healthcheck endpoint (`/healthz`)
   - Contains metrics endpoint (`/metrics`) in Prometheus format
