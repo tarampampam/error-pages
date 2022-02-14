@@ -14,14 +14,14 @@
 
 One day you may want to replace the standard error pages of your HTTP server with something more original and pretty. That's what this repository was created for :) It contains:
 
-- Simple error pages generator, written on Go
+- Simple error pages generator, written in Go
 - Single-page error page templates with different designs (located in the [templates](https://github.com/tarampampam/error-pages/tree/master/templates) directory)
 - Fast and lightweight HTTP server
 - Already generated error pages (sources can be [found here][preview-sources], the **demonstration** is always accessible [here][preview-demo])
 
 ## 🔥 Features list
 
-- HTTP server written on Go, with the extremely fast [FastHTTP][fasthttp] under the hood
+- HTTP server written in Go, with the extremely fast [FastHTTP][fasthttp] under the hood
   - Respects the `Content-Type` HTTP header (and `X-Format`) value and responds with the corresponding format (supported formats are `json` and `xml`)
   - Writes logs in `json` format
   - Contains healthcheck endpoint (`/healthz`)
