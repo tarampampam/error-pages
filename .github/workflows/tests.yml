@@ -182,21 +182,24 @@ jobs: # Docs: <https://git.io/JvxXE>
     runs-on: ubuntu-20.04
     needs: [docker-image]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v2 # is needed for `upload-sarif` action
 
       - uses: actions/download-artifact@v2
         with:
           name: docker-image
           path: .artifact
 
-      - working-directory: .artifact
-        run: docker load < docker-image.tar
-
-      - uses: anchore/scan-action@v3 # action page: <https://github.com/anchore/scan-action>
+      - uses: aquasecurity/trivy-action@0.2.2 # action page: <https://github.com/aquasecurity/trivy-action>
         with:
-          image: app:ci
-          fail-build: true
-          severity-cutoff: low # negligible, low, medium, high or critical
+          input: .artifact/docker-image.tar
+          format: sarif
+          severity: MEDIUM,HIGH,CRITICAL
+          exit-code: 1
+          output: trivy-results.sarif
+
+      - uses: github/codeql-action/upload-sarif@v1
+        if: always()
+        with: {sarif_file: trivy-results.sarif}
 
   poke-docker-image:
     name: Run the docker image
