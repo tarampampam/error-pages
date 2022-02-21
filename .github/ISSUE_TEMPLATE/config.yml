@@ -6,3 +6,7 @@ contact_links:
   - name: 🗣 Ask a Question, Discuss
     url: https://github.com/tarampampam/error-pages/discussions
     about: Feel free to ask anything
+
+  - name: 🌀 I have a question about Traefik..
+    url: https://community.traefik.io/
+    about: In this case - ask in the Traefik community
