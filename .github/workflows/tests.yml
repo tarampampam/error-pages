@@ -189,15 +189,11 @@ jobs: # Docs: <https://git.io/JvxXE>
           name: docker-image
           path: .artifact
 
-#      - working-directory: .artifact
-#        run: docker load < docker-image.tar
-
       - uses: aquasecurity/trivy-action@0.2.2 # action page: <https://github.com/aquasecurity/trivy-action>
         with:
           input: .artifact/docker-image.tar
-          #image-ref: app:ci
           format: sarif
-          severity: UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL # MEDIUM,HIGH,CRITICAL
+          severity: MEDIUM,HIGH,CRITICAL
           exit-code: 1
           output: trivy-results.sarif
 
