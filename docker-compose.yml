@@ -31,6 +31,7 @@ services:
       - --verbose
       - --port=8080
       - --show-details
+      - --proxy-headers=X-Foo,Bar,Baz_blah
     healthcheck:
       test: ['CMD', 'wget', '--spider', '-q', 'http://127.0.0.1:8080/healthz']
       interval: 5s

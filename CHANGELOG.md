@@ -4,6 +4,16 @@ All notable changes to this package will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## UNRELEASED
+
+### Changed
+
+- Logs includes request/response headers now
+
+### Added
+
+- Possibility to proxy HTTP headers from the requests to the responses (can be enabled using `--proxy-headers` flag for the `serve` command or environment variable `PROXY_HTTP_HEADERS`, comma-separated)
+
 ## v2.6.0
 
 ### Added

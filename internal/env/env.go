@@ -13,6 +13,7 @@ const (
 	DefaultErrorPage envVariable = "DEFAULT_ERROR_PAGE" // default error page (code)
 	DefaultHTTPCode  envVariable = "DEFAULT_HTTP_CODE"  // default HTTP response code
 	ShowDetails      envVariable = "SHOW_DETAILS"       // show request details in response
+	ProxyHTTPHeaders envVariable = "PROXY_HTTP_HEADERS" // proxy HTTP request headers list (request -> response)
 )
 
 // String returns environment variable name in the string representation.

@@ -3,6 +3,7 @@ package serve
 import (
 	"fmt"
 	"net"
+	"sort"
 	"strconv"
 	"strings"
 
@@ -21,6 +22,39 @@ type flags struct {
 	defaultErrorPage string
 	defaultHTTPCode  uint16
 	showDetails      bool
+	proxyHTTPHeaders string // comma-separated
+}
+
+// HeadersToProxy converts a comma-separated string with headers list into strings slice (with a sorting and without
+// duplicates).
+func (f *flags) HeadersToProxy() []string {
+	var raw = strings.Split(f.proxyHTTPHeaders, ",")
+
+	if len(raw) == 0 {
+		return []string{}
+	} else if len(raw) == 1 {
+		return []string{raw[0]}
+	}
+
+	var m = make(map[string]struct{}, len(raw))
+
+	// make unique
+	for _, h := range raw {
+		if _, ok := m[h]; !ok {
+			m[h] = struct{}{}
+		}
+	}
+
+	// convert map into slice
+	var headers = make([]string, 0, len(m))
+	for h := range m {
+		headers = append(headers, h)
+	}
+
+	// make sort
+	sort.Strings(headers)
+
+	return headers
 }
 
 const (
@@ -30,6 +64,7 @@ const (
 	defaultErrorPageFlagName = "default-error-page"
 	defaultHTTPCodeFlagName  = "default-http-code"
 	showDetailsFlagName      = "show-details"
+	proxyHTTPHeadersFlagName = "proxy-headers"
 )
 
 const (
@@ -84,6 +119,12 @@ func (f *flags) init(flagSet *pflag.FlagSet) {
 		false,
 		fmt.Sprintf("show request details in response [$%s]", env.ShowDetails),
 	)
+	flagSet.StringVarP(
+		&f.proxyHTTPHeaders,
+		proxyHTTPHeadersFlagName, "",
+		"",
+		fmt.Sprintf("proxy HTTP request headers list (comma-separated) [$%s]", env.ProxyHTTPHeaders),
+	)
 }
 
 func (f *flags) overrideUsingEnv(flagSet *pflag.FlagSet) (lastErr error) { //nolint:gocognit,gocyclo
@@ -130,6 +171,11 @@ func (f *flags) overrideUsingEnv(flagSet *pflag.FlagSet) (lastErr error) { //nol
 						f.showDetails = b
 					}
 				}
+
+			case proxyHTTPHeadersFlagName:
+				if envVar, exists := env.ProxyHTTPHeaders.Lookup(); exists {
+					f.proxyHTTPHeaders = strings.TrimSpace(envVar)
+				}
 			}
 		}
 	})
@@ -144,6 +190,10 @@ func (f *flags) validate() error {
 
 	if f.defaultHTTPCode > 599 { //nolint:gomnd
 		return fmt.Errorf("wrong default HTTP response code [%d]", f.defaultHTTPCode)
+	}
+
+	if strings.ContainsRune(f.proxyHTTPHeaders, ' ') {
+		return fmt.Errorf("whitespaces in the HTTP headers for proxying [%s] are not allowed", f.proxyHTTPHeaders)
 	}
 
 	return nil

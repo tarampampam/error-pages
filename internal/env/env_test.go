@@ -15,6 +15,7 @@ func TestConstants(t *testing.T) {
 	assert.Equal(t, "DEFAULT_ERROR_PAGE", string(DefaultErrorPage))
 	assert.Equal(t, "DEFAULT_HTTP_CODE", string(DefaultHTTPCode))
 	assert.Equal(t, "SHOW_DETAILS", string(ShowDetails))
+	assert.Equal(t, "PROXY_HTTP_HEADERS", string(ProxyHTTPHeaders))
 }
 
 func TestEnvVariable_Lookup(t *testing.T) {
@@ -28,6 +29,7 @@ func TestEnvVariable_Lookup(t *testing.T) {
 		{giveEnv: DefaultErrorPage},
 		{giveEnv: DefaultHTTPCode},
 		{giveEnv: ShowDetails},
+		{giveEnv: ProxyHTTPHeaders},
 	}
 
 	for _, tt := range cases {
