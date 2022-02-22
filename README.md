@@ -2,7 +2,7 @@
   <img src="https://hsto.org/webt/rm/9y/ww/rm9ywwx3gjv9agwkcmllhsuyo7k.png" width="94" alt="" />
 </p>
 
-# HTTP's error pages
+<h1 align="center">HTTP's error pages</h1>
 
 [![Release version][badge-release]][releases]
 ![Project language][badge-lang]
@@ -12,7 +12,7 @@
 [![Image size][badge-image-size]][docker-hub]
 [![License][badge-license]][license]
 
-> 22 feb. 2022 - ⚡ The Docker image with the application has been downloaded one **MILLION times** from the docker hub! ⚡
+> 22 feb. 2022 - ⚡ The Docker image with the application has been downloaded **one MILLION times** from the docker hub! ⚡
 
 One day you may want to replace the standard error pages of your HTTP server with something more original and pretty. That's what this repository was created for :) It contains:
 
@@ -31,6 +31,7 @@ One day you may want to replace the standard error pages of your HTTP server wit
 - Lightweight docker image _(~4.3Mb compressed size)_, distroless and uses the unleveled user by default
 - [Go-template](https://pkg.go.dev/text/template) tags are allowed in the templates
 - Ready for integration with [Traefik][traefik] ([error pages customization](https://doc.traefik.io/traefik/middlewares/http/errorpages/)) and [Ingress-nginx][ingress-nginx]
+- Error pages can be [embedded into your own `nginx`][wiki-usage-with-nginx] docker image
 - Fully configurable (take a look at the [configuration file](https://github.com/tarampampam/error-pages/blob/master/error-pages.yml) and [project Wiki][wiki])
 - Distributed using docker image and compiled binary files
 
