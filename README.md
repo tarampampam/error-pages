@@ -12,6 +12,8 @@
 [![Image size][badge-image-size]][docker-hub]
 [![License][badge-license]][license]
 
+> 22 feb. 2022 - ⚡ The Docker image with the application has been downloaded one **MILLION times** from the docker hub! ⚡
+
 One day you may want to replace the standard error pages of your HTTP server with something more original and pretty. That's what this repository was created for :) It contains:
 
 - Simple error pages generator, written in Go
