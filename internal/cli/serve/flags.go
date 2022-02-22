@@ -33,15 +33,21 @@ func (f *flags) HeadersToProxy() []string {
 	if len(raw) == 0 {
 		return []string{}
 	} else if len(raw) == 1 {
-		return []string{raw[0]}
+		if h := strings.TrimSpace(raw[0]); h != "" {
+			return []string{h}
+		} else {
+			return []string{}
+		}
 	}
 
 	var m = make(map[string]struct{}, len(raw))
 
-	// make unique
+	// make unique and ignore empty strings
 	for _, h := range raw {
-		if _, ok := m[h]; !ok {
-			m[h] = struct{}{}
+		if h = strings.TrimSpace(h); h != "" {
+			if _, ok := m[h]; !ok {
+				m[h] = struct{}{}
+			}
 		}
 	}
 
