@@ -8,11 +8,13 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 ### Changed
 
-- Logs includes request/response headers now
+- Logs includes request/response headers now [#67]
 
 ### Added
 
-- Possibility to proxy HTTP headers from the requests to the responses (can be enabled using `--proxy-headers` flag for the `serve` command or environment variable `PROXY_HTTP_HEADERS`, comma-separated)
+- Possibility to proxy HTTP headers from the requests to the responses (can be enabled using `--proxy-headers` flag for the `serve` command or environment variable `PROXY_HTTP_HEADERS`, comma-separated) [#67]
+
+[#67]:https://github.com/tarampampam/error-pages/pull/67
 
 ## v2.6.0
 
