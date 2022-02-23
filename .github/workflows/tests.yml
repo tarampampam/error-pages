@@ -227,7 +227,7 @@ jobs: # Docs: <https://git.io/JvxXE>
         run: sudo dpkg -i hurl.deb
 
       - name: Run container with the app
-        run: docker run --rm -d -p "8080:8080/tcp" -e "SHOW_DETAILS=true" --name app app:ci
+        run: docker run --rm -d -p "8080:8080/tcp" -e "SHOW_DETAILS=true" -e "PROXY_HTTP_HEADERS=X-Foo,Bar,Baz_blah" --name app app:ci
 
       - name: Wait for container "healthy" state
         run: until [[ "`docker inspect -f {{.State.Health.Status}} app`" == "healthy" ]]; do echo "wait 1 sec.."; sleep 1; done

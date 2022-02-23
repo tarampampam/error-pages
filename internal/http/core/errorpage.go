@@ -17,7 +17,7 @@ type renderer interface {
 	Render(content []byte, props tpl.Properties) ([]byte, error)
 }
 
-func RespondWithErrorPage( //nolint:funlen
+func RespondWithErrorPage( //nolint:funlen,gocyclo
 	ctx *fasthttp.RequestCtx,
 	cfg *config.Config,
 	p templatePicker,
@@ -25,6 +25,7 @@ func RespondWithErrorPage( //nolint:funlen
 	pageCode string,
 	httpCode int,
 	showRequestDetails bool,
+	proxyHeaders []string,
 ) {
 	ctx.Response.Header.Set("X-Robots-Tag", "noindex") // block Search indexing
 
@@ -62,6 +63,13 @@ func RespondWithErrorPage( //nolint:funlen
 		_, _ = ctx.WriteString("requested pageCode (" + pageCode + ") not available")
 
 		return
+	}
+
+	// proxy required HTTP headers from the request to the response
+	for _, headerToProxy := range proxyHeaders {
+		if reqHeader := ctx.Request.Header.Peek(headerToProxy); len(reqHeader) > 0 {
+			ctx.Response.Header.SetBytesV(headerToProxy, reqHeader)
+		}
 	}
 
 	switch {

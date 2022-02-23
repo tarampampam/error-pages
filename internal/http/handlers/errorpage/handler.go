@@ -19,12 +19,18 @@ type (
 )
 
 // NewHandler creates handler for error pages serving.
-func NewHandler(cfg *config.Config, p templatePicker, rdr renderer, showRequestDetails bool) fasthttp.RequestHandler {
+func NewHandler(
+	cfg *config.Config,
+	p templatePicker,
+	rdr renderer,
+	showRequestDetails bool,
+	proxyHTTPHeaders []string,
+) fasthttp.RequestHandler {
 	return func(ctx *fasthttp.RequestCtx) {
 		core.SetClientFormat(ctx, core.PlainTextContentType) // default content type
 
 		if code, ok := ctx.UserValue("code").(string); ok {
-			core.RespondWithErrorPage(ctx, cfg, p, rdr, code, fasthttp.StatusOK, showRequestDetails)
+			core.RespondWithErrorPage(ctx, cfg, p, rdr, code, fasthttp.StatusOK, showRequestDetails, proxyHTTPHeaders)
 		} else { // will never occur
 			ctx.SetStatusCode(fasthttp.StatusInternalServerError)
 			_, _ = ctx.WriteString("cannot extract requested code from the request")

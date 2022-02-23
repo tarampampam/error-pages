@@ -28,6 +28,7 @@ func NewHandler(
 	defaultPageCode string,
 	defaultHTTPCode uint16,
 	showRequestDetails bool,
+	proxyHTTPHeaders []string,
 ) fasthttp.RequestHandler {
 	return func(ctx *fasthttp.RequestCtx) {
 		pageCode, httpCode := defaultPageCode, int(defaultHTTPCode)
@@ -36,7 +37,7 @@ func NewHandler(
 			pageCode, httpCode = strconv.Itoa(returnCode), returnCode
 		}
 
-		core.RespondWithErrorPage(ctx, cfg, p, rdr, pageCode, httpCode, showRequestDetails)
+		core.RespondWithErrorPage(ctx, cfg, p, rdr, pageCode, httpCode, showRequestDetails, proxyHTTPHeaders)
 	}
 }
 

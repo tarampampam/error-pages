@@ -107,11 +107,20 @@ func run(parentCtx context.Context, log *zap.Logger, f flags, cfg *config.Config
 		}
 	}
 
+	var proxyHTTPHeaders = f.HeadersToProxy()
+
 	// create HTTP server
 	server := appHttp.NewServer(log)
 
 	// register server routes, middlewares, etc.
-	if err := server.Register(cfg, picker, f.defaultErrorPage, f.defaultHTTPCode, f.showDetails); err != nil {
+	if err := server.Register(
+		cfg,
+		picker,
+		f.defaultErrorPage,
+		f.defaultHTTPCode,
+		f.showDetails,
+		proxyHTTPHeaders,
+	); err != nil {
 		return err
 	}
 
@@ -126,6 +135,7 @@ func run(parentCtx context.Context, log *zap.Logger, f flags, cfg *config.Config
 			zap.Uint16("port", f.listen.port),
 			zap.String("default error page", f.defaultErrorPage),
 			zap.Uint16("default HTTP response code", f.defaultHTTPCode),
+			zap.Strings("proxy headers", proxyHTTPHeaders),
 			zap.Bool("show request details", f.showDetails),
 		)
 
