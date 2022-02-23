@@ -1,18 +1,18 @@
 <p align="center">
-  <img src="https://hsto.org/webt/rm/9y/ww/rm9ywwx3gjv9agwkcmllhsuyo7k.png" width="94" alt="" />
+  <a href="#readme"><img src="https://socialify.git.ci/tarampampam/error-pages/image?description=1&font=Raleway&forks=1&issues=1&logo=https%3A%2F%2Fhsto.org%2Fwebt%2Frm%2F9y%2Fww%2Frm9ywwx3gjv9agwkcmllhsuyo7k.png&owner=1&pattern=Charlie%20Brown&stargazers=1&theme=Light" alt="banner" width="100%" /></a>
 </p>
 
-<h1 align="center">HTTP's error pages</h1>
+<p align="center">
+  <a href="#"><img src="https://img.shields.io/github/go-mod/go-version/tarampampam/error-pages?longCache=true&label=&logo=go&logoColor=white&style=flat-square" alt="" /></a>
+  <a href="https://codecov.io/gh/tarampampam/error-pages"><img src="https://img.shields.io/codecov/c/github/tarampampam/error-pages/master.svg?maxAge=30&label=&logo=codecov&logoColor=white&style=flat-square" alt="" /></a>
+  <a href="https://github.com/tarampampam/error-pages/actions"><img src="https://img.shields.io/github/workflow/status/tarampampam/error-pages/tests?maxAge=30&label=tests&logo=github&style=flat-square" alt="" /></a>
+  <a href="https://github.com/tarampampam/error-pages/actions"><img src="https://img.shields.io/github/workflow/status/tarampampam/error-pages/release?maxAge=30&label=release&logo=github&style=flat-square" alt="" /></a>
+  <a href="https://hub.docker.com/r/tarampampam/error-pages"><img src="https://img.shields.io/docker/pulls/tarampampam/error-pages.svg?maxAge=30&label=pulls&logo=docker&logoColor=white&style=flat-square" alt="" /></a>
+  <a href="https://hub.docker.com/r/tarampampam/error-pages"><img src="https://img.shields.io/docker/image-size/tarampampam/error-pages/latest?maxAge=30&label=size&logo=docker&logoColor=white&style=flat-square" alt="" /></a>
+  <a href="https://github.com/tarampampam/error-pages/blob/master/LICENSE"><img src="https://img.shields.io/github/license/tarampampam/error-pages.svg?maxAge=30&style=flat-square" alt="" /></a>
+</p>
 
-[![Release version][badge-release]][releases]
-![Project language][badge-lang]
-[![Build Status][badge-ci-build]][actions-page]
-[![Release Status][badge-ci-release]][actions-page]
-[![Coverage][badge-coverage]][coverage]
-[![Image size][badge-image-size]][docker-hub]
-[![License][badge-license]][license]
-
-> 22 feb. 2022 - ⚡ The Docker image with the application has been downloaded **one MILLION times** from the docker hub! ⚡
+<p align="center"><sup>22 feb. 2022 - ⚡ The Docker image with the application has been downloaded <strong>one MILLION times</strong> from the docker hub! ⚡</sup></p>
 
 One day you may want to replace the standard error pages of your HTTP server with something more original and pretty. That's what this repository was created for :) It contains:
 
@@ -162,20 +162,12 @@ If you find any bugs in the project, please [create an issue][new-issue] in the 
 
 This is open-sourced software licensed under the [MIT License][license].
 
-[badge-ci-build]:https://img.shields.io/github/workflow/status/tarampampam/error-pages/tests?maxAge=30&label=tests&logo=github
-[badge-ci-release]:https://img.shields.io/github/workflow/status/tarampampam/error-pages/release?maxAge=30&label=release&logo=github
-[badge-coverage]:https://img.shields.io/codecov/c/github/tarampampam/error-pages/master.svg?maxAge=30
 [badge-release]:https://img.shields.io/github/release/tarampampam/error-pages.svg?maxAge=30
-[badge-image-size]:https://img.shields.io/docker/image-size/tarampampam/error-pages/latest?maxAge=30
-[badge-lang]:https://img.shields.io/github/go-mod/go-version/tarampampam/error-pages?longCache=true
-[badge-license]:https://img.shields.io/github/license/tarampampam/error-pages.svg?longCache=true
 [badge-release-date]:https://img.shields.io/github/release-date/tarampampam/error-pages.svg?maxAge=180
 [badge-commits]:https://img.shields.io/github/commits-since/tarampampam/error-pages/latest.svg?maxAge=45
 [badge-issues]:https://img.shields.io/github/issues/tarampampam/error-pages.svg?maxAge=45
 [badge-prs]:https://img.shields.io/github/issues-pr/tarampampam/error-pages.svg?maxAge=45
 
-[coverage]:https://codecov.io/gh/tarampampam/error-pages
-[actions-page]:https://github.com/tarampampam/error-pages/actions
 [docker-hub]:https://hub.docker.com/r/tarampampam/error-pages
 [docker-hub-tags]:https://hub.docker.com/r/tarampampam/error-pages/tags
 [license]:https://github.com/tarampampam/error-pages/blob/master/LICENSE
