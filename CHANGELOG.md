@@ -13,8 +13,14 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 ### Added
 
 - Possibility to proxy HTTP headers from the requests to the responses (can be enabled using `--proxy-headers` flag for the `serve` command or environment variable `PROXY_HTTP_HEADERS`, comma-separated) [#67]
+- Template `lost-in-space` [#68]
+
+### Fixed
+
+- Template `l7-light` uses the dark colors in browsers with the preferred dark theme
 
 [#67]:https://github.com/tarampampam/error-pages/pull/67
+[#68]:https://github.com/tarampampam/error-pages/pull/68
 
 ## v2.6.0
 

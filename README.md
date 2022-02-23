@@ -2,7 +2,7 @@
   <img src="https://hsto.org/webt/rm/9y/ww/rm9ywwx3gjv9agwkcmllhsuyo7k.png" width="94" alt="" />
 </p>
 
-# HTTP's error pages
+<h1 align="center">HTTP's error pages</h1>
 
 [![Release version][badge-release]][releases]
 ![Project language][badge-lang]
@@ -11,6 +11,8 @@
 [![Coverage][badge-coverage]][coverage]
 [![Image size][badge-image-size]][docker-hub]
 [![License][badge-license]][license]
+
+> 22 feb. 2022 - ⚡ The Docker image with the application has been downloaded **one MILLION times** from the docker hub! ⚡
 
 One day you may want to replace the standard error pages of your HTTP server with something more original and pretty. That's what this repository was created for :) It contains:
 
@@ -29,6 +31,7 @@ One day you may want to replace the standard error pages of your HTTP server wit
 - Lightweight docker image _(~4.3Mb compressed size)_, distroless and uses the unleveled user by default
 - [Go-template](https://pkg.go.dev/text/template) tags are allowed in the templates
 - Ready for integration with [Traefik][traefik] ([error pages customization](https://doc.traefik.io/traefik/middlewares/http/errorpages/)) and [Ingress-nginx][ingress-nginx]
+- Error pages can be [embedded into your own `nginx`][wiki-usage-with-nginx] docker image
 - Fully configurable (take a look at the [configuration file](https://github.com/tarampampam/error-pages/blob/master/error-pages.yml) and [project Wiki][wiki])
 - Distributed using docker image and compiled binary files
 
@@ -112,6 +115,7 @@ Transfer/sec:    140.23MB
 |      `noise`      |                [![noise][noise-screen]][noise-link]                |
 | `hacker-terminal` | [![hacker-terminal][hacker-terminal-screen]][hacker-terminal-link] |
 |      `cats`       |                 [![cats][cats-screen]][cats-link]                  |
+|  `lost-in-space`  |    [![lost-in-space][lost-in-space-screen]][lost-in-space-link]    |
 
 > Note: `noise` template highly uses the CPU, be careful
 
@@ -129,6 +133,8 @@ Transfer/sec:    140.23MB
 [hacker-terminal-link]:https://tarampampam.github.io/error-pages/hacker-terminal/404.html
 [cats-screen]:https://hsto.org/webt/_g/y-/ke/_gy-keqinz-3867jbw36v37-iwe.jpeg
 [cats-link]:https://tarampampam.github.io/error-pages/cats/404.html
+[lost-in-space-screen]:https://hsto.org/webt/lf/ln/x8/lflnx8fuy4rofxju34ttskijdsu.gif
+[lost-in-space-link]:https://tarampampam.github.io/error-pages/lost-in-space/404.html
 
 ## 🦾 Contributors
 

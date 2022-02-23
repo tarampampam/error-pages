@@ -11,6 +11,7 @@ templates:
   - path: ./templates/noise.html
   - path: ./templates/hacker-terminal.html
   - path: ./templates/cats.html
+  - path: ./templates/lost-in-space.html
 
 formats:
   json:
