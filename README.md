@@ -12,7 +12,7 @@
   <a href="https://github.com/tarampampam/error-pages/blob/master/LICENSE"><img src="https://img.shields.io/github/license/tarampampam/error-pages.svg?maxAge=30&style=flat-square" alt="" /></a>
 </p>
 
-<p align="center"><sup>22 feb. 2022 - ⚡ The Docker image with the application has been downloaded <strong>one MILLION times</strong> from the docker hub! ⚡</sup></p>
+<p align="center"><sup>22 feb. 2022 - ⚡ Our Docker image was downloaded <strong>one MILLION times</strong> from the docker hub! ⚡</sup></p>
 
 One day you may want to replace the standard error pages of your HTTP server with something more original and pretty. That's what this repository was created for :) It contains:
 
@@ -28,7 +28,7 @@ One day you may want to replace the standard error pages of your HTTP server wit
   - Writes logs in `json` format
   - Contains healthcheck endpoint (`/healthz`)
   - Contains metrics endpoint (`/metrics`) in Prometheus format
-- Lightweight docker image _(~4.3Mb compressed size)_, distroless and uses the unleveled user by default
+- Lightweight docker image _(~4.6Mb compressed size)_, distroless and uses the unleveled user by default
 - [Go-template](https://pkg.go.dev/text/template) tags are allowed in the templates
 - Ready for integration with [Traefik][traefik] ([error pages customization](https://doc.traefik.io/traefik/middlewares/http/errorpages/)) and [Ingress-nginx][ingress-nginx]
 - Error pages can be [embedded into your own `nginx`][wiki-usage-with-nginx] docker image
