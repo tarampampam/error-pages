@@ -24,8 +24,11 @@ jobs: # Docs: <https://git.io/JvxXE>
     steps:
       - uses: actions/checkout@v3
 
+      - uses: actions/setup-go@v2
+        with: {go-version: 1.17}
+
       - name: Run linter
-        uses: golangci/golangci-lint-action@v2 # Action page: <https://github.com/golangci/golangci-lint-action>
+        uses: golangci/golangci-lint-action@v3 # Action page: <https://github.com/golangci/golangci-lint-action>
         with:
           version: v1.44 # without patch version
           only-new-issues: false # show only new issues if it's a pull request
