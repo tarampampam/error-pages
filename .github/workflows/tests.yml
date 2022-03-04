@@ -203,6 +203,7 @@ jobs: # Docs: <https://git.io/JvxXE>
 
       - uses: github/codeql-action/upload-sarif@v1
         if: always()
+        continue-on-error: true
         with: {sarif_file: trivy-results.sarif}
 
   poke-docker-image:
