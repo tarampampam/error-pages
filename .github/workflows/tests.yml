@@ -25,7 +25,7 @@ jobs: # Docs: <https://git.io/JvxXE>
       - uses: actions/checkout@v3
 
       - uses: actions/setup-go@v2
-        with: {go-version: 1.17}
+        with: {go-version: 1.18}
 
       - name: Run linter
         uses: golangci/golangci-lint-action@v3 # Action page: <https://github.com/golangci/golangci-lint-action>
@@ -53,7 +53,7 @@ jobs: # Docs: <https://git.io/JvxXE>
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/setup-go@v2
-        with: {go-version: 1.17}
+        with: {go-version: 1.18}
 
       - uses: actions/checkout@v3
         with: {fetch-depth: 2} # Fixes codecov error 'Issue detecting commit SHA'
@@ -89,7 +89,7 @@ jobs: # Docs: <https://git.io/JvxXE>
     needs: [golangci-lint, go-test, validate-config-file]
     steps:
       - uses: actions/setup-go@v2
-        with: {go-version: 1.17}
+        with: {go-version: 1.18}
 
       - uses: actions/checkout@v3
 
