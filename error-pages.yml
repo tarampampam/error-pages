@@ -12,6 +12,7 @@ templates:
   - path: ./templates/hacker-terminal.html
   - path: ./templates/cats.html
   - path: ./templates/lost-in-space.html
+  - path: ./templates/app-down.html
 
 formats:
   json:

@@ -6,9 +6,15 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 ## UNRELEASED
 
+### Added
+
+- Template `app-down` [#74]
+
 ### Changed
 
 - Go updated from `1.17.6` up to `1.18.0`
+
+[#74]:https://github.com/tarampampam/error-pages/pull/74
 
 ## v2.7.0
 
