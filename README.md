@@ -48,6 +48,11 @@ Download the latest binary file for your os/arch from the [releases page][releas
 
 > Using the `latest` tag for the docker image is highly discouraged because of possible backward-incompatible changes during **major** upgrades. Please, use tags in `X.Y.Z` format
 
+💣 **Or** you can download **already rendered** error pages pack as a [zip][pages-pack-zip] or [tar.gz][pages-pack-tar-gz] archive.
+
+[pages-pack-zip]:https://github.com/tarampampam/error-pages/zipball/gh-pages/
+[pages-pack-tar-gz]:https://github.com/tarampampam/error-pages/tarball/gh-pages/
+
 ## 🛠 Usage
 
 Please, take a look at [our Wiki][wiki] for the common usage stories:
