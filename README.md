@@ -116,6 +116,7 @@ Transfer/sec:    140.23MB
 | `hacker-terminal` | [![hacker-terminal][hacker-terminal-screen]][hacker-terminal-link] |
 |      `cats`       |                 [![cats][cats-screen]][cats-link]                  |
 |  `lost-in-space`  |    [![lost-in-space][lost-in-space-screen]][lost-in-space-link]    |
+|    `app-down`     |           [![app-down][app-down-screen]][app-down-link]            |
 
 > Note: `noise` template highly uses the CPU, be careful
 
@@ -135,6 +136,8 @@ Transfer/sec:    140.23MB
 [cats-link]:https://tarampampam.github.io/error-pages/cats/404.html
 [lost-in-space-screen]:https://hsto.org/webt/lf/ln/x8/lflnx8fuy4rofxju34ttskijdsu.gif
 [lost-in-space-link]:https://tarampampam.github.io/error-pages/lost-in-space/404.html
+[app-down-screen]:https://hsto.org/webt/r3/ys/ql/r3ysqlv_1qj29k3qf_3mliedo8s.png
+[app-down-link]:https://tarampampam.github.io/error-pages/app-down/404.html
 
 ## 🦾 Contributors
 

@@ -15,7 +15,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
         :root{--color-bg-primary:#fff;--color-bg-secondary:#eef6fa;--color-bg-sign:#fff;--color-text-primary:#333;--color-text-secondary:#777;--color-img-details:#f62f37;--color-img-primary:#7990a1;--color-img-secondary:#00baff;--font-size-small:13px;--font-size-normal:16px;--font-size-large:45px}
-        @media (prefers-color-scheme:dark){:root{--color-bg-primary:#222526;--color-bg-secondary:#292e2f;--color-bg-sign:#262828;--color-text-primary:#fff;--color-text-secondary:#999;--color-img-details:#c72d34;--color-img-primary:#adacac;--color-img-secondary:#86d3ff}}
+        @media (prefers-color-scheme:dark){
+            /*:root{--color-bg-primary:#222526;--color-bg-secondary:#292e2f;--color-bg-sign:#262828;--color-text-primary:#fff;--color-text-secondary:#999;--color-img-details:#c72d34;--color-img-primary:#adacac;--color-img-secondary:#86d3ff}*/
+        }
         body,html{background-color:var(--color-bg-primary);color:var(--color-text-primary);font-family:Roboto,Helvetica,sans-serif;font-size:0;margin:0;padding:0;height:100vh;overflow-x:hidden}
         body{align-items:center;display:flex;justify-content:center;height:100vh}
         main{width:100%;max-width:1024px;padding:0 40px;display:flex;justify-content:space-between}
@@ -66,7 +68,7 @@
             .content,.picture{width:100%}
             .content{position:relative;margin:0 auto;z-index:1}
             .title{width:100%}
-            .picture{position:absolute;top:0;left:0;z-index:0;opacity:.3;width:100%;height:100%;padding:0}
+            .picture{position:absolute;top:0;left:0;z-index:0;opacity:.2;width:100%;height:100%;padding:0}
             .picture svg{max-width:70%}
         }
         @media (max-width:600px){
@@ -87,7 +89,7 @@
                 <li>It was never here</li>
             </ul>
         </div>
-        <p class="if-not-found">Double-check the URL. <a class="go-back hidden">Alternatively, go back</a></p>
+        <p class="if-maybe-wrong-uri">Double-check the URL. <a class="go-back hidden">Alternatively, go back</a></p>
         {{ if show_details }}
         <div class="details">
             <p>Request details:</p>
@@ -199,7 +201,11 @@
 </main>
 <script>
     Array.prototype.forEach.call(document.getElementsByClassName('if-not-found'), function ($el) {
-        $el.style.display = ["404", "403", "408", "410", "429", "500", "502", "503", "504"].includes("{{ code }}".trim()) ? 'block' : 'none';
+        $el.style.display = "{{ code }}".trim() === "404" ? 'block' : 'none';
+    });
+
+    Array.prototype.forEach.call(document.getElementsByClassName('if-maybe-wrong-uri'), function ($el) {
+        $el.style.display = ["401", "403", "404", "418", "505"].includes("{{ code }}".trim()) ? 'block' : 'none';
     });
 
     Array.prototype.forEach.call(document.getElementsByClassName('go-back'), function ($el) {
