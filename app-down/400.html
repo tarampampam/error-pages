@@ -16,7 +16,7 @@
     <style>
         :root{--color-bg-primary:#fff;--color-bg-secondary:#eef6fa;--color-bg-sign:#fff;--color-text-primary:#333;--color-text-secondary:#777;--color-img-details:#f62f37;--color-img-primary:#7990a1;--color-img-secondary:#00baff;--font-size-small:13px;--font-size-normal:16px;--font-size-large:45px}
         @media (prefers-color-scheme:dark){
-            /*:root{--color-bg-primary:#222526;--color-bg-secondary:#292e2f;--color-bg-sign:#262828;--color-text-primary:#fff;--color-text-secondary:#999;--color-img-details:#c72d34;--color-img-primary:#adacac;--color-img-secondary:#86d3ff}*/
+            :root{--color-bg-primary:#222526;--color-bg-secondary:#292e2f;--color-bg-sign:#262828;--color-text-primary:#fff;--color-text-secondary:#999;--color-img-details:#c72d34;--color-img-primary:#adacac;--color-img-secondary:#86d3ff}
         }
         body,html{background-color:var(--color-bg-primary);color:var(--color-text-primary);font-family:Roboto,Helvetica,sans-serif;font-size:0;margin:0;padding:0;height:100vh;overflow-x:hidden}
         body{align-items:center;display:flex;justify-content:center;height:100vh}
@@ -85,7 +85,7 @@
         
     </div>
     <div class="picture">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 480" x="0px" y="0px" xml:space="preserve" class="pic">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 480" x="0px" y="0px" xml:space="preserve">
             <rect y="0" class="st0" width="600" height="480"></rect>
             <radialgradient id="svg-background-gradient" cx="328.1394" cy="306.3561" r="219.5134" gradientUnits="userSpaceOnUse">
                 <stop offset="0" style="stop-color:var(--color-bg-secondary)"></stop>
@@ -178,11 +178,11 @@
 </main>
 <script>
     Array.prototype.forEach.call(document.getElementsByClassName('if-not-found'), function ($el) {
-        $el.style.display = "400".trim() === "404" ? 'block' : 'none';
+        $el.style.display = "400" === "404" ? 'block' : 'none';
     });
 
     Array.prototype.forEach.call(document.getElementsByClassName('if-maybe-wrong-uri'), function ($el) {
-        $el.style.display = ["401", "403", "404", "418", "505"].includes("400".trim()) ? 'block' : 'none';
+        $el.style.display = ["401", "403", "404", "418", "505"].includes("400") ? 'block' : 'none';
     });
 
     Array.prototype.forEach.call(document.getElementsByClassName('go-back'), function ($el) {
