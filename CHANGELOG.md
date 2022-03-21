@@ -4,6 +4,16 @@ All notable changes to this package will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## v2.8.1
+
+### Fixed
+
+- Dark mode for `app-down` template
+
+### Changed
+
+- The index page for built error pages now supports a dark theme
+
 ## v2.8.0
 
 ### Added
