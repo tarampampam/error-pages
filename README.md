@@ -128,7 +128,7 @@ Transfer/sec:    140.23MB
 
 [ghost-screen]:https://hsto.org/webt/oj/cl/4k/ojcl4ko_cvusy5xuki6efffzsyo.gif
 [ghost-link]:https://tarampampam.github.io/error-pages/ghost/404.html
-[l7-light-screen]:https://hsto.org/webt/xc/iq/vt/xciqvty-aoj-rchfarsjhutpjny.png
+[l7-light-screen]:https://hsto.org/webt/hx/ca/mm/hxcammfm7qjmogtvsjxcidgf7c8.png
 [l7-light-link]:https://tarampampam.github.io/error-pages/l7-light/404.html
 [l7-dark-screen]:https://hsto.org/webt/s1/ih/yr/s1ihyrqs_y-sgraoimfhk6ypney.png
 [l7-dark-link]:https://tarampampam.github.io/error-pages/l7-dark/404.html
@@ -142,9 +142,9 @@ Transfer/sec:    140.23MB
 [cats-link]:https://tarampampam.github.io/error-pages/cats/404.html
 [lost-in-space-screen]:https://hsto.org/webt/lf/ln/x8/lflnx8fuy4rofxju34ttskijdsu.gif
 [lost-in-space-link]:https://tarampampam.github.io/error-pages/lost-in-space/404.html
-[app-down-screen]:https://hsto.org/webt/r3/ys/ql/r3ysqlv_1qj29k3qf_3mliedo8s.png
+[app-down-screen]:https://habrastorage.org/webt/j2/la/fj/j2lafjvu_xjflzrvhiixobxy_ca.png
 [app-down-link]:https://tarampampam.github.io/error-pages/app-down/404.html
-[connection-screen]:https://hsto.org/webt/je/nh/et/jenhetpsxxte5xwsi7uvt95e98i.png
+[connection-screen]:https://hsto.org/webt/x4/ah/jb/x4ahjboo4-arm3bxpaash_sflmw.png
 [connection-link]:https://tarampampam.github.io/error-pages/connection/404.html
 
 ## 🦾 Contributors
