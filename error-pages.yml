@@ -13,6 +13,7 @@ templates:
   - path: ./templates/cats.html
   - path: ./templates/lost-in-space.html
   - path: ./templates/app-down.html
+  - path: ./templates/connection.html
 
 formats:
   json:

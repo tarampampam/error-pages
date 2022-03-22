@@ -122,6 +122,7 @@ Transfer/sec:    140.23MB
 |      `cats`       |                 [![cats][cats-screen]][cats-link]                  |
 |  `lost-in-space`  |    [![lost-in-space][lost-in-space-screen]][lost-in-space-link]    |
 |    `app-down`     |           [![app-down][app-down-screen]][app-down-link]            |
+|   `connection`    |        [![connection][connection-screen]][connection-link]         |
 
 > Note: `noise` template highly uses the CPU, be careful
 
@@ -143,6 +144,8 @@ Transfer/sec:    140.23MB
 [lost-in-space-link]:https://tarampampam.github.io/error-pages/lost-in-space/404.html
 [app-down-screen]:https://hsto.org/webt/r3/ys/ql/r3ysqlv_1qj29k3qf_3mliedo8s.png
 [app-down-link]:https://tarampampam.github.io/error-pages/app-down/404.html
+[connection-screen]:https://hsto.org/webt/je/nh/et/jenhetpsxxte5xwsi7uvt95e98i.png
+[connection-link]:https://tarampampam.github.io/error-pages/connection/404.html
 
 ## 🦾 Contributors
 
