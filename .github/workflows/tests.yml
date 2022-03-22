@@ -155,6 +155,7 @@ jobs: # Docs: <https://git.io/JvxXE>
           test -f ./out/cats/404.html
           test -f ./out/lost-in-space/404.html
           test -f ./out/app-down/404.html
+          test -f ./out/connection/404.html
 
   docker-image:
     name: Build docker image
