@@ -8,7 +8,9 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 ### Added
 
-- Template `connection`
+- Template `connection` [#79]
+
+[#79]:https://github.com/tarampampam/error-pages/pull/79
 
 ## v2.8.1
 
