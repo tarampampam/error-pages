@@ -8,7 +8,9 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 ### Changed
 
-- Error pages now translated in 🇺🇸, 🇺🇦 and 🇷🇺 languages
+- Error pages now translated in 🇺🇦 and 🇷🇺 languages [#80]
+
+[#80]:https://github.com/tarampampam/error-pages/pull/80
 
 ## v2.9.0
 
