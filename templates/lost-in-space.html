@@ -378,15 +378,15 @@
         console.warn('gsap library is not initialized (network error?)')
     }
 
-    (function (l, t) { // localize the page
-        l.src = 'https://cdn.jsdelivr.net/gh/tarampampam/error-pages@2/l10n/l10n.min.js';
-        l.async = l.defer = true;
-        l.addEventListener('load', () => {
-            t.removeChild(l);
-            l10n.localizeDocument();
-        });
-        t.appendChild(l);
-    })(document.createElement('script'), document.body);
+    if (navigator.language.substring(0, 2).toLowerCase() !== 'en') {
+        ((s, p) => { // localize the page
+            s.src = 'https://cdn.jsdelivr.net/gh/tarampampam/error-pages@2/l10n/l10n.min.js';
+            // s.src = '../l10n/l10n.js';
+            s.async = s.defer = true;
+            s.addEventListener('load', () => p.removeChild(s));
+            p.appendChild(s);
+        })(document.createElement('script'), document.body);
+    }
 </script>
 
 </body>
