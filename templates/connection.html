@@ -142,8 +142,7 @@
     {{ end }}
 </footer>
 <script>
-    // const errorCode = parseInt(`{{ code }}`, 10);
-    const errorCode = 404
+    const errorCode = parseInt(`{{ code }}`, 10);
 
     if (typeof errorCode !== 'undefined' && !isNaN(errorCode)) {
         /**
@@ -251,15 +250,14 @@
         console.warn('Cannot parse the error code:', errorCode);
     }
 
-    (function (l, t) {
-        l.src = '../l10n/l10n.js'; // FIXME 'https://cdn.jsdelivr.net/gh/tarampampam/error-pages@2/l10n/l10n.min.js';
+    (function (l, t) { // localize the page
+        l.src = 'https://cdn.jsdelivr.net/gh/tarampampam/error-pages@2/l10n/l10n.min.js';
         l.async = l.defer = true;
         l.addEventListener('load', () => {
             t.removeChild(l);
-            l10n.localize();
-            console.log(l10n);
+            l10n.localizeDocument();
         });
         t.appendChild(l);
-    })(document.createElement('script'), document.body)
+    })(document.createElement('script'), document.body);
 </script>
 </html>

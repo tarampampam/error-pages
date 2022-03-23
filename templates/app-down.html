@@ -35,7 +35,7 @@
         .details ul li{padding-top:calc(var(--font-size-small) * 1.5)}
         .details ul li:first-child{padding-top:calc(var(--font-size-small) * .6)}
         .details code,.details span,.details ul li::before{font-size:var(--font-size-small);font-weight:400}
-        .details span{padding-right:7px}
+        .details code{padding-left:7px}
         /* {{ end }} */
         a{text-decoration:none;color:var(--color-img-secondary)}
         .hidden{display:none}
@@ -79,30 +79,30 @@
 <body>
 <main>
     <div class="content">
-        <h2 class="title">{{ message }}</h2>
-        <p>{{ description }}</p>
+        <h2 class="title" data-l10n>{{ message }}</h2>
+        <p data-l10n>{{ description }}</p>
         <div class="subtitle if-not-found hidden">
-            <p>Here's what might have happened:</p>
+            <p><span data-l10n>Here's what might have happened</span>:</p>
             <ul>
-                <li>You may have mistyped the URL</li>
-                <li>The site was moved</li>
-                <li>It was never here</li>
+                <li data-l10n>You may have mistyped the URL</li>
+                <li data-l10n>The site was moved</li>
+                <li data-l10n>It was never here</li>
             </ul>
         </div>
-        <p class="if-maybe-wrong-uri">Double-check the URL. <a class="go-back hidden">Alternatively, go back</a></p>
+        <p class="if-maybe-wrong-uri"><span data-l10n>Double-check the URL</span>. <a class="go-back hidden" data-l10n>Alternatively, go back</a></p>
         {{ if show_details }}
         <div class="details">
-            <p>Request details:</p>
+            <p><span data-l10n>Request details</span>:</p>
             <ul>
-                {{- if host }}<li><span>Host:</span> <code>{{ host }}</code></li>{{ end -}}
-                {{- if original_uri }}<li><span>Original URI:</span> <code>{{ original_uri }}</code></li>{{ end -}}
-                {{- if forwarded_for }}<li><span>Forwarded for:</span> <code>{{ forwarded_for }}</code></li>{{ end -}}
-                {{- if namespace }}<li><span>Namespace:</span> <code>{{ namespace }}</code></li>{{ end -}}
-                {{- if ingress_name }}<li><span>Ingress name:</span> <code>{{ ingress_name }}</code></li>{{ end -}}
-                {{- if service_name }}<li><span>Service name:</span> <code>{{ service_name }}</code></li>{{ end -}}
-                {{- if service_port }}<li><span>Service port:</span> <code>{{ service_port }}</code></li>{{ end -}}
-                {{- if request_id }}<li><span>Request ID:</span> <code>{{ request_id }}</code></li>{{ end -}}
-                <li><span>Timestamp:</span> <code>{{ now.Unix }}</code></li>
+                {{- if host }}<li><span><span data-l10n>Host</span>:</span> <code>{{ host }}</code></li>{{ end -}}
+                {{- if original_uri }}<li><span><span data-l10n>Original URI</span>:</span> <code>{{ original_uri }}</code></li>{{ end -}}
+                {{- if forwarded_for }}<li><span><span data-l10n>Forwarded for</span>:</span> <code>{{ forwarded_for }}</code></li>{{ end -}}
+                {{- if namespace }}<li><span><span data-l10n>Namespace</span>:</span> <code>{{ namespace }}</code></li>{{ end -}}
+                {{- if ingress_name }}<li><span><span data-l10n>Ingress name</span>:</span> <code>{{ ingress_name }}</code></li>{{ end -}}
+                {{- if service_name }}<li><span><span data-l10n>Service name</span>:</span> <code>{{ service_name }}</code></li>{{ end -}}
+                {{- if service_port }}<li><span><span data-l10n>Service port</span>:</span> <code>{{ service_port }}</code></li>{{ end -}}
+                {{- if request_id }}<li><span><span data-l10n>Request ID</span>:</span> <code>{{ request_id }}</code></li>{{ end -}}
+                <li><span><span data-l10n>Timestamp</span>:</span> <code>{{ now.Unix }}</code></li>
             </ul>
         </div>
         {{ end }}
@@ -224,6 +224,17 @@
             $el.style.display = 'none'; // hide the element
         }
     });
+
+    (function (l, t) { // localize the page
+        l.src = '../l10n/l10n.js';
+        // l.src = 'https://cdn.jsdelivr.net/gh/tarampampam/error-pages@2/l10n/l10n.min.js';
+        l.async = l.defer = true;
+        l.addEventListener('load', () => {
+            t.removeChild(l);
+            l10n.localizeDocument();
+        });
+        t.appendChild(l);
+    })(document.createElement('script'), document.body);
 </script>
 </body>
 <!--

@@ -1,52 +1,84 @@
 const l10n = new function () {
     const defaultLocale = 'en'; // default locale
 
+    // language codes list: <https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes>
     this.data = { // all keys should be in english by default
-        'Bad Request': {ru: 'Некорректный Запрос'},
-        'Unauthorized': {ru: 'Не Авторизован'},
-        'Forbidden': {ru: 'Запрещено'},
-        'Not Found': {ru: 'Не Найдено'},
-        'Method Not Allowed': {ru: 'Метод Не Поддерживается'},
-        'Proxy Authentication Required': {ru: 'Необходима Аутентификация Прокси'},
-        'Request Timeout': {ru: 'Истекло Время Ожидания'},
-        'Conflict': {ru: 'Конфликт'},
-        'Gone': {ru: 'Удалён'},
-        'Length Required': {ru: 'Необходима Длина'},
-        'Precondition Failed': {ru: 'Условие Ложно'},
-        'Payload Too Large': {ru: 'Полезная Нагрузка Слишком Велика'},
-        'Requested Range Not Satisfiable': {ru: 'Диапазон Не Достижим'},
-        'I\'m a teapot': {ru: 'Я Чайник'},
-        'Too Many Requests': {ru: 'Слишком Много Запросов'},
-        'Internal Server Error': {ru: 'Внутренняя Ошибка Сервера'},
-        'Bad Gateway': {ru: 'Ошибка Шлюза'},
-        'Service Unavailable': {ru: 'Сервис Недоступен'},
-        'Gateway Timeout': {ru: 'Шлюз Не Отвечает'},
-        'HTTP Version Not Supported': {ru: 'Версия HTTP Не Поддерживается'},
+        'Error': {ru: 'Ошибка', uk: 'Помилка'},
+        'Good luck': {ru: 'Удачи', uk: 'Успіхів'},
+        'UH OH': {ru: 'ОХ', uk: 'ОХ'},
+        'Request details': {ru: 'Детали запроса', uk: 'Деталі запиту'},
+        'Double-check the URL': {ru: 'Дважды проверьте URL', uk: 'Двічі перевіряйте URL-адресу'},
+        'Alternatively, go back': {ru: 'Или можете вернуться назад', uk: 'Або ви можете повернутися'},
+        'Here\'s what might have happened': {ru: 'Из-за чего это могло случиться', uk: 'Що це може статися'},
+        'You may have mistyped the URL': {ru: 'Вы могли ошибиться в URL', uk: 'Ви можете зробити помилку в URL-адресі'},
+        'The site was moved': {ru: 'Сайт был перемещён', uk: 'Сайт був переміщений'},
+        'It was never here': {ru: 'Он никогда не был здесь', uk: 'Він ніколи не був тут'},
 
-        'Host': {ru: 'Хост'},
-        'Original URI': {ru: 'Исходный URI'},
-        'Forwarded for': {ru: 'Перенаправлен'},
-        'Namespace': {ru: 'Пространство имён'},
-        'Ingress name': {ru: 'Имя Ingress'},
-        'Service name': {ru: 'Имя сервиса'},
-        'Service port': {ru: 'Порт сервиса'},
-        'Request ID': {ru: 'ID запроса'},
-        'Timestamp': {ru: 'Временная метка'},
+        'Bad Request': {ru: 'Некорректный запрос', uk: 'Неправильний запит'},
+        'The server did not understand the request': {ru: 'Сервер не смог обработать запрос из-за ошибки в нём', uk: 'Сервер не міг обробити запит через помилку в ньому'},
+        'Unauthorized': {ru: 'Не фвторизован', uk: 'Несанкціонований доступ'},
+        'The requested page needs a username and a password': {ru: 'Для доступа к странице требуется логин и пароль', uk: 'Щоб отримати доступ до сторінки, потрібний логін та пароль'},
+        'Forbidden': {ru: 'Запрещено', uk: 'Заборонено'},
+        'Access is forbidden to the requested page': {ru: 'Доступ к странице запрещён', uk: 'Доступ до сторінки заборонено'},
+        'Not Found': {ru: 'Не найдено', uk: 'Не знайдено'},
+        'The server can not find the requested page': {ru: 'Сервер не смог найти запрашиваемую страницу', uk: 'Сервер не міг знайти запитану сторінку'},
+        'Method Not Allowed': {ru: 'Метод не поддерживается', uk: 'Неприпустимий метод'},
+        'The method specified in the request is not allowed': {ru: 'Указанный в запросе метод не поддерживается', uk: 'Метод, зазначений у запиті, не підтримується'},
+        'Proxy Authentication Required': {ru: 'Необходима аутентификация прокси', uk: 'Потрібна ідентифікація проксі'},
+        'You must authenticate with a proxy server before this request can be served': {ru: 'Вы должны быть авторизованы на прокси сервере для обработки этого запроса', uk: 'Ви повинні увійти до проксі-сервера для обробки цього запиту.'},
+        'Request Timeout': {ru: 'Истекло время ожидания', uk: 'Час запиту закінчився'},
+        'The request took longer than the server was prepared to wait': {ru: 'Время ожидания сервером передачи от клиента истекло', uk: 'Трансфер термінів очікуваного сервера від клієнта закінчився'},
+        'Conflict': {ru: 'Конфликт', uk: 'Конфлікт'},
+        'The request could not be completed because of a conflict': {ru: 'Запрос не может быть обработан из-за конфликта', uk: 'Запит не може бути оброблений через конфлікт'},
+        'Gone': {ru: 'Удалён', uk: 'Зник'},
+        'The requested page is no longer available': {ru: 'Запрошенная страница была удалена', uk: 'Запитана сторінка була видалена'},
+        'Length Required': {ru: 'Необходима длина', uk: 'Потрібно вказати розмір'},
+        'The "Content-Length" is not defined. The server will not accept the request without it': {ru: 'Заголовок "Content-Length" не был передан. Сервер не может обработать запрос без него', uk: 'Заголовок "Content-Length" не був переданий. Сервер не може обробити запит без нього'},
+        'Precondition Failed': {ru: 'Условие ложно', uk: 'Збій під час обробки попередньої умови'},
+        'The pre condition given in the request evaluated to false by the server': {ru: 'Ни одно из условных полей заголовка запроса не было выполнено', uk: 'Жодна з умовних полів заголовка запиту не була виконана'},
+        'Payload Too Large': {ru: 'Тело запроса слишком велико', uk: 'Тіло запиту перевищує допустимий розмір'},
+        'The server will not accept the request, because the request entity is too large': {ru: 'Сервер не может обработать запрос, так как он слишком большой', uk: 'Сервер не може обробити запит, оскільки він занадто великий'},
+        'Requested Range Not Satisfiable': {ru: 'Диапазон не достижим', uk: 'Запитуваний діапазон недосяжний'},
+        'The requested byte range is not available and is out of bounds': {ru: 'Запрошенный диапазон данных недоступен или вне допустимых пределов', uk: 'Описаний діапазон даних недоступний або з допустимих меж'},
+        'I\'m a teapot': {ru: 'Я чайник', uk: 'Я чайник'},
+        'Attempt to brew coffee with a teapot is not supported': {ru: 'Попытка заварить кофе в чайнике обречена на фиаско', uk: 'Спроба виварити каву в чайник приречена на фіаско'},
+        'Too Many Requests': {ru: 'Слишком много запросов', uk: 'Користувач відправив занадто багато запитів в конкретний проміжок часу'},
+        'Too many requests in a given amount of time': {ru: 'Отправлено слишком много запросов за короткое время', uk: 'Надіслано занадто багато запитів на короткий час'},
+        'Internal Server Error': {ru: 'Внутренняя ошибка сервера', uk: 'Внутрішня помилка сервера'},
+        'The server met an unexpected condition': {ru: 'Произошло что-то неожиданное на сервере', uk: 'На сервері було щось несподіване'},
+        'Bad Gateway': {ru: 'Ошибка шлюза', uk: 'Помилка шлюзу'},
+        'The server received an invalid response from the upstream server': {ru: 'Сервер получил некорректный ответ от вышестоящего сервера', uk: 'Сервер отримав неправильну відповідь з сервера Upstream'},
+        'Service Unavailable': {ru: 'Сервис недоступен', uk: 'Сервіс недоступний'},
+        'The server is temporarily overloading or down': {ru: 'Сервер временно не может обрабатывать запросы по техническим причинам', uk: 'Сервер тимчасово не може обробляти запити з технічних причин'},
+        'Gateway Timeout': {ru: 'Шлюз не отвечает', uk: 'Шлюз не відповідає'},
+        'The gateway has timed out': {ru: 'Сервер не дождался ответа от вышестоящего сервера', uk: 'Сервер не чекав відповіді від сервера Upstream'},
+        'HTTP Version Not Supported': {ru: 'Версия HTTP не поддерживается', uk: 'Версія НТТР не підтримується'},
+        'The server does not support the "http protocol" version': {ru: 'Сервер не поддерживает запрошенную версию HTTP протокола', uk: 'Сервер не підтримує запитану версію HTTP-протоколу'},
 
-        'client-side error': {ru: 'ошибка на стороне клиента'},
-        'server-side error': {ru: 'ошибка на стороне сервера'},
+        'Host': {ru: 'Хост', uk: 'Хост'},
+        'Original URI': {ru: 'Исходный URI', uk: 'Вихідний URI'},
+        'Forwarded for': {ru: 'Перенаправлен', uk: 'Перенаправлений'},
+        'Namespace': {ru: 'Namespace', uk: 'Namespace'},
+        'Ingress name': {ru: 'Имя Ingress', uk: 'Ім\'я Ingress'},
+        'Service name': {ru: 'Имя сервиса', uk: 'Ім\'я сервісу'},
+        'Service port': {ru: 'Порт сервиса', uk: 'Порт сервісу'},
+        'Request ID': {ru: 'ID запроса', uk: 'ID запиту'},
+        'Timestamp': {ru: 'Временная метка', uk: 'Тимчасова мітка'},
 
-        'Your Client': {ru: 'Ваш браузер'},
-        'Network': {ru: 'Сеть'},
-        'Web Server': {ru: 'Web сервер'},
-        'What happened?': {ru: 'Что произошло?'},
-        'What can i do?': {ru: 'Что можно сделать?'},
-        'Please try again in a few minutes': {ru: 'Пожалуйста, попробуйте ещё раз чуть позже'},
-        'Working': {ru: 'Работает'},
-        'Unknown': {ru: 'Неизвестно'},
-        'Please try to change the request method, headers, payload, or URL': {ru: 'Пожалуйста, попробуйте изменить метод запроса, заголовки, его содержимое или URL'},
-        'Please check your authorization data': {ru: 'Пожалуйста, проверьте данные авторизации'},
-        'Please double-check the URL and try again': {ru: 'Пожалуйста, дважды проверьте URL и попробуйте снова'},
+        'client-side error': {ru: 'ошибка на стороне клиента', uk: 'помилка на стороні клієнта'},
+        'server-side error': {ru: 'ошибка на стороне сервера', uk: 'помилка на стороні сервера'},
+
+        'Your Client': {ru: 'Ваш браузер', uk: 'Ваш браузер'},
+        'Network': {ru: 'Сеть', uk: 'Сіть'},
+        'Web Server': {ru: 'Web сервер', uk: 'Web сервер'},
+        'What happened?': {ru: 'Что произошло?', uk: 'Що сталося?'},
+        'What can i do?': {ru: 'Что можно сделать?', uk: 'Що можна зробити?'},
+        'Please try again in a few minutes': {ru: 'Пожалуйста, попробуйте повторить запрос ещё раз чуть позже', uk: 'Будь ласка, спробуйте повторити запит ще раз трохи пізніше'},
+        'Working': {ru: 'Работает', uk: 'Працює'},
+        'Unknown': {ru: 'Неизвестно', uk: 'Невідомо'},
+        'Please try to change the request method, headers, payload, or URL': {ru: 'Пожалуйста, попробуйте изменить метод запроса, заголовки, его содержимое или URL', uk: 'Будь ласка, спробуйте змінити метод запиту, заголовки, його вміст або URL-адресу'},
+        'Please check your authorization data': {ru: 'Пожалуйста, проверьте данные авторизации', uk: 'Будь ласка, перевірте дані авторизації'},
+        'Please double-check the URL and try again': {ru: 'Пожалуйста, дважды проверьте URL и попробуйте снова', uk: 'Будь ласка, двічі перевірте URL-адресу і спробуйте знову'},
     };
 
     let activeLocale = defaultLocale;
@@ -61,7 +93,7 @@ const l10n = new function () {
      * @param {string} locale
      */
     this.setLocale = function (locale) {
-        activeLocale = locale
+        activeLocale = locale.toLowerCase();
     }
 
     /**
@@ -86,12 +118,13 @@ const l10n = new function () {
         }
 
         const cacheKey = '__ck';
+        token = normalizeToken(token);
         for (const key in this.data) { // slowest way (fallback)
             if (!this.data[key].hasOwnProperty(cacheKey)) { // boost the cache
                 this.data[key][cacheKey] = normalizeToken(key);
             }
 
-            if (this.data[key][cacheKey] === normalizeToken(token) && this.data[key].hasOwnProperty(activeLocale)) {
+            if (this.data[key][cacheKey] === token && this.data[key].hasOwnProperty(activeLocale)) {
                 return this.data[key][activeLocale];
             }
         }
@@ -102,7 +135,7 @@ const l10n = new function () {
     /**
      * Localize all elements with HTML attributes `data-l10n`.
      */
-    this.localize = function () {
+    this.localizeDocument = function () {
         Array.prototype.forEach.call(document.querySelectorAll('[data-l10n]'), ($el) => {
             const localized = this.translate($el.getAttribute('data-l10n') || $el.innerText.trim(), undefined);
 

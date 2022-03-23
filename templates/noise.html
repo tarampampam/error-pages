@@ -130,7 +130,7 @@
 <div class="container-center">
     <div>
         <h1>{{ code }}</h1>
-        <h2>{{ description }}</h2>
+        <h2 data-l10n>{{ description }}</h2>
     </div>
 </div>
 
@@ -174,6 +174,16 @@
     window.addEventListener('beforeunload', function (/** @param BeforeUnloadEvent event */ event) {
         window.clearInterval(flickerInterval);
     });
+
+    (function (l, t) { // localize the page
+        l.src = 'https://cdn.jsdelivr.net/gh/tarampampam/error-pages@2/l10n/l10n.min.js';
+        l.async = l.defer = true;
+        l.addEventListener('load', () => {
+            t.removeChild(l);
+            l10n.localizeDocument();
+        });
+        t.appendChild(l);
+    })(document.createElement('script'), document.body);
 </script>
 </body>
 <!--

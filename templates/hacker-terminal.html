@@ -145,23 +145,34 @@
 <body>
 <div class="overlay"></div>
 <div class="terminal">
-    <h1>Error <span class="error_code">{{ code }}</span></h1>
-    <p class="output">{{ description }}.</p>
-    <p class="output">Good luck.</p>
+    <h1><span data-l10n>Error</span> <span class="error_code">{{ code }}</span></h1>
+    <p class="output" data-l10n>{{ description }}.</p>
+    <p class="output"><span data-l10n>Good luck</span>.</p>
     {{ if show_details }}
     <div class="details">
-        {{- if host }}<p class="output small">Host: <code>{{ host }}</code></p>{{ end -}}
-        {{- if original_uri }}<p class="output small">Original URI: <code>{{ original_uri }}</code></p>{{ end -}}
-        {{- if forwarded_for }}<p class="output small">Forwarded for: <code>{{ forwarded_for }}</code></p>{{ end -}}
-        {{- if namespace }}<p class="output small">Namespace: <code>{{ namespace }}</code></p>{{ end -}}
-        {{- if ingress_name }}<p class="output small">Ingress name: <code>{{ ingress_name }}</code></p>{{ end -}}
-        {{- if service_name }}<p class="output small">Service name: <code>{{ service_name }}</code></p>{{ end -}}
-        {{- if service_port }}<p class="output small">Service port: <code>{{ service_port }}</code></p>{{ end -}}
-        {{- if request_id }}<p class="output small">Request ID: <code>{{ request_id }}</code></p>{{ end -}}
-        <p class="output small">Timestamp: <code>{{ now.Unix }}</code></p>
+        {{- if host }}<p class="output small"><span data-l10n>Host</span>: <code>{{ host }}</code></p>{{ end -}}
+        {{- if original_uri }}<p class="output small"><span data-l10n>Original URI</span>: <code>{{ original_uri }}</code></p>{{ end -}}
+        {{- if forwarded_for }}<p class="output small"><span data-l10n>Forwarded for</span>: <code>{{ forwarded_for }}</code></p>{{ end -}}
+        {{- if namespace }}<p class="output small"><span data-l10n>Namespace</span>: <code>{{ namespace }}</code></p>{{ end -}}
+        {{- if ingress_name }}<p class="output small"><span data-l10n>Ingress name</span>: <code>{{ ingress_name }}</code></p>{{ end -}}
+        {{- if service_name }}<p class="output small"><span data-l10n>Service name</span>: <code>{{ service_name }}</code></p>{{ end -}}
+        {{- if service_port }}<p class="output small"><span data-l10n>Service port</span>: <code>{{ service_port }}</code></p>{{ end -}}
+        {{- if request_id }}<p class="output small"><span data-l10n>Request ID</span>: <code>{{ request_id }}</code></p>{{ end -}}
+        <p class="output small"><span data-l10n>Timestamp</span>: <code>{{ now.Unix }}</code></p>
     </div>
     {{ end }}
 </div>
+<script>
+    (function (l, t) { // localize the page
+        l.src = 'https://cdn.jsdelivr.net/gh/tarampampam/error-pages@2/l10n/l10n.min.js';
+        l.async = l.defer = true;
+        l.addEventListener('load', () => {
+            t.removeChild(l);
+            l10n.localizeDocument();
+        });
+        t.appendChild(l);
+    })(document.createElement('script'), document.body);
+</script>
 </body>
 <!--
     Error {{ code }}: {{ message }}
