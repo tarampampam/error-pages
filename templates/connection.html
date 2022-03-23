@@ -34,16 +34,20 @@
         .reason>*{display:block;margin:1rem;flex-grow:1;max-width:40%}
         .reason h2{font-size:calc(var(--font-size-secondary) + .2rem);margin:0 0 .6em 0;font-weight:550}
         footer{margin:1rem;color:var(--color-text-secondary);font-size:0}
+        /* {{ if show_details }} */
         footer .details{margin-top:20px}
         footer .details ul{padding:0}
         footer .details code,footer .details span{font-size:calc(var(--font-size-secondary) - .6rem)}
         footer .details span{padding-right:7px}
+        /* {{ end }} */
         @media screen and (max-width:820px){
             .arrows{display:none}
         }
         @media screen and (max-width:480px){
             .reason>*{max-width:100%}
+            /* {{ if show_details }} */
             footer .details code,footer .details span{font-size:calc(var(--font-size-secondary) - .3rem)}
+            /* {{ end }} */
         }
         @media screen and (min-width:768px){
             body{margin:8% 10%}
@@ -214,9 +218,9 @@
         switch (true) {
             case errorCode >= 400 && errorCode <= 499:
                 switch (errorCode) {
-                    case 400: case 405: case 411: case 413: whatToDo = 'Change the request method, payload or URL'; break;
-                    case 401: case 403: case 407: whatToDo = 'Check your authorization data'; break;
-                    case 404: whatToDo = 'Double-check the URL and try again'; break;
+                    case 400: case 405: case 411: case 413: whatToDo = 'Please try to change the request method, headers, payload, or URL'; break;
+                    case 401: case 403: case 407: whatToDo = 'Please check your authorization data'; break;
+                    case 404: whatToDo = 'Please double-check the URL and try again'; break;
                     case 409: case 410: case 418: whatToDo = '¯\\_(ツ)_/¯'; break;
                 }
 
