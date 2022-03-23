@@ -120,7 +120,7 @@
 <div class="container-center">
     <div>
         <h1>504</h1>
-        <h2>The gateway has timed out</h2>
+        <h2 data-l10n>The gateway has timed out</h2>
     </div>
 </div>
 
@@ -164,6 +164,15 @@
     window.addEventListener('beforeunload', function (/** @param BeforeUnloadEvent event */ event) {
         window.clearInterval(flickerInterval);
     });
+
+    if (navigator.language.substring(0, 2).toLowerCase() !== 'en') {
+        ((s, p) => { // localize the page (details here - https://github.com/tarampampam/error-pages/tree/master/l10n)
+            s.src = 'https://cdn.jsdelivr.net/gh/tarampampam/error-pages@2/l10n/l10n.min.js'; // '../l10n/l10n.js';
+            s.async = s.defer = true;
+            s.addEventListener('load', () => p.removeChild(s));
+            p.appendChild(s);
+        })(document.createElement('script'), document.body);
+    }
 </script>
 </body>
 <!--

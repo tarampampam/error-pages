@@ -318,8 +318,8 @@
     </div>
     <div class="content">
         <h1>500</h1>
-        <h2>UH OH! Internal Server Error</h2>
-        <p>The server met an unexpected condition</p>
+        <h2><span data-l10n>UH OH</span>! <span data-l10n>Internal Server Error</span></h2>
+        <p data-l10n>The server met an unexpected condition</p>
 
         
     </div>
@@ -347,6 +347,15 @@
         gsap.to("#glassShine", {x: 80, duration: 2, rotation: -30, ease: "expo.inOut", transformOrigin: "50% 50%", repeat: -1, repeatDelay: 8, delay: 2});
     } else {
         console.warn('gsap library is not initialized (network error?)')
+    }
+
+    if (navigator.language.substring(0, 2).toLowerCase() !== 'en') {
+        ((s, p) => { // localize the page (details here - https://github.com/tarampampam/error-pages/tree/master/l10n)
+            s.src = 'https://cdn.jsdelivr.net/gh/tarampampam/error-pages@2/l10n/l10n.min.js'; // '../l10n/l10n.js';
+            s.async = s.defer = true;
+            s.addEventListener('load', () => p.removeChild(s));
+            p.appendChild(s);
+        })(document.createElement('script'), document.body);
     }
 </script>
 

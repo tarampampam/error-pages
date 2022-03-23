@@ -71,17 +71,17 @@
 <body>
 <main>
     <div class="content">
-        <h2 class="title">Gateway Timeout</h2>
-        <p>The gateway has timed out</p>
+        <h2 class="title" data-l10n>Gateway Timeout</h2>
+        <p data-l10n>The gateway has timed out</p>
         <div class="subtitle if-not-found hidden">
-            <p>Here's what might have happened:</p>
+            <p><span data-l10n>Here's what might have happened</span>:</p>
             <ul>
-                <li>You may have mistyped the URL</li>
-                <li>The site was moved</li>
-                <li>It was never here</li>
+                <li data-l10n>You may have mistyped the URL</li>
+                <li data-l10n>The site was moved</li>
+                <li data-l10n>It was never here</li>
             </ul>
         </div>
-        <p class="if-maybe-wrong-uri">Double-check the URL. <a class="go-back hidden">Alternatively, go back</a></p>
+        <p class="if-maybe-wrong-uri"><span data-l10n>Double-check the URL</span>. <a class="go-back hidden" data-l10n>Alternatively, go back</a></p>
         
     </div>
     <div class="picture">
@@ -201,6 +201,15 @@
             $el.style.display = 'none'; // hide the element
         }
     });
+
+    if (navigator.language.substring(0, 2).toLowerCase() !== 'en') {
+        ((s, p) => { // localize the page (details here - https://github.com/tarampampam/error-pages/tree/master/l10n)
+            s.src = 'https://cdn.jsdelivr.net/gh/tarampampam/error-pages@2/l10n/l10n.min.js'; // '../l10n/l10n.js';
+            s.async = s.defer = true;
+            s.addEventListener('load', () => p.removeChild(s));
+            p.appendChild(s);
+        })(document.createElement('script'), document.body);
+    }
 </script>
 </body>
 <!--

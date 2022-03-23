@@ -9,8 +9,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="noindex, nofollow" />
     <title>Proxy Authentication Required</title>
-    <link rel="dns-prefetch" href="//fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;700&display=swap" rel="stylesheet">
     <style>
         /** Idea author: https://codepen.io/robinselmer */
         html, body {
@@ -128,11 +128,21 @@
 <body>
 <div class="overlay"></div>
 <div class="terminal">
-    <h1>Error <span class="error_code">407</span></h1>
-    <p class="output">You must authenticate with a proxy server before this request can be served.</p>
-    <p class="output">Good luck.</p>
+    <h1><span data-l10n>Error</span> <span class="error_code">407</span></h1>
+    <p class="output" data-l10n>You must authenticate with a proxy server before this request can be served.</p>
+    <p class="output"><span data-l10n>Good luck</span>.</p>
     
 </div>
+<script>
+    if (navigator.language.substring(0, 2).toLowerCase() !== 'en') {
+        ((s, p) => { // localize the page (details here - https://github.com/tarampampam/error-pages/tree/master/l10n)
+            s.src = 'https://cdn.jsdelivr.net/gh/tarampampam/error-pages@2/l10n/l10n.min.js'; // '../l10n/l10n.js';
+            s.async = s.defer = true;
+            s.addEventListener('load', () => p.removeChild(s));
+            p.appendChild(s);
+        })(document.createElement('script'), document.body);
+    }
+</script>
 </body>
 <!--
     Error 407: Proxy Authentication Required

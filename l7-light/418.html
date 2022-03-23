@@ -30,13 +30,23 @@
             <div class="code">
                 418
             </div>
-            <div class="message">
+            <div class="message" data-l10n>
                 I'm a teapot
             </div>
         </div>
         
     </div>
 </div>
+<script>
+    if (navigator.language.substring(0, 2).toLowerCase() !== 'en') {
+        ((s, p) => { // localize the page (details here - https://github.com/tarampampam/error-pages/tree/master/l10n)
+            s.src = 'https://cdn.jsdelivr.net/gh/tarampampam/error-pages@2/l10n/l10n.min.js'; // '../l10n/l10n.js';
+            s.async = s.defer = true;
+            s.addEventListener('load', () => p.removeChild(s));
+            p.appendChild(s);
+        })(document.createElement('script'), document.body);
+    }
+</script>
 </body>
 <!--
     Error 418: I'm a teapot
