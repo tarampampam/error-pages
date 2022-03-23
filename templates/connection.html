@@ -58,7 +58,7 @@
 <body>
 <header>
     <h1 class="error-code">{{ code }}</h1>
-    <p class="error-description" data-l10n>{{ message }}</p>
+    <p class="error-description">{{ message }}</p>
 </header>
 <div class="status">
     <div class="card warning" id="client-status-card">
@@ -224,14 +224,14 @@
                     case 409: case 410: case 418: whatToDo = '¯\\_(ツ)_/¯'; break;
                 }
 
-                setErrorDescription(`${message} (<span data-l10n>client-side error</span>)`);
+                setErrorDescription(`<span data-l10n>${message}</span> (<span data-l10n>client-side error</span>)`);
                 setCardState(cards.$client, {isError: true}, message)
                 setCardState(cards.$network, {isOk: true}, 'Working')
                 setCardState(cards.$server, {isOk: true}, 'Working')
                 break;
 
             case errorCode >= 500 && errorCode <= 599:
-                setErrorDescription(`${message} (<span data-l10n>server-side error</span>)`);
+                setErrorDescription(`<span data-l10n>${message}</span> (<span data-l10n>server-side error</span>)`);
                 setCardState(cards.$client, {isOk: true}, 'Working')
                 setCardState(cards.$network, {isOk: true}, 'Working')
                 setCardState(cards.$server, {isError: true}, message)
@@ -251,9 +251,8 @@
     }
 
     if (navigator.language.substring(0, 2).toLowerCase() !== 'en') {
-        ((s, p) => { // localize the page
-            s.src = 'https://cdn.jsdelivr.net/gh/tarampampam/error-pages@2/l10n/l10n.min.js';
-            // s.src = '../l10n/l10n.js';
+        ((s, p) => { // localize the page (details here - https://github.com/tarampampam/error-pages/tree/master/l10n)
+            s.src = 'https://cdn.jsdelivr.net/gh/tarampampam/error-pages@2/l10n/l10n.min.js'; // '../l10n/l10n.js';
             s.async = s.defer = true;
             s.addEventListener('load', () => p.removeChild(s));
             p.appendChild(s);

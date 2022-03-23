@@ -130,9 +130,9 @@ Object.defineProperty(window, 'l10n', {
             'client-side error': {ru: 'ошибка на стороне клиента', uk: 'помилка на стороні клієнта'},
             'server-side error': {ru: 'ошибка на стороне сервера', uk: 'помилка на стороні сервера'},
 
-            'Your Client': {ru: 'Ваш браузер', uk: 'Ваш браузер'},
+            'Your Client': {ru: 'Ваш Браузер', uk: 'Ваш Браузер'},
             'Network': {ru: 'Сеть', uk: 'Сіть'},
-            'Web Server': {ru: 'Web сервер', uk: 'Web сервер'},
+            'Web Server': {ru: 'Web Сервер', uk: 'Web Сервер'},
             'What happened?': {ru: 'Что произошло?', uk: 'Що сталося?'},
             'What can i do?': {ru: 'Что можно сделать?', uk: 'Що можна зробити?'},
             'Please try again in a few minutes': {
@@ -159,13 +159,13 @@ Object.defineProperty(window, 'l10n', {
          * @param {string} token
          * @return {string}
          */
-        const normalizeToken = function (token) {
+        const serializeToken = function (token) {
             return token.toLowerCase().replaceAll(/[^a-z0-9]/g, '');
         };
 
         // normalize the data keys
         for (const key in data) {
-            Object.defineProperty(data, normalizeToken(key), Object.getOwnPropertyDescriptor(data, key));
+            Object.defineProperty(data, serializeToken(key), Object.getOwnPropertyDescriptor(data, key));
             delete data[key];
         }
 
@@ -184,7 +184,11 @@ Object.defineProperty(window, 'l10n', {
          * @param {string|undefined?} def
          */
         this.translate = function (token, def) {
-            const t = normalizeToken(token);
+            const t = serializeToken(token);
+
+            if (activeLocale === 'en' && data.hasOwnProperty(t)) {
+                return token
+            }
 
             if (data.hasOwnProperty(t) && data[t].hasOwnProperty(activeLocale)) {
                 return data[t][activeLocale];
@@ -199,7 +203,7 @@ Object.defineProperty(window, 'l10n', {
         this.localizeDocument = function () {
             const dataAttributeName = 'data-l10n';
 
-            Array.prototype.forEach.call(document.querySelectorAll(`[${dataAttributeName}]`), ($el) => {
+            Array.prototype.forEach.call(document.querySelectorAll('[' + dataAttributeName + ']'), ($el) => {
                 const attr = $el.getAttribute(dataAttributeName).trim(),
                     token = attr.length > 0 ? attr : $el.innerText.trim(),
                     localized = this.translate(token, undefined);
