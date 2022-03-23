@@ -35,7 +35,7 @@
             <div class="code">
                 {{ code }}
             </div>
-            <div class="message">
+            <div class="message" data-l10n>
                 {{ message }}
             </div>
         </div>
@@ -43,39 +43,39 @@
         <div class="details">
             <table>
                 {{- if host }}<tr>
-                    <td class="name">Host</td>
+                    <td class="name" data-l10n>Host</td>
                     <td class="value">{{ host }}</td>
                 </tr>{{ end -}}
                 {{- if original_uri }}<tr>
-                    <td class="name">Original URI</td>
+                    <td class="name" data-l10n>Original URI</td>
                     <td class="value">{{ original_uri }}</td>
                 </tr>{{ end -}}
                 {{- if forwarded_for }}<tr>
-                    <td class="name">Forwarded for</td>
+                    <td class="name" data-l10n>Forwarded for</td>
                     <td class="value">{{ forwarded_for }}</td>
                 </tr>{{ end -}}
                 {{- if namespace }}<tr>
-                    <td class="name">Namespace</td>
+                    <td class="name" data-l10n>Namespace</td>
                     <td class="value">{{ namespace }}</td>
                 </tr>{{ end -}}
                 {{- if ingress_name }}<tr>
-                    <td class="name">Ingress name</td>
+                    <td class="name" data-l10n>Ingress name</td>
                     <td class="value">{{ ingress_name }}</td>
                 </tr>{{ end -}}
                 {{- if service_name }}<tr>
-                    <td class="name">Service name</td>
+                    <td class="name" data-l10n>Service name</td>
                     <td class="value">{{ service_name }}</td>
                 </tr>{{ end -}}
                 {{- if service_port }}<tr>
-                    <td class="name">Service port</td>
+                    <td class="name" data-l10n>Service port</td>
                     <td class="value">{{ service_port }}</td>
                 </tr>{{ end -}}
                 {{- if request_id }}<tr>
-                    <td class="name">Request ID</td>
+                    <td class="name" data-l10n>Request ID</td>
                     <td class="value">{{ request_id }}</td>
                 </tr>{{ end -}}
                 <tr>
-                    <td class="name">Timestamp</td>
+                    <td class="name" data-l10n>Timestamp</td>
                     <td class="value">{{ now.Unix }}</td>
                 </tr>
             </table>
@@ -83,6 +83,16 @@
         {{ end }}
     </div>
 </div>
+<script>
+    if (navigator.language.substring(0, 2).toLowerCase() !== 'en') {
+        ((s, p) => { // localize the page (details here - https://github.com/tarampampam/error-pages/tree/master/l10n)
+            s.src = 'https://cdn.jsdelivr.net/gh/tarampampam/error-pages@2/l10n/l10n.min.js'; // '../l10n/l10n.js';
+            s.async = s.defer = true;
+            s.addEventListener('load', () => p.removeChild(s));
+            p.appendChild(s);
+        })(document.createElement('script'), document.body);
+    }
+</script>
 </body>
 <!--
     Error {{ code }}: {{ message }}

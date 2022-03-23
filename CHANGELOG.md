@@ -4,6 +4,14 @@ All notable changes to this package will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## UNRELEASED
+
+### Changed
+
+- Error pages now translated in 🇺🇦 and 🇷🇺 languages [#80]
+
+[#80]:https://github.com/tarampampam/error-pages/pull/80
+
 ## v2.9.0
 
 ### Added
