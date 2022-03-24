@@ -4,6 +4,13 @@ All notable changes to this package will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## v2.10.1
+
+### Fixed
+
+- Template `shuffle`
+- Localization mistakes
+
 ## v2.10.0
 
 ### Changed
