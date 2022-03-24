@@ -215,7 +215,7 @@ Object.defineProperty(window, 'l10n', {
                 if (localized !== undefined) {
                     $el.innerText = localized;
                 } else {
-                    console.debug(`Unsupported l10n token detected: "${token}"`, $el);
+                    console.debug(`Unsupported l10n token detected: "${token}" (locale "${activeLocale}")`, $el);
                 }
             });
         };
