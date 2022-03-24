@@ -39,7 +39,10 @@
 <body>
 <div class="flex-center full-height">
     <div>
-        <span id="error_text">410: <span data-l10n>Gone</span></span>
+        <div id="error_text">
+            <span class="source">410: <span data-l10n>Gone</span></span>
+            <span class="target"></span>
+        </div>
         
     </div>
 </div>
@@ -47,42 +50,82 @@
 <script>
     'use strict';
 
-    const $errorText = document.getElementById('error_text'),
-        characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890-=+<>,./?[{()}]!@#$%^&*~`\|'.split('');
-    let text = $errorText.innerText, progress = 0;
+    /**
+     * @param {HTMLElement} $el
+     */
+    const Shuffle = function ($el) {
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890-=+<>,./?[{()}]!@#$%^&*~`\|'.split(''),
+            $source = $el.querySelector('.source'), $target = $el.querySelector('.target');
 
-    const scrambleInterval = window.setInterval(function () {
-        let newText = text;
+        let cursor = 0, scrambleInterval = undefined, cursorDelayInterval = undefined, cursorInterval = undefined;
 
-        for (let i = 0; i < text.length; i++) {
-            if (i >= progress) {
-                newText = newText.substr(0, i) +
-                    characters[Math.round(Math.random() * (characters.length - 1))] +
-                    newText.substr(i + 1);
+        /**
+         * @param {Number} len
+         * @return {string}
+         */
+        const getRandomizedString = function (len) {
+            let s = '';
+
+            for (let i = 0; i < len; i++) {
+                s += chars[Math.floor(Math.random() * chars.length)];
             }
-        }
 
-        $errorText.innerText = newText;
-    }, 450 / 60);
+            return s;
+        };
+
+        this.start = function () {
+            $source.style.display = 'none';
+            $target.style.display = 'block';
+
+            scrambleInterval = window.setInterval(() => {
+                if (cursor <= $source.innerText.length) {
+                    $target.innerText = $source.innerText.substring(0, cursor) + getRandomizedString($source.innerText.length - cursor);
+                }
+            }, 450 / 30);
+
+            cursorDelayInterval = window.setTimeout(() => {
+                cursorInterval = window.setInterval(() => {
+                    if (cursor > $source.innerText.length - 1) {
+                        this.stop();
+                    }
+
+                    cursor++;
+                }, 70);
+            }, 350);
+        };
+
+        this.stop = function () {
+            $source.style.display = 'block';
+            $target.style.display = 'none';
+            $target.innerText = '';
+            cursor = 0;
+
+            if (scrambleInterval !== undefined) {
+                window.clearInterval(scrambleInterval);
+                scrambleInterval = undefined;
+            }
+
+            if (cursorInterval !== undefined) {
+                window.clearInterval(cursorInterval);
+                cursorInterval = undefined;
+            }
+
+            if (cursorDelayInterval !== undefined) {
+                window.clearInterval(cursorDelayInterval);
+                cursorDelayInterval = undefined;
+            }
+        };
+    };
+
+    (new Shuffle(document.getElementById('error_text'))).start();
 
     // 
-
-    window.setTimeout(function () {
-        let revealInterval = window.setInterval(function () {
-            if (progress < text.length) {
-                progress++;
-            } else {
-                window.clearInterval(revealInterval);
-                window.clearInterval(scrambleInterval);
-            }
-        }, 70);
-    }, 350);
 
     if (navigator.language.substring(0, 2).toLowerCase() !== 'en') {
         ((s, p) => { // localize the page (details here - https://github.com/tarampampam/error-pages/tree/master/l10n)
             s.src = 'https://cdn.jsdelivr.net/gh/tarampampam/error-pages@2/l10n/l10n.min.js'; // '../l10n/l10n.js';
             s.async = s.defer = true;
-            s.addEventListener('load', () => {p.removeChild(s); text = $errorText.innerText});
+            s.addEventListener('load', () => p.removeChild(s));
             p.appendChild(s);
         })(document.createElement('script'), document.body);
     }
