@@ -4,9 +4,6 @@
 # Go source files always have LF line endings
 *.go text eol=lf
 
-# HTML tamplates contains Go-template directives
-templates/*.html linguist-language=Go
-internal/**/*.html linguist-language=Go
-
 # Disable next extensions in project "used languages" list
 *.lua linguist-detectable=false
+*.html linguist-detectable=false
