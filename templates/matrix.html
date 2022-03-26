@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<!--
+    Error {{ code }}: {{ message }}
+    Description: {{ description }}
+-->
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex, nofollow"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>{{ message }} ({{ code }})</title>
+    <style>
+        :root {
+            --matrix-item-size: 20px; /* pixels only */
+            --matrix-items-space-between: 3px; /* pixels only */
+            --matrix-glyph-size: 18px;
+            --matrix-animation-delay: 2000ms; /* microseconds only */
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            background-color: #121212;
+            height: 100%;
+        }
+
+        #matrix {
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            width: 100%;
+            height: 100%;
+        }
+
+        #matrix .row {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            height: var(--matrix-item-size);
+            padding: var(--matrix-items-space-between) 0;
+        }
+
+        #matrix .item {
+            display: inline-block;
+            height: 100%;
+            width: var(--matrix-item-size);
+            font-size: var(--matrix-glyph-size);
+            font-family: monospace;
+            padding: 0 var(--matrix-items-space-between);
+            text-align: center;
+            line-height: var(--matrix-item-size);
+            user-select: none;
+            color: rgba(0, 0, 0, 0);
+            font-style: normal;
+        }
+
+        #matrix .item.focused {
+            animation-name: matrix-tail;
+            animation-duration: var(--matrix-animation-delay);
+            animation-timing-function: ease-in-out;
+            animation-iteration-count: initial;
+            animation-play-state: running;
+        }
+
+        @keyframes matrix-tail {
+            0% {
+                color: rgba(0, 0, 0, 0)
+            }
+            2% {
+                color: rgba(255, 255, 255, 0.96)
+            }
+            20% {
+                color: rgba(0, 128, 0, 0.96)
+            }
+            80% {
+                color: rgba(0, 0, 0, 0)
+            }
+        }
+    </style>
+</head>
+<body>
+<div id="matrix"></div>
+<script>
+    'use strict';
+
+    /**
+     * @param {HTMLElement} $root
+     * @constructor
+     */
+    const Matrix = function ($root) {
+        const symbols = 'ラドクリフマラソンわたしワタシんょンョたばこタバコとうきょうトウキョウ'.split(''),
+            cursorSpeedMin = 70, cursorSpeedMax = 110;
+
+        /**
+         * @param {number} columnNumber
+         * @return {HTMLElement}
+         */
+        const makeItem = function (columnNumber) {
+            const $item = document.createElement('i');
+            $item.classList.add('item');
+            $item.setAttribute('data-column', columnNumber.toString());
+            $item.innerText = symbols[Math.floor(Math.random() * symbols.length)];
+
+            return $item;
+        };
+
+        /**
+         * @param {number} rowNumber
+         * @param {number} itemsCount
+         * @return {HTMLDivElement}
+         */
+        const makeRow = function (rowNumber, itemsCount) {
+            const $row = document.createElement('div');
+            $row.classList.add('row');
+            $row.setAttribute('data-row', rowNumber.toString());
+
+            for (let i = 0; i < itemsCount; i++) {
+                $row.appendChild(makeItem(i));
+            }
+
+            return $row;
+        };
+
+        /**
+         * @return {void}
+         */
+        this.initField = function () {
+            const itemSizePx = parseInt(getComputedStyle($root).getPropertyValue('--matrix-item-size'), 10),
+                itemSpaceBetweenPx = parseInt(getComputedStyle($root).getPropertyValue('--matrix-items-space-between'), 10),
+                targetRows = Math.floor($root.clientHeight / (itemSizePx + (itemSpaceBetweenPx * 2))),
+                targetColumns = Math.floor($root.clientWidth / (itemSizePx + (itemSpaceBetweenPx * 2)));
+
+            let $rows = $root.querySelectorAll('.row');
+
+            if (targetRows < $rows.length) {
+                Array.from($rows).splice(targetRows).forEach(($row) => {
+                    $root.removeChild($row);
+                });
+            } else if (targetRows > $rows.length) {
+                for (let i = $rows.length; i < targetRows; i++) {
+                    $root.appendChild(makeRow(i, targetColumns));
+                }
+            }
+
+            $rows = $root.querySelectorAll('.row'); // refresh the rows variable
+
+            const currentColumns = $rows.length > 0 ? $rows[0].querySelectorAll('.item').length : 0;
+
+            if (targetColumns < currentColumns) {
+                $rows.forEach(($row) => {
+                    Array.from($row.querySelectorAll('.item')).splice(targetColumns).forEach(($item) => {
+                        $row.removeChild($item);
+                    });
+                });
+            } else if (targetColumns > currentColumns) {
+                $rows.forEach(($row) => {
+                    if ($row.querySelectorAll('.item').length < targetColumns) {
+                        for (let i = currentColumns; i < targetColumns; i++) {
+                            $row.appendChild(makeItem(i));
+                        }
+                    }
+                });
+            }
+        };
+
+        /**
+         * @return {number}
+         */
+        this.getColumnsCount = function () {
+            return $root.querySelectorAll('.row:first-child .item').length;
+        };
+
+        /**
+         * @return {number}
+         */
+        this.getRowsCount = function () {
+            return $root.querySelectorAll('.row').length;
+        };
+
+        /**
+         * @type {number[]}
+         */
+        const columnMutexes = [];
+
+        /**
+         * @param {number} columnNumber
+         * @return {void}
+         */
+        this.run = function (columnNumber) {
+            if (columnMutexes.includes(columnNumber)) { // only one runner in one time is available
+                return;
+            }
+
+            columnMutexes.push(columnNumber); // lock
+
+            let rowCursor = 0;
+
+            const timer = window.setInterval(() => {
+                const $item = $root.querySelector(`.row[data-row="${rowCursor}"] > .item[data-column="${columnNumber}"]`);
+
+                if ($item !== null) {
+                    $item.classList.add('focused');
+
+                    window.setTimeout(
+                        () => {
+                            $item.classList.remove('focused');
+                            $item.innerText = symbols[Math.floor(Math.random() * symbols.length)];
+                        },
+                        parseInt(getComputedStyle($root).getPropertyValue('--matrix-animation-delay'), 10)
+                    );
+
+                    rowCursor++;
+                } else {
+                    window.clearInterval(timer);
+
+                    const idx = columnMutexes.indexOf(columnNumber);
+                    if (idx > -1) { // unlock
+                        columnMutexes.splice(idx, 1);
+                    }
+                }
+            }, Math.floor(Math.random() * (cursorSpeedMax - cursorSpeedMin + 1)) + cursorSpeedMax); // cursor speed
+        };
+
+        /**
+         * @return {number|undefined}
+         */
+        this.getFreeColumn = function() {
+            const maxColumns = this.getColumnsCount();
+
+            let result = Math.floor(Math.random() * maxColumns);
+
+            if (!columnMutexes.includes(result)) {
+                return result;
+            }
+
+            for (let i = result; i < maxColumns; i++) {
+                if (!columnMutexes.includes(i)) {
+                    return i;
+                }
+            }
+
+            for (let i = result - 1; i > 0; i--) {
+                if (!columnMutexes.includes(i)) {
+                    return i;
+                }
+            }
+
+            return undefined;
+        };
+
+        let runTimerHandler = undefined;
+
+        /**
+         * @return {void}
+         */
+        this.start = function () {
+            let coolDown = 0, lastColumnsCount = 0, lastRowsCount = 0;
+
+            const fn = () => {
+                const freeColumn = this.getFreeColumn();
+
+                if (freeColumn !== undefined) {
+                    this.run(freeColumn);
+                } else {
+                    coolDown += 7;
+                }
+
+                if (runTimerHandler !== undefined) {
+                    window.clearInterval(runTimerHandler);
+                    runTimerHandler = undefined;
+                }
+
+                const columnsCount = this.getColumnsCount(), rowsCount = this.getRowsCount();
+
+                if (lastColumnsCount !== columnsCount || lastRowsCount !== rowsCount) { // reset cool-down interval on resize
+                    lastColumnsCount = columnsCount;
+                    lastRowsCount = rowsCount;
+                    coolDown = 0;
+                }
+
+                runTimerHandler = window.setInterval(fn, ((((cursorSpeedMin + cursorSpeedMax) / 2) * rowsCount) / columnsCount / 0.7) + coolDown);
+            };
+
+            fn();
+        };
+
+        this.stop = function () {
+            if (runTimerHandler !== undefined) {
+                window.clearInterval(runTimerHandler);
+                runTimerHandler = undefined;
+            }
+        };
+
+        if (typeof ResizeObserver === 'function') {
+            (new ResizeObserver(() => this.initField())).observe($root);
+        } else {
+            this.initField();
+        }
+    };
+
+    const m = new Matrix(document.getElementById('matrix'));
+
+    m.initField();
+    m.start();
+</script>
+</body>
+<!--
+    Error {{ code }}: {{ message }}
+    Description: {{ description }}
+-->
+</html>
