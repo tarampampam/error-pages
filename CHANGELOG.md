@@ -4,6 +4,18 @@ All notable changes to this package will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## UNRELEASED
+
+### Added
+
+- Template `matrix` [#81]
+
+### Fixed
+
+- Localization mistakes [#81]
+
+[#81]:https://github.com/tarampampam/error-pages/pull/81
+
 ## v2.10.1
 
 ### Fixed
