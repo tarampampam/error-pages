@@ -10,299 +10,314 @@
     <meta name="robots" content="noindex, nofollow"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>{{ message }} ({{ code }})</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --matrix-item-size: 20px; /* pixels only */
-            --matrix-items-space-between: 3px; /* pixels only */
-            --matrix-glyph-size: 18px;
-            --matrix-animation-delay: 2000ms; /* microseconds only */
+            --matrix-glyph-size: 15px;
+            --matrix-glyph-font-size: 15px;
+            --matrix-glyph-front-color: rgba(255, 255, 255, 0.8);
+            --matrix-glyph-tail-color: #0f0;
+            --matrix-overlay-color: rgba(18, 18, 18, 0.05);
         }
 
         html, body {
             margin: 0;
             padding: 0;
-            background-color: #121212;
-            height: 100%;
+            background-color: #000;
+            height: 100vh;
         }
 
         #matrix {
-            display: flex;
-            justify-content: center;
-            flex-direction: column;
-            width: 100%;
-            height: 100%;
+            display: block;
+            position: fixed;
+            width: 100vw;
+            height: 100vh;
         }
 
-        #matrix .row {
+        .container {
+            align-items: center;
             display: flex;
-            flex-direction: row;
             justify-content: center;
-            height: var(--matrix-item-size);
-            padding: var(--matrix-items-space-between) 0;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1;
         }
 
-        #matrix .item {
-            display: inline-block;
-            height: 100%;
-            width: var(--matrix-item-size);
-            font-size: var(--matrix-glyph-size);
-            font-family: monospace;
-            padding: 0 var(--matrix-items-space-between);
+        .container .message {
+            background-color: rgba(0, 0, 0, 0.85);
+            border: 2px solid var(--matrix-glyph-tail-color);
+            padding: 15px 20px;
+            margin: 0 20px;
+            font-family: 'Inconsolata', Helvetica, sans-serif;
             text-align: center;
-            line-height: var(--matrix-item-size);
-            user-select: none;
-            color: rgba(0, 0, 0, 0);
-            font-style: normal;
+            font-size: 0;
+            color: var(--matrix-glyph-tail-color);
+            text-shadow: 1px 0 2px var(--matrix-glyph-tail-color), -1px 0 2px var(--matrix-glyph-tail-color);
+            box-shadow: 1px 0 5px var(--matrix-glyph-tail-color), -1px 0 2px var(--matrix-glyph-tail-color);
+            max-width: 640px;
         }
 
-        #matrix .item.focused {
-            animation-name: matrix-tail;
-            animation-duration: var(--matrix-animation-delay);
-            animation-timing-function: ease-in-out;
-            animation-iteration-count: initial;
-            animation-play-state: running;
+        .container .message h1 {
+            margin: 0;
+            font-size: 52px;
         }
 
-        @keyframes matrix-tail {
-            0% {
-                color: rgba(0, 0, 0, 0)
-            }
-            2% {
-                color: rgba(255, 255, 255, 0.96)
-            }
-            20% {
-                color: rgba(0, 128, 0, 0.96)
-            }
-            80% {
-                color: rgba(0, 0, 0, 0)
-            }
+        .container .message p {
+            margin: 0.3em 0 0 0;
+            font-size: 17px;
+            color: var(--matrix-glyph-front-color);
+        }
+
+        /* {{ if show_details }} */
+        .container .details{margin-top:20px}
+        .container .details ul{padding:0}
+        .container .details code,.container .details span{font-size:11px}
+        .container .details code{padding-left:7px}
+        /* {{ end }} */
+
+        .hidden {
+            display: none;
+        }
+
+        @media screen and (max-width:820px){
+            :root{--matrix-glyph-size:10px;--matrix-glyph-font-size:10px}
+            .container .message h1{font-size:38px}
+            .container .message p{font-size:13px}
+            /* {{ if show_details }} */
+            .container .details code,.container .details span{font-size:11px}
+            /* {{ end }} */
         }
     </style>
 </head>
 <body>
-<div id="matrix"></div>
+
+<div class="container">
+    <ul id="matrix-words" class="hidden">
+        <li>{{ code }}</li>
+        <li>{{ message }}</li>
+        <li>{{ description }}</li>
+        <li>{{ code }} {{ message }}</li>
+    </ul>
+
+    <div class="message">
+        <h1>{{ code }}: <span data-l10n>{{ message }}</span></h1>
+        <p data-l10n>{{ description }}</p>
+
+        {{ if show_details }}
+        <div class="details">
+            <ul>
+                {{- if host }}<li><span><span data-l10n>Host</span>:</span> <code>{{ host }}</code></li>{{ end -}}
+                {{- if original_uri }}<li><span><span data-l10n>Original URI</span>:</span> <code>{{ original_uri }}</code></li>{{ end -}}
+                {{- if forwarded_for }}<li><span><span data-l10n>Forwarded for</span>:</span> <code>{{ forwarded_for }}</code></li>{{ end -}}
+                {{- if namespace }}<li><span><span data-l10n>Namespace</span>:</span> <code>{{ namespace }}</code></li>{{ end -}}
+                {{- if ingress_name }}<li><span><span data-l10n>Ingress name</span>:</span> <code>{{ ingress_name }}</code></li>{{ end -}}
+                {{- if service_name }}<li><span><span data-l10n>Service name</span>:</span> <code>{{ service_name }}</code></li>{{ end -}}
+                {{- if service_port }}<li><span><span data-l10n>Service port</span>:</span> <code>{{ service_port }}</code></li>{{ end -}}
+                {{- if request_id }}<li><span><span data-l10n>Request ID</span>:</span> <code>{{ request_id }}</code></li>{{ end -}}
+                <li><span><span data-l10n>Timestamp</span>:</span> <code>{{ now.Unix }}</code></li>
+            </ul>
+        </div>
+        {{ end }}
+    </div>
+</div>
+
+<canvas id="matrix"></canvas>
+
 <script>
     'use strict';
 
     /**
-     * @param {HTMLElement} $root
+     * @param {HTMLCanvasElement} $canvas
      * @constructor
      */
-    const Matrix = function ($root) {
-        const symbols = 'ラドクリフマラソンわたしワタシんょンョたばこタバコとうきょうトウキョウ'.split(''),
-            cursorSpeedMin = 70, cursorSpeedMax = 110;
+    const Matrix = function ($canvas) {
+        const symbols = 'ラドクリフマラソンわたしワタシんょンョたばこタバコとうきょうトウキョウ '.split('');
 
         /**
-         * @param {number} columnNumber
-         * @return {HTMLElement}
+         * @return {string}
          */
-        const makeItem = function (columnNumber) {
-            const $item = document.createElement('i');
-            $item.classList.add('item');
-            $item.setAttribute('data-column', columnNumber.toString());
-            $item.innerText = symbols[Math.floor(Math.random() * symbols.length)];
+        const getRandomSymbol = function () {
+            return symbols[Math.floor(Math.random() * symbols.length)];
+        }
 
-            return $item;
-        };
+        const ctx = $canvas.getContext('2d');
+        ctx.globalCompositeOperation = 'lighter'; // https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/globalCompositeOperation
 
-        /**
-         * @param {number} rowNumber
-         * @param {number} itemsCount
-         * @return {HTMLDivElement}
-         */
-        const makeRow = function (rowNumber, itemsCount) {
-            const $row = document.createElement('div');
-            $row.classList.add('row');
-            $row.setAttribute('data-row', rowNumber.toString());
-
-            for (let i = 0; i < itemsCount; i++) {
-                $row.appendChild(makeItem(i));
-            }
-
-            return $row;
-        };
+        this.redrawInterval = 70; // fade oud speed
+        this.glyphSize = 0;
+        this.rowsCapacity = 0;
+        this.columnsCapacity = 0;
 
         /**
          * @return {void}
          */
-        this.initField = function () {
-            const itemSizePx = parseInt(getComputedStyle($root).getPropertyValue('--matrix-item-size'), 10),
-                itemSpaceBetweenPx = parseInt(getComputedStyle($root).getPropertyValue('--matrix-items-space-between'), 10),
-                targetRows = Math.floor($root.clientHeight / (itemSizePx + (itemSpaceBetweenPx * 2))),
-                targetColumns = Math.floor($root.clientWidth / (itemSizePx + (itemSpaceBetweenPx * 2)));
+        this.init = () => {
+            $canvas.width = $canvas.clientWidth;
+            $canvas.height = $canvas.clientHeight;
 
-            let $rows = $root.querySelectorAll('.row');
+            this.glyphSize = parseInt(getComputedStyle($canvas).getPropertyValue('--matrix-glyph-size'), 10);
+            this.rowsCapacity = Math.ceil($canvas.clientHeight / this.glyphSize);
+            this.columnsCapacity = Math.ceil($canvas.clientWidth / this.glyphSize);
+        };
 
-            if (targetRows < $rows.length) {
-                Array.from($rows).splice(targetRows).forEach(($row) => {
-                    $root.removeChild($row);
-                });
-            } else if (targetRows > $rows.length) {
-                for (let i = $rows.length; i < targetRows; i++) {
-                    $root.appendChild(makeRow(i, targetColumns));
-                }
+        /**
+         * @param {string} symbol
+         * @param {number} row
+         * @param {number} column
+         * @param {string} color
+         */
+        const drawSymbol = (symbol, row, column, color) => {
+            ctx.fillStyle = color;
+            ctx.font = getComputedStyle($canvas).getPropertyValue('--matrix-glyph-font-size') + ' monospace';
+
+            if (symbol.length > 1) {
+                symbol = symbol.charAt(0); // only one char is allowed
             }
 
-            $rows = $root.querySelectorAll('.row'); // refresh the rows variable
+            let xOffset = 0, charCode = symbol.charCodeAt(0);
 
-            const currentColumns = $rows.length > 0 ? $rows[0].querySelectorAll('.item').length : 0;
+            if (charCode >= 33 && charCode <= 126) { // is ascii
+                xOffset = this.glyphSize / 5;
+            }
 
-            if (targetColumns < currentColumns) {
-                $rows.forEach(($row) => {
-                    Array.from($row.querySelectorAll('.item')).splice(targetColumns).forEach(($item) => {
-                        $row.removeChild($item);
-                    });
-                });
-            } else if (targetColumns > currentColumns) {
-                $rows.forEach(($row) => {
-                    if ($row.querySelectorAll('.item').length < targetColumns) {
-                        for (let i = currentColumns; i < targetColumns; i++) {
-                            $row.appendChild(makeItem(i));
+            ctx.fillText(symbol, (column * this.glyphSize) + xOffset, row * this.glyphSize);
+        };
+
+        /**
+         * @param {number} column
+         * @param {number} speed Lowest = fastest, largest = slowest
+         * @param {string?} text
+         * @param {number?} offset
+         */
+        const drawLine = (column, speed, text, offset) => {
+            let cursor = 0;
+
+            const tailColor = getComputedStyle($canvas).getPropertyValue('--matrix-glyph-tail-color'),
+                frontColor = getComputedStyle($canvas).getPropertyValue('--matrix-glyph-front-color');
+
+            const handler = window.setInterval(() => {
+                if (cursor <= this.rowsCapacity) {
+                    let symbol = getRandomSymbol();
+
+                    if (typeof text === 'string' && typeof offset === 'number') {
+                        if (cursor >= offset && text.length >= cursor - offset) {
+                            symbol = text.charAt(cursor - offset);
                         }
                     }
-                });
-            }
-        };
 
-        /**
-         * @return {number}
-         */
-        this.getColumnsCount = function () {
-            return $root.querySelectorAll('.row:first-child .item').length;
-        };
+                    if (typeof symbol === 'string' && symbol !== ' ') {
+                        const prev = cursor;
 
-        /**
-         * @return {number}
-         */
-        this.getRowsCount = function () {
-            return $root.querySelectorAll('.row').length;
-        };
+                        window.setTimeout(() => { // redraw with a green color
+                            drawSymbol(symbol, prev, column, tailColor);
+                        }, speed / 1.3);
 
-        /**
-         * @type {number[]}
-         */
-        const columnMutexes = [];
-
-        /**
-         * @param {number} columnNumber
-         * @return {void}
-         */
-        this.run = function (columnNumber) {
-            if (columnMutexes.includes(columnNumber)) { // only one runner in one time is available
-                return;
-            }
-
-            columnMutexes.push(columnNumber); // lock
-
-            let rowCursor = 0;
-
-            const timer = window.setInterval(() => {
-                const $item = $root.querySelector(`.row[data-row="${rowCursor}"] > .item[data-column="${columnNumber}"]`);
-
-                if ($item !== null) {
-                    $item.classList.add('focused');
-
-                    window.setTimeout(
-                        () => {
-                            $item.classList.remove('focused');
-                            $item.innerText = symbols[Math.floor(Math.random() * symbols.length)];
-                        },
-                        parseInt(getComputedStyle($root).getPropertyValue('--matrix-animation-delay'), 10)
-                    );
-
-                    rowCursor++;
-                } else {
-                    window.clearInterval(timer);
-
-                    const idx = columnMutexes.indexOf(columnNumber);
-                    if (idx > -1) { // unlock
-                        columnMutexes.splice(idx, 1);
+                        drawSymbol(symbol, cursor, column, frontColor); // white color first
                     }
+
+                    cursor++;
+                } else {
+                    window.clearInterval(handler);
                 }
-            }, Math.floor(Math.random() * (cursorSpeedMax - cursorSpeedMin + 1)) + cursorSpeedMax); // cursor speed
+            }, speed);
         };
-
-        /**
-         * @return {number|undefined}
-         */
-        this.getFreeColumn = function() {
-            const maxColumns = this.getColumnsCount();
-
-            let result = Math.floor(Math.random() * maxColumns);
-
-            if (!columnMutexes.includes(result)) {
-                return result;
-            }
-
-            for (let i = result; i < maxColumns; i++) {
-                if (!columnMutexes.includes(i)) {
-                    return i;
-                }
-            }
-
-            for (let i = result - 1; i > 0; i--) {
-                if (!columnMutexes.includes(i)) {
-                    return i;
-                }
-            }
-
-            return undefined;
-        };
-
-        let runTimerHandler = undefined;
 
         /**
          * @return {void}
          */
-        this.start = function () {
-            let coolDown = 0, lastColumnsCount = 0, lastRowsCount = 0;
-
-            const fn = () => {
-                const freeColumn = this.getFreeColumn();
-
-                if (freeColumn !== undefined) {
-                    this.run(freeColumn);
-                } else {
-                    coolDown += 7;
-                }
-
-                if (runTimerHandler !== undefined) {
-                    window.clearInterval(runTimerHandler);
-                    runTimerHandler = undefined;
-                }
-
-                const columnsCount = this.getColumnsCount(), rowsCount = this.getRowsCount();
-
-                if (lastColumnsCount !== columnsCount || lastRowsCount !== rowsCount) { // reset cool-down interval on resize
-                    lastColumnsCount = columnsCount;
-                    lastRowsCount = rowsCount;
-                    coolDown = 0;
-                }
-
-                runTimerHandler = window.setInterval(fn, ((((cursorSpeedMin + cursorSpeedMax) / 2) * rowsCount) / columnsCount / 0.7) + coolDown);
-            };
-
-            fn();
+        this.redraw = () => {
+            ctx.fillStyle = getComputedStyle($canvas).getPropertyValue('--matrix-overlay-color');
+            ctx.fillRect(0, 0, $canvas.clientWidth, $canvas.clientHeight);
         };
 
-        this.stop = function () {
-            if (runTimerHandler !== undefined) {
-                window.clearInterval(runTimerHandler);
-                runTimerHandler = undefined;
+        let redrawIntervalHandler = undefined, dropsIntervalHandler = undefined;
+
+        /**
+         * @param {HTMLUListElement?} $linesList
+         */
+        this.run = ($linesList) => {
+            if (redrawIntervalHandler === undefined) {
+                redrawIntervalHandler = window.setInterval(this.redraw, this.redrawInterval);
+            }
+
+            if (dropsIntervalHandler === undefined) {
+                const fn = () => {
+                    const randomColumn = Math.floor(Math.random() * (this.columnsCapacity + 1)),
+                        minSpeed = 200, maxSpeed = 50,
+                        randomSpeed = Math.floor(Math.random() * (maxSpeed - minSpeed + 1)) + minSpeed;
+
+                    const list = [];
+                    let line = undefined, offset = undefined;
+
+                    if ($linesList !== undefined) {
+                        Array.prototype.forEach.call($linesList.querySelectorAll('li'), $li => {
+                            const text = $li.innerText.trim();
+
+                            if (text.length > 0) {
+                                list.push(text);
+                            }
+                        });
+
+                        if (list.length > 0 && Math.random() > 0.4) {
+                            line = list[Math.floor(Math.random() * list.length)];
+                            offset = Math.floor(Math.random() * line.length);
+
+                            if (offset <= 5) {
+                                offset *= 3;
+                            }
+                        }
+                    }
+
+                    drawLine(randomColumn, randomSpeed, line, offset);
+
+                    if (dropsIntervalHandler !== undefined) {
+                        window.clearInterval(dropsIntervalHandler);
+                        dropsIntervalHandler = undefined;
+                    }
+
+                    dropsIntervalHandler = window.setInterval(fn, ((minSpeed + maxSpeed) / 2 * this.rowsCapacity) / this.columnsCapacity / 0.5);
+                };
+
+                fn();
+            }
+        };
+
+        /**
+         * @return {void}
+         */
+        this.stop = () => {
+            if (redrawIntervalHandler !== undefined) {
+                window.clearInterval(redrawIntervalHandler);
+                redrawIntervalHandler = undefined;
+            }
+
+            if (dropsIntervalHandler !== undefined) {
+                window.clearInterval(dropsIntervalHandler);
+                dropsIntervalHandler = undefined;
             }
         };
 
         if (typeof ResizeObserver === 'function') {
-            (new ResizeObserver(() => this.initField())).observe($root);
+            (new ResizeObserver(this.init)).observe($canvas);
         } else {
-            this.initField();
+            this.init();
         }
     };
 
-    const m = new Matrix(document.getElementById('matrix'));
+    (new Matrix(document.getElementById('matrix'))).run(document.getElementById('matrix-words'));
 
-    m.initField();
-    m.start();
+    if (navigator.language.substring(0, 2).toLowerCase() !== 'en') {
+        ((s, p) => { // localize the page (details here - https://github.com/tarampampam/error-pages/tree/master/l10n)
+            s.src = 'https://cdn.jsdelivr.net/gh/tarampampam/error-pages@2/l10n/l10n.min.js'; // '../l10n/l10n.js';
+            s.async = s.defer = true;
+            s.addEventListener('load', () => p.removeChild(s));
+            p.appendChild(s);
+        })(document.createElement('script'), document.body);
+    }
 </script>
 </body>
 <!--
