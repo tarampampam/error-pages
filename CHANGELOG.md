@@ -8,11 +8,13 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 ### Added
 
-- Template `matrix`
+- Template `matrix` [#81]
 
 ### Fixed
 
-- Localization mistakes
+- Localization mistakes [#81]
+
+[#81]:https://github.com/tarampampam/error-pages/pull/81
 
 ## v2.10.1
 
