@@ -115,6 +115,10 @@
          * @param {string} color
          */
         const drawSymbol = (symbol, row, column, color) => {
+            if (row > this.rowsCapacity || column > this.columnsCapacity) {
+                return;
+            }
+
             ctx.fillStyle = color;
             ctx.font = getComputedStyle($canvas).getPropertyValue('--matrix-glyph-font-size') + ' monospace';
 
@@ -144,6 +148,10 @@
                 frontColor = getComputedStyle($canvas).getPropertyValue('--matrix-glyph-front-color');
 
             const handler = window.setInterval(() => {
+                if (column > this.columnsCapacity) {
+                    return window.clearInterval(handler);
+                }
+
                 if (cursor <= this.rowsCapacity) {
                     let symbol = getRandomSymbol();
 
