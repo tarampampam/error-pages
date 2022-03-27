@@ -13,76 +13,20 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --matrix-glyph-size: 15px;
-            --matrix-glyph-font-size: 15px;
-            --matrix-glyph-front-color: rgba(255, 255, 255, 0.8);
-            --matrix-glyph-tail-color: #0f0;
-            --matrix-overlay-color: rgba(18, 18, 18, 0.05);
-        }
-
-        html, body {
-            margin: 0;
-            padding: 0;
-            background-color: #000;
-            height: 100vh;
-        }
-
-        #matrix {
-            display: block;
-            position: fixed;
-            width: 100vw;
-            height: 100vh;
-        }
-
-        .container {
-            align-items: center;
-            display: flex;
-            justify-content: center;
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: 1;
-        }
-
-        .container .message {
-            background-color: rgba(0, 0, 0, 0.85);
-            border: 2px solid var(--matrix-glyph-tail-color);
-            padding: 15px 20px;
-            margin: 0 20px;
-            font-family: 'Inconsolata', Helvetica, sans-serif;
-            text-align: center;
-            font-size: 0;
-            color: var(--matrix-glyph-tail-color);
-            text-shadow: 1px 0 2px var(--matrix-glyph-tail-color), -1px 0 2px var(--matrix-glyph-tail-color);
-            box-shadow: 1px 0 5px var(--matrix-glyph-tail-color), -1px 0 2px var(--matrix-glyph-tail-color);
-            max-width: 640px;
-        }
-
-        .container .message h1 {
-            margin: 0;
-            font-size: 52px;
-        }
-
-        .container .message p {
-            margin: 0.3em 0 0 0;
-            font-size: 17px;
-            color: var(--matrix-glyph-front-color);
-        }
-
+        :root{--matrix-glyph-size:15px;--matrix-glyph-font-size:15px;--matrix-glyph-front-color:rgba(255, 255, 255, 0.8);--matrix-glyph-tail-color:#0f0;--matrix-overlay-color:rgba(18, 18, 18, 0.05)}
+        body,html{margin:0;padding:0;background-color:#000;height:100vh}
+        #matrix{display:block;position:fixed;width:100vw;height:100vh}
+        .container{align-items:center;display:flex;justify-content:center;position:absolute;top:0;left:0;width:100vw;height:100vh;z-index:1}
+        .container .message{background-color:rgba(0,0,0,.85);border:2px solid var(--matrix-glyph-tail-color);padding:15px 20px;margin:0 20px;font-family:Inconsolata,Helvetica,sans-serif;text-align:center;font-size:0;color:var(--matrix-glyph-tail-color);text-shadow:1px 0 2px var(--matrix-glyph-tail-color),-1px 0 2px var(--matrix-glyph-tail-color);box-shadow:1px 0 5px var(--matrix-glyph-tail-color),-1px 0 2px var(--matrix-glyph-tail-color);max-width:640px}
+        .container .message h1{margin:0;font-size:52px}
+        .container .message p{margin:.3em 0 0 0;font-size:17px;color:var(--matrix-glyph-front-color)}
         /* {{ if show_details }} */
         .container .details{margin-top:20px}
         .container .details ul{padding:0}
         .container .details code,.container .details span{font-size:11px}
         .container .details code{padding-left:7px}
         /* {{ end }} */
-
-        .hidden {
-            display: none;
-        }
-
+        .hidden {display:none}
         @media screen and (max-width:820px){
             :root{--matrix-glyph-size:10px;--matrix-glyph-font-size:10px}
             .container .message h1{font-size:38px}
