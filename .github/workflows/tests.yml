@@ -48,6 +48,21 @@ jobs: # Docs: <https://git.io/JvxXE>
       - name: Run linter
         run: ajv validate --all-errors --verbose -s ./schemas/config/1.0.schema.json -d ./error-pages.y*ml
 
+  lint-l10n:
+    name: Lint l10n file(s)
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with: {node-version: '16'}
+
+      - name: Install eslint
+        run: npm install -g eslint@v8 # Package page: <https://www.npmjs.com/package/eslint>
+
+      - name: Run linter
+        run: eslint ./l10n/*.js
+
   go-test:
     name: Unit tests
     runs-on: ubuntu-20.04
