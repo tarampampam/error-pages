@@ -13,7 +13,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root{--matrix-glyph-size:15px;--matrix-glyph-font-size:15px;--matrix-glyph-front-color:rgba(255, 255, 255, 0.8);--matrix-glyph-tail-color:#0f0;--matrix-overlay-color:rgba(18, 18, 18, 0.05)}
+        :root{--matrix-glyph-size:15px;--matrix-glyph-font-size:15px;--matrix-glyph-front-color:rgba(255, 255, 255, 0.8);--matrix-glyph-tail-color:#0f0;--matrix-overlay-color:rgba(0, 0, 0, 0.12)}
         body,html{margin:0;padding:0;background-color:#000;height:100vh}
         #matrix{display:block;position:fixed;width:100vw;height:100vh}
         .container{align-items:center;display:flex;justify-content:center;position:absolute;top:0;left:0;width:100vw;height:100vh;z-index:1}
@@ -91,7 +91,7 @@
         const ctx = $canvas.getContext('2d');
         ctx.globalCompositeOperation = 'lighter'; // https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/globalCompositeOperation
 
-        this.redrawInterval = 70; // fade oud speed
+        this.redrawInterval = 90; // fade oud speed
         this.glyphSize = 0;
         this.rowsCapacity = 0;
         this.columnsCapacity = 0;
