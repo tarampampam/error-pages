@@ -61,7 +61,8 @@ jobs: # Docs: <https://git.io/JvxXE>
         run: npm install -g eslint@v8 # Package page: <https://www.npmjs.com/package/eslint>
 
       - name: Run linter
-        run: eslint ./l10n/*.js
+        working-directory: l10n
+        run: eslint ./*.js
 
   go-test:
     name: Unit tests
