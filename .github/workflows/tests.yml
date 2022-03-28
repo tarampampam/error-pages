@@ -18,22 +18,6 @@ jobs: # Docs: <https://git.io/JvxXE>
 
       - uses: zricethezav/gitleaks-action@v1 # Action page: <https://github.com/zricethezav/gitleaks-action>
 
-  purge-cdn-cache:
-    name: Purge CDN cache
-    runs-on: ubuntu-20.04
-    steps:
-      - uses: fjogeleit/http-request-action@v1 # Action page: <https://github.com/fjogeleit/http-request-action>
-        with: {method: 'GET', url: 'https://purge.jsdelivr.net/gh/tarampampam/error-pages@2/l10n/l10n.min.js'}
-
-      - uses: fjogeleit/http-request-action@v1
-        with: {method: 'GET', url: 'https://purge.jsdelivr.net/gh/tarampampam/error-pages@2/l10n/l10n.js'}
-
-      - uses: fjogeleit/http-request-action@v1
-        with: {method: 'GET', url: 'https://purge.jsdelivr.net/gh/tarampampam/error-pages@latest/l10n/l10n.min.js'}
-
-      - uses: fjogeleit/http-request-action@v1
-        with: {method: 'GET', url: 'https://purge.jsdelivr.net/gh/tarampampam/error-pages@latest/l10n/l10n.js'}
-
   golangci-lint:
     name: Golang-CI (lint)
     runs-on: ubuntu-20.04
