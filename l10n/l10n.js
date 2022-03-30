@@ -13,7 +13,7 @@ Object.defineProperty(window, 'l10n', {
                 uk: 'Успіхів',
             },
             'UH OH': {
-                fr: 'Oups ',
+                fr: 'Oups',
                 ru: 'Ох',
                 uk: 'Ох',
             },
