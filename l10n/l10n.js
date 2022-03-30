@@ -18,7 +18,7 @@ Object.defineProperty(window, 'l10n', {
                 uk: 'Ох',
             },
             'Request details': {
-                fr: 'Détails de la demande',
+                fr: 'Détails de la requête',
                 ru: 'Детали запроса',
                 uk: 'Деталі запиту',
             },
@@ -54,12 +54,12 @@ Object.defineProperty(window, 'l10n', {
             },
 
             'Bad Request': {
-                fr: 'Mauvaise demande',
+                fr: 'Mauvaise requête',
                 ru: 'Некорректный запрос',
                 uk: 'Неправильний запит',
             },
             'The server did not understand the request': {
-                fr: 'Le serveur ne comprend pas la demande',
+                fr: 'Le serveur ne comprend pas la requête',
                 ru: 'Сервер не смог обработать запрос из-за ошибки в нём',
                 uk: 'Сервер не міг обробити запит через помилку в ньому',
             },
@@ -84,7 +84,7 @@ Object.defineProperty(window, 'l10n', {
                 uk: 'Доступ до сторінки заборонено',
             },
             'Not Found': {
-                fr: 'Pas trouvé',
+                fr: 'Introuvable',
                 ru: 'Страница не найдена',
                 uk: 'Сторінка не знайдена',
             },
@@ -114,7 +114,7 @@ Object.defineProperty(window, 'l10n', {
                 uk: 'Ви повинні увійти до проксі-сервера для обробки цього запиту',
             },
             'Request Timeout': {
-                fr: 'Demande expiré',
+                fr: 'Requête expiré',
                 ru: 'Истекло время ожидания',
                 uk: 'Час запиту закінчився',
             },
@@ -149,7 +149,7 @@ Object.defineProperty(window, 'l10n', {
                 uk: 'Потрібно вказати розмір',
             },
             'The "Content-Length" is not defined. The server will not accept the request without it': {
-                fr: 'Le "Content-Length" n’est pas défini. Le serveur ne prendra pas en compte la requête sans',
+                fr: 'Le "Content-Length" n’est pas défini. Le serveur ne prendra pas en compte la requête',
                 ru: 'Заголовок "Content-Length" не был передан. Сервер не может обработать запрос без него',
                 uk: 'Заголовок "Content-Length" не був переданий. Сервер не може обробити запит без нього',
             },
@@ -174,7 +174,7 @@ Object.defineProperty(window, 'l10n', {
                 uk: 'Сервер не може обробити запит, оскільки він занадто великий',
             },
             'Requested Range Not Satisfiable': {
-                fr: 'Demande non satisfaisante',
+                fr: 'Requête non satisfaisante',
                 ru: 'Диапазон не достижим',
                 uk: 'Запитуваний діапазон недосяжний',
             },
@@ -194,7 +194,7 @@ Object.defineProperty(window, 'l10n', {
                 uk: 'Спроба виварити каву в чайник приречена на фіаско',
             },
             'Too Many Requests': {
-                fr: 'Trop de demandes',
+                fr: 'Trop de requêtes',
                 ru: 'Слишком много запросов',
                 uk: 'Занадто багато запитів',
             },
@@ -249,7 +249,7 @@ Object.defineProperty(window, 'l10n', {
                 uk: 'Версія НТТР не підтримується',
             },
             'The server does not support the "http protocol" version': {
-                fr: 'Le serveur ne supporte pas la version du protocole HTTP"',
+                fr: 'Le serveur ne supporte pas la version du protocole HTTP',
                 ru: 'Сервер не поддерживает запрошенную версию HTTP протокола',
                 uk: 'Сервер не підтримує запитану версію HTTP-протоколу',
             },
@@ -290,7 +290,7 @@ Object.defineProperty(window, 'l10n', {
                 uk: 'Порт сервісу',
             },
             'Request ID': {
-                fr: 'Identifiant de la demande',
+                fr: 'Identifiant de la requête',
                 ru: 'ID запроса',
                 uk: 'ID запиту',
             },
@@ -301,18 +301,18 @@ Object.defineProperty(window, 'l10n', {
             },
 
             'client-side error': {
-                fr: 'Erreur du client',
+                fr: 'Erreur Client',
                 ru: 'ошибка на стороне клиента',
                 uk: 'помилка на стороні клієнта',
             },
             'server-side error': {
-                fr: 'Erreur du serveur',
+                fr: 'Erreur Serveur',
                 ru: 'ошибка на стороне сервера',
                 uk: 'помилка на стороні сервера',
             },
 
             'Your Client': {
-                fr: 'Votre client',
+                fr: 'Votre Client',
                 ru: 'Ваш Браузер',
                 uk: 'Ваш Браузер',
             },
