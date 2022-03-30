@@ -9,6 +9,18 @@ on:
     paths-ignore: ['**.md']
 
 jobs: # Docs: <https://git.io/JvxXE>
+  purge-cdn-cache:
+    name: Purge jsDelivr CDN cache
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: gacts/purge-jsdelivr-cache@v1 # Action page: <https://github.com/gacts/purge-jsdelivr-cache>
+        with:
+          url: |
+            https://purge.jsdelivr.net/gh/tarampampam/error-pages@2/l10n/l10n.js
+            https://purge.jsdelivr.net/gh/tarampampam/error-pages@2/l10n/l10n.min.js
+            https://purge.jsdelivr.net/gh/tarampampam/error-pages@latest/l10n/l10n.js
+            https://purge.jsdelivr.net/gh/tarampampam/error-pages@latest/l10n/l10n.min.js
+
   gitleaks:
     name: Gitleaks
     runs-on: ubuntu-20.04
