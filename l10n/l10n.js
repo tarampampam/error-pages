@@ -13,53 +13,53 @@ Object.defineProperty(window, 'l10n', {
                 uk: 'Успіхів',
             },
             'UH OH': {
-                fr: 'Oups',
+                fr: 'Oups ',
                 ru: 'Ох',
                 uk: 'Ох',
             },
             'Request details': {
-                fr: 'Détails de la demande',
+                fr: 'Détails de la requête',
                 ru: 'Детали запроса',
                 uk: 'Деталі запиту',
             },
             'Double-check the URL': {
-                fr: 'Vérifiez l’URL',
+                fr: 'Vérifiez l’URL.',
                 ru: 'Дважды проверьте URL',
                 uk: 'Двічі перевіряйте URL-адресу',
             },
             'Alternatively, go back': {
-                fr: 'Essayer de revenir en arrière',
+                fr: 'Essayer de revenir en arrière.',
                 ru: 'Или можете вернуться назад',
                 uk: 'Або ви можете повернутися',
             },
             'Here\'s what might have happened': {
-                fr: 'Voici ce qui aurait pu se passer',
+                fr: 'Voici ce qui aurait pu se passer.',
                 ru: 'Из-за чего это могло случиться',
                 uk: 'Що це може статися',
             },
             'You may have mistyped the URL': {
-                fr: 'Vous avez peut-être mal tapé l’URL',
+                fr: 'Vous avez peut-être mal tapé l’URL.',
                 ru: 'Вы могли ошибиться в URL',
                 uk: 'Ви можете зробити помилку в URL-адресі',
             },
             'The site was moved': {
-                fr: 'Le site a été déplacé',
+                fr: 'Le site a été déplacé.',
                 ru: 'Сайт был перемещён',
                 uk: 'Сайт був переміщений',
             },
             'It was never here': {
-                fr: 'Il n’a jamais été ici',
+                fr: 'Il n’a jamais été ici.',
                 ru: 'Он никогда не был здесь',
                 uk: 'Він ніколи не був тут',
             },
 
             'Bad Request': {
-                fr: 'Mauvaise demande',
+                fr: 'Mauvaise requête',
                 ru: 'Некорректный запрос',
                 uk: 'Неправильний запит',
             },
             'The server did not understand the request': {
-                fr: 'Le serveur ne comprend pas la demande',
+                fr: 'Le serveur ne comprend pas la requête.',
                 ru: 'Сервер не смог обработать запрос из-за ошибки в нём',
                 uk: 'Сервер не міг обробити запит через помилку в ньому',
             },
@@ -69,7 +69,7 @@ Object.defineProperty(window, 'l10n', {
                 uk: 'Несанкціонований доступ',
             },
             'The requested page needs a username and a password': {
-                fr: 'La page demandée nécessite un nom d’utilisateur et un mot de passe',
+                fr: 'La page demandée nécessite un nom d’utilisateur et un mot de passe.',
                 ru: 'Для доступа к странице требуется логин и пароль',
                 uk: 'Щоб отримати доступ до сторінки, потрібний логін та пароль',
             },
@@ -79,17 +79,17 @@ Object.defineProperty(window, 'l10n', {
                 uk: 'Заборонено',
             },
             'Access is forbidden to the requested page': {
-                fr: 'Accès interdit à la page demandée',
+                fr: 'Accès interdit à la page demandée.',
                 ru: 'Доступ к странице запрещён',
                 uk: 'Доступ до сторінки заборонено',
             },
             'Not Found': {
-                fr: 'Pas trouvé',
+                fr: 'Introuvable',
                 ru: 'Страница не найдена',
                 uk: 'Сторінка не знайдена',
             },
             'The server can not find the requested page': {
-                fr: 'Le serveur ne peut trouver la page demandée',
+                fr: 'Le serveur ne peut trouver la page demandée.',
                 ru: 'Сервер не смог найти запрашиваемую страницу',
                 uk: 'Сервер не міг знайти запитану сторінку',
             },
@@ -99,7 +99,7 @@ Object.defineProperty(window, 'l10n', {
                 uk: 'Неприпустимий метод',
             },
             'The method specified in the request is not allowed': {
-                fr: 'La méthode spécifiée dans la requête n’est pas autorisée',
+                fr: 'La méthode spécifiée dans la requête n’est pas autorisée.',
                 ru: 'Указанный в запросе метод не поддерживается',
                 uk: 'Метод, зазначений у запиті, не підтримується',
             },
@@ -109,17 +109,17 @@ Object.defineProperty(window, 'l10n', {
                 uk: 'Потрібна ідентифікація проксі',
             },
             'You must authenticate with a proxy server before this request can be served': {
-                fr: 'Vous devez vous authentifier avec un serveur proxy avant que cette requête puisse être servie',
+                fr: 'Vous devez vous authentifier avec un serveur proxy avant que cette requête puisse être servie.',
                 ru: 'Вы должны быть авторизованы на прокси сервере для обработки этого запроса',
                 uk: 'Ви повинні увійти до проксі-сервера для обробки цього запиту',
             },
             'Request Timeout': {
-                fr: 'Demande expiré',
+                fr: 'Requête expiré',
                 ru: 'Истекло время ожидания',
                 uk: 'Час запиту закінчився',
             },
             'The request took longer than the server was prepared to wait': {
-                fr: 'La requête prend plus de temps que prévu',
+                fr: 'La requête prend plus de temps que prévu.',
                 ru: 'Отправка запроса заняла слишком много времени',
                 uk: 'Надсилання запиту зайняв занадто багато часу',
             },
@@ -129,7 +129,7 @@ Object.defineProperty(window, 'l10n', {
                 uk: 'Конфлікт',
             },
             'The request could not be completed because of a conflict': {
-                fr: 'La requête n’a pas pu être complétée à cause d’un conflit',
+                fr: 'La requête n’a pas pu être complétée à cause d’un conflit.',
                 ru: 'Запрос не может быть обработан из-за конфликта',
                 uk: 'Запит не може бути оброблений через конфлікт',
             },
@@ -139,7 +139,7 @@ Object.defineProperty(window, 'l10n', {
                 uk: 'Вилучений',
             },
             'The requested page is no longer available': {
-                fr: 'La page demandée n’est plus disponible',
+                fr: 'La page demandée n’est plus disponible.',
                 ru: 'Запрошенная страница была удалена',
                 uk: 'Запитана сторінка була видалена',
             },
@@ -149,7 +149,7 @@ Object.defineProperty(window, 'l10n', {
                 uk: 'Потрібно вказати розмір',
             },
             'The "Content-Length" is not defined. The server will not accept the request without it': {
-                fr: 'Le "Content-Length" n’est pas défini. Le serveur ne prendra pas en compte la requête sans',
+                fr: 'Le "Content-Length" n’est pas défini. Le serveur ne prendra pas en compte la requête.',
                 ru: 'Заголовок "Content-Length" не был передан. Сервер не может обработать запрос без него',
                 uk: 'Заголовок "Content-Length" не був переданий. Сервер не може обробити запит без нього',
             },
@@ -159,7 +159,7 @@ Object.defineProperty(window, 'l10n', {
                 uk: 'Збій під час обробки попередньої умови',
             },
             'The pre condition given in the request evaluated to false by the server': {
-                fr: 'La précondition donnée dans la requête a été évaluée comme étant fausse par le serveur',
+                fr: 'La précondition donnée dans la requête a été évaluée comme étant fausse par le serveur.',
                 ru: 'Ни одно из условных полей заголовка запроса не было выполнено',
                 uk: 'Жодна з умовних полів заголовка запиту не була виконана',
             },
@@ -169,17 +169,17 @@ Object.defineProperty(window, 'l10n', {
                 uk: 'Занадто великий запит',
             },
             'The server will not accept the request, because the request entity is too large': {
-                fr: 'Le serveur ne prendra pas en compte la requête, car l’entité de la requête est trop volumineuse',
+                fr: 'Le serveur ne prendra pas en compte la requête, car l’entité de la requête est trop volumineuse.',
                 ru: 'Сервер не может обработать запрос, так как он слишком большой',
                 uk: 'Сервер не може обробити запит, оскільки він занадто великий',
             },
             'Requested Range Not Satisfiable': {
-                fr: 'Demande non satisfaisante',
+                fr: 'Requête non satisfaisante',
                 ru: 'Диапазон не достижим',
                 uk: 'Запитуваний діапазон недосяжний',
             },
             'The requested byte range is not available and is out of bounds': {
-                fr: 'Le byte range demandé n’est pas disponible et est hors des limites',
+                fr: 'Le byte range demandé n’est pas disponible et est hors des limites.',
                 ru: 'Запрошенный диапазон данных недоступен или вне допустимых пределов',
                 uk: 'Описаний діапазон даних недоступний або з допустимих меж',
             },
@@ -189,17 +189,17 @@ Object.defineProperty(window, 'l10n', {
                 uk: 'Я чайник',
             },
             'Attempt to brew coffee with a teapot is not supported': {
-                fr: 'Tenter de préparer du café avec une théière n’est pas pris en charge',
+                fr: 'Tenter de préparer du café avec une théière n’est pas pris en charge.',
                 ru: 'Попытка заварить кофе в чайнике обречена на фиаско',
                 uk: 'Спроба виварити каву в чайник приречена на фіаско',
             },
             'Too Many Requests': {
-                fr: 'Trop de demandes',
+                fr: 'Trop de requêtes',
                 ru: 'Слишком много запросов',
                 uk: 'Занадто багато запитів',
             },
             'Too many requests in a given amount of time': {
-                fr: 'Trop de requêtes dans un délai donné',
+                fr: 'Trop de requêtes dans un délai donné.',
                 ru: 'Отправлено слишком много запросов за короткое время',
                 uk: 'Надіслано занадто багато запитів на короткий час',
             },
@@ -209,7 +209,7 @@ Object.defineProperty(window, 'l10n', {
                 uk: 'Внутрішня помилка сервера',
             },
             'The server met an unexpected condition': {
-                fr: 'Le serveur a rencontré une condition inattendue',
+                fr: 'Le serveur a rencontré une condition inattendue.',
                 ru: 'Произошло что-то неожиданное на сервере',
                 uk: 'На сервері було щось несподіване',
             },
@@ -219,7 +219,7 @@ Object.defineProperty(window, 'l10n', {
                 uk: 'Помилка шлюзу',
             },
             'The server received an invalid response from the upstream server': {
-                fr: 'Le serveur a reçu une réponse invalide du serveur distant',
+                fr: 'Le serveur a reçu une réponse invalide du serveur distant.',
                 ru: 'Сервер получил некорректный ответ от вышестоящего сервера',
                 uk: 'Сервер отримав неправильну відповідь з сервера Upstream',
             },
@@ -229,7 +229,7 @@ Object.defineProperty(window, 'l10n', {
                 uk: 'Сервіс недоступний',
             },
             'The server is temporarily overloading or down': {
-                fr: 'Le serveur est temporairement en surcharge ou indisponible',
+                fr: 'Le serveur est temporairement en surcharge ou indisponible.',
                 ru: 'Сервер временно не может обрабатывать запросы по техническим причинам',
                 uk: 'Сервер тимчасово не може обробляти запити з технічних причин',
             },
@@ -239,7 +239,7 @@ Object.defineProperty(window, 'l10n', {
                 uk: 'Шлюз не відповідає',
             },
             'The gateway has timed out': {
-                fr: 'Le temps d’attente de la passerelle est dépassé',
+                fr: 'Le temps d’attente de la passerelle est dépassé.',
                 ru: 'Сервер не дождался ответа от вышестоящего сервера',
                 uk: 'Сервер не чекав відповіді від сервера Upstream',
             },
@@ -249,7 +249,7 @@ Object.defineProperty(window, 'l10n', {
                 uk: 'Версія НТТР не підтримується',
             },
             'The server does not support the "http protocol" version': {
-                fr: 'Le serveur ne supporte pas la version du protocole HTTP"',
+                fr: 'Le serveur ne supporte pas la version du protocole HTTP.',
                 ru: 'Сервер не поддерживает запрошенную версию HTTP протокола',
                 uk: 'Сервер не підтримує запитану версію HTTP-протоколу',
             },
@@ -290,7 +290,7 @@ Object.defineProperty(window, 'l10n', {
                 uk: 'Порт сервісу',
             },
             'Request ID': {
-                fr: 'Identifiant de la demande',
+                fr: 'Identifiant de la requête',
                 ru: 'ID запроса',
                 uk: 'ID запиту',
             },
@@ -301,18 +301,18 @@ Object.defineProperty(window, 'l10n', {
             },
 
             'client-side error': {
-                fr: 'Erreur du client',
+                fr: 'Erreur Client',
                 ru: 'ошибка на стороне клиента',
                 uk: 'помилка на стороні клієнта',
             },
             'server-side error': {
-                fr: 'Erreur du serveur',
+                fr: 'Erreur Serveur',
                 ru: 'ошибка на стороне сервера',
                 uk: 'помилка на стороні сервера',
             },
 
             'Your Client': {
-                fr: 'Votre client',
+                fr: 'Votre Client',
                 ru: 'Ваш Браузер',
                 uk: 'Ваш Браузер',
             },
@@ -337,7 +337,7 @@ Object.defineProperty(window, 'l10n', {
                 uk: 'Що можна зробити?',
             },
             'Please try again in a few minutes': {
-                fr: 'Veuillez réessayer dans quelques minutes',
+                fr: 'Veuillez réessayer dans quelques minutes.',
                 ru: 'Пожалуйста, попробуйте повторить запрос ещё раз чуть позже',
                 uk: 'Будь ласка, спробуйте повторити запит ще раз трохи пізніше',
             },
@@ -352,17 +352,17 @@ Object.defineProperty(window, 'l10n', {
                 uk: 'Невідомо',
             },
             'Please try to change the request method, headers, payload, or URL': {
-                fr: 'Veuillez essayer de changer la méthode de requête, les en-têtes, le contenu ou l’URL',
+                fr: 'Veuillez essayer de changer la méthode de requête, les en-têtes, le contenu ou l’URL.',
                 ru: 'Пожалуйста, попробуйте изменить метод запроса, заголовки, его содержимое или URL',
                 uk: 'Будь ласка, спробуйте змінити метод запиту, заголовки, його вміст або URL-адресу',
             },
             'Please check your authorization data': {
-                fr: 'Veuillez vérifier vos données d’autorisation',
+                fr: 'Veuillez vérifier vos données d’autorisation.',
                 ru: 'Пожалуйста, проверьте данные авторизации',
                 uk: 'Будь ласка, перевірте дані авторизації',
             },
             'Please double-check the URL and try again': {
-                fr: 'Veuillez vérifier l’URL et réessayer',
+                fr: 'Veuillez vérifier l’URL et réessayer.',
                 ru: 'Пожалуйста, дважды проверьте URL и попробуйте снова',
                 uk: 'Будь ласка, двічі перевірте URL-адресу і спробуйте знову',
             },
