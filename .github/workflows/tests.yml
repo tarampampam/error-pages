@@ -75,7 +75,7 @@ jobs: # Docs: <https://git.io/JvxXE>
         with: {fetch-depth: 2} # Fixes codecov error 'Issue detecting commit SHA'
 
       - name: Go modules Cache # Docs: <https://git.io/JfAKn#go---modules>
-        uses: actions/cache@v3.0.1
+        uses: actions/cache@v3
         id: go-cache
         with:
           path: ~/go/pkg/mod
@@ -113,7 +113,7 @@ jobs: # Docs: <https://git.io/JvxXE>
         id: slug
 
       - name: Go modules Cache # Docs: <https://git.io/JfAKn#go---modules>
-        uses: actions/cache@v3.0.1
+        uses: actions/cache@v3
         with:
           path: ~/go/pkg/mod
           key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
