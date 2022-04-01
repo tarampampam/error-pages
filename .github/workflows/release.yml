@@ -26,7 +26,7 @@ jobs:
         os: [linux, darwin] # linux, freebsd, darwin, windows
         arch: [amd64]  # amd64, 386
     steps:
-      - uses: actions/setup-go@v2
+      - uses: actions/setup-go@v3
         with: {go-version: 1.18.0}
 
       - uses: actions/checkout@v3

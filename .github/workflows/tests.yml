@@ -24,7 +24,7 @@ jobs: # Docs: <https://git.io/JvxXE>
     steps:
       - uses: actions/checkout@v3
 
-      - uses: actions/setup-go@v2
+      - uses: actions/setup-go@v3
         with: {go-version: 1.17} # On v1.18 I had an error "panic: load embedded ruleguard rules: rules/rules.go:13: can't load fmt"
 
       - name: Run linter
@@ -68,7 +68,7 @@ jobs: # Docs: <https://git.io/JvxXE>
     name: Unit tests
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/setup-go@v2
+      - uses: actions/setup-go@v3
         with: {go-version: 1.18}
 
       - uses: actions/checkout@v3
@@ -104,7 +104,7 @@ jobs: # Docs: <https://git.io/JvxXE>
         arch: [amd64]  # amd64, 386
     needs: [golangci-lint, go-test, validate-config-file]
     steps:
-      - uses: actions/setup-go@v2
+      - uses: actions/setup-go@v3
         with: {go-version: 1.18}
 
       - uses: actions/checkout@v3
