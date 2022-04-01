@@ -87,8 +87,12 @@ jobs:
           build-args: "APP_VERSION=${{ steps.slug.outputs.version }}"
           tags: |
             tarampampam/error-pages:${{ steps.slug.outputs.version }}
+            tarampampam/error-pages:${{ steps.slug.outputs.version-major }}.${{ steps.slug.outputs.version-minor }}
+            tarampampam/error-pages:${{ steps.slug.outputs.version-major }}
             tarampampam/error-pages:latest
             ghcr.io/${{ github.actor }}/${{ github.event.repository.name }}:${{ steps.slug.outputs.version }}
+            ghcr.io/${{ github.actor }}/${{ github.event.repository.name }}:${{ steps.slug.outputs.version-major }}.${{ steps.slug.outputs.version-minor }}
+            ghcr.io/${{ github.actor }}/${{ github.event.repository.name }}:${{ steps.slug.outputs.version-major }}
             ghcr.io/${{ github.actor }}/${{ github.event.repository.name }}:latest
 
   demo:
