@@ -26,6 +26,7 @@ func RespondWithErrorPage( //nolint:funlen,gocyclo
 	httpCode int,
 	showRequestDetails bool,
 	proxyHeaders []string,
+	disableL10n bool,
 ) {
 	ctx.Response.Header.Set("X-Robots-Tag", "noindex") // block Search indexing
 
@@ -33,7 +34,7 @@ func RespondWithErrorPage( //nolint:funlen,gocyclo
 		clientWant    = ClientWantFormat(ctx)
 		json, canJSON = cfg.JSONFormat()
 		xml, canXML   = cfg.XMLFormat()
-		props         = tpl.Properties{Code: pageCode, ShowRequestDetails: showRequestDetails}
+		props         = tpl.Properties{Code: pageCode, ShowRequestDetails: showRequestDetails, L10nDisabled: disableL10n}
 	)
 
 	if showRequestDetails {

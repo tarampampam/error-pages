@@ -68,7 +68,8 @@ ENV LISTEN_PORT="8080" \
     TEMPLATE_NAME="ghost" \
     DEFAULT_ERROR_PAGE="404" \
     DEFAULT_HTTP_CODE="404" \
-    SHOW_DETAILS="false"
+    SHOW_DETAILS="false" \
+    DISABLE_L10N="false"
 
 # Docs: <https://docs.docker.com/engine/reference/builder/#healthcheck>
 HEALTHCHECK --interval=7s --timeout=2s CMD ["/bin/error-pages", "healthcheck", "--log-json"]

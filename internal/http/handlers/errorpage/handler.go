@@ -25,12 +25,23 @@ func NewHandler(
 	rdr renderer,
 	showRequestDetails bool,
 	proxyHTTPHeaders []string,
+	disableL10n bool,
 ) fasthttp.RequestHandler {
 	return func(ctx *fasthttp.RequestCtx) {
 		core.SetClientFormat(ctx, core.PlainTextContentType) // default content type
 
 		if code, ok := ctx.UserValue("code").(string); ok {
-			core.RespondWithErrorPage(ctx, cfg, p, rdr, code, fasthttp.StatusOK, showRequestDetails, proxyHTTPHeaders)
+			core.RespondWithErrorPage(
+				ctx,
+				cfg,
+				p,
+				rdr,
+				code,
+				fasthttp.StatusOK,
+				showRequestDetails,
+				proxyHTTPHeaders,
+				disableL10n,
+			)
 		} else { // will never occur
 			ctx.SetStatusCode(fasthttp.StatusInternalServerError)
 			_, _ = ctx.WriteString("cannot extract requested code from the request")

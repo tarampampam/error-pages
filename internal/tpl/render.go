@@ -140,8 +140,10 @@ func (tr *TemplateRenderer) Render(content []byte, props Properties) ([]byte, er
 	}
 
 	var funcMap = template.FuncMap{
-		"show_details": func() bool { return props.ShowRequestDetails },
-		"hide_details": func() bool { return !props.ShowRequestDetails },
+		"show_details":  func() bool { return props.ShowRequestDetails },
+		"hide_details":  func() bool { return !props.ShowRequestDetails },
+		"l10n_disabled": func() bool { return props.L10nDisabled },
+		"l10n_enabled":  func() bool { return !props.L10nDisabled },
 	}
 
 	// make a copy of template functions map

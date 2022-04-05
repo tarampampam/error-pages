@@ -73,6 +73,7 @@ func (s *Server) Register(
 	defaultHTTPCode uint16,
 	showDetails bool,
 	proxyHTTPHeaders []string,
+	disableL10n bool,
 ) error {
 	reg, m := metrics.NewRegistry(), metrics.NewMetrics()
 
@@ -82,8 +83,25 @@ func (s *Server) Register(
 
 	s.fast.Handler = common.DurationMetrics(common.LogRequest(s.router.Handler, s.log), &m)
 
-	s.router.GET("/", indexHandler.NewHandler(cfg, templatePicker, s.rdr, defaultPageCode, defaultHTTPCode, showDetails, proxyHTTPHeaders)) //nolint:lll
-	s.router.GET("/{code}.html", errorpageHandler.NewHandler(cfg, templatePicker, s.rdr, showDetails, proxyHTTPHeaders))                    //nolint:lll
+	s.router.GET("/", indexHandler.NewHandler(
+		cfg,
+		templatePicker,
+		s.rdr,
+		defaultPageCode,
+		defaultHTTPCode,
+		showDetails,
+		proxyHTTPHeaders,
+		disableL10n,
+	))
+	s.router.GET("/{code}.html", errorpageHandler.NewHandler(
+		cfg,
+		templatePicker,
+		s.rdr,
+		showDetails,
+		proxyHTTPHeaders,
+		disableL10n,
+	))
+
 	s.router.GET("/version", versionHandler.NewHandler(version.Version()))
 
 	liveHandler := healthzHandler.NewHandler(checkers.NewLiveChecker())

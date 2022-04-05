@@ -120,6 +120,7 @@ func run(parentCtx context.Context, log *zap.Logger, f flags, cfg *config.Config
 		f.defaultHTTPCode,
 		f.showDetails,
 		proxyHTTPHeaders,
+		f.l10n.disabled,
 	); err != nil {
 		return err
 	}
@@ -137,6 +138,7 @@ func run(parentCtx context.Context, log *zap.Logger, f flags, cfg *config.Config
 			zap.Uint16("default HTTP response code", f.defaultHTTPCode),
 			zap.Strings("proxy headers", proxyHTTPHeaders),
 			zap.Bool("show request details", f.showDetails),
+			zap.Bool("localization disabled", f.l10n.disabled),
 		)
 
 		if err := server.Start(f.listen.ip, f.listen.port); err != nil {

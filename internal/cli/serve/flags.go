@@ -19,6 +19,9 @@ type flags struct {
 	template struct {
 		name string
 	}
+	l10n struct {
+		disabled bool
+	}
 	defaultErrorPage string
 	defaultHTTPCode  uint16
 	showDetails      bool
@@ -71,6 +74,7 @@ const (
 	defaultHTTPCodeFlagName  = "default-http-code"
 	showDetailsFlagName      = "show-details"
 	proxyHTTPHeadersFlagName = "proxy-headers"
+	disableL10nFlagName      = "disable-l10n"
 )
 
 const (
@@ -131,6 +135,12 @@ func (f *flags) init(flagSet *pflag.FlagSet) {
 		"",
 		fmt.Sprintf("proxy HTTP request headers list (comma-separated) [$%s]", env.ProxyHTTPHeaders),
 	)
+	flagSet.BoolVarP(
+		&f.l10n.disabled,
+		disableL10nFlagName, "",
+		false,
+		fmt.Sprintf("disable error pages localization [$%s]", env.DisableL10n),
+	)
 }
 
 func (f *flags) overrideUsingEnv(flagSet *pflag.FlagSet) (lastErr error) { //nolint:gocognit,gocyclo
@@ -181,6 +191,13 @@ func (f *flags) overrideUsingEnv(flagSet *pflag.FlagSet) (lastErr error) { //nol
 			case proxyHTTPHeadersFlagName:
 				if envVar, exists := env.ProxyHTTPHeaders.Lookup(); exists {
 					f.proxyHTTPHeaders = strings.TrimSpace(envVar)
+				}
+
+			case disableL10nFlagName:
+				if envVar, exists := env.DisableL10n.Lookup(); exists {
+					if b, err := strconv.ParseBool(envVar); err == nil {
+						f.l10n.disabled = b
+					}
 				}
 			}
 		}

@@ -4,6 +4,12 @@ All notable changes to this package will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## UNRELEASED
+
+### Added
+
+- Possibility to disable error pages auto-localization (using `--disable-l10n` flag for the `serve` & `build` commands or environment variable `DISABLE_L10N`)
+
 ## v2.12.1
 
 ### Fixed

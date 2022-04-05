@@ -56,6 +56,17 @@ func Test_Render(t *testing.T) {
 			giveProps:   tpl.Properties{Code: "201", Message: "lorem ipsum"},
 			wantContent: `{"code": "201", "message": {"here":[ " Yeah " ]}}`,
 		},
+
+		"fn l10n_enabled": {
+			giveContent: "{{ if l10n_enabled }}Y{{ else }}N{{ end }}",
+			giveProps:   tpl.Properties{L10nDisabled: true},
+			wantContent: "N",
+		},
+		"fn l10n_disabled": {
+			giveContent: "{{ if l10n_disabled }}Y{{ else }}N{{ end }}",
+			giveProps:   tpl.Properties{L10nDisabled: true},
+			wantContent: "Y",
+		},
 	} {
 		t.Run(name, func(t *testing.T) {
 			content, err := renderer.Render([]byte(tt.giveContent), tt.giveProps)

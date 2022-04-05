@@ -98,6 +98,7 @@
     </div>
 </div>
 <script>
+    // {{ if l10n_enabled }}
     if (navigator.language.substring(0, 2).toLowerCase() !== 'en') {
         ((s, p) => { // localize the page (details here - https://github.com/tarampampam/error-pages/tree/master/l10n)
             s.src = 'https://cdn.jsdelivr.net/gh/tarampampam/error-pages@2/l10n/l10n.min.js'; // '../l10n/l10n.js';
@@ -106,6 +107,7 @@
             p.appendChild(s);
         })(document.createElement('script'), document.body);
     }
+    // {{ end }}
 </script>
 </body>
 <!--
