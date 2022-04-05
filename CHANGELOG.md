@@ -8,7 +8,9 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 ### Added
 
-- Possibility to disable error pages auto-localization (using `--disable-l10n` flag for the `serve` & `build` commands or environment variable `DISABLE_L10N`)
+- Possibility to disable error pages auto-localization (using `--disable-l10n` flag for the `serve` & `build` commands or environment variable `DISABLE_L10N`) [#91]
+
+[#91]:https://github.com/tarampampam/error-pages/issues/91
 
 ## v2.12.1
 
