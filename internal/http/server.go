@@ -4,6 +4,8 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/tarampampam/error-pages/internal/options"
+
 	"github.com/fasthttp/router"
 	"github.com/tarampampam/error-pages/internal/checkers"
 	"github.com/tarampampam/error-pages/internal/config"
@@ -66,15 +68,7 @@ type templatePicker interface {
 
 // Register server routes, middlewares, etc.
 // Router docs: <https://github.com/fasthttp/router>
-func (s *Server) Register(
-	cfg *config.Config,
-	templatePicker templatePicker,
-	defaultPageCode string,
-	defaultHTTPCode uint16,
-	showDetails bool,
-	proxyHTTPHeaders []string,
-	disableL10n bool,
-) error {
+func (s *Server) Register(cfg *config.Config, templatePicker templatePicker, opt options.ErrorPage) error {
 	reg, m := metrics.NewRegistry(), metrics.NewMetrics()
 
 	if err := m.Register(reg); err != nil {
@@ -83,24 +77,8 @@ func (s *Server) Register(
 
 	s.fast.Handler = common.DurationMetrics(common.LogRequest(s.router.Handler, s.log), &m)
 
-	s.router.GET("/", indexHandler.NewHandler(
-		cfg,
-		templatePicker,
-		s.rdr,
-		defaultPageCode,
-		defaultHTTPCode,
-		showDetails,
-		proxyHTTPHeaders,
-		disableL10n,
-	))
-	s.router.GET("/{code}.html", errorpageHandler.NewHandler(
-		cfg,
-		templatePicker,
-		s.rdr,
-		showDetails,
-		proxyHTTPHeaders,
-		disableL10n,
-	))
+	s.router.GET("/", indexHandler.NewHandler(cfg, templatePicker, s.rdr, opt))
+	s.router.GET("/{code}.html", errorpageHandler.NewHandler(cfg, templatePicker, s.rdr, opt))
 
 	s.router.GET("/version", versionHandler.NewHandler(version.Version()))
 

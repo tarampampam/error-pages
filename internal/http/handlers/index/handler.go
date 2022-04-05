@@ -3,6 +3,8 @@ package index
 import (
 	"strconv"
 
+	"github.com/tarampampam/error-pages/internal/options"
+
 	"github.com/tarampampam/error-pages/internal/config"
 	"github.com/tarampampam/error-pages/internal/http/core"
 	"github.com/tarampampam/error-pages/internal/tpl"
@@ -21,24 +23,15 @@ type (
 )
 
 // NewHandler creates handler for the index page serving.
-func NewHandler(
-	cfg *config.Config,
-	p templatePicker,
-	rdr renderer,
-	defaultPageCode string,
-	defaultHTTPCode uint16,
-	showRequestDetails bool,
-	proxyHTTPHeaders []string,
-	disableL10n bool,
-) fasthttp.RequestHandler {
+func NewHandler(cfg *config.Config, p templatePicker, rdr renderer, opt options.ErrorPage) fasthttp.RequestHandler {
 	return func(ctx *fasthttp.RequestCtx) {
-		pageCode, httpCode := defaultPageCode, int(defaultHTTPCode)
+		pageCode, httpCode := opt.Default.PageCode, int(opt.Default.HTTPCode)
 
 		if returnCode, ok := extractCodeToReturn(ctx); ok {
 			pageCode, httpCode = strconv.Itoa(returnCode), returnCode
 		}
 
-		core.RespondWithErrorPage(ctx, cfg, p, rdr, pageCode, httpCode, showRequestDetails, proxyHTTPHeaders, disableL10n)
+		core.RespondWithErrorPage(ctx, cfg, p, rdr, pageCode, httpCode, opt)
 	}
 }
 

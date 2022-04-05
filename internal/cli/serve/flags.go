@@ -7,14 +7,16 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/tarampampam/error-pages/internal/options"
+
 	"github.com/spf13/pflag"
 	"github.com/tarampampam/error-pages/internal/env"
 )
 
 type flags struct {
-	listen struct {
-		ip   string
-		port uint16
+	Listen struct {
+		IP   string
+		Port uint16
 	}
 	template struct {
 		name string
@@ -26,44 +28,6 @@ type flags struct {
 	defaultHTTPCode  uint16
 	showDetails      bool
 	proxyHTTPHeaders string // comma-separated
-}
-
-// HeadersToProxy converts a comma-separated string with headers list into strings slice (with a sorting and without
-// duplicates).
-func (f *flags) HeadersToProxy() []string {
-	var raw = strings.Split(f.proxyHTTPHeaders, ",")
-
-	if len(raw) == 0 {
-		return []string{}
-	} else if len(raw) == 1 {
-		if h := strings.TrimSpace(raw[0]); h != "" {
-			return []string{h}
-		} else {
-			return []string{}
-		}
-	}
-
-	var m = make(map[string]struct{}, len(raw))
-
-	// make unique and ignore empty strings
-	for _, h := range raw {
-		if h = strings.TrimSpace(h); h != "" {
-			if _, ok := m[h]; !ok {
-				m[h] = struct{}{}
-			}
-		}
-	}
-
-	// convert map into slice
-	var headers = make([]string, 0, len(m))
-	for h := range m {
-		headers = append(headers, h)
-	}
-
-	// make sort
-	sort.Strings(headers)
-
-	return headers
 }
 
 const (
@@ -84,18 +48,18 @@ const (
 	useRandomTemplateHourly        = "random-hourly"
 )
 
-func (f *flags) init(flagSet *pflag.FlagSet) {
+func (f *flags) Init(flagSet *pflag.FlagSet) {
 	flagSet.StringVarP(
-		&f.listen.ip,
+		&f.Listen.IP,
 		listenFlagName, "l",
 		"0.0.0.0",
-		fmt.Sprintf("IP address to listen on [$%s]", env.ListenAddr),
+		fmt.Sprintf("IP address to Listen on [$%s]", env.ListenAddr),
 	)
 	flagSet.Uint16VarP(
-		&f.listen.port,
+		&f.Listen.Port,
 		portFlagName, "p",
 		8080, //nolint:gomnd // must be same as default healthcheck `--port` flag value
-		fmt.Sprintf("TCP port number [$%s]", env.ListenPort),
+		fmt.Sprintf("TCP prt number [$%s]", env.ListenPort),
 	)
 	flagSet.StringVarP(
 		&f.template.name,
@@ -143,20 +107,20 @@ func (f *flags) init(flagSet *pflag.FlagSet) {
 	)
 }
 
-func (f *flags) overrideUsingEnv(flagSet *pflag.FlagSet) (lastErr error) { //nolint:gocognit,gocyclo
+func (f *flags) OverrideUsingEnv(flagSet *pflag.FlagSet) (lastErr error) { //nolint:gocognit,gocyclo
 	flagSet.VisitAll(func(flag *pflag.Flag) {
 		// flag was NOT defined using CLI (flags should have maximal priority)
 		if !flag.Changed { //nolint:nestif
 			switch flag.Name {
 			case listenFlagName:
 				if envVar, exists := env.ListenAddr.Lookup(); exists {
-					f.listen.ip = strings.TrimSpace(envVar)
+					f.Listen.IP = strings.TrimSpace(envVar)
 				}
 
 			case portFlagName:
 				if envVar, exists := env.ListenPort.Lookup(); exists {
 					if p, err := strconv.ParseUint(envVar, 10, 16); err == nil { //nolint:gomnd
-						f.listen.port = uint16(p)
+						f.Listen.Port = uint16(p)
 					} else {
 						lastErr = fmt.Errorf("wrong TCP port environment variable [%s] value", envVar)
 					}
@@ -206,9 +170,9 @@ func (f *flags) overrideUsingEnv(flagSet *pflag.FlagSet) (lastErr error) { //nol
 	return lastErr
 }
 
-func (f *flags) validate() error {
-	if net.ParseIP(f.listen.ip) == nil {
-		return fmt.Errorf("wrong IP address [%s] for listening", f.listen.ip)
+func (f *flags) Validate() error {
+	if net.ParseIP(f.Listen.IP) == nil {
+		return fmt.Errorf("wrong IP address [%s] for listening", f.Listen.IP)
 	}
 
 	if f.defaultHTTPCode > 599 { //nolint:gomnd
@@ -220,4 +184,53 @@ func (f *flags) validate() error {
 	}
 
 	return nil
+}
+
+// headersToProxy converts a comma-separated string with headers list into strings slice (with a sorting and without
+// duplicates).
+func (f *flags) headersToProxy() []string {
+	var raw = strings.Split(f.proxyHTTPHeaders, ",")
+
+	if len(raw) == 0 {
+		return []string{}
+	} else if len(raw) == 1 {
+		if h := strings.TrimSpace(raw[0]); h != "" {
+			return []string{h}
+		} else {
+			return []string{}
+		}
+	}
+
+	var m = make(map[string]struct{}, len(raw))
+
+	// make unique and ignore empty strings
+	for _, h := range raw {
+		if h = strings.TrimSpace(h); h != "" {
+			if _, ok := m[h]; !ok {
+				m[h] = struct{}{}
+			}
+		}
+	}
+
+	// convert map into slice
+	var headers = make([]string, 0, len(m))
+	for h := range m {
+		headers = append(headers, h)
+	}
+
+	// make sort
+	sort.Strings(headers)
+
+	return headers
+}
+
+func (f *flags) ToOptions() (o options.ErrorPage) {
+	o.Default.PageCode = f.defaultErrorPage
+	o.Default.HTTPCode = f.defaultHTTPCode
+	o.L10n.Disabled = f.l10n.disabled
+	o.Template.Name = f.template.name
+	o.ShowDetails = f.showDetails
+	o.ProxyHTTPHeaders = f.headersToProxy()
+
+	return o
 }
