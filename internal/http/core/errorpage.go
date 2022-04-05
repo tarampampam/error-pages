@@ -3,9 +3,8 @@ package core
 import (
 	"strconv"
 
-	"github.com/tarampampam/error-pages/internal/options"
-
 	"github.com/tarampampam/error-pages/internal/config"
+	"github.com/tarampampam/error-pages/internal/options"
 	"github.com/tarampampam/error-pages/internal/tpl"
 	"github.com/valyala/fasthttp"
 )

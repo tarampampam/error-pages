@@ -7,10 +7,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/tarampampam/error-pages/internal/options"
-
 	"github.com/spf13/pflag"
 	"github.com/tarampampam/error-pages/internal/env"
+	"github.com/tarampampam/error-pages/internal/options"
 )
 
 type flags struct {

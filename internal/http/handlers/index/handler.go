@@ -3,10 +3,9 @@ package index
 import (
 	"strconv"
 
-	"github.com/tarampampam/error-pages/internal/options"
-
 	"github.com/tarampampam/error-pages/internal/config"
 	"github.com/tarampampam/error-pages/internal/http/core"
+	"github.com/tarampampam/error-pages/internal/options"
 	"github.com/tarampampam/error-pages/internal/tpl"
 	"github.com/valyala/fasthttp"
 )
