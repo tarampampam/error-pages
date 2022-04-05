@@ -4,6 +4,14 @@ All notable changes to this package will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## UNRELEASED
+
+### Fixed
+
+- User UID/GID changed to the numeric values in the dockerfile [#92]
+
+[#92]:https://github.com/tarampampam/error-pages/issues/92
+
 ## v2.12.1
 
 ### Fixed
