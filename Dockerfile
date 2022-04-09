@@ -60,7 +60,7 @@ LABEL \
 COPY --from=builder /tmp/rootfs /
 
 # Use an unprivileged user
-USER appuser:appuser
+USER 10001:10001
 
 WORKDIR /opt
 
