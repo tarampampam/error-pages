@@ -16,6 +16,7 @@ type Properties struct { // only string properties with a "token" tag, please
 	RequestID          string `token:"request_id"`
 	ForwardedFor       string `token:"forwarded_for"`
 	Host               string `token:"host"`
+	L10nDisabled       bool
 	ShowRequestDetails bool
 }
 

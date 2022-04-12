@@ -15,6 +15,7 @@ import (
 func NewCommand(log *zap.Logger, configFile *string) *cobra.Command {
 	var (
 		generateIndex bool
+		disableL10n   bool
 		cfg           *config.Config
 	)
 
@@ -39,7 +40,7 @@ func NewCommand(log *zap.Logger, configFile *string) *cobra.Command {
 				return errors.New("wrong arguments count")
 			}
 
-			return run(log, cfg, args[0], generateIndex)
+			return run(log, cfg, args[0], generateIndex, disableL10n)
 		},
 	}
 
@@ -48,6 +49,13 @@ func NewCommand(log *zap.Logger, configFile *string) *cobra.Command {
 		"index", "i",
 		false,
 		"generate index page",
+	)
+
+	cmd.Flags().BoolVarP(
+		&disableL10n,
+		"disable-l10n", "",
+		false,
+		"disable error pages localization",
 	)
 
 	return cmd
@@ -60,7 +68,7 @@ const (
 	outDirPerm       = os.FileMode(0775)
 )
 
-func run(log *zap.Logger, cfg *config.Config, outDirectoryPath string, generateIndex bool) error { //nolint:funlen
+func run(log *zap.Logger, cfg *config.Config, outDirectoryPath string, generateIndex, disableL10n bool) error { //nolint:funlen,lll
 	if len(cfg.Templates) == 0 {
 		return errors.New("no loaded templates")
 	}
@@ -92,6 +100,7 @@ func run(log *zap.Logger, cfg *config.Config, outDirectoryPath string, generateI
 				Message:            page.Message(),
 				Description:        page.Description(),
 				ShowRequestDetails: false,
+				L10nDisabled:       disableL10n,
 			})
 			if renderingErr != nil {
 				return renderingErr

@@ -30,7 +30,7 @@ func NewCommand(ctx context.Context, log *zap.Logger, configFile *string) *cobra
 				return errors.New("path to the config file is required for this command")
 			}
 
-			if err = f.overrideUsingEnv(cmd.Flags()); err != nil {
+			if err = f.OverrideUsingEnv(cmd.Flags()); err != nil {
 				return err
 			}
 
@@ -38,18 +38,18 @@ func NewCommand(ctx context.Context, log *zap.Logger, configFile *string) *cobra
 				return err
 			}
 
-			return f.validate()
+			return f.Validate()
 		},
-		RunE: func(*cobra.Command, []string) error { return run(ctx, log, f, cfg) },
+		RunE: func(*cobra.Command, []string) error { return run(ctx, log, cfg, f) },
 	}
 
-	f.init(cmd.Flags())
+	f.Init(cmd.Flags())
 
 	return cmd
 }
 
 // run current command.
-func run(parentCtx context.Context, log *zap.Logger, f flags, cfg *config.Config) error { //nolint:funlen
+func run(parentCtx context.Context, log *zap.Logger, cfg *config.Config, f flags) error { //nolint:funlen
 	var (
 		ctx, cancel = context.WithCancel(parentCtx) // serve context creation
 		oss         = breaker.NewOSSignals(ctx)     // OS signals listener
@@ -70,9 +70,11 @@ func run(parentCtx context.Context, log *zap.Logger, f flags, cfg *config.Config
 	var (
 		templateNames = cfg.TemplateNames()
 		picker        interface{ Pick() string }
+
+		opt = f.ToOptions()
 	)
 
-	switch f.template.name {
+	switch opt.Template.Name {
 	case useRandomTemplate:
 		log.Info("A random template will be used")
 
@@ -99,28 +101,19 @@ func run(parentCtx context.Context, log *zap.Logger, f flags, cfg *config.Config
 		picker = pick.NewStringsSlice(templateNames, pick.First)
 
 	default:
-		if t, found := cfg.Template(f.template.name); found {
+		if t, found := cfg.Template(opt.Template.Name); found {
 			log.Info("We will use the requested template", zap.String("name", t.Name()))
 			picker = pick.NewStringsSlice([]string{t.Name()}, pick.First)
 		} else {
-			return errors.New("requested nonexistent template: " + f.template.name)
+			return errors.New("requested nonexistent template: " + opt.Template.Name)
 		}
 	}
-
-	var proxyHTTPHeaders = f.HeadersToProxy()
 
 	// create HTTP server
 	server := appHttp.NewServer(log)
 
 	// register server routes, middlewares, etc.
-	if err := server.Register(
-		cfg,
-		picker,
-		f.defaultErrorPage,
-		f.defaultHTTPCode,
-		f.showDetails,
-		proxyHTTPHeaders,
-	); err != nil {
+	if err := server.Register(cfg, picker, opt); err != nil {
 		return err
 	}
 
@@ -131,15 +124,16 @@ func run(parentCtx context.Context, log *zap.Logger, f flags, cfg *config.Config
 		defer close(errCh)
 
 		log.Info("Server starting",
-			zap.String("addr", f.listen.ip),
-			zap.Uint16("port", f.listen.port),
-			zap.String("default error page", f.defaultErrorPage),
-			zap.Uint16("default HTTP response code", f.defaultHTTPCode),
-			zap.Strings("proxy headers", proxyHTTPHeaders),
-			zap.Bool("show request details", f.showDetails),
+			zap.String("addr", f.Listen.IP),
+			zap.Uint16("port", f.Listen.Port),
+			zap.String("default error page", opt.Default.PageCode),
+			zap.Uint16("default HTTP response code", opt.Default.HTTPCode),
+			zap.Strings("proxy headers", opt.ProxyHTTPHeaders),
+			zap.Bool("show request details", opt.ShowDetails),
+			zap.Bool("localization disabled", opt.L10n.Disabled),
 		)
 
-		if err := server.Start(f.listen.ip, f.listen.port); err != nil {
+		if err := server.Start(f.Listen.IP, f.Listen.Port); err != nil {
 			errCh <- err
 		}
 	}(startingErrCh)

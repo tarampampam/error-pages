@@ -15,6 +15,7 @@ import (
 	notfoundHandler "github.com/tarampampam/error-pages/internal/http/handlers/notfound"
 	versionHandler "github.com/tarampampam/error-pages/internal/http/handlers/version"
 	"github.com/tarampampam/error-pages/internal/metrics"
+	"github.com/tarampampam/error-pages/internal/options"
 	"github.com/tarampampam/error-pages/internal/tpl"
 	"github.com/tarampampam/error-pages/internal/version"
 	"github.com/valyala/fasthttp"
@@ -66,14 +67,7 @@ type templatePicker interface {
 
 // Register server routes, middlewares, etc.
 // Router docs: <https://github.com/fasthttp/router>
-func (s *Server) Register(
-	cfg *config.Config,
-	templatePicker templatePicker,
-	defaultPageCode string,
-	defaultHTTPCode uint16,
-	showDetails bool,
-	proxyHTTPHeaders []string,
-) error {
+func (s *Server) Register(cfg *config.Config, templatePicker templatePicker, opt options.ErrorPage) error {
 	reg, m := metrics.NewRegistry(), metrics.NewMetrics()
 
 	if err := m.Register(reg); err != nil {
@@ -82,8 +76,9 @@ func (s *Server) Register(
 
 	s.fast.Handler = common.DurationMetrics(common.LogRequest(s.router.Handler, s.log), &m)
 
-	s.router.GET("/", indexHandler.NewHandler(cfg, templatePicker, s.rdr, defaultPageCode, defaultHTTPCode, showDetails, proxyHTTPHeaders)) //nolint:lll
-	s.router.GET("/{code}.html", errorpageHandler.NewHandler(cfg, templatePicker, s.rdr, showDetails, proxyHTTPHeaders))                    //nolint:lll
+	s.router.GET("/", indexHandler.NewHandler(cfg, templatePicker, s.rdr, opt))
+	s.router.GET("/{code}.html", errorpageHandler.NewHandler(cfg, templatePicker, s.rdr, opt))
+
 	s.router.GET("/version", versionHandler.NewHandler(version.Version()))
 
 	liveHandler := healthzHandler.NewHandler(checkers.NewLiveChecker())

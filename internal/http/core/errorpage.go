@@ -4,6 +4,7 @@ import (
 	"strconv"
 
 	"github.com/tarampampam/error-pages/internal/config"
+	"github.com/tarampampam/error-pages/internal/options"
 	"github.com/tarampampam/error-pages/internal/tpl"
 	"github.com/valyala/fasthttp"
 )
@@ -24,8 +25,7 @@ func RespondWithErrorPage( //nolint:funlen,gocyclo
 	rdr renderer,
 	pageCode string,
 	httpCode int,
-	showRequestDetails bool,
-	proxyHeaders []string,
+	opt options.ErrorPage,
 ) {
 	ctx.Response.Header.Set("X-Robots-Tag", "noindex") // block Search indexing
 
@@ -33,10 +33,14 @@ func RespondWithErrorPage( //nolint:funlen,gocyclo
 		clientWant    = ClientWantFormat(ctx)
 		json, canJSON = cfg.JSONFormat()
 		xml, canXML   = cfg.XMLFormat()
-		props         = tpl.Properties{Code: pageCode, ShowRequestDetails: showRequestDetails}
+		props         = tpl.Properties{
+			Code:               pageCode,
+			ShowRequestDetails: opt.ShowDetails,
+			L10nDisabled:       opt.L10n.Disabled,
+		}
 	)
 
-	if showRequestDetails {
+	if opt.ShowDetails {
 		props.OriginalURI = string(ctx.Request.Header.Peek(OriginalURI))
 		props.Namespace = string(ctx.Request.Header.Peek(Namespace))
 		props.IngressName = string(ctx.Request.Header.Peek(IngressName))
@@ -66,7 +70,7 @@ func RespondWithErrorPage( //nolint:funlen,gocyclo
 	}
 
 	// proxy required HTTP headers from the request to the response
-	for _, headerToProxy := range proxyHeaders {
+	for _, headerToProxy := range opt.ProxyHTTPHeaders {
 		if reqHeader := ctx.Request.Header.Peek(headerToProxy); len(reqHeader) > 0 {
 			ctx.Response.Header.SetBytesV(headerToProxy, reqHeader)
 		}
