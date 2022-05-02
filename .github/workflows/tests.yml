@@ -133,7 +133,7 @@ jobs: # Docs: <https://git.io/JvxXE>
         if: matrix.os == 'linux'
         run: ./error-pages version && ./error-pages -h
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: error-pages-${{ matrix.os }}-${{ matrix.arch }}
           path: error-pages
@@ -194,7 +194,7 @@ jobs: # Docs: <https://git.io/JvxXE>
 
       - run: docker save app:ci > ./docker-image.tar
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: docker-image
           path: ./docker-image.tar
