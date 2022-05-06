@@ -6,7 +6,15 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 ## UNRELEASED
 
+### Added
+
+- Error pages now translated in portuguese 🇵🇹 [#103]
+
+### Changed
+
 - Go updated from `1.18.0` up to `1.18.1`
+
+[#103]:https://github.com/tarampampam/error-pages/pull/103
 
 ## v2.13.0
 
