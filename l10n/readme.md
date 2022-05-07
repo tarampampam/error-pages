@@ -14,3 +14,5 @@ By default, pages markup contains strings in English (`en` locale). If you want 
 ## 👍 Translators
 
 - 🇫🇷 French by [@jvin042](https://github.com/jvin042)
+- 🇵🇹 Portuguese by [@fabtrompet](https://github.com/fabtrompet)
+- 🇳🇱 Dutch by [@SchoNie](https://github.com/SchoNie)
