@@ -4,11 +4,19 @@ All notable changes to this package will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## v2.15.0
+
+### Added
+
+- Error pages now translated in Dutch 🇳🇱 [#104]
+
+[#104]:https://github.com/tarampampam/error-pages/pull/104
+
 ## v2.14.0
 
 ### Added
 
-- Error pages now translated in portuguese 🇵🇹 [#103]
+- Error pages now translated in Portuguese 🇵🇹 [#103]
 
 ### Changed
 
