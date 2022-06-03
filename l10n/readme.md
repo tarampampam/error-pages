@@ -16,3 +16,4 @@ By default, pages markup contains strings in English (`en` locale). If you want 
 - 🇫🇷 French by [@jvin042](https://github.com/jvin042)
 - 🇵🇹 Portuguese by [@fabtrompet](https://github.com/fabtrompet)
 - 🇳🇱 Dutch by [@SchoNie](https://github.com/SchoNie)
+- 🇩🇪 German by [@mschoeffmann](https://github.com/mschoeffmann)
