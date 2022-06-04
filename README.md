@@ -34,7 +34,7 @@ One day you may want to replace the standard error pages of your HTTP server wit
 - Error pages can be [embedded into your own `nginx`][wiki-usage-with-nginx] docker image
 - Fully configurable (take a look at the [configuration file](https://github.com/tarampampam/error-pages/blob/master/error-pages.yml) and [project Wiki][wiki])
 - Distributed using docker image and compiled binary files
-- Localized (🇺🇸, 🇫🇷, 🇺🇦, 🇷🇺, 🇵🇹, 🇳🇱) HTML error pages (translation process [described here](https://github.com/tarampampam/error-pages/tree/master/l10n) - other translations are welcome!)
+- Localized (🇺🇸, 🇫🇷, 🇺🇦, 🇷🇺, 🇵🇹, 🇳🇱, 🇩🇪) HTML error pages (translation process [described here](https://github.com/tarampampam/error-pages/tree/master/l10n) - other translations are welcome!)
 
 ## 🧩 Install
 
