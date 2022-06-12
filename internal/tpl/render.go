@@ -206,7 +206,7 @@ func (tr *TemplateRenderer) Close() error {
 }
 
 func (tr *TemplateRenderer) mixHashes(a, b Hash) (result cacheEntryHash) {
-	for i := 0; i < len(a); i++ {
+	for i := 0; i < len(a); i++ { //nolint:gosimple
 		result[i] = a[i]
 	}
 

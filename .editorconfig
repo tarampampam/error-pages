@@ -10,7 +10,7 @@ indent_style = space
 indent_size = 4
 trim_trailing_whitespace = true
 
-[*.{yml, yaml, sh, conf}]
+[*.{yml, yaml, sh, conf, json}]
 indent_size = 2
 
 [{Makefile, go.mod, *.go}]
