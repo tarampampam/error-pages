@@ -8,6 +8,10 @@ on:
   pull_request:
     paths-ignore: ['**.md']
 
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: true
+
 jobs: # Docs: <https://git.io/JvxXE>
   gitleaks:
     name: Gitleaks
