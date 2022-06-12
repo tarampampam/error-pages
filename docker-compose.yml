@@ -23,22 +23,15 @@ services:
     <<: *app-service
     ports:
       - "8080:8080/tcp" # Open <http://127.0.0.1:8080>
-    command:
-      - go
-      - run
-      - ./cmd/error-pages
-      - serve
-      - --verbose
-      - --port=8080
-      - --show-details
-      - --proxy-headers=X-Foo,Bar,Baz_blah
+    command: sh -c "go build -o /tmp/app ./cmd/error-pages && /tmp/app serve"
     healthcheck:
-      test: ['CMD', 'wget', '--spider', '-q', 'http://127.0.0.1:8080/healthz']
-      interval: 5s
-      timeout: 2s
+      test: ['CMD', '/tmp/app', 'healthcheck', '--log-json']
+      interval: 4s
+      timeout: 1s
+      start_period: 5s
 
   golint:
-    image: golangci/golangci-lint:v1.44-alpine # Image page: <https://hub.docker.com/r/golangci/golangci-lint>
+    image: golangci/golangci-lint:v1.46-alpine # Image page: <https://hub.docker.com/r/golangci/golangci-lint>
     environment:
       GOLANGCI_LINT_CACHE: /tmp/golint # <https://github.com/golangci/golangci-lint/blob/v1.42.0/internal/cache/default.go#L68>
     volumes:
@@ -53,5 +46,4 @@ services:
       - .:/src:ro
     working_dir: /src
     depends_on:
-      web:
-        condition: service_healthy
+      web: {condition: service_healthy}
