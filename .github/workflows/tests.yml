@@ -25,14 +25,7 @@ jobs: # Docs: <https://git.io/JvxXE>
     steps:
       - uses: actions/checkout@v3
 
-      - uses: actions/setup-go@v3
-        with: {go-version: 1.17} # On v1.18 I had an error "panic: load embedded ruleguard rules: rules/rules.go:13: can't load fmt"
-
-      - name: Run linter
-        uses: golangci/golangci-lint-action@v3 # Action page: <https://github.com/golangci/golangci-lint-action>
-        with:
-          version: v1.44 # without patch version
-          only-new-issues: false # show only new issues if it's a pull request
+      - uses: golangci/golangci-lint-action@v3 # Action page: <https://github.com/golangci/golangci-lint-action>
 
   validate-config-file:
     name: Validate config file
@@ -242,13 +235,7 @@ jobs: # Docs: <https://git.io/JvxXE>
       - working-directory: .artifact
         run: docker load < docker-image.tar
 
-      - name: Download hurl
-        env:
-          VERSION: 1.5.0
-        run: curl -SL -o hurl.deb https://github.com/Orange-OpenSource/hurl/releases/download/${VERSION}/hurl_${VERSION}_amd64.deb
-
-      - name: Install hurl
-        run: sudo dpkg -i hurl.deb
+      - uses: gacts/install-hurl@v1
 
       - name: Run container with the app
         run: docker run --rm -d -p "8080:8080/tcp" -e "SHOW_DETAILS=true" -e "PROXY_HTTP_HEADERS=X-Foo,Bar,Baz_blah" --name app app:ci
