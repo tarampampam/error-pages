@@ -4,11 +4,19 @@ All notable changes to this package will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## v2.17.0
+
+### Added
+
+- Error pages now translated into Spanish 🇪🇸 [#124]
+
+[#124]:https://github.com/tarampampam/error-pages/pull/124
+
 ## v2.16.0
 
 ### Added
 
-- Error pages now translated in German 🇩🇪 [#115]
+- Error pages are now translated into German 🇩🇪 [#115]
 
 [#115]:https://github.com/tarampampam/error-pages/pull/115
 
@@ -16,7 +24,7 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 ### Added
 
-- Error pages now translated in Dutch 🇳🇱 [#104]
+- Error pages now translated into Dutch 🇳🇱 [#104]
 
 [#104]:https://github.com/tarampampam/error-pages/pull/104
 
@@ -24,7 +32,7 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 ### Added
 
-- Error pages now translated in Portuguese 🇵🇹 [#103]
+- Error pages now translated into Portuguese 🇵🇹 [#103]
 
 ### Changed
 
@@ -57,7 +65,7 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 ### Changed
 
-- Error pages now translated in 🇫🇷 [#82]
+- Error pages now translated into 🇫🇷 [#82]
 
 [#82]:https://github.com/tarampampam/error-pages/pull/82
 
@@ -84,7 +92,7 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 ### Changed
 
-- Error pages now translated in 🇺🇦 and 🇷🇺 languages [#80]
+- Error pages now translated into 🇺🇦 and 🇷🇺 languages [#80]
 
 [#80]:https://github.com/tarampampam/error-pages/pull/80
 
