@@ -4,6 +4,14 @@ All notable changes to this package will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## v2.18.0
+
+### Changed
+
+- Replaced `fonts.googleapis.com` by `fonts.bunny.net` regarding GDPR compliance [#131]
+
+[#131]:https://github.com/tarampampam/error-pages/pull/131
+
 ## v2.17.0
 
 ### Added
