@@ -8,7 +8,7 @@ volumes:
 
 services:
   app: &app-service
-    image: golang:1.18-buster # Image page: <https://hub.docker.com/_/golang>
+    image: golang:1.19-buster # Image page: <https://hub.docker.com/_/golang>
     working_dir: /src
     environment:
       HOME: /tmp
