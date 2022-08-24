@@ -1,6 +1,6 @@
 module github.com/tarampampam/error-pages
 
-go 1.18
+go 1.19
 
 require (
 	github.com/a8m/envsubst v1.3.0
