@@ -41,7 +41,7 @@ services:
     command: /bin/true
 
   hurl:
-    image: orangeopensource/hurl:1.6.1
+    image: orangeopensource/hurl:1.7.0
     volumes:
       - .:/src:ro
     working_dir: /src
