@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/spf13/pflag"
+
 	"github.com/tarampampam/error-pages/internal/env"
 	"github.com/tarampampam/error-pages/internal/options"
 )
@@ -118,7 +119,7 @@ func (f *flags) OverrideUsingEnv(flagSet *pflag.FlagSet) (lastErr error) { //nol
 
 			case portFlagName:
 				if envVar, exists := env.ListenPort.Lookup(); exists {
-					if p, err := strconv.ParseUint(envVar, 10, 16); err == nil { //nolint:gomnd
+					if p, err := strconv.ParseUint(envVar, 10, 16); err == nil {
 						f.Listen.Port = uint16(p)
 					} else {
 						lastErr = fmt.Errorf("wrong TCP port environment variable [%s] value", envVar)
@@ -137,7 +138,7 @@ func (f *flags) OverrideUsingEnv(flagSet *pflag.FlagSet) (lastErr error) { //nol
 
 			case defaultHTTPCodeFlagName:
 				if envVar, exists := env.DefaultHTTPCode.Lookup(); exists {
-					if code, err := strconv.ParseUint(envVar, 10, 16); err == nil { //nolint:gomnd
+					if code, err := strconv.ParseUint(envVar, 10, 16); err == nil {
 						f.defaultHTTPCode = uint16(code)
 					} else {
 						lastErr = fmt.Errorf("wrong default HTTP response code environment variable [%s] value", envVar)

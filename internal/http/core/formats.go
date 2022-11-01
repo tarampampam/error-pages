@@ -39,7 +39,7 @@ func ClientWantFormat(ctx *fasthttp.RequestCtx) ContentType {
 				f := format{b[0:idx], 0}
 
 				if len(b) > idx+3 {
-					if weight, err := strconv.ParseFloat(string(b[idx+3:]), 32); err == nil { //nolint:gomnd
+					if weight, err := strconv.ParseFloat(string(b[idx+3:]), 32); err == nil {
 						f.weight = float32(weight)
 					}
 				}
