@@ -6,16 +6,15 @@ This directory contains file [l10n.js](l10n.js) for the error pages localization
 
 By default, pages markup contains strings in English (`en` locale). If you want to localize the error pages on the different locales, you should:
 
--   Find your locale name on [this page](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) (column `639-1`)
--   Make a fork of this repository
--   Edit file [l10n.js](l10n.js) in `data` section (append new localized strings) using locale name from the step 1
--   Make a PR with your changes
+- Find your locale name on [this page](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) (column `639-1`)
+- Make a fork of this repository
+- Edit file [l10n.js](l10n.js) in `data` section (append new localized strings) using locale name from the step 1
+- Make a PR with your changes
 
 ## 👍 Translators
 
--   🇫🇷 French by [@jvin042](https://github.com/jvin042)
--   🇵🇹 Portuguese by [@fabtrompet](https://github.com/fabtrompet)
--   🇳🇱 Dutch by [@SchoNie](https://github.com/SchoNie)
--   🇩🇪 German by [@mschoeffmann](https://github.com/mschoeffmann)
--   🇪🇸 Spanish by [@Runig006](https://github.com/Runig006)
--   🇨🇳 Chinese by [@CDN18](https://github.com/CDN18)
+- 🇫🇷 French by [@jvin042](https://github.com/jvin042)
+- 🇵🇹 Portuguese by [@fabtrompet](https://github.com/fabtrompet)
+- 🇳🇱 Dutch by [@SchoNie](https://github.com/SchoNie)
+- 🇩🇪 German by [@mschoeffmann](https://github.com/mschoeffmann)
+- 🇪🇸 Spanish by [@Runig006](https://github.com/Runig006)
