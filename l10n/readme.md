@@ -18,3 +18,4 @@ By default, pages markup contains strings in English (`en` locale). If you want 
 - 🇳🇱 Dutch by [@SchoNie](https://github.com/SchoNie)
 - 🇩🇪 German by [@mschoeffmann](https://github.com/mschoeffmann)
 - 🇪🇸 Spanish by [@Runig006](https://github.com/Runig006)
+- 🇨🇳 Chinese by [@CDN18](https://github.com/CDN18)
