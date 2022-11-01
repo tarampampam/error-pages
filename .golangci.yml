@@ -43,7 +43,6 @@ linters: # All available linters list: <https://golangci-lint.run/usage/linters/
   enable:
     - asciicheck # Simple linter to check that your code does not contain non-ASCII identifiers
     - bidichk # Checks for dangerous unicode character sequences
-    - deadcode # Finds unused code
     - depguard # Go linter that checks if package imports are in a list of acceptable packages
     - dogsled # Checks assignments with too many blank identifiers (e.g. x, _, _, _, := f())
     - dupl # Tool for code clone detection
@@ -78,7 +77,6 @@ linters: # All available linters list: <https://golangci-lint.run/usage/linters/
     - typecheck # Like the front-end of a Go compiler, parses and type-checks Go code
     - unconvert # Remove unnecessary type conversions
     - unused # Checks Go code for unused constants, variables, functions and types
-    - varcheck # Finds unused global variables and constants
     - whitespace # Tool for detection of leading and trailing whitespace
     - wsl # Whitespace Linter - Forces you to use empty lines!
 

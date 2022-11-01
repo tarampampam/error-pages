@@ -3,11 +3,12 @@ package checkers_test
 import (
 	"bytes"
 	"context"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+
 	"github.com/tarampampam/error-pages/internal/checkers"
 )
 
@@ -22,7 +23,7 @@ func TestHealthChecker_CheckSuccess(t *testing.T) {
 		assert.Equal(t, "HealthChecker/internal", req.Header.Get("User-Agent"))
 
 		return &http.Response{
-			Body:       ioutil.NopCloser(bytes.NewReader([]byte{})),
+			Body:       io.NopCloser(bytes.NewReader([]byte{})),
 			StatusCode: http.StatusOK,
 		}, nil
 	}
@@ -35,7 +36,7 @@ func TestHealthChecker_CheckSuccess(t *testing.T) {
 func TestHealthChecker_CheckFail(t *testing.T) {
 	var httpMock httpClientFunc = func(req *http.Request) (*http.Response, error) {
 		return &http.Response{
-			Body:       ioutil.NopCloser(bytes.NewReader([]byte{})),
+			Body:       io.NopCloser(bytes.NewReader([]byte{})),
 			StatusCode: http.StatusBadGateway,
 		}, nil
 	}

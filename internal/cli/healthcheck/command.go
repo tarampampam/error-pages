@@ -7,6 +7,7 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
+
 	"github.com/tarampampam/error-pages/internal/env"
 )
 
@@ -29,7 +30,7 @@ func NewCommand(checker checker) *cobra.Command {
 				// flag was NOT defined using CLI (flags should have maximal priority)
 				if !flag.Changed && flag.Name == portFlagName {
 					if envPort, exists := env.ListenPort.Lookup(); exists && envPort != "" {
-						if p, err := strconv.ParseUint(envPort, 10, 16); err == nil { //nolint:gomnd
+						if p, err := strconv.ParseUint(envPort, 10, 16); err == nil {
 							port = uint16(p)
 						} else {
 							lastErr = fmt.Errorf("wrong TCP port environment variable [%s] value", envPort)

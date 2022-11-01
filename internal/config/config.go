@@ -1,7 +1,6 @@
 package config
 
 import (
-	"io/ioutil"
 	"os"
 	"path"
 	"path/filepath"
@@ -68,7 +67,7 @@ func (t Template) Name() string { return t.name }
 func (t Template) Content() []byte { return t.content }
 
 func (t *Template) loadContentFromFile(filePath string) (err error) {
-	if t.content, err = ioutil.ReadFile(filePath); err != nil {
+	if t.content, err = os.ReadFile(filePath); err != nil {
 		return errors.Wrap(err, "cannot load content for the template "+t.Name()+" from file "+filePath)
 	}
 
@@ -236,7 +235,7 @@ func FromYaml(in []byte) (_ *Config, err error) {
 
 // FromYamlFile creates new Config instance using YAML file.
 func FromYamlFile(filepath string) (*Config, error) {
-	bytes, err := ioutil.ReadFile(filepath)
+	bytes, err := os.ReadFile(filepath)
 	if err != nil {
 		return nil, errors.Wrap(err, "cannot read configuration file")
 	}
