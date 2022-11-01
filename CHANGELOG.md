@@ -10,6 +10,12 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 - Go updated from `1.18` up to `1.19`
 
+### Added
+
+- Error pages now translated into Chinese 🇨🇳 [#147]
+
+[#147]:https://github.com/tarampampam/error-pages/pull/147
+
 ## v2.18.0
 
 ### Changed
