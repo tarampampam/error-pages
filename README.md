@@ -40,8 +40,6 @@ One day you may want to replace the standard error pages of your HTTP server wit
 
 Download the latest binary file for your os/arch from the [releases page][releases] or use our docker image:
 
-[![image stats](https://dockeri.co/image/tarampampam/error-pages)][docker-hub-tags]
-
 | Registry                          | Image                             |
 |-----------------------------------|-----------------------------------|
 | [Docker Hub][docker-hub]          | `tarampampam/error-pages`         |
