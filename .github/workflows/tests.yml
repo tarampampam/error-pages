@@ -247,7 +247,7 @@ jobs: # Docs: <https://git.io/JvxXE>
       - name: Wait for container "healthy" state
         run: until [[ "`docker inspect -f {{.State.Health.Status}} app`" == "healthy" ]]; do echo "wait 1 sec.."; sleep 1; done
 
-      - run: hurl --color --test --fail-at-end --variable host=127.0.0.1 --variable port=8080 --summary ./test/hurl/*.hurl
+      - run: hurl --color --test --fail-at-end --variable host=127.0.0.1 --variable port=8080 ./test/hurl/*.hurl
 
       - name: Stop the container
         if: always()
