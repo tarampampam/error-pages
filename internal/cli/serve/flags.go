@@ -52,7 +52,7 @@ const (
 	useRandomTemplateHourly        = "random-hourly"
 )
 
-func (f *flags) Init(flagSet *pflag.FlagSet) {
+func (f *flags) Init(flagSet *pflag.FlagSet) { //nolint:funlen
 	flagSet.StringVarP(
 		&f.Listen.IP,
 		listenFlagName, "l",
@@ -117,7 +117,7 @@ func (f *flags) Init(flagSet *pflag.FlagSet) {
 	)
 }
 
-func (f *flags) OverrideUsingEnv(flagSet *pflag.FlagSet) (lastErr error) { //nolint:gocognit,gocyclo
+func (f *flags) OverrideUsingEnv(flagSet *pflag.FlagSet) (lastErr error) { //nolint:gocognit,gocyclo,funlen
 	flagSet.VisitAll(func(flag *pflag.Flag) {
 		// flag was NOT defined using CLI (flags should have maximal priority)
 		if !flag.Changed { //nolint:nestif
@@ -168,8 +168,10 @@ func (f *flags) OverrideUsingEnv(flagSet *pflag.FlagSet) (lastErr error) { //nol
 				}
 
 			case catchAll:
-				if _, exists := env.CatchAll.Lookup(); exists {
-					f.catchAllPages = true
+				if envVar, exists := env.CatchAll.Lookup(); exists {
+					if b, err := strconv.ParseBool(envVar); err == nil {
+						f.catchAllPages = b
+					}
 				}
 
 			case disableL10nFlagName:

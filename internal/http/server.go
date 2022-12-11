@@ -88,9 +88,11 @@ func (s *Server) Register(cfg *config.Config, templatePicker templatePicker, opt
 
 	s.router.GET("/metrics", metricsHandler.NewHandler(reg))
 
+	// use index handler to catch all paths? Uses DEFAULT_ERROR_PAGE
 	if opt.CatchAll {
 		s.router.NotFound = indexHandler.NewHandler(cfg, templatePicker, s.rdr, opt)
 	} else {
+		// use default not found handler
 		s.router.NotFound = notfoundHandler.NewHandler()
 	}
 

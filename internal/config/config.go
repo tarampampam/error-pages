@@ -61,10 +61,10 @@ type Template struct {
 }
 
 // Name returns the name of the template.
-func (t Template) Name() string { return t.name }
+func (t *Template) Name() string { return t.name }
 
 // Content returns the template content.
-func (t Template) Content() []byte { return t.content }
+func (t *Template) Content() []byte { return t.content }
 
 func (t *Template) loadContentFromFile(filePath string) (err error) {
 	if t.content, err = os.ReadFile(filePath); err != nil {
@@ -121,7 +121,7 @@ type config struct {
 }
 
 // Validate the config struct and return an error if something is wrong.
-func (c config) Validate() error {
+func (c *config) Validate() error {
 	if len(c.Templates) == 0 {
 		return errors.New("empty templates list")
 	} else {
