@@ -39,3 +39,5 @@ require (
 	golang.org/x/sys v0.0.0-20220728004956-3c1f35247d10 // indirect
 	google.golang.org/protobuf v1.28.1 // indirect
 )
+
+replace github.com/tarampampam/error-pages => github.com/chrisamti/error-pages v1.8.1-0.20221202060955-6a6809b07ff9

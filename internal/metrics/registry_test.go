@@ -5,13 +5,18 @@ import (
 
 	"github.com/prometheus/client_golang/prometheus/testutil"
 	"github.com/stretchr/testify/assert"
+
 	"github.com/tarampampam/error-pages/internal/metrics"
 )
 
 func TestNewRegistry(t *testing.T) {
-	registry := metrics.NewRegistry()
+	reg, m := metrics.NewRegistry(), metrics.NewMetrics()
 
-	count, err := testutil.GatherAndCount(registry)
+	if err := m.Register(reg); err != nil {
+		t.Fatal(err)
+	}
+
+	count, err := testutil.GatherAndCount(reg)
 
 	assert.NoError(t, err)
 	assert.True(t, count >= 6, "not enough common metrics")

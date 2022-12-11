@@ -5,6 +5,9 @@ import (
 	"time"
 
 	"github.com/fasthttp/router"
+	"github.com/valyala/fasthttp"
+	"go.uber.org/zap"
+
 	"github.com/tarampampam/error-pages/internal/checkers"
 	"github.com/tarampampam/error-pages/internal/config"
 	"github.com/tarampampam/error-pages/internal/http/common"
@@ -18,8 +21,6 @@ import (
 	"github.com/tarampampam/error-pages/internal/options"
 	"github.com/tarampampam/error-pages/internal/tpl"
 	"github.com/tarampampam/error-pages/internal/version"
-	"github.com/valyala/fasthttp"
-	"go.uber.org/zap"
 )
 
 type Server struct {
@@ -87,7 +88,11 @@ func (s *Server) Register(cfg *config.Config, templatePicker templatePicker, opt
 
 	s.router.GET("/metrics", metricsHandler.NewHandler(reg))
 
-	s.router.NotFound = notfoundHandler.NewHandler()
+	if opt.CatchAll {
+		s.router.NotFound = indexHandler.NewHandler(cfg, templatePicker, s.rdr, opt)
+	} else {
+		s.router.NotFound = notfoundHandler.NewHandler()
+	}
 
 	return nil
 }

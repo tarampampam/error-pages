@@ -26,8 +26,11 @@ type flags struct {
 	}
 	defaultErrorPage string
 	defaultHTTPCode  uint16
+	catchAllPages    bool
 	showDetails      bool
+
 	proxyHTTPHeaders string // comma-separated
+
 }
 
 const (
@@ -36,6 +39,7 @@ const (
 	templateNameFlagName     = "template-name"
 	defaultErrorPageFlagName = "default-error-page"
 	defaultHTTPCodeFlagName  = "default-http-code"
+	catchAll                 = "catch-all"
 	showDetailsFlagName      = "show-details"
 	proxyHTTPHeadersFlagName = "proxy-headers"
 	disableL10nFlagName      = "disable-l10n"
@@ -86,6 +90,12 @@ func (f *flags) Init(flagSet *pflag.FlagSet) {
 		defaultHTTPCodeFlagName, "",
 		404, //nolint:gomnd
 		fmt.Sprintf("default HTTP response code [$%s]", env.DefaultHTTPCode),
+	)
+	flagSet.BoolVarP(
+		&f.catchAllPages,
+		catchAll, "",
+		false,
+		fmt.Sprintf("catch all pages with default http code [$%s]", env.CatchAll),
 	)
 	flagSet.BoolVarP(
 		&f.showDetails,
@@ -155,6 +165,11 @@ func (f *flags) OverrideUsingEnv(flagSet *pflag.FlagSet) (lastErr error) { //nol
 			case proxyHTTPHeadersFlagName:
 				if envVar, exists := env.ProxyHTTPHeaders.Lookup(); exists {
 					f.proxyHTTPHeaders = strings.TrimSpace(envVar)
+				}
+
+			case catchAll:
+				if _, exists := env.CatchAll.Lookup(); exists {
+					f.catchAllPages = true
 				}
 
 			case disableL10nFlagName:
@@ -230,6 +245,7 @@ func (f *flags) ToOptions() (o options.ErrorPage) {
 	o.L10n.Disabled = f.l10n.disabled
 	o.Template.Name = f.template.name
 	o.ShowDetails = f.showDetails
+	o.CatchAll = f.catchAllPages
 	o.ProxyHTTPHeaders = f.headersToProxy()
 
 	return o

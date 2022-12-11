@@ -12,5 +12,6 @@ type ErrorPage struct {
 		Name string // template name
 	}
 	ShowDetails      bool     // show request details in response
+	CatchAll         bool     // catch every page with default http code and selected error page template
 	ProxyHTTPHeaders []string // proxy HTTP request headers list
 }

@@ -7,11 +7,12 @@ import (
 	"time"
 
 	"github.com/spf13/cobra"
+	"go.uber.org/zap"
+
 	"github.com/tarampampam/error-pages/internal/breaker"
 	"github.com/tarampampam/error-pages/internal/config"
 	appHttp "github.com/tarampampam/error-pages/internal/http"
 	"github.com/tarampampam/error-pages/internal/pick"
-	"go.uber.org/zap"
 )
 
 // NewCommand creates `serve` command.
@@ -130,6 +131,7 @@ func run(parentCtx context.Context, log *zap.Logger, cfg *config.Config, f flags
 			zap.Uint16("default HTTP response code", opt.Default.HTTPCode),
 			zap.Strings("proxy headers", opt.ProxyHTTPHeaders),
 			zap.Bool("show request details", opt.ShowDetails),
+			zap.Bool("catch all pages", opt.CatchAll),
 			zap.Bool("localization disabled", opt.L10n.Disabled),
 		)
 

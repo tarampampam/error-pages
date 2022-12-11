@@ -12,7 +12,7 @@ func NewRegistry() *prometheus.Registry {
 
 	// register common metric collectors
 	registry.MustRegister(
-		// collectors.NewGoCollector(),
+		collectors.NewGoCollector(),
 		collectors.NewProcessCollector(collectors.ProcessCollectorOpts{}),
 	)
 
