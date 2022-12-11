@@ -4,6 +4,18 @@ All notable changes to this package will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## v2.20.0
+
+### Added
+- Added possibility catch all paths with error page 404 (using `--catch-all` flag for the `serve` or environment variable `CATCH_ALL=true`)
+
+### Changed
+- Enabled prom go collectors
+
+### Fixed
+- Not working test (internal/metrics/metrics_test.go)
+- Removed mixed handling methods on both value and pointer receivers (internal/cli/serve/flags.go)
+
 ## v2.19.0
 
 ### Changed
