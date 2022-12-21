@@ -27,6 +27,7 @@ type flags struct {
 	defaultErrorPage string
 	defaultHTTPCode  uint16
 	catchAllPages    bool
+	retryAfter       uint16 // add retry after header on 503 or 429 if not 0
 	showDetails      bool
 
 	proxyHTTPHeaders string // comma-separated
@@ -39,7 +40,8 @@ const (
 	templateNameFlagName     = "template-name"
 	defaultErrorPageFlagName = "default-error-page"
 	defaultHTTPCodeFlagName  = "default-http-code"
-	catchAll                 = "catch-all"
+	catchAllFlagName         = "catch-all"
+	retryAfterFlagName       = "retry-after"
 	showDetailsFlagName      = "show-details"
 	proxyHTTPHeadersFlagName = "proxy-headers"
 	disableL10nFlagName      = "disable-l10n"
@@ -79,21 +81,34 @@ func (f *flags) Init(flagSet *pflag.FlagSet) { //nolint:funlen
 			env.TemplateName,
 		),
 	)
+
 	flagSet.StringVarP(
 		&f.defaultErrorPage,
 		defaultErrorPageFlagName, "",
 		"404",
 		fmt.Sprintf("default error page [$%s]", env.DefaultErrorPage),
 	)
+
 	flagSet.Uint16VarP(
 		&f.defaultHTTPCode,
 		defaultHTTPCodeFlagName, "",
 		404, //nolint:gomnd
 		fmt.Sprintf("default HTTP response code [$%s]", env.DefaultHTTPCode),
 	)
+
+	flagSet.Uint16VarP(
+		&f.retryAfter,
+		retryAfterFlagName, "",
+		30, //nolint:gomnd
+		fmt.Sprintf(
+			"sets the Retry-After response HTTP header in seconds [$%s]. Used only on 429 and 503",
+			env.RetryAfter,
+		),
+	)
+
 	flagSet.BoolVarP(
 		&f.catchAllPages,
-		catchAll, "",
+		catchAllFlagName, "",
 		false,
 		fmt.Sprintf("catch all pages with default http code [$%s]", env.CatchAll),
 	)
@@ -167,10 +182,17 @@ func (f *flags) OverrideUsingEnv(flagSet *pflag.FlagSet) (lastErr error) { //nol
 					f.proxyHTTPHeaders = strings.TrimSpace(envVar)
 				}
 
-			case catchAll:
+			case catchAllFlagName:
 				if envVar, exists := env.CatchAll.Lookup(); exists {
 					if b, err := strconv.ParseBool(envVar); err == nil {
 						f.catchAllPages = b
+					}
+				}
+
+			case retryAfterFlagName:
+				if envVar, exists := env.RetryAfter.Lookup(); exists {
+					if retryAfter, err := strconv.ParseUint(envVar, 10, 16); err == nil {
+						f.retryAfter = uint16(retryAfter)
 					}
 				}
 
@@ -248,6 +270,7 @@ func (f *flags) ToOptions() (o options.ErrorPage) {
 	o.Template.Name = f.template.name
 	o.ShowDetails = f.showDetails
 	o.CatchAll = f.catchAllPages
+	o.RetryAfter = f.retryAfter
 	o.ProxyHTTPHeaders = f.headersToProxy()
 
 	return o

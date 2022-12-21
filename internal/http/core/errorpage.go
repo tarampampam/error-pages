@@ -1,12 +1,14 @@
 package core
 
 import (
+	"fmt"
 	"strconv"
+
+	"github.com/valyala/fasthttp"
 
 	"github.com/tarampampam/error-pages/internal/config"
 	"github.com/tarampampam/error-pages/internal/options"
 	"github.com/tarampampam/error-pages/internal/tpl"
-	"github.com/valyala/fasthttp"
 )
 
 type templatePicker interface {
@@ -28,6 +30,13 @@ func RespondWithErrorPage( //nolint:funlen,gocyclo
 	opt options.ErrorPage,
 ) {
 	ctx.Response.Header.Set("X-Robots-Tag", "noindex") // block Search indexing
+
+	if opt.RetryAfter > 0 {
+		switch httpCode {
+		case fasthttp.StatusTooManyRequests, fasthttp.StatusServiceUnavailable:
+			ctx.Response.Header.Set("Retry-After", fmt.Sprintf("%d", opt.RetryAfter))
+		}
+	}
 
 	var (
 		clientWant    = ClientWantFormat(ctx)

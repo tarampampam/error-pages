@@ -11,7 +11,13 @@ type ErrorPage struct {
 	Template struct {
 		Name string // template name
 	}
-	ShowDetails      bool     // show request details in response
-	CatchAll         bool     // catch every page with default http code and selected error page template
-	ProxyHTTPHeaders []string // proxy HTTP request headers list
+	ShowDetails bool // show request details in response.
+	CatchAll    bool // catch every page with default http code and selected error page template.
+
+	// RetryAfter (default 30) and only used if http code is 429 or 503.
+	// Adds http header Retry-After: <delay-seconds>.
+	RetryAfter uint16
+
+	// proxy HTTP request headers list.
+	ProxyHTTPHeaders []string
 }
