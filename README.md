@@ -5,8 +5,8 @@
 <p align="center">
   <a href="#"><img src="https://img.shields.io/github/go-mod/go-version/tarampampam/error-pages?longCache=true&label=&logo=go&logoColor=white&style=flat-square" alt="" /></a>
   <a href="https://codecov.io/gh/tarampampam/error-pages"><img src="https://img.shields.io/codecov/c/github/tarampampam/error-pages/master.svg?maxAge=30&label=&logo=codecov&logoColor=white&style=flat-square" alt="" /></a>
-  <a href="https://github.com/tarampampam/error-pages/actions"><img src="https://img.shields.io/github/workflow/status/tarampampam/error-pages/tests?maxAge=30&label=tests&logo=github&style=flat-square" alt="" /></a>
-  <a href="https://github.com/tarampampam/error-pages/actions"><img src="https://img.shields.io/github/workflow/status/tarampampam/error-pages/release?maxAge=30&label=release&logo=github&style=flat-square" alt="" /></a>
+  <a href="https://github.com/tarampampam/error-pages/actions"><img src="https://img.shields.io/github/actions/workflow/status/tarampampam/error-pages/tests.yml?branch=master&maxAge=30&label=tests&logo=github&style=flat-square" alt="" /></a>
+  <a href="https://github.com/tarampampam/error-pages/actions"><img src="https://img.shields.io/github/actions/workflow/status/tarampampam/error-pages/release.yml?maxAge=30&label=release&logo=github&style=flat-square" alt="" /></a>
   <a href="https://hub.docker.com/r/tarampampam/error-pages"><img src="https://img.shields.io/docker/pulls/tarampampam/error-pages.svg?maxAge=30&label=pulls&logo=docker&logoColor=white&style=flat-square" alt="" /></a>
   <a href="https://hub.docker.com/r/tarampampam/error-pages"><img src="https://img.shields.io/docker/image-size/tarampampam/error-pages/latest?maxAge=30&label=size&logo=docker&logoColor=white&style=flat-square" alt="" /></a>
   <a href="https://github.com/tarampampam/error-pages/blob/master/LICENSE"><img src="https://img.shields.io/github/license/tarampampam/error-pages.svg?maxAge=30&style=flat-square" alt="" /></a>
