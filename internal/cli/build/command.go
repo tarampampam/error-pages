@@ -5,60 +5,58 @@ import (
 	"path"
 
 	"github.com/pkg/errors"
-	"github.com/spf13/cobra"
+	"github.com/urfave/cli/v2"
+	"go.uber.org/zap"
+
+	"github.com/tarampampam/error-pages/internal/cli/shared"
 	"github.com/tarampampam/error-pages/internal/config"
 	"github.com/tarampampam/error-pages/internal/tpl"
-	"go.uber.org/zap"
 )
 
+type command struct {
+	c *cli.Command
+}
+
 // NewCommand creates `build` command.
-func NewCommand(log *zap.Logger, configFile *string) *cobra.Command {
-	var (
-		generateIndex bool
-		disableL10n   bool
-		cfg           *config.Config
+func NewCommand(log *zap.Logger) *cli.Command {
+	var cmd = command{}
+
+	const (
+		generateIndexFlagName = "index"
+		disableL10nFlagName   = "disable-l10n"
 	)
 
-	cmd := &cobra.Command{
-		Use:     "build <output-directory>",
-		Aliases: []string{"b"},
-		Short:   "Build the error pages",
-		Args:    cobra.ExactArgs(1),
-		PreRunE: func(*cobra.Command, []string) (err error) {
-			if configFile == nil {
-				return errors.New("path to the config file is required for this command")
+	cmd.c = &cli.Command{
+		Usage:       "build <output-directory>",
+		Aliases:     []string{"b"},
+		Description: "Build the error pages",
+		Action: func(c *cli.Context) error {
+			cfg, cfgErr := config.FromYamlFile(c.String(shared.ConfigFileFlag.Name))
+			if cfgErr != nil {
+				return cfgErr
 			}
 
-			if cfg, err = config.FromYamlFile(*configFile); err != nil {
-				return err
-			}
-
-			return
-		},
-		RunE: func(_ *cobra.Command, args []string) error {
-			if len(args) != 1 {
+			if c.Args().Len() != 1 {
 				return errors.New("wrong arguments count")
 			}
 
-			return run(log, cfg, args[0], generateIndex, disableL10n)
+			return cmd.Run(log, cfg, c.Args().First(), c.Bool(generateIndexFlagName), c.Bool(disableL10nFlagName))
+		},
+		Flags: []cli.Flag{ // global flags
+			&cli.BoolFlag{
+				Name:    generateIndexFlagName,
+				Aliases: []string{"i"},
+				Usage:   "generate index page",
+			},
+			&cli.BoolFlag{
+				Name:  disableL10nFlagName,
+				Usage: "disable error pages localization",
+			},
+			shared.ConfigFileFlag,
 		},
 	}
 
-	cmd.Flags().BoolVarP(
-		&generateIndex,
-		"index", "i",
-		false,
-		"generate index page",
-	)
-
-	cmd.Flags().BoolVarP(
-		&disableL10n,
-		"disable-l10n", "",
-		false,
-		"disable error pages localization",
-	)
-
-	return cmd
+	return cmd.c
 }
 
 const (
@@ -68,14 +66,14 @@ const (
 	outDirPerm       = os.FileMode(0775)
 )
 
-func run(log *zap.Logger, cfg *config.Config, outDirectoryPath string, generateIndex, disableL10n bool) error { //nolint:funlen,lll
+func (cmd *command) Run(log *zap.Logger, cfg *config.Config, outDirectoryPath string, generateIndex, disableL10n bool) error { //nolint:funlen,lll
 	if len(cfg.Templates) == 0 {
 		return errors.New("no loaded templates")
 	}
 
 	log.Info("output directory preparing", zap.String("path", outDirectoryPath))
 
-	if err := createDirectory(outDirectoryPath, outDirPerm); err != nil {
+	if err := cmd.createDirectory(outDirectoryPath, outDirPerm); err != nil {
 		return errors.Wrap(err, "cannot prepare output directory")
 	}
 
@@ -86,7 +84,7 @@ func run(log *zap.Logger, cfg *config.Config, outDirectoryPath string, generateI
 		log.Debug("template processing", zap.String("name", template.Name()))
 
 		for _, page := range cfg.Pages {
-			if err := createDirectory(path.Join(outDirectoryPath, template.Name()), outDirPerm); err != nil {
+			if err := cmd.createDirectory(path.Join(outDirectoryPath, template.Name()), outDirPerm); err != nil {
 				return err
 			}
 
@@ -138,7 +136,7 @@ func run(log *zap.Logger, cfg *config.Config, outDirectoryPath string, generateI
 	return nil
 }
 
-func createDirectory(path string, perm os.FileMode) error {
+func (cmd *command) createDirectory(path string, perm os.FileMode) error {
 	stat, err := os.Stat(path)
 	if err != nil {
 		if os.IsNotExist(err) {
