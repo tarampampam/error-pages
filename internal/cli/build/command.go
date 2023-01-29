@@ -27,8 +27,9 @@ func NewCommand(log *zap.Logger) *cli.Command {
 	)
 
 	cmd.c = &cli.Command{
-		Usage:       "build <output-directory>",
+		Name:        "build",
 		Aliases:     []string{"b"},
+		Usage:       "build <output-directory>",
 		Description: "Build the error pages",
 		Action: func(c *cli.Context) error {
 			cfg, cfgErr := config.FromYamlFile(c.String(shared.ConfigFileFlag.Name))

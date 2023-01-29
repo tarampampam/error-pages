@@ -129,7 +129,7 @@ jobs: # Docs: <https://git.io/JvxXE>
 
       - name: Try to execute
         if: matrix.os == 'linux'
-        run: ./error-pages version && ./error-pages -h
+        run: ./error-pages --version && ./error-pages -h
 
       - uses: actions/upload-artifact@v3
         with:

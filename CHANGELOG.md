@@ -4,6 +4,15 @@ All notable changes to this package will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## UNRELEASED
+
+### Changed
+
+- `version` subcommand replaced by `--version` flag
+- `--config-file` flag is not global anymore (use `error-pages (serve|build) --config-file ...` instead of `error-pages --config-file ... (serve|build) ...`)
+- Flags `--verbose`, `--debug` and `--log-json` are deprecated, use `--log-level` and `--log-format` instead
+
+
 ## v2.19.0
 
 ### Changed

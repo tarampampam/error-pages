@@ -2,12 +2,12 @@ package healthcheck_test
 
 import (
 	"errors"
-	"os"
+	"flag"
 	"testing"
 
-	"github.com/kami-zh/go-capturer"
-	"github.com/spf13/cobra"
 	"github.com/stretchr/testify/assert"
+	"github.com/urfave/cli/v2"
+
 	"github.com/tarampampam/error-pages/internal/cli/healthcheck"
 )
 
@@ -18,77 +18,30 @@ func (c *fakeChecker) Check(port uint16) error { return c.err }
 func TestProperties(t *testing.T) {
 	cmd := healthcheck.NewCommand(&fakeChecker{err: nil})
 
-	assert.Equal(t, "healthcheck", cmd.Use)
+	assert.Equal(t, "healthcheck", cmd.Name)
 	assert.ElementsMatch(t, []string{"chk", "health", "check"}, cmd.Aliases)
-	assert.NotNil(t, cmd.RunE)
+	assert.NotNil(t, cmd.Action)
 }
 
 func TestCommandRun(t *testing.T) {
 	cmd := healthcheck.NewCommand(&fakeChecker{err: nil})
-	cmd.SetArgs([]string{})
 
-	output := capturer.CaptureOutput(func() {
-		assert.NoError(t, cmd.Execute())
-	})
-
-	assert.Empty(t, output)
+	assert.NoError(t, cmd.Run(cli.NewContext(cli.NewApp(), &flag.FlagSet{}, nil)))
 }
 
 func TestCommandRunFailed(t *testing.T) {
 	cmd := healthcheck.NewCommand(&fakeChecker{err: errors.New("foo err")})
-	cmd.SetArgs([]string{})
 
-	output := capturer.CaptureStderr(func() {
-		assert.Error(t, cmd.Execute())
-	})
-
-	assert.Contains(t, output, "foo err")
+	assert.ErrorContains(t, cmd.Run(cli.NewContext(cli.NewApp(), &flag.FlagSet{}, nil)), "foo err")
 }
 
 func TestPortFlagWrongArgument(t *testing.T) {
 	cmd := healthcheck.NewCommand(&fakeChecker{err: nil})
-	cmd.SetArgs([]string{"-p", "65536"}) // 65535 is max
 
-	var executed bool
+	err := cmd.Run(
+		cli.NewContext(cli.NewApp(), &flag.FlagSet{}, nil),
+		"", "-p", "65536",
+	)
 
-	cmd.RunE = func(*cobra.Command, []string) error {
-		executed = true
-
-		return nil
-	}
-
-	output := capturer.CaptureStderr(func() {
-		assert.Error(t, cmd.Execute())
-	})
-
-	assert.Contains(t, output, "invalid argument")
-	assert.Contains(t, output, "65536")
-	assert.Contains(t, output, "value out of range")
-	assert.False(t, executed)
-}
-
-func TestPortFlagWrongEnvValue(t *testing.T) {
-	cmd := healthcheck.NewCommand(&fakeChecker{err: nil})
-	cmd.SetArgs([]string{})
-
-	assert.NoError(t, os.Setenv("LISTEN_PORT", "65536")) // 65535 is max
-
-	defer func() { assert.NoError(t, os.Unsetenv("LISTEN_PORT")) }()
-
-	var executed bool
-
-	cmd.RunE = func(*cobra.Command, []string) error {
-		executed = true
-
-		return nil
-	}
-
-	output := capturer.CaptureStderr(func() {
-		assert.Error(t, cmd.Execute())
-	})
-
-	assert.Contains(t, output, "wrong TCP port")
-	assert.Contains(t, output, "environment variable")
-	assert.Contains(t, output, "65536")
-	assert.False(t, executed)
+	assert.ErrorContains(t, err, "port value out of range")
 }
