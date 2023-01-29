@@ -23,9 +23,9 @@ services:
     <<: *app-service
     ports:
       - "8080:8080/tcp" # Open <http://127.0.0.1:8080>
-    command: sh -c "go build -o /tmp/app ./cmd/error-pages && /tmp/app serve"
+    command: sh -c "go build -buildvcs=false -o /tmp/app ./cmd/error-pages && /tmp/app serve"
     healthcheck:
-      test: ['CMD', '/tmp/app', 'healthcheck', '--log-json']
+      test: ['CMD', '/tmp/app', '--log-json', 'healthcheck']
       interval: 4s
       timeout: 1s
       start_period: 5s
