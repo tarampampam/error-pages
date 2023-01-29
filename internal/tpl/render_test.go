@@ -18,6 +18,7 @@ func Test_Render(t *testing.T) {
 	defer func() { _ = renderer.Close() }()
 
 	require.NoError(t, os.Setenv("TEST_ENV_VAR", "unit-test"))
+
 	defer func() { require.NoError(t, os.Unsetenv("TEST_ENV_VAR")) }()
 
 	for name, tt := range map[string]struct {
