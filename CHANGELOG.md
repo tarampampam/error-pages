@@ -8,10 +8,11 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 ### Changed
 
-- `version` subcommand replaced by `--version` flag
-- `--config-file` flag is not global anymore (use `error-pages (serve|build) --config-file ...` instead of `error-pages --config-file ... (serve|build) ...`)
-- Flags `--verbose`, `--debug` and `--log-json` are deprecated, use `--log-level` and `--log-format` instead
+- `version` subcommand replaced by `--version` flag [#163]
+- `--config-file` flag is not global anymore (use `error-pages (serve|build) --config-file ...` instead of `error-pages --config-file ... (serve|build) ...`) [#163]
+- Flags `--verbose`, `--debug` and `--log-json` are deprecated, use `--log-level` and `--log-format` instead [#163]
 
+[#163]:https://github.com/tarampampam/error-pages/pull/163
 
 ## v2.19.0
 
