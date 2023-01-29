@@ -2,17 +2,23 @@ package tpl_test
 
 import (
 	"math/rand"
+	"os"
 	"strconv"
 	"sync"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+
 	"github.com/tarampampam/error-pages/internal/tpl"
 )
 
 func Test_Render(t *testing.T) {
 	renderer := tpl.NewTemplateRenderer()
 	defer func() { _ = renderer.Close() }()
+
+	require.NoError(t, os.Setenv("TEST_ENV_VAR", "unit-test"))
+	defer func() { require.NoError(t, os.Unsetenv("TEST_ENV_VAR")) }()
 
 	for name, tt := range map[string]struct {
 		giveContent string
@@ -66,6 +72,11 @@ func Test_Render(t *testing.T) {
 			giveContent: "{{ if l10n_disabled }}Y{{ else }}N{{ end }}",
 			giveProps:   tpl.Properties{L10nDisabled: true},
 			wantContent: "Y",
+		},
+
+		"env": {
+			giveContent: `{{ env "TEST_ENV_VAR" }}`,
+			wantContent: "unit-test",
 		},
 	} {
 		t.Run(name, func(t *testing.T) {
