@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/pkg/errors"
+
 	"github.com/tarampampam/error-pages/internal/version"
 )
 
@@ -30,6 +31,7 @@ var tplFnMap = template.FuncMap{ //nolint:gochecknoglobals
 
 		return 0
 	},
+	"env": os.Getenv,
 }
 
 var ErrClosed = errors.New("closed")
