@@ -14,9 +14,10 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 ### Added
 
-- Possibility to use custom env variables in templates [#164]
+- Possibility to use custom env variables in templates [#164], [#165]
 
 [#164]:https://github.com/tarampampam/error-pages/issues/164
+[#165]:https://github.com/tarampampam/error-pages/pull/165
 [#163]:https://github.com/tarampampam/error-pages/pull/163
 
 ## v2.19.0
