@@ -72,8 +72,8 @@ ENV LISTEN_PORT="8080" \
     DISABLE_L10N="false"
 
 # Docs: <https://docs.docker.com/engine/reference/builder/#healthcheck>
-HEALTHCHECK --interval=7s --timeout=2s CMD ["/bin/error-pages", "healthcheck", "--log-json"]
+HEALTHCHECK --interval=7s --timeout=2s CMD ["/bin/error-pages", "--log-json", "healthcheck"]
 
 ENTRYPOINT ["/bin/error-pages"]
 
-CMD ["serve", "--log-json"]
+CMD ["--log-json", "serve"]
