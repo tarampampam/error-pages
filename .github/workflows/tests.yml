@@ -29,7 +29,11 @@ jobs: # Docs: <https://git.io/JvxXE>
     steps:
       - uses: actions/checkout@v3
 
-      - uses: golangci/golangci-lint-action@v3 # Action page: <https://github.com/golangci/golangci-lint-action>
+      - uses: gacts/setup-go-with-cache@v1
+        with: {go-version: 1.19}
+
+      - uses: golangci/golangci-lint-action@v3
+        with: {skip-pkg-cache: true, skip-build-cache: true}
 
   validate-config-file:
     name: Validate config file
