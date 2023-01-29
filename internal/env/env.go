@@ -6,6 +6,9 @@ import "os"
 type envVariable string
 
 const (
+	LogLevel  envVariable = "LOG_LEVEL"  // logging level
+	LogFormat envVariable = "LOG_FORMAT" // logging format (json|console)
+
 	ListenAddr       envVariable = "LISTEN_ADDR"        // IP address for listening
 	ListenPort       envVariable = "LISTEN_PORT"        // port number for listening
 	TemplateName     envVariable = "TEMPLATE_NAME"      // template name

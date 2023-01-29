@@ -3,53 +3,164 @@ package serve
 import (
 	"context"
 	"errors"
+	"fmt"
+	"net"
 	"os"
+	"strings"
 	"time"
 
-	"github.com/spf13/cobra"
-	"github.com/tarampampam/error-pages/internal/breaker"
-	"github.com/tarampampam/error-pages/internal/config"
-	appHttp "github.com/tarampampam/error-pages/internal/http"
-	"github.com/tarampampam/error-pages/internal/pick"
+	"github.com/urfave/cli/v2"
 	"go.uber.org/zap"
+
+	"github.com/tarampampam/error-pages/internal/breaker"
+	"github.com/tarampampam/error-pages/internal/cli/shared"
+	"github.com/tarampampam/error-pages/internal/config"
+	"github.com/tarampampam/error-pages/internal/env"
+	appHttp "github.com/tarampampam/error-pages/internal/http"
+	"github.com/tarampampam/error-pages/internal/options"
+	"github.com/tarampampam/error-pages/internal/pick"
+)
+
+type command struct {
+	c *cli.Command
+}
+
+const (
+	templateNameFlagName     = "template-name"
+	defaultErrorPageFlagName = "default-error-page"
+	defaultHTTPCodeFlagName  = "default-http-code"
+	showDetailsFlagName      = "show-details"
+	proxyHTTPHeadersFlagName = "proxy-headers"
+	disableL10nFlagName      = "disable-l10n"
+)
+
+const (
+	useRandomTemplate              = "random"
+	useRandomTemplateOnEachRequest = "i-said-random"
+	useRandomTemplateDaily         = "random-daily"
+	useRandomTemplateHourly        = "random-hourly"
 )
 
 // NewCommand creates `serve` command.
-func NewCommand(ctx context.Context, log *zap.Logger, configFile *string) *cobra.Command {
-	var (
-		f   flags
-		cfg *config.Config
-	)
+func NewCommand(log *zap.Logger) *cli.Command { //nolint:funlen
+	var cmd = command{}
 
-	cmd := &cobra.Command{
-		Use:     "serve",
+	cmd.c = &cli.Command{
+		Name:    "serve",
 		Aliases: []string{"s", "server"},
-		Short:   "Start HTTP server",
-		PreRunE: func(cmd *cobra.Command, _ []string) (err error) {
-			if configFile == nil {
+		Usage:   "Start HTTP server",
+		Action: func(c *cli.Context) error {
+			var cfg *config.Config
+
+			if configPath := c.String(shared.ConfigFileFlag.Name); configPath == "" { // load config from file
 				return errors.New("path to the config file is required for this command")
-			}
-
-			if err = f.OverrideUsingEnv(cmd.Flags()); err != nil {
+			} else if loadedCfg, err := config.FromYamlFile(c.String(shared.ConfigFileFlag.Name)); err != nil {
 				return err
+			} else {
+				cfg = loadedCfg
 			}
 
-			if cfg, err = config.FromYamlFile(*configFile); err != nil {
-				return err
+			var (
+				ip   = c.String(shared.ListenAddrFlag.Name)
+				port = uint16(c.Uint(shared.ListenPortFlag.Name))
+				o    options.ErrorPage
+			)
+
+			if net.ParseIP(ip) == nil {
+				return fmt.Errorf("wrong IP address [%s] for listening", ip)
 			}
 
-			return f.Validate()
+			{ // fill options
+				o.Template.Name = c.String(templateNameFlagName)
+				o.L10n.Disabled = c.Bool(disableL10nFlagName)
+				o.Default.PageCode = c.String(defaultErrorPageFlagName)
+				o.Default.HTTPCode = uint16(c.Uint(defaultHTTPCodeFlagName))
+				o.ShowDetails = c.Bool(showDetailsFlagName)
+
+				if headers := c.String(proxyHTTPHeadersFlagName); headers != "" { //nolint:nestif
+					var m = make(map[string]struct{})
+
+					// make unique and ignore empty strings
+					for _, header := range strings.Split(headers, ",") {
+						if h := strings.TrimSpace(header); h != "" {
+							if strings.ContainsRune(h, ' ') {
+								return fmt.Errorf("whitespaces in the HTTP headers for proxying [%s] are not allowed", header)
+							}
+
+							if _, ok := m[h]; !ok {
+								m[h] = struct{}{}
+							}
+						}
+					}
+
+					// convert map into slice
+					o.ProxyHTTPHeaders = make([]string, 0, len(m))
+					for h := range m {
+						o.ProxyHTTPHeaders = append(o.ProxyHTTPHeaders, h)
+					}
+				}
+			}
+
+			if o.Default.HTTPCode > 599 { //nolint:gomnd
+				return fmt.Errorf("wrong default HTTP response code [%d]", o.Default.HTTPCode)
+			}
+
+			return cmd.Run(c.Context, log, cfg, ip, port, o)
 		},
-		RunE: func(*cobra.Command, []string) error { return run(ctx, log, cfg, f) },
+		Flags: []cli.Flag{
+			shared.ConfigFileFlag,
+			shared.ListenPortFlag,
+			shared.ListenAddrFlag,
+			&cli.StringFlag{
+				Name:    templateNameFlagName,
+				Aliases: []string{"t"},
+				Usage: fmt.Sprintf(
+					"template name (set \"%s\" to use a randomized or \"%s\" to use a randomized template on "+
+						"each request or \"%s/%s\" daily/hourly randomized)",
+					useRandomTemplate,
+					useRandomTemplateOnEachRequest,
+					useRandomTemplateDaily,
+					useRandomTemplateHourly,
+				),
+				EnvVars: []string{env.TemplateName.String()},
+			},
+			&cli.StringFlag{
+				Name:    defaultErrorPageFlagName,
+				Value:   "404",
+				Usage:   "default error page",
+				EnvVars: []string{env.DefaultErrorPage.String()},
+			},
+			&cli.UintFlag{
+				Name:    defaultHTTPCodeFlagName,
+				Value:   404, //nolint:gomnd
+				Usage:   "default HTTP response code",
+				EnvVars: []string{env.DefaultHTTPCode.String()},
+			},
+			&cli.BoolFlag{
+				Name:    showDetailsFlagName,
+				Usage:   "show request details in response",
+				EnvVars: []string{env.ShowDetails.String()},
+			},
+			&cli.StringFlag{
+				Name:    proxyHTTPHeadersFlagName,
+				Usage:   "proxy HTTP request headers list (comma-separated)",
+				EnvVars: []string{env.ProxyHTTPHeaders.String()},
+			},
+			&cli.BoolFlag{
+				Name:    disableL10nFlagName,
+				Usage:   "disable error pages localization",
+				EnvVars: []string{env.DisableL10n.String()},
+			},
+		},
 	}
 
-	f.Init(cmd.Flags())
-
-	return cmd
+	return cmd.c
 }
 
-// run current command.
-func run(parentCtx context.Context, log *zap.Logger, cfg *config.Config, f flags) error { //nolint:funlen
+// Run current command.
+func (cmd *command) Run( //nolint:funlen
+	parentCtx context.Context, log *zap.Logger, cfg *config.Config, ip string, port uint16, opt options.ErrorPage,
+) error {
 	var (
 		ctx, cancel = context.WithCancel(parentCtx) // serve context creation
 		oss         = breaker.NewOSSignals(ctx)     // OS signals listener
@@ -70,8 +181,6 @@ func run(parentCtx context.Context, log *zap.Logger, cfg *config.Config, f flags
 	var (
 		templateNames = cfg.TemplateNames()
 		picker        interface{ Pick() string }
-
-		opt = f.ToOptions()
 	)
 
 	switch opt.Template.Name {
@@ -124,8 +233,8 @@ func run(parentCtx context.Context, log *zap.Logger, cfg *config.Config, f flags
 		defer close(errCh)
 
 		log.Info("Server starting",
-			zap.String("addr", f.Listen.IP),
-			zap.Uint16("port", f.Listen.Port),
+			zap.String("addr", ip),
+			zap.Uint16("port", port),
 			zap.String("default error page", opt.Default.PageCode),
 			zap.Uint16("default HTTP response code", opt.Default.HTTPCode),
 			zap.Strings("proxy headers", opt.ProxyHTTPHeaders),
@@ -133,7 +242,7 @@ func run(parentCtx context.Context, log *zap.Logger, cfg *config.Config, f flags
 			zap.Bool("localization disabled", opt.L10n.Disabled),
 		)
 
-		if err := server.Start(f.Listen.IP, f.Listen.Port); err != nil {
+		if err := server.Start(ip, port); err != nil {
 			errCh <- err
 		}
 	}(startingErrCh)

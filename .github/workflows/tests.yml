@@ -129,7 +129,7 @@ jobs: # Docs: <https://git.io/JvxXE>
 
       - name: Try to execute
         if: matrix.os == 'linux'
-        run: ./error-pages version && ./error-pages -h
+        run: ./error-pages --version && ./error-pages -h
 
       - uses: actions/upload-artifact@v3
         with:
@@ -155,7 +155,7 @@ jobs: # Docs: <https://git.io/JvxXE>
         run: mv ./error-pages ./../error-pages && chmod +x ./../error-pages
 
       - name: Run generator
-        run: ./error-pages build ./out --verbose --index
+        run: ./error-pages --verbose build --index ./out
 
       - name: Test files creation
         run: |

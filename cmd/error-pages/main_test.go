@@ -6,36 +6,16 @@ import (
 
 	"github.com/kami-zh/go-capturer"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
-func Test_Main(t *testing.T) {
+func Test_MainHelp(t *testing.T) {
 	os.Args = []string{"", "--help"}
-	exitFn = func(code int) { assert.Equal(t, 0, code) }
+	exitFn = func(code int) { require.Equal(t, 0, code) }
 
 	output := capturer.CaptureStdout(main)
 
-	assert.Contains(t, output, "Usage:")
-	assert.Contains(t, output, "Available Commands:")
-	assert.Contains(t, output, "Flags:")
-}
-
-func Test_MainWithoutCommands(t *testing.T) {
-	os.Args = []string{""}
-	exitFn = func(code int) { assert.Equal(t, 0, code) }
-
-	output := capturer.CaptureStdout(main)
-
-	assert.Contains(t, output, "Usage:")
-	assert.Contains(t, output, "Available Commands:")
-	assert.Contains(t, output, "Flags:")
-}
-
-func Test_MainUnknownSubcommand(t *testing.T) {
-	os.Args = []string{"", "foobar"}
-	exitFn = func(code int) { assert.Equal(t, 1, code) }
-
-	output := capturer.CaptureStderr(main)
-
-	assert.Contains(t, output, "unknown command")
-	assert.Contains(t, output, "foobar")
+	assert.Contains(t, output, "USAGE:")
+	assert.Contains(t, output, "COMMANDS:")
+	assert.Contains(t, output, "GLOBAL OPTIONS:")
 }
