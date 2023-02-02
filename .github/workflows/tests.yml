@@ -70,11 +70,11 @@ jobs: # Docs: <https://git.io/JvxXE>
     name: Unit tests
     runs-on: ubuntu-20.04
     steps:
-      - uses: gacts/setup-go-with-cache@v1
-        with: {go-version-file: go.mod}
-
       - uses: actions/checkout@v3
         with: {fetch-depth: 2} # Fixes codecov error 'Issue detecting commit SHA'
+
+      - uses: gacts/setup-go-with-cache@v1
+        with: {go-version-file: go.mod}
 
       - name: Run Unit tests
         run: go test -race -covermode=atomic -coverprofile /tmp/coverage.txt ./...
@@ -95,10 +95,10 @@ jobs: # Docs: <https://git.io/JvxXE>
         arch: [amd64]  # amd64, 386
     needs: [golangci-lint, go-test, validate-config-file]
     steps:
+      - uses: actions/checkout@v3
+
       - uses: gacts/setup-go-with-cache@v1
         with: {go-version-file: go.mod}
-
-      - uses: actions/checkout@v3
 
       - {uses: gacts/github-slug@v1, id: slug}
 

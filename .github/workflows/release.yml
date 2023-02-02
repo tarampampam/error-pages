@@ -26,10 +26,10 @@ jobs:
         os: [linux, darwin] # linux, freebsd, darwin, windows
         arch: [amd64]  # amd64, 386
     steps:
+      - uses: actions/checkout@v3
+
       - uses: gacts/setup-go-with-cache@v1
         with: {go-version-file: go.mod}
-
-      - uses: actions/checkout@v3
 
       - {uses: gacts/github-slug@v1, id: slug}
 
