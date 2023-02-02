@@ -14,7 +14,7 @@ require (
 	github.com/urfave/cli/v2 v2.24.1
 	github.com/valyala/fasthttp v1.44.0
 	go.uber.org/automaxprocs v1.5.1
-	go.uber.org/goleak v1.1.11
+	go.uber.org/goleak v1.2.0
 	go.uber.org/zap v1.24.0
 	gopkg.in/yaml.v3 v3.0.1
 )
