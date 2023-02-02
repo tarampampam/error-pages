@@ -30,7 +30,7 @@ jobs: # Docs: <https://git.io/JvxXE>
       - uses: actions/checkout@v3
 
       - uses: gacts/setup-go-with-cache@v1
-        with: {go-version: 1.20}
+        with: {go-version-file: go.mod}
 
       - uses: golangci/golangci-lint-action@v3
         with: {skip-pkg-cache: true, skip-build-cache: true}
@@ -41,8 +41,8 @@ jobs: # Docs: <https://git.io/JvxXE>
     steps:
       - uses: actions/checkout@v3
 
-      - uses: actions/setup-node@v3
-        with: {node-version: '16'}
+      - uses: gacts/setup-node-with-cache@v1
+        with: {node-version: 16}
 
       - name: Install linter
         run: npm install -g ajv-cli # Package page: <https://www.npmjs.com/package/ajv-cli>
@@ -56,8 +56,8 @@ jobs: # Docs: <https://git.io/JvxXE>
     steps:
       - uses: actions/checkout@v3
 
-      - uses: actions/setup-node@v3
-        with: {node-version: '16'}
+      - uses: gacts/setup-node-with-cache@v1
+        with: {node-version: 16}
 
       - name: Install eslint
         run: npm install -g eslint@v8 # Package page: <https://www.npmjs.com/package/eslint>
@@ -70,22 +70,11 @@ jobs: # Docs: <https://git.io/JvxXE>
     name: Unit tests
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/setup-go@v3
-        with: {go-version: 1.20}
+      - uses: gacts/setup-go-with-cache@v1
+        with: {go-version-file: go.mod}
 
       - uses: actions/checkout@v3
         with: {fetch-depth: 2} # Fixes codecov error 'Issue detecting commit SHA'
-
-      - name: Go modules Cache # Docs: <https://git.io/JfAKn#go---modules>
-        uses: actions/cache@v3
-        id: go-cache
-        with:
-          path: ~/go/pkg/mod
-          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-          restore-keys: ${{ runner.os }}-go-
-
-      - if: steps.go-cache.outputs.cache-hit != 'true'
-        run: go mod download
 
       - name: Run Unit tests
         run: go test -race -covermode=atomic -coverprofile /tmp/coverage.txt ./...
@@ -106,22 +95,12 @@ jobs: # Docs: <https://git.io/JvxXE>
         arch: [amd64]  # amd64, 386
     needs: [golangci-lint, go-test, validate-config-file]
     steps:
-      - uses: actions/setup-go@v3
-        with: {go-version: 1.20}
+      - uses: gacts/setup-go-with-cache@v1
+        with: {go-version-file: go.mod}
 
       - uses: actions/checkout@v3
 
-      - uses: gacts/github-slug@v1
-        id: slug
-
-      - name: Go modules Cache # Docs: <https://git.io/JfAKn#go---modules>
-        uses: actions/cache@v3
-        with:
-          path: ~/go/pkg/mod
-          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-          restore-keys: ${{ runner.os }}-go-
-
-      - run: go mod download
+      - {uses: gacts/github-slug@v1, id: slug}
 
       - name: Build application
         env:
@@ -183,8 +162,7 @@ jobs: # Docs: <https://git.io/JvxXE>
     steps:
       - uses: actions/checkout@v3
 
-      - uses: gacts/github-slug@v1
-        id: slug
+      - {uses: gacts/github-slug@v1, id: slug}
 
       - uses: docker/build-push-action@v4 # Action page: <https://github.com/docker/build-push-action>
         with:

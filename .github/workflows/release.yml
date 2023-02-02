@@ -26,13 +26,12 @@ jobs:
         os: [linux, darwin] # linux, freebsd, darwin, windows
         arch: [amd64]  # amd64, 386
     steps:
-      - uses: actions/setup-go@v3
-        with: {go-version: 1.20}
+      - uses: gacts/setup-go-with-cache@v1
+        with: {go-version-file: go.mod}
 
       - uses: actions/checkout@v3
 
-      - uses: gacts/github-slug@v1
-        id: slug
+      - {uses: gacts/github-slug@v1, id: slug}
 
       - name: Generate builder values
         id: values
@@ -60,8 +59,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - uses: gacts/github-slug@v1
-        id: slug
+      - {uses: gacts/github-slug@v1, id: slug}
 
       - uses: docker/setup-qemu-action@v2 # Action page: <https://github.com/docker/setup-qemu-action>
 
@@ -100,8 +98,7 @@ jobs:
     runs-on: ubuntu-20.04
     needs: [docker-image]
     steps:
-      - uses: gacts/github-slug@v1
-        id: slug
+      - {uses: gacts/github-slug@v1, id: slug}
 
       - name: Take rendered templates from the built docker image
         run: |
