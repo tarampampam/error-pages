@@ -4,6 +4,12 @@ All notable changes to this package will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## UNRELEASED
+
+### Changed
+
+- Go updated from `1.19` up to `1.20`
+
 ## v2.20.0
 
 ### Changed
