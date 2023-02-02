@@ -30,7 +30,7 @@ jobs: # Docs: <https://git.io/JvxXE>
       - uses: actions/checkout@v3
 
       - uses: gacts/setup-go-with-cache@v1
-        with: {go-version: 1.19}
+        with: {go-version: 1.20}
 
       - uses: golangci/golangci-lint-action@v3
         with: {skip-pkg-cache: true, skip-build-cache: true}
@@ -71,7 +71,7 @@ jobs: # Docs: <https://git.io/JvxXE>
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/setup-go@v3
-        with: {go-version: 1.19}
+        with: {go-version: 1.20}
 
       - uses: actions/checkout@v3
         with: {fetch-depth: 2} # Fixes codecov error 'Issue detecting commit SHA'
@@ -107,7 +107,7 @@ jobs: # Docs: <https://git.io/JvxXE>
     needs: [golangci-lint, go-test, validate-config-file]
     steps:
       - uses: actions/setup-go@v3
-        with: {go-version: 1.19}
+        with: {go-version: 1.20}
 
       - uses: actions/checkout@v3
 
