@@ -7,7 +7,7 @@ on:
 jobs:
   purge-cdn-cache:
     name: Purge jsDelivr CDN cache
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       - uses: gacts/purge-jsdelivr-cache@v1 # Action page: <https://github.com/gacts/purge-jsdelivr-cache>
         with:
@@ -19,7 +19,7 @@ jobs:
 
   build:
     name: Build for ${{ matrix.os }} (${{ matrix.arch }})
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
@@ -42,7 +42,7 @@ jobs:
           GOOS: ${{ matrix.os }}
           GOARCH: ${{ matrix.arch }}
           CGO_ENABLED: 0
-          LDFLAGS: -s -w -X github.com/tarampampam/error-pages/internal/version.version=${{ steps.slug.outputs.version }}
+          LDFLAGS: -s -w -X gh.tarampamp.am/error-pages/internal/version.version=${{ steps.slug.outputs.version }}
         run: go build -trimpath -ldflags "$LDFLAGS" -o "./${{ steps.values.outputs.binary-name }}" ./cmd/error-pages/
 
       - name: Upload binary file to release
@@ -55,7 +55,7 @@ jobs:
 
   docker-image:
     name: Build docker image
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
 
@@ -95,7 +95,7 @@ jobs:
 
   demo:
     name: Update the demonstration
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     needs: [docker-image]
     steps:
       - {uses: gacts/github-slug@v1, id: slug}

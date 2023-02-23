@@ -15,7 +15,7 @@ concurrency:
 jobs: # Docs: <https://git.io/JvxXE>
   gitleaks:
     name: Gitleaks
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
         with: {fetch-depth: 0}
@@ -25,7 +25,7 @@ jobs: # Docs: <https://git.io/JvxXE>
 
   golangci-lint:
     name: Golang-CI (lint)
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
 
@@ -37,7 +37,7 @@ jobs: # Docs: <https://git.io/JvxXE>
 
   validate-config-file:
     name: Validate config file
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
 
@@ -52,7 +52,7 @@ jobs: # Docs: <https://git.io/JvxXE>
 
   lint-l10n:
     name: Lint l10n file(s)
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
 
@@ -68,7 +68,7 @@ jobs: # Docs: <https://git.io/JvxXE>
 
   go-test:
     name: Unit tests
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
         with: {fetch-depth: 2} # Fixes codecov error 'Issue detecting commit SHA'
@@ -87,7 +87,7 @@ jobs: # Docs: <https://git.io/JvxXE>
 
   build:
     name: Build for ${{ matrix.os }} (${{ matrix.arch }})
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
@@ -107,7 +107,7 @@ jobs: # Docs: <https://git.io/JvxXE>
           GOOS: ${{ matrix.os }}
           GOARCH: ${{ matrix.arch }}
           CGO_ENABLED: 0
-          LDFLAGS: -s -w -X github.com/tarampampam/error-pages/internal/version.version=${{ steps.slug.outputs.branch-name-slug }}@${{ steps.slug.outputs.commit-hash-short }}
+          LDFLAGS: -s -w -X gh.tarampamp.am/error-pages/internal/version.version=${{ steps.slug.outputs.branch-name-slug }}@${{ steps.slug.outputs.commit-hash-short }}
         run: go build -trimpath -ldflags "$LDFLAGS" -o ./error-pages ./cmd/error-pages/
 
       - name: Try to execute
@@ -123,7 +123,7 @@ jobs: # Docs: <https://git.io/JvxXE>
 
   generate:
     name: Run templates generator
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     needs: [build]
     steps:
       - uses: actions/checkout@v3
@@ -157,7 +157,7 @@ jobs: # Docs: <https://git.io/JvxXE>
 
   docker-image:
     name: Build docker image
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     needs: [golangci-lint, go-test, validate-config-file]
     steps:
       - uses: actions/checkout@v3
@@ -182,7 +182,7 @@ jobs: # Docs: <https://git.io/JvxXE>
 
   scan-docker-image:
     name: Scan the docker image
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     needs: [docker-image]
     steps:
       - uses: actions/checkout@v3 # is needed for `upload-sarif` action
@@ -207,7 +207,7 @@ jobs: # Docs: <https://git.io/JvxXE>
 
   poke-docker-image:
     name: Run the docker image
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     needs: [docker-image]
     timeout-minutes: 2
     steps:
