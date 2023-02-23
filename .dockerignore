@@ -1,14 +1,9 @@
-.dockerignore
-Dockerfile
-.github
-.git
-.gitignore
-.editorconfig
-.idea
-.vscode
-test
-temp
-tmp
-LICENSE
-Makefile
-error-pages
+## Ignore everything
+*
+
+## Except the following files and directories
+!/cmd
+!/internal
+!/templates
+!/error-pages.yml
+!/go.*

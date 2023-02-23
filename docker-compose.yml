@@ -4,6 +4,7 @@ version: '3.8'
 
 volumes:
   tmp-data: {}
+  golint-go: {}
   golint-cache: {}
 
 services:
@@ -18,27 +19,29 @@ services:
       - /etc/group:/etc/group:ro
       - .:/src:rw
       - tmp-data:/tmp:rw
+    security_opt: [no-new-privileges:true]
 
   web:
     <<: *app-service
     ports:
       - "8080:8080/tcp" # Open <http://127.0.0.1:8080>
-    command: sh -c "go build -buildvcs=false -o /tmp/app ./cmd/error-pages && /tmp/app serve"
+    command: sh -c "go build -buildvcs=false -o /tmp/app ./cmd/error-pages && /tmp/app serve --show-details --proxy-headers=X-Foo,Bar,Baz_blah"
     healthcheck:
       test: ['CMD', '/tmp/app', '--log-json', 'healthcheck']
       interval: 4s
-      timeout: 1s
       start_period: 5s
+      retries: 5
 
   golint:
     image: golangci/golangci-lint:v1.51-alpine # Image page: <https://hub.docker.com/r/golangci/golangci-lint>
     environment:
       GOLANGCI_LINT_CACHE: /tmp/golint # <https://github.com/golangci/golangci-lint/blob/v1.42.0/internal/cache/default.go#L68>
     volumes:
-      - .:/src:ro
+      - golint-go:/go:rw # go dependencies will be downloaded on each run without this
       - golint-cache:/tmp/golint:rw
+      - .:/src:ro
     working_dir: /src
-    command: /bin/true
+    security_opt: [no-new-privileges:true]
 
   hurl:
     image: orangeopensource/hurl:1.8.0
@@ -47,3 +50,4 @@ services:
     working_dir: /src
     depends_on:
       web: {condition: service_healthy}
+    security_opt: [no-new-privileges:true]
