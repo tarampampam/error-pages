@@ -4,11 +4,13 @@ All notable changes to this package will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
-## UNRELEASED
+## v2.21.0
 
 ### Changed
 
 - Go updated from `1.19` up to `1.20`
+- Go dependencies updated
+- Module name changed from `github.com/tarampampam/error-pages` to `gh.tarampamp.am/error-pages`
 
 ## v2.20.0
 
