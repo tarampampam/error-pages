@@ -35,7 +35,7 @@ jobs:
 
       - name: Generate builder values
         id: values
-        run: echo "::set-output name=binary-name::error-pages-${{ matrix.os }}-${{ matrix.arch }}"
+        run: echo "binary-name=error-pages-${{ matrix.os }}-${{ matrix.arch }}" >> $GITHUB_OUTPUT
 
       - name: Build application
         env:
