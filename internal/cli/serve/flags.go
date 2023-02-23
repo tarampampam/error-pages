@@ -9,8 +9,8 @@ package serve
 //
 // 	"github.com/spf13/pflag"
 //
-// 	"github.com/tarampampam/error-pages/internal/env"
-// 	"github.com/tarampampam/error-pages/internal/options"
+// 	"gh.tarampamp.am/error-pages/internal/env"
+// 	"gh.tarampamp.am/error-pages/internal/options"
 // )
 //
 // type flags struct {

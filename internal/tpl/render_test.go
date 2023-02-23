@@ -10,7 +10,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/tarampampam/error-pages/internal/tpl"
+	"gh.tarampamp.am/error-pages/internal/tpl"
 )
 
 func Test_Render(t *testing.T) {

@@ -7,7 +7,7 @@ import (
 
 	"github.com/urfave/cli/v2"
 
-	"github.com/tarampampam/error-pages/internal/cli/shared"
+	"gh.tarampamp.am/error-pages/internal/cli/shared"
 )
 
 type checker interface {

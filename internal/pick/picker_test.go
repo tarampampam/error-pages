@@ -4,7 +4,8 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/tarampampam/error-pages/internal/pick"
+
+	"gh.tarampamp.am/error-pages/internal/pick"
 )
 
 func TestPicker_NextIndex_First(t *testing.T) {

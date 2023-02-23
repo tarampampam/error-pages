@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/urfave/cli/v2"
 
-	"github.com/tarampampam/error-pages/internal/cli/healthcheck"
+	"gh.tarampamp.am/error-pages/internal/cli/healthcheck"
 )
 
 type fakeChecker struct{ err error }

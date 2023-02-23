@@ -10,7 +10,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/tarampampam/error-pages/internal/logger"
+	"gh.tarampamp.am/error-pages/internal/logger"
 )
 
 func TestNewDebugLevelConsoleFormat(t *testing.T) {

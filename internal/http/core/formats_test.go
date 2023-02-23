@@ -4,8 +4,9 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/tarampampam/error-pages/internal/http/core"
 	"github.com/valyala/fasthttp"
+
+	"gh.tarampamp.am/error-pages/internal/http/core"
 )
 
 func TestClientWantFormat(t *testing.T) {

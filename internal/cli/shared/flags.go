@@ -3,7 +3,7 @@ package shared
 import (
 	"github.com/urfave/cli/v2"
 
-	"github.com/tarampampam/error-pages/internal/env"
+	"gh.tarampamp.am/error-pages/internal/env"
 )
 
 var ConfigFileFlag = &cli.StringFlag{ //nolint:gochecknoglobals

@@ -5,7 +5,8 @@ import (
 	"time"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/tarampampam/error-pages/internal/pick"
+
+	"gh.tarampamp.am/error-pages/internal/pick"
 )
 
 func TestStringsSlice_Pick(t *testing.T) {

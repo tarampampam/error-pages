@@ -8,9 +8,9 @@ import (
 	"github.com/urfave/cli/v2"
 	"go.uber.org/zap"
 
-	"github.com/tarampampam/error-pages/internal/cli/shared"
-	"github.com/tarampampam/error-pages/internal/config"
-	"github.com/tarampampam/error-pages/internal/tpl"
+	"gh.tarampamp.am/error-pages/internal/cli/shared"
+	"gh.tarampamp.am/error-pages/internal/config"
+	"gh.tarampamp.am/error-pages/internal/tpl"
 )
 
 type command struct {

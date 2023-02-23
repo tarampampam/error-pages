@@ -5,7 +5,8 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/tarampampam/error-pages/internal/config"
+
+	"gh.tarampamp.am/error-pages/internal/config"
 )
 
 func TestFromYaml(t *testing.T) {

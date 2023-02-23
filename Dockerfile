@@ -11,7 +11,7 @@ WORKDIR /src
 COPY . .
 
 # arguments to pass on each go tool link invocation
-ENV LDFLAGS="-s -w -X github.com/tarampampam/error-pages/internal/version.version=$APP_VERSION"
+ENV LDFLAGS="-s -w -X gh.tarampamp.am/error-pages/internal/version.version=$APP_VERSION"
 
 RUN set -x \
     && go version \

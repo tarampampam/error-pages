@@ -12,13 +12,13 @@ import (
 	"github.com/urfave/cli/v2"
 	"go.uber.org/zap"
 
-	"github.com/tarampampam/error-pages/internal/breaker"
-	"github.com/tarampampam/error-pages/internal/cli/shared"
-	"github.com/tarampampam/error-pages/internal/config"
-	"github.com/tarampampam/error-pages/internal/env"
-	appHttp "github.com/tarampampam/error-pages/internal/http"
-	"github.com/tarampampam/error-pages/internal/options"
-	"github.com/tarampampam/error-pages/internal/pick"
+	"gh.tarampamp.am/error-pages/internal/breaker"
+	"gh.tarampamp.am/error-pages/internal/cli/shared"
+	"gh.tarampamp.am/error-pages/internal/config"
+	"gh.tarampamp.am/error-pages/internal/env"
+	appHttp "gh.tarampamp.am/error-pages/internal/http"
+	"gh.tarampamp.am/error-pages/internal/options"
+	"gh.tarampamp.am/error-pages/internal/pick"
 )
 
 type command struct {

@@ -5,7 +5,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/tarampampam/error-pages/internal/cli"
+	"gh.tarampamp.am/error-pages/internal/cli"
 )
 
 func TestNewCommand(t *testing.T) {

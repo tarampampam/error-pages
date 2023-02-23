@@ -8,7 +8,8 @@ import (
 	"github.com/prometheus/client_golang/prometheus/testutil"
 	dto "github.com/prometheus/client_model/go"
 	"github.com/stretchr/testify/assert"
-	"github.com/tarampampam/error-pages/internal/metrics"
+
+	"gh.tarampamp.am/error-pages/internal/metrics"
 )
 
 func TestMetrics_Register(t *testing.T) {

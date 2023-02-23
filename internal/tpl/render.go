@@ -11,7 +11,7 @@ import (
 
 	"github.com/pkg/errors"
 
-	"github.com/tarampampam/error-pages/internal/version"
+	"gh.tarampamp.am/error-pages/internal/version"
 )
 
 // These functions are always allowed in the templates.

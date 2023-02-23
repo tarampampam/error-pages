@@ -4,7 +4,8 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/tarampampam/error-pages/internal/tpl"
+
+	"gh.tarampamp.am/error-pages/internal/tpl"
 )
 
 func TestProperties_Replaces(t *testing.T) {

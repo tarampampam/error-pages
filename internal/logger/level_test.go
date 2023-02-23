@@ -6,7 +6,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/tarampampam/error-pages/internal/logger"
+	"gh.tarampamp.am/error-pages/internal/logger"
 )
 
 func TestLevel_String(t *testing.T) {

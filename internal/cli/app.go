@@ -8,13 +8,13 @@ import (
 
 	"github.com/urfave/cli/v2"
 
-	"github.com/tarampampam/error-pages/internal/checkers"
-	"github.com/tarampampam/error-pages/internal/cli/build"
-	"github.com/tarampampam/error-pages/internal/cli/healthcheck"
-	"github.com/tarampampam/error-pages/internal/cli/serve"
-	"github.com/tarampampam/error-pages/internal/env"
-	"github.com/tarampampam/error-pages/internal/logger"
-	"github.com/tarampampam/error-pages/internal/version"
+	"gh.tarampamp.am/error-pages/internal/checkers"
+	"gh.tarampamp.am/error-pages/internal/cli/build"
+	"gh.tarampamp.am/error-pages/internal/cli/healthcheck"
+	"gh.tarampamp.am/error-pages/internal/cli/serve"
+	"gh.tarampamp.am/error-pages/internal/env"
+	"gh.tarampamp.am/error-pages/internal/logger"
+	"gh.tarampamp.am/error-pages/internal/version"
 )
 
 // NewApp creates new console application.

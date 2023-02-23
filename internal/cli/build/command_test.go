@@ -9,7 +9,7 @@ import (
 	"go.uber.org/goleak"
 	"go.uber.org/zap"
 
-	"github.com/tarampampam/error-pages/internal/cli/build"
+	"gh.tarampamp.am/error-pages/internal/cli/build"
 )
 
 func TestNewCommand(t *testing.T) {
