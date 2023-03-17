@@ -1,0 +1,31 @@
+name: lint
+
+on:
+  push:
+    branches:
+      - "v*.*.*"
+
+jobs:
+  build:
+    # Name the Job
+    name: Linter
+    # Set the agent to run on
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        with:
+          # Full git history is needed to get a proper
+          # list of changed files within `super-linter`
+          fetch-depth: 0
+
+      - name: Lint Code Base
+        uses: github/super-linter@v4
+        # with:
+        #   caCertificate: ${{ secrets.ZOE_ROOT_CA }}
+        env:
+          VALIDATE_ALL_CODEBASE: false
+          DEFAULT_BRANCH: master
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SSL_CERT_SECRET: ${{ secrets.ZOE_ROOT_CA }}

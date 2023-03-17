@@ -15,6 +15,7 @@ templates:
   - path: ./templates/app-down.html
   - path: ./templates/connection.html
   - path: ./templates/matrix.html
+  - path: ./templates/tater.html
 
 formats:
   json:
