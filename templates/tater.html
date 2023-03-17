@@ -58,14 +58,14 @@
 <div class="centered">
     <!-- Pictures provider: <https://http.cat/> -->
     <div>
-        <img src="https://zoeblan.co/images/errors-tater/tater_{{ code }}.jpg" alt="{{ message }}">
-        {{ if show_details }}
+        <center><img src="https://zoeblan.co/images/errors-tater/tater_{{ code }}.jpg" alt="{{ message }}"></center>
         <p>&nbsp;</p>
-        <h1 style="font-size:35;color:white">{{ code }}, {{ message }}</h1>
+        <center><h1 style="font-size:35;color:white">{{ code }}, {{ message }}</h1></center>
         <p>&nbsp;</p>
         <h1 style="font-size:20px;color:white">{{ description }}</h1>
         <p>&nbsp;</p>
         <p>&nbsp;</p>
+        {{ if show_details }}
         <div class="details">
             <table>
                 {{- if host }}<tr>
