@@ -69,5 +69,5 @@ jobs:
           tag: ${{ steps.vars.outputs.short_sha }}
           cache: true
           cache_registry: docker.io/${{ env.REPO }}
-          tag_with_latest: false
+          tag_with_latest: true
           strip_tag_prefix: v
