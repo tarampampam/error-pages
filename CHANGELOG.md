@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 ### Changed
 
-- Non-existing pages now returns styled `404` status page (with `404` status code) [#188]
+- Non-existing pages now return styled `404` status page (with `404` status code) [#188]
 
 [#188]:https://github.com/tarampampam/error-pages/issues/188
 
