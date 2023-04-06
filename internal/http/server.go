@@ -88,7 +88,7 @@ func (s *Server) Register(cfg *config.Config, templatePicker templatePicker, opt
 
 	s.router.GET("/metrics", metricsHandler.NewHandler(reg))
 
-	s.router.NotFound = notfoundHandler.NewHandler()
+	s.router.NotFound = notfoundHandler.NewHandler(cfg, templatePicker, s.rdr, opt)
 
 	return nil
 }
