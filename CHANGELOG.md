@@ -4,6 +4,14 @@ All notable changes to this package will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## v2.22.0
+
+### Changed
+
+- Non-existing pages now return styled `404` status page (with `404` status code) [#188]
+
+[#188]:https://github.com/tarampampam/error-pages/issues/188
+
 ## v2.21.0
 
 ### Changed

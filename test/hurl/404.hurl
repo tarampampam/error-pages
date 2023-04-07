@@ -3,5 +3,5 @@ GET http://{{ host }}:{{ port }}/not-found
 HTTP/* 404
 
 [Asserts]
-header "Content-Type" contains "text/plain"
-body contains "Wrong request URL"
+header "Content-Type" contains "text/html"
+body contains "The server can not find the requested page"
