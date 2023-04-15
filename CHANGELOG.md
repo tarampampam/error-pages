@@ -4,6 +4,15 @@ All notable changes to this package will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## v2.23.0
+
+### Added
+
+- Template `orient` [#190]
+
+[#190]:https://github.com/tarampampam/error-pages/pull/190
+
+
 ## v2.22.0
 
 ### Changed
