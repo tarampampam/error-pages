@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<!--
+    Error 503: Service Unavailable
+    Description: The server is temporarily overloading or down
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow"/>
+  <link rel="preconnect" href="https://fonts.bunny.net" crossorigin>
+  <link rel="dns-prefetch" href="https://fonts.bunny.net">
+  <link href="https://fonts.bunny.net/css?family=Nunito&display=swap" rel="stylesheet">
+  <title>Service Unavailable</title>
+  <style>
+    :root {
+      --color-bg-primary: #fff;
+      --color-text-primary: #22292f;
+      --color-text-secondary: #606f7b;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --color-bg-primary: #212121;
+        --color-text-primary: #fafafa;
+        --color-text-secondary: #9db6cb;
+      }
+    }
+
+    html, body {
+      height: 100%;
+      line-height: 1.15;
+      text-size-adjust: 100%;
+      box-sizing: border-box;
+      font-family: Nunito, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      margin: 0;
+      padding: 0;
+      background-color: var(--color-bg-primary);
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: inherit;
+      border-style: none;
+    }
+
+    p {
+      margin: 0;
+    }
+
+    main {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    main .left, main .right {
+      width: 100%;
+    }
+
+    main .left .container {
+      max-width: 30rem;
+      margin: 2rem;
+    }
+
+    main .left .container .code {
+      color: var(--color-text-primary);
+      font-size: 3rem;
+      font-weight: 900;
+    }
+
+    main .left .container .space {
+      width: 4rem;
+      height: .25rem;
+      background-color: #a779e9;
+      margin-top: .75rem;
+      margin-bottom: .75rem;
+    }
+
+    main .left .container .description {
+      color: var(--color-text-secondary);
+      font-size: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    main .right {
+      height: 100%;
+    }
+
+    main .right .container {
+      width: 100%;
+      height: 100%;
+      background-size: cover;
+      background-repeat: no-repeat;
+      /*  */
+      /* https://github.com/LaravelCollective/errors/blob/8a0cf6fb73ba0041330967d3d6a137bd4509f7bd/src/publish/svg/503.svg */
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' viewBox='0 0 1024 1024'%3E%3Cdefs%3E%3ClinearGradient id='A' x1='50.31%25' x2='50%25' y1='74.74%25' y2='0%25'%3E%3Cstop offset='0%25' stop-color='%23e26b6b'/%3E%3Cstop offset='50.28%25' stop-color='%23f5bcf4'/%3E%3Cstop offset='100%25' stop-color='%238690e1'/%3E%3C/linearGradient%3E%3ClinearGradient id='B' x1='50%25' x2='50%25' y1='0%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%238c9ce7'/%3E%3Cstop offset='100%25' stop-color='%234353a4'/%3E%3C/linearGradient%3E%3ClinearGradient id='C' x1='50%25' x2='50%25' y1='0%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23d1d9ff'/%3E%3Cstop offset='100%25' stop-color='%238395eb'/%3E%3C/linearGradient%3E%3Ccircle id='D' cx='622' cy='663' r='60'/%3E%3Cfilter id='E' width='260%25' height='260%25' x='-80%25' y='-80%25'%3E%3CfeOffset in='SourceAlpha'/%3E%3CfeGaussianBlur stdDeviation='32'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0'/%3E%3C/filter%3E%3ClinearGradient id='F' x1='49.87%25' x2='49.87%25' y1='3.62%25' y2='77.75%25'%3E%3Cstop offset='0%25' stop-color='%23b0ddf1'/%3E%3Cstop offset='100%25' stop-color='%23325c82'/%3E%3C/linearGradient%3E%3ClinearGradient id='G' x1='100%25' x2='72.45%25' y1='0%25' y2='85.2%25'%3E%3Cstop offset='0%25' stop-color='%231d3a6d'/%3E%3Cstop offset='100%25' stop-color='%23467994'/%3E%3C/linearGradient%3E%3ClinearGradient id='H' x1='49.48%25' x2='49.87%25' y1='11.66%25' y2='77.75%25'%3E%3Cstop offset='0%25' stop-color='%23b9c9f7'/%3E%3Cstop offset='100%25' stop-color='%23301863'/%3E%3C/linearGradient%3E%3ClinearGradient id='I' x1='91.59%25' x2='70.98%25' y1='5.89%25' y2='88%25'%3E%3Cstop offset='0%25' stop-color='%232d3173'/%3E%3Cstop offset='100%25' stop-color='%237f90e0'/%3E%3C/linearGradient%3E%3ClinearGradient id='J' x1='70.98%25' x2='70.98%25' y1='9.88%25' y2='88%25'%3E%3Cstop offset='0%25' stop-color='%232d3173'/%3E%3Cstop offset='100%25' stop-color='%237f90e0'/%3E%3C/linearGradient%3E%3Cpath id='K' d='M251 506a8 8 0 0 1 8 8v15l-16 1v-16a8 8 0 0 1 8-8z'/%3E%3Cpath id='L' d='M253 506.25a8 8 0 0 0-6 7.75v15.75l-4 .25v-16a8 8 0 0 1 10-7.75z'/%3E%3C/defs%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cpath fill='url(%23A)' d='M0 0h1024v1024H0z'/%3E%3Cg transform='translate(211 420)'%3E%3Cpath fill='%238c9ce7' d='M65 0a2 2 0 0 1 2 2v23h-4V2c0-1.1.9-2 2-2z'/%3E%3Cpath fill='%235263b8' d='M64 24h2a3 3 0 0 1 3 3v2h-8v-2a3 3 0 0 1 3-3z'/%3E%3Cpath fill='url(%23B)' d='M65 108h40V68a40 40 0 1 0-80 0v40h40z'/%3E%3Cpath fill='%232e3d87' d='M0 118l30-6v106H0z'/%3E%3Cpath fill='%23301862' d='M60 118l-30-6v106h30z'/%3E%3Cpath fill='url(%23C)' d='M45 107V68a40.02 40.02 0 0 1 30.03-38.75C92.27 33.65 105 49.11 105 67.5V107H45z'/%3E%3Cpath fill='%234353a4' d='M15 78l50-10 2 2v108H15z'/%3E%3Cpath fill='%238c9ce7' d='M115 78L65 68v2 108h50z'/%3E%3Cpath fill='%234353a4' d='M75 118l30-6v106H75z'/%3E%3Cpath fill='%238c9ce7' d='M135 118l-30-6v106h30z'/%3E%3C/g%3E%3Cuse fill='%23000' filter='url(%23E)' xlink:href='%23D'/%3E%3Cuse fill='%23fff' xlink:href='%23D'/%3E%3Cg transform='translate(146 245)'%3E%3Cpath fill='url(%23F)' d='M169.12 450.57C192.22 464.04 143.85 532.52 24 656h649L169.12 450.57z'/%3E%3Cpath fill='url(%23G)' d='M178.5 538.5C137.83 567.17 199.67 606.33 364 656H0l178.5-117.5z'/%3E%3C/g%3E%3Cpath fill='url(%23H)' d='M1024 940H0V655.08C77.3 621.4 155.26 585 297.4 585c250 0 250.76 125.25 500 125 84.03-.08 160.02-18.2 226.6-40.93V940z'/%3E%3Cuse xlink:href='%23K' fill='%231f2a68'/%3E%3Cuse xlink:href='%23L' fill='%237c8cda'/%3E%3Cuse xlink:href='%23K' y='40' fill='%231f2a68'/%3E%3Cuse xlink:href='%23L' y='40' fill='%237c8cda'/%3E%3Cpath fill='%235263b8' d='M301 506a8 8 0 0 1 8 8v16l-16-1v-15a8 8 0 0 1 8-8z'/%3E%3Cpath fill='%23293781' d='M305 529.75V514a8 8 0 0 0-6-7.75 8.01 8.01 0 0 1 10 7.75v16l-4-.25z'/%3E%3Cg transform='translate(0 636)'%3E%3Cpath fill='url(%23H)' d='M1024 356H0V185.82c137.51-15.4 203.1-50.49 356.67-60.1C555.24 113.3 606.71.59 856.74.59 929.52.58 981.18 11.2 1024 26.26V356z'/%3E%3Cg fill='url(%23I)'%3E%3Cpath d='M1024 26.21V326H856.91c99.31-86.5 112.63-140.75 39.97-162.78C710.24 106.64 795.12.58 856.9.58c72.7 0 124.3 10.6 167.09 25.63z'/%3E%3Cpath d='M1024 199.32V326H857c99.31-86.6 112.63-140.94 39.97-163L1024 199.32z'/%3E%3C/g%3E%3C/g%3E%3Cg fill='%23fff'%3E%3Ccircle cx='566' cy='599' r='110' opacity='.1'/%3E%3Ccircle cx='669' cy='539' r='60' opacity='.1'/%3E%3C/g%3E%3Cg transform='translate(0 705)'%3E%3Cpath fill='url(%23H)' d='M0 319V68.93C67.12 35.69 129.55 0 263 0c250 0 331.46 162.6 530 175 107.42 6.71 163-26.77 231-58.92V319H0z'/%3E%3Cpath fill='url(%23I)' d='M353.02 319H0V68.93C67.12 35.69 129.55 0 263 0c71.14 0 151.5 12.76 151.5 70.5 0 54.5-45.5 79.72-112.5 109-82.26 35.95-54.57 111.68 51.02 139.5z'/%3E%3Cpath fill='url(%23J)' d='M353.02 319H0v-14.8l302-124.7c-82.26 35.95-54.57 111.68 51.02 139.5z'/%3E%3C/g%3E%3Cg fill='%23fff'%3E%3Ccircle cx='414' cy='799' r='70' opacity='.1'/%3E%3Ccircle cx='479' cy='745' r='30' opacity='.1'/%3E%3Cg opacity='.15'%3E%3Cpath d='M603.67 345.48a9.46 9.46 0 0 1 13.33 0 9.46 9.46 0 0 0 13.33 0l13.33-13.24c11.07-10.988 28.93-10.988 40 0l10 9.93c5.536 5.491 14.464 5.491 20 0s14.464-5.491 20 0l.6.6a31.8 31.8 0 0 1 9.4 22.56H597v-3.84c0-6.01 2.4-11.78 6.67-16.01zM800 222.25c11.07-11 28.93-11 40 0l10 9.94c5.534 5.497 14.466 5.497 20 0s14.466-5.497 20 0a16.36 16.36 0 0 0 21.3 1.5l8.7-6.47c11.867-8.844 28.133-8.844 40 0l4.06 3.03A39.6 39.6 0 0 1 980 262H780c0-12.72 8.93-28.75 20-39.75zM63.1 289.14l.9-.9c8.302-8.242 21.698-8.242 30 0s21.698 8.242 30 0l10-9.93c13.835-13.739 36.165-13.739 50 0l15 14.9c5.536 5.491 14.464 5.491 20 0s14.464-5.491 20 0a33.84 33.84 0 0 1 10 24.02V323H49c0-12.71 5.07-24.9 14.1-33.86z'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+      /*  */
+    }
+
+    /*  */
+
+    @media (min-width: 768px) {
+      main {
+        flex-direction: row;
+      }
+
+      main .left, main .right {
+        width: 50%;
+      }
+
+      main .left {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      main .left .container .code {
+        font-size: 9rem;
+      }
+
+      main .left .container .space {
+        margin-top: 1.5rem;
+        margin-bottom: 1.5rem;
+      }
+
+      main .left .container .description {
+        font-size: 1.875rem;
+        font-weight: 300;
+        line-height: 1.5;
+      }
+
+      main .right {
+        display: flex;
+        padding-bottom: 0;
+        min-height: 100vh;
+      }
+
+      main .right .container {
+        background-position: left;
+      }
+    }
+
+    @media (min-width: 992px) {
+      main .right .container {
+        background-position: center;
+      }
+    }
+  </style>
+</head>
+<body>
+<main>
+  <div class="left">
+    <div class="container">
+      <div class="code">503</div>
+      <div class="space"></div>
+      <p class="description" data-l10n>The server is temporarily overloading or down</p>
+      <!--  -->
+    </div>
+  </div>
+  <div class="right">
+    <div class="container"></div>
+  </div>
+</main>
+
+<script>
+  // 
+  if (navigator.language.substring(0, 2).toLowerCase() !== 'en') {
+    ((s, p) => { // localize the page (details here - https://github.com/tarampampam/error-pages/tree/master/l10n)
+      s.src = 'https://cdn.jsdelivr.net/gh/tarampampam/error-pages@2/l10n/l10n.min.js'; // '../l10n/l10n.js';
+      s.async = s.defer = true;
+      s.addEventListener('load', () => p.removeChild(s));
+      p.appendChild(s);
+    })(document.createElement('script'), document.body);
+  }
+  // 
+</script>
+</body>
+<!--
+    Error 503: Service Unavailable
+    Description: The server is temporarily overloading or down
+-->
+</html>
