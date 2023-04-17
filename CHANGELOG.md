@@ -12,7 +12,6 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 [#190]:https://github.com/tarampampam/error-pages/pull/190
 
-
 ## v2.22.0
 
 ### Changed
