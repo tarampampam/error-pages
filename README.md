@@ -123,6 +123,7 @@ Transfer/sec:    140.23MB
 |    `app-down`     |           [![app-down][app-down-screen]][app-down-link]            |
 |   `connection`    |        [![connection][connection-screen]][connection-link]         |
 |     `matrix`      |              [![matrix][matrix-screen]][matrix-link]               |
+|     `orient`      |              [![orient][orient-screen]][orient-link]               |
 
 > Note: `noise` template highly uses the CPU, be careful
 
@@ -148,6 +149,8 @@ Transfer/sec:    140.23MB
 [connection-link]:https://tarampampam.github.io/error-pages/connection/404.html
 [matrix-screen]:https://hsto.org/webt/ng/tf/oi/ngtfoiolvmq6hf15kimcxmhprhk.gif
 [matrix-link]:https://tarampampam.github.io/error-pages/matrix/404.html
+[orient-screen]:https://hsto.org/webt/pz/eu/v_/pzeuv_lyeqr0xpusa4zfrtgk7sa.png
+[orient-link]:https://tarampampam.github.io/error-pages/orient/404.html
 
 ## 🦾 Contributors
 
