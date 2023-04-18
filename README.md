@@ -12,7 +12,10 @@
   <a href="https://github.com/tarampampam/error-pages/blob/master/LICENSE"><img src="https://img.shields.io/github/license/tarampampam/error-pages.svg?maxAge=30&style=flat-square" alt="" /></a>
 </p>
 
-<p align="center"><sup>22 feb. 2022 - ⚡ Our Docker image was downloaded <strong>one MILLION times</strong> from the docker hub! ⚡</sup></p>
+<p align="center"><sup>
+  22 feb. 2022 - ⚡ Our Docker image was downloaded <strong>one MILLION times</strong> from the docker hub! ⚡<br/>
+  10 apr. 2023 - ⚡ <strong>Two million times</strong> from the docker hub and <strong>one million</strong> from the ghcr! ⚡
+</sup></p>
 
 One day you may want to replace the standard error pages of your HTTP server with something more original and pretty. That's what this repository was created for :) It contains:
 
