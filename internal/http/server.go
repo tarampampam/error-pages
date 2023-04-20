@@ -1,7 +1,10 @@
 package http
 
 import (
+	"errors"
+	"net"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/fasthttp/router"
@@ -57,8 +60,27 @@ func NewServer(log *zap.Logger) Server {
 }
 
 // Start server.
-func (s *Server) Start(ip string, port uint16) error {
-	return s.fast.ListenAndServe(ip + ":" + strconv.Itoa(int(port)))
+func (s *Server) Start(ip string, port uint16) (err error) {
+	if net.ParseIP(ip) == nil {
+		return errors.New("invalid IP address")
+	}
+
+	var (
+		ln   net.Listener
+		addr = ip + ":" + strconv.Itoa(int(port))
+	)
+
+	if strings.Count(ip, ":") >= 2 { // ipv6
+		if ln, err = net.Listen("tcp6", addr); err != nil {
+			return err
+		}
+	} else { // ipv4
+		if ln, err = net.Listen("tcp4", addr); err != nil {
+			return err
+		}
+	}
+
+	return s.fast.Serve(ln)
 }
 
 type templatePicker interface {
