@@ -17,7 +17,7 @@ var ConfigFileFlag = &cli.StringFlag{ //nolint:gochecknoglobals
 var ListenAddrFlag = &cli.StringFlag{ //nolint:gochecknoglobals
 	Name:    "listen",
 	Aliases: []string{"l"},
-	Usage:   "IP address to Listen on",
+	Usage:   "IP (v4 or v6) address to Listen on",
 	Value:   "0.0.0.0",
 	EnvVars: []string{env.ListenAddr.String()},
 }
