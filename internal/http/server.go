@@ -70,7 +70,7 @@ func (s *Server) Start(ip string, port uint16) (err error) {
 		addr = ip + ":" + strconv.Itoa(int(port))
 	)
 
-	if strings.Count(ip, ":") >= 2 { // ipv6
+	if strings.Count(ip, ":") >= 2 { //nolint:gomnd // ipv6
 		if ln, err = net.Listen("tcp6", addr); err != nil {
 			return err
 		}
