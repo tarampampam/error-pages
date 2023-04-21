@@ -2,8 +2,8 @@ package http
 
 import (
 	"errors"
+	"fmt"
 	"net"
-	"strconv"
 	"strings"
 	"time"
 
@@ -65,17 +65,14 @@ func (s *Server) Start(ip string, port uint16) (err error) {
 		return errors.New("invalid IP address")
 	}
 
-	var (
-		ln   net.Listener
-		addr = ip + ":" + strconv.Itoa(int(port))
-	)
+	var ln net.Listener
 
 	if strings.Count(ip, ":") >= 2 { //nolint:gomnd // ipv6
-		if ln, err = net.Listen("tcp6", addr); err != nil {
+		if ln, err = net.Listen("tcp6", fmt.Sprintf("[%s]:%d", ip, port)); err != nil {
 			return err
 		}
 	} else { // ipv4
-		if ln, err = net.Listen("tcp4", addr); err != nil {
+		if ln, err = net.Listen("tcp4", fmt.Sprintf("%s:%d", ip, port)); err != nil {
 			return err
 		}
 	}
