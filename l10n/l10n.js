@@ -546,7 +546,7 @@ Object.defineProperty(window, 'l10n', {
             'Ingress name': {
                 fr: 'Nom ingress',
                 ru: 'Имя Ingress',
-                uk: 'Ім\'я Ingress',
+                uk: 'Ім\'я входу',
                 pt: 'Nome Ingress',
                 nl: 'Ingress naam',
                 de: 'Ingress Name',
@@ -586,7 +586,7 @@ Object.defineProperty(window, 'l10n', {
             'Timestamp': {
                 fr: 'Horodatage',
                 ru: 'Временная метка',
-                uk: 'Тимчасова мітка',
+                uk: 'Мітка часу',
                 pt: 'Timestamp',
                 nl: 'Tijdstempel',
                 de: 'Zeitstempel',
@@ -628,7 +628,7 @@ Object.defineProperty(window, 'l10n', {
             'Network': {
                 fr: 'Réseau',
                 ru: 'Сеть',
-                uk: 'Сіть',
+                uk: 'Мережа',
                 pt: 'Rede',
                 nl: 'Netwerk',
                 de: 'Netzwerk',
@@ -638,7 +638,7 @@ Object.defineProperty(window, 'l10n', {
             'Web Server': {
                 fr: 'Serveur Web',
                 ru: 'Web Сервер',
-                uk: 'Web Сервер',
+                uk: 'Web-сервер',
                 pt: 'Servidor web',
                 nl: 'Web Server',
                 de: 'Webserver',
