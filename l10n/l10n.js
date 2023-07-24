@@ -25,7 +25,7 @@ Object.defineProperty(window, 'l10n', {
             'UH OH': {
                 fr: 'Oups',
                 ru: 'Ох',
-                uk: 'Ох',
+                uk: 'Упс',
                 pt: 'Ops',
                 nl: 'Oeps',
                 de: 'Hoppla',
@@ -55,7 +55,7 @@ Object.defineProperty(window, 'l10n', {
             'Alternatively, go back': {
                 fr: 'Essayer de revenir en arrière',
                 ru: 'Или можете вернуться назад',
-                uk: 'Або ви можете повернутися',
+                uk: 'Або можете повернутися назад',
                 pt: "Como alternativa, tente voltar",
                 nl: 'Of ga terug',
                 de: 'Alternativ gehen Sie zurück',
@@ -65,7 +65,7 @@ Object.defineProperty(window, 'l10n', {
             'Here\'s what might have happened': {
                 fr: 'Voici ce qui aurait pu se passer',
                 ru: 'Из-за чего это могло случиться',
-                uk: 'Що це може статися',
+                uk: 'Ось що могло трапитися',
                 pt: 'Aqui está o que pode ter acontecido',
                 nl: 'Wat er gebeurd kan zijn',
                 de: 'Folgendes könnte passiert sein',
@@ -75,7 +75,7 @@ Object.defineProperty(window, 'l10n', {
             'You may have mistyped the URL': {
                 fr: 'Vous avez peut-être mal tapé l’URL',
                 ru: 'Вы могли ошибиться в URL',
-                uk: 'Ви можете зробити помилку в URL-адресі',
+                uk: 'Ви могли помилитися в URL-адресі',
                 pt: 'Você pode ter digitado incorretamente a URL',
                 nl: 'De URL bevat een typefout',
                 de: 'Möglicherweise haben Sie die URL falsch eingegeben',
@@ -105,7 +105,7 @@ Object.defineProperty(window, 'l10n', {
             'Bad Request': {
                 fr: 'Mauvaise requête',
                 ru: 'Некорректный запрос',
-                uk: 'Неправильний запит',
+                uk: 'Хибний запит',
                 pt: 'Requisição inválida',
                 nl: 'Foutieve anvraag',
                 de: 'Fehlerhafte Anfrage',
@@ -115,7 +115,7 @@ Object.defineProperty(window, 'l10n', {
             'The server did not understand the request': {
                 fr: 'Le serveur ne comprend pas la requête',
                 ru: 'Сервер не смог обработать запрос из-за ошибки в нём',
-                uk: 'Сервер не міг обробити запит через помилку в ньому',
+                uk: 'Сервер не зміг обробити запит через помилку в ньому',
                 pt: 'O servidor não entendeu a solicitação',
                 nl: 'De server begreep het verzoek niet',
                 de: 'Der Server hat die Anfrage nicht verstanden',
@@ -165,7 +165,7 @@ Object.defineProperty(window, 'l10n', {
             'Not Found': {
                 fr: 'Introuvable',
                 ru: 'Страница не найдена',
-                uk: 'Сторінка не знайдена',
+                uk: 'Сторінку не знайдено',
                 pt: 'Não encontrado',
                 nl: 'Niet gevonden',
                 de: 'Nicht gefunden',
@@ -175,7 +175,7 @@ Object.defineProperty(window, 'l10n', {
             'The server can not find the requested page': {
                 fr: 'Le serveur ne peut trouver la page demandée',
                 ru: 'Сервер не смог найти запрашиваемую страницу',
-                uk: 'Сервер не міг знайти запитану сторінку',
+                uk: 'Сервер не зміг знайти запитану сторінку',
                 pt: 'O servidor não consegue encontrar a página solicitada',
                 nl: 'De server kan de pagina niet vinden',
                 de: 'Der Server kann die angeforderte Seite nicht finden',
@@ -225,7 +225,7 @@ Object.defineProperty(window, 'l10n', {
             'Request Timeout': {
                 fr: 'Requête expiré',
                 ru: 'Истекло время ожидания',
-                uk: 'Час запиту закінчився',
+                uk: 'Вичерпано час очікування',
                 pt: 'Tempo limite de solicitação excedido',
                 nl: 'Aanvraagtijd verstreken',
                 de: 'Zeitüberschreitung der Anforderung',
@@ -235,7 +235,7 @@ Object.defineProperty(window, 'l10n', {
             'The request took longer than the server was prepared to wait': {
                 fr: 'La requête prend plus de temps que prévu',
                 ru: 'Отправка запроса заняла слишком много времени',
-                uk: 'Надсилання запиту зайняв занадто багато часу',
+                uk: 'Надсилання запиту зайняло надто багато часу',
                 pt: 'A solicitação demorou mais do que o servidor estava preparado para esperar',
                 nl: 'Het verzoek duurde langer dan de server wilde wachten',
                 de: 'Die Anfrage hat länger gedauert, als der Server bereit war zu warten',
@@ -275,7 +275,7 @@ Object.defineProperty(window, 'l10n', {
             'The requested page is no longer available': {
                 fr: 'La page demandée n’est plus disponible',
                 ru: 'Запрошенная страница была удалена',
-                uk: 'Запитана сторінка була видалена',
+                uk: 'Запитувана сторінка більше не доступна',
                 pt: 'A página solicitada não está mais disponível',
                 nl: 'De pagina is niet langer beschikbaar',
                 de: 'Die angeforderte Seite ist nicht mehr verfügbar',
@@ -285,7 +285,7 @@ Object.defineProperty(window, 'l10n', {
             'Length Required': {
                 fr: 'Longueur requise',
                 ru: 'Необходима длина',
-                uk: 'Потрібно вказати розмір',
+                uk: 'Потрібно вказати довжину',
                 pt: 'Content-Length necessário',
                 nl: 'Lengte benodigd',
                 de: 'Länge benötigt',
@@ -315,7 +315,7 @@ Object.defineProperty(window, 'l10n', {
             'The pre condition given in the request evaluated to false by the server': {
                 fr: 'La précondition donnée dans la requête a été évaluée comme étant fausse par le serveur',
                 ru: 'Ни одно из условных полей заголовка запроса не было выполнено',
-                uk: 'Жодна з умовних полів заголовка запиту не була виконана',
+                uk: 'Жодна з передумов запиту не була виконана',
                 pt: 'A pré-condição dada na solicitação avaliada como falsa pelo servidor',
                 nl: 'De vooraf gestelde voorwaarde is afgewezen door de server',
                 de: 'Die in der Anfrage angegebene Vorbedingung wird vom Server als falsch bewertet',
@@ -355,7 +355,7 @@ Object.defineProperty(window, 'l10n', {
             'The requested byte range is not available and is out of bounds': {
                 fr: 'Le byte range demandé n’est pas disponible et est hors des limites',
                 ru: 'Запрошенный диапазон данных недоступен или вне допустимых пределов',
-                uk: 'Описаний діапазон даних недоступний або з допустимих меж',
+                uk: 'Описаний діапазон даних недоступний або поза допустимими межами',
                 pt: 'O intervalo de bytes solicitado não está disponível e está fora dos limites',
                 nl: 'De aangevraagde bytes zijn buiten het limiet',
                 de: 'Der angefragte Teilbereich der Ressource existiert nicht oder ist ungültig',
@@ -375,7 +375,7 @@ Object.defineProperty(window, 'l10n', {
             'Attempt to brew coffee with a teapot is not supported': {
                 fr: 'Tenter de préparer du café avec une théière n’est pas pris en charge',
                 ru: 'Попытка заварить кофе в чайнике обречена на фиаско',
-                uk: 'Спроба виварити каву в чайник приречена на фіаско',
+                uk: 'Спроба заварити каву в чайнику приречена на фіаско',
                 pt: 'A tentativa de preparar café com um bule não é suportada',
                 nl: 'Koffie maken met een theepot is niet ondersteund',
                 de: 'Der Versuch, Kaffee mit einer Teekanne zuzubereiten, wird nicht unterstützt',
@@ -395,7 +395,7 @@ Object.defineProperty(window, 'l10n', {
             'Too many requests in a given amount of time': {
                 fr: 'Trop de requêtes dans un délai donné',
                 ru: 'Отправлено слишком много запросов за короткое время',
-                uk: 'Надіслано занадто багато запитів на короткий час',
+                uk: 'Надіслано занадто багато запитів за короткий проміжок час',
                 pt: 'Excesso de solicitações em um determinado período de tempo',
                 nl: 'Te veel verzoeken binnen een bepaalde tijd',
                 de: 'Der Client hat zu viele Anfragen in einem bestimmten Zeitraum gesendet',
@@ -415,7 +415,7 @@ Object.defineProperty(window, 'l10n', {
             'The server met an unexpected condition': {
                 fr: 'Le serveur a rencontré une condition inattendue',
                 ru: 'Произошло что-то неожиданное на сервере',
-                uk: 'На сервері було щось несподіване',
+                uk: 'На сервері відбулось щось неочікуване',
                 pt: 'O servidor encontrou uma condição inesperada',
                 nl: 'De server ondervond een onverwachte conditie',
                 de: 'Der Server hat einen internen Fehler festgestellt',
@@ -435,7 +435,7 @@ Object.defineProperty(window, 'l10n', {
             'The server received an invalid response from the upstream server': {
                 fr: 'Le serveur a reçu une réponse invalide du serveur distant',
                 ru: 'Сервер получил некорректный ответ от вышестоящего сервера',
-                uk: 'Сервер отримав неправильну відповідь з сервера Upstream',
+                uk: 'Сервер отримав невірну відповідь від попереднього сервера',
                 pt: 'O servidor recebeu uma resposta inválida do servidor upstream',
                 nl: 'De server ontving een ongeldig antwoord van een bovenliggende server',
                 de: 'Der Server hat eine ungültige Antwort vom Upstream-Server erhalten',
@@ -475,7 +475,7 @@ Object.defineProperty(window, 'l10n', {
             'The gateway has timed out': {
                 fr: 'Le temps d’attente de la passerelle est dépassé',
                 ru: 'Сервер не дождался ответа от вышестоящего сервера',
-                uk: 'Сервер не чекав відповіді від сервера Upstream',
+                uk: 'У шлюзу закінчився час очікування',
                 pt: 'O gateway esgotou o tempo limite',
                 nl: 'De verbinding naar de bovenliggende server is verlopen',
                 de: 'Das Zeitlimit für den Verbindungsaufbau mit dem Upstream-Server ist abgelaufen',
@@ -546,7 +546,7 @@ Object.defineProperty(window, 'l10n', {
             'Ingress name': {
                 fr: 'Nom ingress',
                 ru: 'Имя Ingress',
-                uk: 'Ім\'я Ingress',
+                uk: 'Ім\'я входу',
                 pt: 'Nome Ingress',
                 nl: 'Ingress naam',
                 de: 'Ingress Name',
@@ -586,7 +586,7 @@ Object.defineProperty(window, 'l10n', {
             'Timestamp': {
                 fr: 'Horodatage',
                 ru: 'Временная метка',
-                uk: 'Тимчасова мітка',
+                uk: 'Мітка часу',
                 pt: 'Timestamp',
                 nl: 'Tijdstempel',
                 de: 'Zeitstempel',
@@ -628,7 +628,7 @@ Object.defineProperty(window, 'l10n', {
             'Network': {
                 fr: 'Réseau',
                 ru: 'Сеть',
-                uk: 'Сіть',
+                uk: 'Мережа',
                 pt: 'Rede',
                 nl: 'Netwerk',
                 de: 'Netzwerk',
@@ -638,7 +638,7 @@ Object.defineProperty(window, 'l10n', {
             'Web Server': {
                 fr: 'Serveur Web',
                 ru: 'Web Сервер',
-                uk: 'Web Сервер',
+                uk: 'Web-сервер',
                 pt: 'Servidor web',
                 nl: 'Web Server',
                 de: 'Webserver',
