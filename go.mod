@@ -4,7 +4,7 @@ go 1.20
 
 require (
 	github.com/a8m/envsubst v1.4.2
-	github.com/fasthttp/router v1.4.19
+	github.com/fasthttp/router v1.4.20
 	github.com/fatih/color v1.15.0
 	github.com/kami-zh/go-capturer v0.0.0-20171211120116-e492ea43421d
 	github.com/pkg/errors v0.9.1
