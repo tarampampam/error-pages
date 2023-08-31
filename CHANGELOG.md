@@ -4,11 +4,13 @@ All notable changes to this package will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
-## Unreleased
+## UNRELEASED
 
 ### Added
 
-- Added possibility catch all paths with error page 404 (using `--catch-all` flag for the `serve` or environment variable `CATCH_ALL=true`)
+- Added possibility catch all paths with error page 404 (using `--catch-all` flag for the `serve` or environment variable `CATCH_ALL=true`) [#217]
+
+[#217]:https://github.com/tarampampam/error-pages/issues/217
 
 ## v2.24.0
 
