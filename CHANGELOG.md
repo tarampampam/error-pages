@@ -8,8 +8,10 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 ### Added
 
-- Added possibility catch all paths with error page 404 (using `--catch-all` flag for the `serve` or environment variable `CATCH_ALL=true`) [#217]
+- Error pages now translated into 🇮🇩 [#218]
+- Possibility catch all paths with error page 404 (using `--catch-all` flag for the `serve` or environment variable `CATCH_ALL=true`) [#217]
 
+[#218]:https://github.com/tarampampam/error-pages/pull/218
 [#217]:https://github.com/tarampampam/error-pages/issues/217
 
 ## v2.24.0
