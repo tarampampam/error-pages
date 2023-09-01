@@ -297,7 +297,7 @@ Object.defineProperty(window, 'l10n', {
                 de: 'Verschwunden',
                 es: 'Eliminado',
                 zh: '已移除',
-                id: 'Menghilang",
+                id: 'Menghilang',
             },
             'The requested page is no longer available': {
                 fr: 'La page demandée n’est plus disponible',
