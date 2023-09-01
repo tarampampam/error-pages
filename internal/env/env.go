@@ -18,6 +18,7 @@ const (
 	ShowDetails      envVariable = "SHOW_DETAILS"       // show request details in response
 	ProxyHTTPHeaders envVariable = "PROXY_HTTP_HEADERS" // proxy HTTP request headers list (request -> response)
 	DisableL10n      envVariable = "DISABLE_L10N"       // disable pages localization
+	CatchAll         envVariable = "CATCH_ALL"          // catch all pages
 )
 
 // String returns environment variable name in the string representation.
