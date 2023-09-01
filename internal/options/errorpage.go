@@ -13,4 +13,5 @@ type ErrorPage struct {
 	}
 	ShowDetails      bool     // show request details in response
 	ProxyHTTPHeaders []string // proxy HTTP request headers list
+	CatchAll         bool     // catch all pages
 }

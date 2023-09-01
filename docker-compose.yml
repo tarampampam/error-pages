@@ -25,7 +25,7 @@ services:
     <<: *app-service
     ports:
       - "8080:8080/tcp" # Open <http://127.0.0.1:8080>
-    command: sh -c "go build -buildvcs=false -o /tmp/app ./cmd/error-pages && /tmp/app serve --show-details --proxy-headers=X-Foo,Bar,Baz_blah"
+    command: sh -c "go build -buildvcs=false -o /tmp/app ./cmd/error-pages && /tmp/app serve --show-details --proxy-headers=X-Foo,Bar,Baz_blah --catch-all"
     healthcheck:
       test: ['CMD', '/tmp/app', '--log-json', 'healthcheck']
       interval: 4s

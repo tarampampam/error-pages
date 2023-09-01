@@ -32,6 +32,7 @@ const (
 	showDetailsFlagName      = "show-details"
 	proxyHTTPHeadersFlagName = "proxy-headers"
 	disableL10nFlagName      = "disable-l10n"
+	catchAllFlagName         = "catch-all"
 )
 
 const (
@@ -76,6 +77,7 @@ func NewCommand(log *zap.Logger) *cli.Command { //nolint:funlen
 				o.Default.PageCode = c.String(defaultErrorPageFlagName)
 				o.Default.HTTPCode = uint16(c.Uint(defaultHTTPCodeFlagName))
 				o.ShowDetails = c.Bool(showDetailsFlagName)
+				o.CatchAll = c.Bool(catchAllFlagName)
 
 				if headers := c.String(proxyHTTPHeadersFlagName); headers != "" { //nolint:nestif
 					var m = make(map[string]struct{})
@@ -150,6 +152,11 @@ func NewCommand(log *zap.Logger) *cli.Command { //nolint:funlen
 				Name:    disableL10nFlagName,
 				Usage:   "disable error pages localization",
 				EnvVars: []string{env.DisableL10n.String()},
+			},
+			&cli.BoolFlag{
+				Name:    catchAllFlagName,
+				Usage:   "catch all pages",
+				EnvVars: []string{env.CatchAll.String()},
 			},
 		},
 	}
@@ -240,6 +247,7 @@ func (cmd *command) Run( //nolint:funlen
 			zap.Strings("proxy headers", opt.ProxyHTTPHeaders),
 			zap.Bool("show request details", opt.ShowDetails),
 			zap.Bool("localization disabled", opt.L10n.Disabled),
+			zap.Bool("catch all enabled", opt.CatchAll),
 		)
 
 		if err := server.Start(ip, port); err != nil {
