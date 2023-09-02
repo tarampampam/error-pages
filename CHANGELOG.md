@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 ### Added
 
+- Go updated from `1.20` up to `1.21`
 - Error pages now translated into 🇮🇩 [#218]
 - Possibility catch all paths with error page 404 (using `--catch-all` flag for the `serve` or environment variable `CATCH_ALL=true`) [#217]
 
