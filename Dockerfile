@@ -1,7 +1,17 @@
-# syntax=docker/dockerfile:1.2
+# syntax=docker/dockerfile:1
 
-# Image page: <https://hub.docker.com/_/golang>
-FROM golang:1.21-alpine as builder
+# this stage is used to build the application
+FROM golang:1.21-bullseye as builder
+
+COPY ./go.* /src/
+
+WORKDIR /src
+
+# burn the modules cache
+RUN go mod download
+
+# this stage is used to compile the application
+FROM builder AS compiler
 
 # can be passed with any prefix (like `v1.2.3@GITHASH`), e.g.: `docker build --build-arg "APP_VERSION=v1.2.3@GITHASH" .`
 ARG APP_VERSION="undefined@docker"
@@ -13,8 +23,8 @@ COPY . .
 # arguments to pass on each go tool link invocation
 ENV LDFLAGS="-s -w -X gh.tarampamp.am/error-pages/internal/version.version=$APP_VERSION"
 
+# build the application
 RUN set -x \
-    && go version \
     && CGO_ENABLED=0 go build -trimpath -ldflags "$LDFLAGS" -o ./error-pages ./cmd/error-pages/ \
     && ./error-pages --version \
     && ./error-pages -h

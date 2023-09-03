@@ -8,9 +8,8 @@ volumes:
   golint-cache: {}
 
 services:
-  app: &app-service
-    image: golang:1.21-buster # Image page: <https://hub.docker.com/_/golang>
-    working_dir: /src
+  app: &go
+    build: {target: builder}
     environment:
       HOME: /tmp
       GOPATH: /tmp
@@ -22,7 +21,7 @@ services:
     security_opt: [no-new-privileges:true]
 
   web:
-    <<: *app-service
+    <<: *go
     ports:
       - "8080:8080/tcp" # Open <http://127.0.0.1:8080>
     command: sh -c "go build -buildvcs=false -o /tmp/app ./cmd/error-pages && /tmp/app serve --show-details --proxy-headers=X-Foo,Bar,Baz_blah --catch-all"
