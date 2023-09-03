@@ -1,7 +1,7 @@
 package shared
 
 import (
-	"github.com/urfave/cli/v2"
+	"github.com/urfave/cli/v3"
 
 	"gh.tarampamp.am/error-pages/internal/env"
 )
@@ -11,7 +11,7 @@ var ConfigFileFlag = &cli.StringFlag{ //nolint:gochecknoglobals
 	Aliases: []string{"c"},
 	Usage:   "path to the config file (yaml)",
 	Value:   "./error-pages.yml",
-	EnvVars: []string{env.ConfigFilePath.String()},
+	Sources: cli.EnvVars(env.ConfigFilePath.String()),
 }
 
 var ListenAddrFlag = &cli.StringFlag{ //nolint:gochecknoglobals
@@ -19,7 +19,7 @@ var ListenAddrFlag = &cli.StringFlag{ //nolint:gochecknoglobals
 	Aliases: []string{"l"},
 	Usage:   "IP (v4 or v6) address to Listen on",
 	Value:   "0.0.0.0",
-	EnvVars: []string{env.ListenAddr.String()},
+	Sources: cli.EnvVars(env.ListenAddr.String()),
 }
 
 var ListenPortFlag = &cli.UintFlag{ //nolint:gochecknoglobals
@@ -27,5 +27,5 @@ var ListenPortFlag = &cli.UintFlag{ //nolint:gochecknoglobals
 	Aliases: []string{"p"},
 	Usage:   "TCP port number",
 	Value:   8080, //nolint:gomnd
-	EnvVars: []string{env.ListenPort.String()},
+	Sources: cli.EnvVars(env.ListenPort.String()),
 }

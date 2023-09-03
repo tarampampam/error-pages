@@ -1,6 +1,7 @@
 package cli_test
 
 import (
+	"context"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -15,5 +16,5 @@ func TestNewCommand(t *testing.T) {
 
 	assert.NotEmpty(t, app.Flags)
 
-	assert.NoError(t, app.Run([]string{"", "--log-level", "debug", "--log-format", "json"}))
+	assert.NoError(t, app.Run(context.Background(), []string{"", "--log-level", "debug", "--log-format", "json"}))
 }

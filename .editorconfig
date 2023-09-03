@@ -10,5 +10,5 @@ indent_style = space
 indent_size = 2
 trim_trailing_whitespace = true
 
-[{Makefile, go.mod, *.go}]
+[{Makefile,go.mod,*.go}]
 indent_style = tab

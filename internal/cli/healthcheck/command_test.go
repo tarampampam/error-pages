@@ -1,12 +1,11 @@
 package healthcheck_test
 
 import (
+	"context"
 	"errors"
-	"flag"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/urfave/cli/v2"
 
 	"gh.tarampamp.am/error-pages/internal/cli/healthcheck"
 )
@@ -26,22 +25,19 @@ func TestProperties(t *testing.T) {
 func TestCommandRun(t *testing.T) {
 	cmd := healthcheck.NewCommand(&fakeChecker{err: nil})
 
-	assert.NoError(t, cmd.Run(cli.NewContext(cli.NewApp(), &flag.FlagSet{}, nil)))
+	assert.NoError(t, cmd.Run(context.Background(), []string{}))
 }
 
 func TestCommandRunFailed(t *testing.T) {
 	cmd := healthcheck.NewCommand(&fakeChecker{err: errors.New("foo err")})
 
-	assert.ErrorContains(t, cmd.Run(cli.NewContext(cli.NewApp(), &flag.FlagSet{}, nil)), "foo err")
+	assert.ErrorContains(t, cmd.Run(context.Background(), []string{}), "foo err")
 }
 
 func TestPortFlagWrongArgument(t *testing.T) {
 	cmd := healthcheck.NewCommand(&fakeChecker{err: nil})
 
-	err := cmd.Run(
-		cli.NewContext(cli.NewApp(), &flag.FlagSet{}, nil),
-		"", "-p", "65536",
-	)
+	err := cmd.Run(context.Background(), []string{"", "-p", "65536"})
 
 	assert.ErrorContains(t, err, "port value out of range")
 }

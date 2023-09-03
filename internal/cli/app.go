@@ -6,7 +6,7 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/urfave/cli/v2"
+	"github.com/urfave/cli/v3"
 
 	"gh.tarampamp.am/error-pages/internal/checkers"
 	"gh.tarampamp.am/error-pages/internal/cli/build"
@@ -17,8 +17,10 @@ import (
 	"gh.tarampamp.am/error-pages/internal/version"
 )
 
+//go:generate go run update_readme.go
+
 // NewApp creates new console application.
-func NewApp(appName string) *cli.App { //nolint:funlen
+func NewApp(appName string) *cli.Command { //nolint:funlen
 	const (
 		logLevelFlagName  = "log-level"
 		logFormatFlagName = "log-format"
@@ -33,7 +35,7 @@ func NewApp(appName string) *cli.App { //nolint:funlen
 	// create "default" logger (will be overwritten later with customized)
 	var log, _ = logger.New(defaultLogLevel, defaultLogFormat) // error will never occurs
 
-	return &cli.App{
+	return &cli.Command{
 		Usage: appName,
 		Before: func(c *cli.Context) (err error) {
 			_ = log.Sync() // sync previous logger instance
@@ -90,13 +92,13 @@ func NewApp(appName string) *cli.App { //nolint:funlen
 				Name:    logLevelFlagName,
 				Value:   defaultLogLevel.String(),
 				Usage:   "logging level (`" + strings.Join(logger.LevelStrings(), "/") + "`)",
-				EnvVars: []string{env.LogLevel.String()},
+				Sources: cli.EnvVars(env.LogLevel.String()),
 			},
 			&cli.StringFlag{
 				Name:    logFormatFlagName,
 				Value:   defaultLogFormat.String(),
 				Usage:   "logging format (`" + strings.Join(logger.FormatStrings(), "/") + "`)",
-				EnvVars: []string{env.LogFormat.String()},
+				Sources: cli.EnvVars(env.LogFormat.String()),
 			},
 		},
 	}

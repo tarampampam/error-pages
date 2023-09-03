@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/urfave/cli/v2"
+	"github.com/urfave/cli/v3"
 	"go.uber.org/zap"
 
 	"gh.tarampamp.am/error-pages/internal/breaker"
@@ -124,39 +124,39 @@ func NewCommand(log *zap.Logger) *cli.Command { //nolint:funlen
 					useRandomTemplateDaily,
 					useRandomTemplateHourly,
 				),
-				EnvVars: []string{env.TemplateName.String()},
+				Sources: cli.EnvVars(env.TemplateName.String()),
 			},
 			&cli.StringFlag{
 				Name:    defaultErrorPageFlagName,
 				Value:   "404",
 				Usage:   "default error page",
-				EnvVars: []string{env.DefaultErrorPage.String()},
+				Sources: cli.EnvVars(env.DefaultErrorPage.String()),
 			},
 			&cli.UintFlag{
 				Name:    defaultHTTPCodeFlagName,
 				Value:   404, //nolint:gomnd
 				Usage:   "default HTTP response code",
-				EnvVars: []string{env.DefaultHTTPCode.String()},
+				Sources: cli.EnvVars(env.DefaultHTTPCode.String()),
 			},
 			&cli.BoolFlag{
 				Name:    showDetailsFlagName,
 				Usage:   "show request details in response",
-				EnvVars: []string{env.ShowDetails.String()},
+				Sources: cli.EnvVars(env.ShowDetails.String()),
 			},
 			&cli.StringFlag{
 				Name:    proxyHTTPHeadersFlagName,
 				Usage:   "proxy HTTP request headers list (comma-separated)",
-				EnvVars: []string{env.ProxyHTTPHeaders.String()},
+				Sources: cli.EnvVars(env.ProxyHTTPHeaders.String()),
 			},
 			&cli.BoolFlag{
 				Name:    disableL10nFlagName,
 				Usage:   "disable error pages localization",
-				EnvVars: []string{env.DisableL10n.String()},
+				Sources: cli.EnvVars(env.DisableL10n.String()),
 			},
 			&cli.BoolFlag{
 				Name:    catchAllFlagName,
 				Usage:   "catch all pages",
-				EnvVars: []string{env.CatchAll.String()},
+				Sources: cli.EnvVars(env.CatchAll.String()),
 			},
 		},
 	}

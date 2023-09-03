@@ -11,7 +11,7 @@ require (
 	github.com/prometheus/client_golang v1.16.0
 	github.com/prometheus/client_model v0.4.0
 	github.com/stretchr/testify v1.8.4
-	github.com/urfave/cli/v2 v2.25.7
+	github.com/urfave/cli/v3 v3.0.0-alpha4
 	github.com/valyala/fasthttp v1.49.0
 	go.uber.org/automaxprocs v1.5.3
 	go.uber.org/goleak v1.2.1
