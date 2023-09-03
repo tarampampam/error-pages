@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # this stage is used to build the application
-FROM golang:1.21-bullseye as builder
+FROM golang:1.21-bullseye AS builder
 
 COPY ./go.* /src/
 
@@ -52,7 +52,7 @@ RUN set -x \
     && ls -l ./html
 
 # use empty filesystem
-FROM scratch as runtime
+FROM scratch AS runtime
 
 ARG APP_VERSION="undefined@docker"
 
@@ -67,7 +67,7 @@ LABEL \
     org.opencontainers.image.licenses="MIT"
 
 # Import from builder
-COPY --from=builder /tmp/rootfs /
+COPY --from=compiler /tmp/rootfs /
 
 # Use an unprivileged user
 USER 10001:10001
