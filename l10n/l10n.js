@@ -469,7 +469,7 @@ Object.defineProperty(window, 'l10n', {
                 uk: 'Помилка шлюзу',
                 pt: 'Gateway inválido',
                 nl: 'Ongeldige Gateway',
-                de: 'Fehlerhafter Gateway',
+                de: 'Fehlerhaftes Gateway',
                 es: 'Puerta de enlace no valida',
                 zh: '无效网关',
                 id: 'Gateway yang buruk',
