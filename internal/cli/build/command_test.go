@@ -1,11 +1,10 @@
 package build_test
 
 import (
-	"flag"
+	"context"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/urfave/cli/v2"
 	"go.uber.org/goleak"
 	"go.uber.org/zap"
 
@@ -20,7 +19,7 @@ func TestNewCommand(t *testing.T) {
 	assert.NotEmpty(t, cmd.Flags)
 
 	assert.Error(t, cmd.Run(
-		cli.NewContext(cli.NewApp(), &flag.FlagSet{}, nil),
-		"",
-	), "should fail because of missing external services")
+		context.Background(),
+		[]string{},
+	), "should fail with wrong arguments count")
 }

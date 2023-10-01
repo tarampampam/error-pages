@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"os"
 	"path/filepath"
 
@@ -22,7 +23,7 @@ func main() { exitFn(run()) }
 // run this CLI application.
 // Exit codes documentation: <https://tldp.org/LDP/abs/html/exitcodes.html>
 func run() int {
-	if err := (cli.NewApp(filepath.Base(os.Args[0]))).Run(os.Args); err != nil {
+	if err := (cli.NewApp(filepath.Base(os.Args[0]))).Run(context.Background(), os.Args); err != nil {
 		_, _ = color.New(color.FgHiRed, color.Bold).Fprintln(os.Stderr, err.Error())
 
 		return 1

@@ -5,7 +5,7 @@ import (
 	"errors"
 	"math"
 
-	"github.com/urfave/cli/v2"
+	"github.com/urfave/cli/v3"
 
 	"gh.tarampamp.am/error-pages/internal/cli/shared"
 )
