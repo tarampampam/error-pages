@@ -17,7 +17,7 @@ jobs: # Docs: <https://git.io/JvxXE>
     name: Gitleaks
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with: {fetch-depth: 0}
 
       - name: Check for GitLeaks
@@ -27,7 +27,7 @@ jobs: # Docs: <https://git.io/JvxXE>
     name: Golang-CI (lint)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - uses: gacts/setup-go-with-cache@v1
         with: {go-version: 1.19}
@@ -39,7 +39,7 @@ jobs: # Docs: <https://git.io/JvxXE>
     name: Validate config file
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - uses: gacts/setup-node-with-cache@v1
         with: {node-version: 16}
@@ -54,7 +54,7 @@ jobs: # Docs: <https://git.io/JvxXE>
     name: Lint l10n file(s)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - uses: gacts/setup-node-with-cache@v1
         with: {node-version: 16}
@@ -70,7 +70,7 @@ jobs: # Docs: <https://git.io/JvxXE>
     name: Unit tests
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with: {fetch-depth: 2} # Fixes codecov error 'Issue detecting commit SHA'
 
       - uses: gacts/setup-go-with-cache@v1
@@ -95,7 +95,7 @@ jobs: # Docs: <https://git.io/JvxXE>
         arch: [amd64]  # amd64, 386
     needs: [golangci-lint, go-test, validate-config-file]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - uses: gacts/setup-go-with-cache@v1
         with: {go-version-file: go.mod}
@@ -126,7 +126,7 @@ jobs: # Docs: <https://git.io/JvxXE>
     runs-on: ubuntu-latest
     needs: [build]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - uses: actions/download-artifact@v3
         with:
@@ -161,7 +161,7 @@ jobs: # Docs: <https://git.io/JvxXE>
     runs-on: ubuntu-latest
     needs: [golangci-lint, go-test, validate-config-file]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - {uses: gacts/github-slug@v1, id: slug}
 
@@ -186,7 +186,7 @@ jobs: # Docs: <https://git.io/JvxXE>
     runs-on: ubuntu-latest
     needs: [docker-image]
     steps:
-      - uses: actions/checkout@v3 # is needed for `upload-sarif` action
+      - uses: actions/checkout@v4 # is needed for `upload-sarif` action
 
       - uses: actions/download-artifact@v3
         with:
@@ -212,7 +212,7 @@ jobs: # Docs: <https://git.io/JvxXE>
     needs: [docker-image]
     timeout-minutes: 2
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - uses: actions/download-artifact@v3
         with:
