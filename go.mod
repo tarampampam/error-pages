@@ -12,7 +12,7 @@ require (
 	github.com/prometheus/client_model v0.4.1-0.20230718164431-9a2bf3000d16
 	github.com/stretchr/testify v1.8.4
 	github.com/urfave/cli/v2 v2.25.7
-	github.com/valyala/fasthttp v1.49.0
+	github.com/valyala/fasthttp v1.50.0
 	go.uber.org/automaxprocs v1.5.3
 	go.uber.org/goleak v1.2.1
 	go.uber.org/zap v1.26.0
