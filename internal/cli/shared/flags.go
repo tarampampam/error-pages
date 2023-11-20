@@ -29,3 +29,11 @@ var ListenPortFlag = &cli.UintFlag{ //nolint:gochecknoglobals
 	Value:   8080, //nolint:gomnd
 	EnvVars: []string{env.ListenPort.String()},
 }
+
+var ReadBufferSizeFlag = &cli.UintFlag{ //nolint:gochecknoglobals
+	Name:    "read-buffer",
+	Aliases: []string{"b"},
+	Usage:   "Read Buffer Size",
+	Value:   2048, //nolint:gomnd
+	EnvVars: []string{env.ReadBufferSize.String()},
+}

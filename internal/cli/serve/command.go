@@ -33,6 +33,7 @@ const (
 	proxyHTTPHeadersFlagName = "proxy-headers"
 	disableL10nFlagName      = "disable-l10n"
 	catchAllFlagName         = "catch-all"
+	readBufferSizeFlagName   = "read-buffer"
 )
 
 const (
@@ -64,6 +65,7 @@ func NewCommand(log *zap.Logger) *cli.Command { //nolint:funlen
 			var (
 				ip   = c.String(shared.ListenAddrFlag.Name)
 				port = uint16(c.Uint(shared.ListenPortFlag.Name))
+				readBufferSize = uint16(c.Uint(shared.ReadBufferSizeFlag.Name))
 				o    options.ErrorPage
 			)
 
@@ -107,7 +109,7 @@ func NewCommand(log *zap.Logger) *cli.Command { //nolint:funlen
 				return fmt.Errorf("wrong default HTTP response code [%d]", o.Default.HTTPCode)
 			}
 
-			return cmd.Run(c.Context, log, cfg, ip, port, o)
+			return cmd.Run(c.Context, log, cfg, ip, port, readBufferSize, o)
 		},
 		Flags: []cli.Flag{
 			shared.ConfigFileFlag,
@@ -158,6 +160,7 @@ func NewCommand(log *zap.Logger) *cli.Command { //nolint:funlen
 				Usage:   "catch all pages",
 				EnvVars: []string{env.CatchAll.String()},
 			},
+			shared.ReadBufferSizeFlag,
 		},
 	}
 
@@ -166,7 +169,7 @@ func NewCommand(log *zap.Logger) *cli.Command { //nolint:funlen
 
 // Run current command.
 func (cmd *command) Run( //nolint:funlen
-	parentCtx context.Context, log *zap.Logger, cfg *config.Config, ip string, port uint16, opt options.ErrorPage,
+	parentCtx context.Context, log *zap.Logger, cfg *config.Config, ip string, port uint16, opt options.ErrorPage, readBufferSize uint16
 ) error {
 	var (
 		ctx, cancel = context.WithCancel(parentCtx) // serve context creation
@@ -226,7 +229,7 @@ func (cmd *command) Run( //nolint:funlen
 	}
 
 	// create HTTP server
-	server := appHttp.NewServer(log)
+	server := appHttp.NewServer(log, readBufferSize)
 
 	// register server routes, middlewares, etc.
 	if err := server.Register(cfg, picker, opt); err != nil {
@@ -248,6 +251,7 @@ func (cmd *command) Run( //nolint:funlen
 			zap.Bool("show request details", opt.ShowDetails),
 			zap.Bool("localization disabled", opt.L10n.Disabled),
 			zap.Bool("catch all enabled", opt.CatchAll),
+			zap.Uint16("read buffer size", readBufferSize),
 		)
 
 		if err := server.Start(ip, port); err != nil {

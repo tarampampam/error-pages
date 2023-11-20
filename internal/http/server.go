@@ -39,13 +39,14 @@ const (
 	defaultIdleTimeout  = time.Second * 6
 )
 
-func NewServer(log *zap.Logger) Server {
+func NewServer(log *zap.Logger, readBufferSize uint16) Server {
 	rdr := tpl.NewTemplateRenderer()
 
 	return Server{
 		// fasthttp docs: <https://github.com/valyala/fasthttp>
 		fast: &fasthttp.Server{
 			WriteTimeout:          defaultWriteTimeout,
+			ReadBufferSize:        readBufferSize,
 			ReadTimeout:           defaultReadTimeout,
 			IdleTimeout:           defaultIdleTimeout,
 			NoDefaultServerHeader: true,
