@@ -9,8 +9,11 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 ### Added
 
 - Error pages now translated into 🇵🇱 [#226]
+- Possibility to set custom read buffer size (using `--read-buffer-size` flag or environment variable `READ_BUFFER_SIZE`) [#238], [#244]
 
 [#226]:https://github.com/tarampampam/error-pages/pull/226
+[#238]:https://github.com/tarampampam/error-pages/issues/238
+[#244]:https://github.com/tarampampam/error-pages/pull/244
 
 ## v2.25.0
 

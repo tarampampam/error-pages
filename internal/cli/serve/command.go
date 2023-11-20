@@ -33,7 +33,7 @@ const (
 	proxyHTTPHeadersFlagName = "proxy-headers"
 	disableL10nFlagName      = "disable-l10n"
 	catchAllFlagName         = "catch-all"
-	readBufferSizeFlagName   = "read-buffer"
+	readBufferSizeFlagName   = "read-buffer-size"
 )
 
 const (
@@ -65,7 +65,6 @@ func NewCommand(log *zap.Logger) *cli.Command { //nolint:funlen
 			var (
 				ip   = c.String(shared.ListenAddrFlag.Name)
 				port = uint16(c.Uint(shared.ListenPortFlag.Name))
-				readBufferSize = int(c.Int(shared.ReadBufferSizeFlag.Name))
 				o    options.ErrorPage
 			)
 
@@ -109,7 +108,7 @@ func NewCommand(log *zap.Logger) *cli.Command { //nolint:funlen
 				return fmt.Errorf("wrong default HTTP response code [%d]", o.Default.HTTPCode)
 			}
 
-			return cmd.Run(c.Context, log, cfg, ip, port, readBufferSize, o)
+			return cmd.Run(c.Context, log, cfg, ip, port, c.Uint(readBufferSizeFlagName), o)
 		},
 		Flags: []cli.Flag{
 			shared.ConfigFileFlag,
@@ -160,7 +159,11 @@ func NewCommand(log *zap.Logger) *cli.Command { //nolint:funlen
 				Usage:   "catch all pages",
 				EnvVars: []string{env.CatchAll.String()},
 			},
-			shared.ReadBufferSizeFlag,
+			&cli.UintFlag{
+				Name:    readBufferSizeFlagName,
+				Usage:   "read buffer size (0 = use default value)",
+				EnvVars: []string{env.ReadBufferSize.String()},
+			},
 		},
 	}
 
@@ -169,7 +172,13 @@ func NewCommand(log *zap.Logger) *cli.Command { //nolint:funlen
 
 // Run current command.
 func (cmd *command) Run( //nolint:funlen
-	parentCtx context.Context, log *zap.Logger, cfg *config.Config, ip string, port uint16, readBufferSize int, opt options.ErrorPage,
+	parentCtx context.Context,
+	log *zap.Logger,
+	cfg *config.Config,
+	ip string,
+	port uint16,
+	readBufferSize uint,
+	opt options.ErrorPage,
 ) error {
 	var (
 		ctx, cancel = context.WithCancel(parentCtx) // serve context creation
@@ -242,7 +251,7 @@ func (cmd *command) Run( //nolint:funlen
 	go func(errCh chan<- error) {
 		defer close(errCh)
 
-		log.Info("Server starting",
+		var fields = []zap.Field{
 			zap.String("addr", ip),
 			zap.Uint16("port", port),
 			zap.String("default error page", opt.Default.PageCode),
@@ -251,8 +260,13 @@ func (cmd *command) Run( //nolint:funlen
 			zap.Bool("show request details", opt.ShowDetails),
 			zap.Bool("localization disabled", opt.L10n.Disabled),
 			zap.Bool("catch all enabled", opt.CatchAll),
-			zap.Int("read buffer size", readBufferSize),
-		)
+		}
+
+		if readBufferSize > 0 {
+			fields = append(fields, zap.Uint("read buffer size", readBufferSize))
+		}
+
+		log.Info("Server starting", fields...)
 
 		if err := server.Start(ip, port); err != nil {
 			errCh <- err
