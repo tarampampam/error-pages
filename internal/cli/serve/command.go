@@ -65,7 +65,7 @@ func NewCommand(log *zap.Logger) *cli.Command { //nolint:funlen
 			var (
 				ip   = c.String(shared.ListenAddrFlag.Name)
 				port = uint16(c.Uint(shared.ListenPortFlag.Name))
-				readBufferSize = uint16(c.Uint(shared.ReadBufferSizeFlag.Name))
+				readBufferSize = int(c.Int(shared.ReadBufferSizeFlag.Name))
 				o    options.ErrorPage
 			)
 
@@ -169,7 +169,7 @@ func NewCommand(log *zap.Logger) *cli.Command { //nolint:funlen
 
 // Run current command.
 func (cmd *command) Run( //nolint:funlen
-	parentCtx context.Context, log *zap.Logger, cfg *config.Config, ip string, port uint16, opt options.ErrorPage, readBufferSize uint16
+	parentCtx context.Context, log *zap.Logger, cfg *config.Config, ip string, port uint16, readBufferSize int, opt options.ErrorPage,
 ) error {
 	var (
 		ctx, cancel = context.WithCancel(parentCtx) // serve context creation
@@ -251,7 +251,7 @@ func (cmd *command) Run( //nolint:funlen
 			zap.Bool("show request details", opt.ShowDetails),
 			zap.Bool("localization disabled", opt.L10n.Disabled),
 			zap.Bool("catch all enabled", opt.CatchAll),
-			zap.Uint16("read buffer size", readBufferSize),
+			zap.Int("read buffer size", readBufferSize),
 		)
 
 		if err := server.Start(ip, port); err != nil {

@@ -39,7 +39,7 @@ const (
 	defaultIdleTimeout  = time.Second * 6
 )
 
-func NewServer(log *zap.Logger, readBufferSize uint16) Server {
+func NewServer(log *zap.Logger, readBufferSize int) Server {
 	rdr := tpl.NewTemplateRenderer()
 
 	return Server{
