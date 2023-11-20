@@ -19,6 +19,7 @@ const (
 	ProxyHTTPHeaders envVariable = "PROXY_HTTP_HEADERS" // proxy HTTP request headers list (request -> response)
 	DisableL10n      envVariable = "DISABLE_L10N"       // disable pages localization
 	CatchAll         envVariable = "CATCH_ALL"          // catch all pages
+	ReadBufferSize   envVariable = "READ_BUFFER_SIZE"   // https://github.com/tarampampam/error-pages/issues/238
 )
 
 // String returns environment variable name in the string representation.

@@ -30,7 +30,7 @@ jobs: # Docs: <https://git.io/JvxXE>
       - uses: actions/checkout@v4
 
       - uses: gacts/setup-go-with-cache@v1
-        with: {go-version: 1.19}
+        with: {go-version-file: go.mod}
 
       - uses: golangci/golangci-lint-action@v3
         with: {skip-pkg-cache: true, skip-build-cache: true}

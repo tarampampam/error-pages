@@ -18,6 +18,7 @@ func TestConstants(t *testing.T) {
 	assert.Equal(t, "PROXY_HTTP_HEADERS", string(ProxyHTTPHeaders))
 	assert.Equal(t, "DISABLE_L10N", string(DisableL10n))
 	assert.Equal(t, "CATCH_ALL", string(CatchAll))
+	assert.Equal(t, "READ_BUFFER_SIZE", string(ReadBufferSize))
 }
 
 func TestEnvVariable_Lookup(t *testing.T) {
@@ -34,6 +35,7 @@ func TestEnvVariable_Lookup(t *testing.T) {
 		{giveEnv: ProxyHTTPHeaders},
 		{giveEnv: DisableL10n},
 		{giveEnv: CatchAll},
+		{giveEnv: ReadBufferSize},
 	}
 
 	for _, tt := range cases {

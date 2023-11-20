@@ -79,7 +79,8 @@ ENV LISTEN_PORT="8080" \
     DEFAULT_ERROR_PAGE="404" \
     DEFAULT_HTTP_CODE="404" \
     SHOW_DETAILS="false" \
-    DISABLE_L10N="false"
+    DISABLE_L10N="false" \
+    READ_BUFFER_SIZE="2048"
 
 # Docs: <https://docs.docker.com/engine/reference/builder/#healthcheck>
 HEALTHCHECK --interval=7s --timeout=2s CMD ["/bin/error-pages", "--log-json", "healthcheck"]
