@@ -79,7 +79,7 @@ jobs: # Docs: <https://git.io/JvxXE>
       - name: Run Unit tests
         run: go test -race -covermode=atomic -coverprofile /tmp/coverage.txt ./...
 
-      - uses: codecov/codecov-action@v3 # https://github.com/codecov/codecov-action
+      - uses: codecov/codecov-action@v4 # https://github.com/codecov/codecov-action
         continue-on-error: true
         with:
           file: /tmp/coverage.txt
