@@ -12,7 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: peter-evans/dockerhub-description@v3 # Action page: <https://github.com/peter-evans/dockerhub-description>
+      - uses: peter-evans/dockerhub-description@v4 # Action page: <https://github.com/peter-evans/dockerhub-description>
         with:
           username: ${{ secrets.DOCKER_LOGIN }}
           password: ${{ secrets.DOCKER_USER_PASSWORD }}
