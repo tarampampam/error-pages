@@ -4,7 +4,7 @@ bar: BAR
 Baz_blah: baz Baz
 NonEx: skip
 
-HTTP/* 200
+HTTP 200
 
 [Asserts]
 header "X-Foo" == "foo"

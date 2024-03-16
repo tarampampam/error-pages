@@ -1,6 +1,6 @@
 GET http://{{ host }}:{{ port }}/version
 
-HTTP/* 200
+HTTP 200
 
 [Asserts]
 header "Content-Type" == "application/json"

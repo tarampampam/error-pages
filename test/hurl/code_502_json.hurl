@@ -10,7 +10,7 @@ X-Request-ID: ccc
 X-Forwarded-For: ddd
 Host: eee
 
-HTTP/* 200
+HTTP 200
 
 [Asserts]
 header "Content-Type" contains "application/json"
@@ -33,7 +33,7 @@ jsonpath "$.details.timestamp" isInteger
 GET http://{{ host }}:{{ port }}/502.html
 X-Format: text/json
 
-HTTP/* 200
+HTTP 200
 
 [Asserts]
 header "Content-Type" contains "application/json"

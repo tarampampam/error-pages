@@ -10,7 +10,7 @@ X-Request-ID: ccc
 X-Forwarded-For: ddd
 Host: eee
 
-HTTP/* 200
+HTTP 200
 
 [Asserts]
 header "Content-Type" contains "application/xml"
@@ -32,7 +32,7 @@ xpath "string(//error/details/timestamp)" exists
 GET http://{{ host }}:{{ port }}/502.html
 X-Format: text/xml
 
-HTTP/* 200
+HTTP 200
 
 [Asserts]
 header "Content-Type" contains "application/xml"

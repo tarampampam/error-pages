@@ -1,7 +1,7 @@
 # HTML content
 GET http://{{ host }}:{{ port }}/
 
-HTTP/* 404
+HTTP 404
 
 [Asserts]
 header "Content-Type" contains "text/html"
@@ -12,7 +12,7 @@ body contains "Not Found"
 GET http://{{ host }}:{{ port }}/
 Content-Type: text/json
 
-HTTP/* 404
+HTTP 404
 
 [Asserts]
 header "Content-Type" contains "application/json"
@@ -25,7 +25,7 @@ jsonpath "$.message" == "Not Found"
 GET http://{{ host }}:{{ port }}/
 Content-Type: application/xml
 
-HTTP/* 404
+HTTP 404
 
 [Asserts]
 header "Content-Type" contains "application/xml"

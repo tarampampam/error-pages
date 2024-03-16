@@ -1,6 +1,6 @@
 GET http://{{ host }}:{{ port }}/metrics
 
-HTTP/* 200
+HTTP 200
 
 [Asserts]
 header "Content-Type" contains "text/plain"

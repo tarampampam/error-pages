@@ -1,6 +1,6 @@
 GET http://{{ host }}:{{ port }}/502.html
 
-HTTP/* 200
+HTTP 200
 
 [Asserts]
 header "Content-Type" contains "text/html"
