@@ -32,7 +32,7 @@ jobs: # Docs: <https://git.io/JvxXE>
       - uses: gacts/setup-go-with-cache@v1
         with: {go-version-file: go.mod}
 
-      - uses: golangci/golangci-lint-action@v3
+      - uses: golangci/golangci-lint-action@v4
         with: {skip-pkg-cache: true, skip-build-cache: true}
 
   validate-config-file:
