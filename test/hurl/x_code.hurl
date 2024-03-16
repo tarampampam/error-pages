@@ -2,7 +2,7 @@
 GET http://{{ host }}:{{ port }}/
 X-Code: 410
 
-HTTP/* 410
+HTTP 410
 
 [Asserts]
 header "Content-Type" contains "text/html"
@@ -15,7 +15,7 @@ GET http://{{ host }}:{{ port }}/
 X-Code: 410
 X-Format: text/html;q=0.9,application/xhtml+xml;q=0.9,application/json,image/avif,image/webp,*/*;q=0.8
 
-HTTP/* 410
+HTTP 410
 
 [Asserts]
 header "Content-Type" contains "application/json"
@@ -28,7 +28,7 @@ jsonpath "$.message" == "Gone"
 GET http://{{ host }}:{{ port }}/502.html
 X-Code: 410
 
-HTTP/* 200
+HTTP 200
 
 [Asserts]
 header "Content-Type" contains "text/html"

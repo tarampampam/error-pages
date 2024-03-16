@@ -10,7 +10,7 @@ It can perform requests, capture values and evaluate queries on headers and body
 # Get home:
 GET https://example.net
 
-HTTP/1.1 200
+HTTP 200
 [Captures]
 csrf_token: xpath "string(//meta[@name='_csrf_token']/@content)"
 
@@ -18,7 +18,7 @@ csrf_token: xpath "string(//meta[@name='_csrf_token']/@content)"
 POST https://example.net/login?user=toto&password=1234
 X-CSRF-TOKEN: {{csrf_token}}
 
-HTTP/1.1 302
+HTTP 302
 ```
 
 ### Links:

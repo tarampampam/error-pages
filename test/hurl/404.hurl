@@ -1,6 +1,6 @@
 GET http://{{ host }}:{{ port }}/not-found
 
-HTTP/* 404
+HTTP 404
 
 [Asserts]
 header "Content-Type" contains "text/html"
