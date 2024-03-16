@@ -4,6 +4,13 @@ All notable changes to this package will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## v2.27.0
+
+### Changed
+
+- Go updated from `1.21` up to `1.22`
+- Go dependencies updated
+
 ## v2.26.0
 
 ### Added
