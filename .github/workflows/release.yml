@@ -81,7 +81,7 @@ jobs:
           context: .
           file: Dockerfile
           push: true
-          platforms: linux/amd64,linux/arm64,linux/arm/v6,linux/arm/v7
+          platforms: linux/amd64,linux/arm64,linux/arm/v7,linux/arm64/v8
           build-args: "APP_VERSION=${{ steps.slug.outputs.version }}"
           tags: |
             tarampampam/error-pages:${{ steps.slug.outputs.version }}

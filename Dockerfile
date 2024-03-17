@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # this stage is used to build the application
-FROM golang:1.22-bullseye AS builder
+FROM docker.io/library/golang:1.22-bookworm AS builder
 
 COPY ./go.* /src/
 
