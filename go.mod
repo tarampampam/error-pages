@@ -4,15 +4,15 @@ go 1.21
 
 require (
 	github.com/a8m/envsubst v1.4.2
-	github.com/fasthttp/router v1.5.0
-	github.com/fatih/color v1.16.0
+	github.com/fasthttp/router v1.5.1
+	github.com/fatih/color v1.17.0
 	github.com/kami-zh/go-capturer v0.0.0-20171211120116-e492ea43421d
 	github.com/pkg/errors v0.9.1
-	github.com/prometheus/client_golang v1.19.0
+	github.com/prometheus/client_golang v1.19.1
 	github.com/prometheus/client_model v0.6.1
 	github.com/stretchr/testify v1.9.0
 	github.com/urfave/cli/v2 v2.27.2
-	github.com/valyala/fasthttp v1.52.0
+	github.com/valyala/fasthttp v1.54.0
 	go.uber.org/automaxprocs v1.5.3
 	go.uber.org/goleak v1.3.0
 	go.uber.org/zap v1.27.0
