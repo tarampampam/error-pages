@@ -32,7 +32,7 @@ jobs: # Docs: <https://git.io/JvxXE>
       - uses: gacts/setup-go-with-cache@v1
         with: {go-version-file: go.mod}
 
-      - uses: golangci/golangci-lint-action@v5
+      - uses: golangci/golangci-lint-action@v6
         with: {skip-pkg-cache: true, skip-build-cache: true}
 
   validate-config-file:
@@ -193,7 +193,7 @@ jobs: # Docs: <https://git.io/JvxXE>
           name: docker-image
           path: .artifact
 
-      - uses: aquasecurity/trivy-action@0.19.0 # action page: <https://github.com/aquasecurity/trivy-action>
+      - uses: aquasecurity/trivy-action@0.21.0 # action page: <https://github.com/aquasecurity/trivy-action>
         with:
           input: .artifact/docker-image.tar
           format: sarif
