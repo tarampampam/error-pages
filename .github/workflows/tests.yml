@@ -41,7 +41,7 @@ jobs: # Docs: <https://git.io/JvxXE>
     steps:
       - uses: actions/checkout@v4
 
-      - {uses: actions/setup-node@v4, with: {node-version: 16, cache: 'npm'}}
+      - {uses: actions/setup-node@v4, with: {node-version: 16}}
 
       - name: Install linter
         run: npm install -g ajv-cli # Package page: <https://www.npmjs.com/package/ajv-cli>
@@ -55,7 +55,7 @@ jobs: # Docs: <https://git.io/JvxXE>
     steps:
       - uses: actions/checkout@v4
 
-      - {uses: actions/setup-node@v4, with: {node-version: 16, cache: 'npm'}}
+      - {uses: actions/setup-node@v4, with: {node-version: 16}}
 
       - name: Install eslint
         run: npm install -g eslint@v8 # Package page: <https://www.npmjs.com/package/eslint>
