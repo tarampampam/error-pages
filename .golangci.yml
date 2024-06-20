@@ -1,26 +1,32 @@
-# Documentation: <https://github.com/golangci/golangci-lint#config-file>
+# yaml-language-server: $schema=https://golangci-lint.run/jsonschema/golangci.jsonschema.json
+# docs: https://github.com/golangci/golangci-lint#config-file
 
 run:
-  timeout: 1m
-  skip-dirs:
-    - .github
-    - .git
-    - tmp
-    - temp
+  timeout: 2m
   modules-download-mode: readonly
   allow-parallel-runners: true
 
 output:
-  format: colored-line-number # colored-line-number|line-number|json|tab|checkstyle|code-climate
+  formats: [{format: colored-line-number}] # colored-line-number|line-number|json|tab|checkstyle|code-climate
 
 linters-settings:
+  gci:
+    sections:
+      - standard
+      - default
+      - prefix(gh.tarampamp.am/error-pages)
+  gofmt:
+    simplify: false
+    rewrite-rules:
+      - { pattern: 'interface{}', replacement: 'any' }
   govet:
-    check-shadowing: true
+    enable:
+      - shadow
   gocyclo:
     min-complexity: 15
   godot:
     scope: declarations
-    capital: true
+    capital: false
   dupl:
     threshold: 100
   goconst:
@@ -28,15 +34,28 @@ linters-settings:
     min-occurrences: 3
   misspell:
     locale: US
+    ignore-words: [cancelled]
   lll:
     line-length: 120
+  forbidigo:
+    forbid:
+      - '^(fmt\.Print(|f|ln)|print(|ln))(# it looks like a forgotten debugging printing call)?$'
+  depguard:
+    rules:
+      logger:
+        deny:
+          - pkg: log
+            desc: 'logging is allowed only by zaplog'
   prealloc:
     simple: true
     range-loops: true
     for-loops: true
   nolintlint:
-    allow-leading-space: false
     require-specific: true
+  nakedret:
+    # Make an issue if func has more lines of code than this setting, and it has naked returns.
+    # Default: 30
+    max-func-lines: 100
 
 linters: # All available linters list: <https://golangci-lint.run/usage/linters/>
   disable-all: true
@@ -50,40 +69,66 @@ linters: # All available linters list: <https://golangci-lint.run/usage/linters/
     - exhaustive # check exhaustiveness of enum switch statements
     - exportloopref # checks for pointers to enclosing loop variables
     - funlen # Tool for detection of long functions
+    - gci # Gci control golang package import order and make it always deterministic
+    - godot # Check if comments end in a period
     - gochecknoglobals # Checks that no globals are present in Go code
     - gochecknoinits # Checks that no init functions are present in Go code
     - gocognit # Computes and checks the cognitive complexity of functions
     - goconst # Finds repeated strings that could be replaced by a constant
     - gocritic # The most opinionated Go source code linter
     - gocyclo # Computes and checks the cyclomatic complexity of functions
-    - gofmt # Gofmt checks whether code was gofmt-ed. By default this tool runs with -s option to check for code simplification
-    - goimports # Goimports does everything that gofmt does. Additionally it checks unused imports
-    - gomnd # An analyzer to detect magic numbers
+    - gofmt # Gofmt checks whether code was gofmt-ed. By default, this tool runs with -s option to check for code simplification
+    - goimports # Goimports does everything that gofmt does. Additionally, it checks unused imports
+    - mnd # An analyzer to detect magic numbers
     - goprintffuncname # Checks that printf-like functions are named with `f` at the end
     - gosec # Inspects source code for security problems
-    - gosimple # Linter for Go source code that specializes in simplifying a code
     - govet # Vet examines Go source code and reports suspicious constructs, such as Printf calls whose arguments do not align with the format string
     - ineffassign # Detects when assignments to existing variables are not used
     - lll # Reports long lines
+    - forbidigo # Forbids identifiers
     - misspell # Finds commonly misspelled English words in comments
     - nakedret # Finds naked returns in functions greater than a specified function length
     - nestif # Reports deeply nested if statements
     - nlreturn # checks for a new line before return and branch statements to increase code clarity
     - nolintlint # Reports ill-formed or insufficient nolint directives
     - prealloc # Finds slice declarations that could potentially be preallocated
-    - staticcheck # Staticcheck is a go vet on steroids, applying a ton of static analysis checks
-    - stylecheck # Stylecheck is a replacement for golint
+    - promlinter # Check Prometheus metrics naming via promlint.
     - typecheck # Like the front-end of a Go compiler, parses and type-checks Go code
     - unconvert # Remove unnecessary type conversions
-    - unused # Checks Go code for unused constants, variables, functions and types
     - whitespace # Tool for detection of leading and trailing whitespace
     - wsl # Whitespace Linter - Forces you to use empty lines!
+    - unused # Checks Go code for unused constants, variables, functions and types
+    - gosimple # Linter for Go source code that specializes in simplifying code
+    - staticcheck # It's a set of rules from staticcheck
+    - asasalint # Check for pass []any as any in variadic func(...any)
+    - bodyclose # Checks whether HTTP response body is closed successfully
+    - contextcheck # Check whether the function uses a non-inherited context
+    - decorder # Check declaration order and count of types, constants, variables and functions
+    - dupword # Checks for duplicate words in the source code
+    - durationcheck # Check for two durations multiplied together
+    - errchkjson # Checks types passed to the json encoding functions
+    - errname # Checks that sentinel errors are prefixed with the Err and error types are suffixed with the Error
+    - depguard # Go linter that checks if package imports are in a list of acceptable packages.
 
 issues:
+  exclude-dirs:
+    - .github
+    - .git
+    - tmp
+    - temp
+    - testdata
   exclude-rules:
+    - {path: flags\.go, linters: [gochecknoglobals, lll, mnd, dupl]}
+    - {path: env\.go, linters: [lll, gosec]}
     - path: _test\.go
       linters:
         - dupl
+        - dupword
+        - lll
+        - nolintlint
         - funlen
-        - scopelint
         - gocognit
+        - noctx
+        - goconst
+        - nlreturn
+        - gochecknoglobals

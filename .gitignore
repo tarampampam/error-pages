@@ -8,9 +8,13 @@
 ## Temp dirs & trash
 /temp
 /tmp
-*.env
+/cmd/test*
 .DS_Store
+/go.work*
 *.cache
 *.out
+*.env
 /out
+/gen
 /cover*.*
+/report.xml
