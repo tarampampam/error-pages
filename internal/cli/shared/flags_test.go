@@ -83,3 +83,83 @@ func TestListenPortFlag(t *testing.T) {
 		})
 	}
 }
+
+func TestAddTemplateFlag(t *testing.T) {
+	t.Parallel()
+
+	var flag = shared.AddTemplateFlag
+
+	assert.Equal(t, "add-template", flag.Name)
+
+	for wantErrMsg, giveValue := range map[string][]string{
+		"missing template path":     {""},
+		"wrong template path [.]":   {".", "./"},
+		"wrong template path [..]":  {"..", "../"},
+		"wrong template path [foo]": {"foo"},
+		"":                          {"./flags.go"},
+	} {
+		t.Run(fmt.Sprintf("%s: %s", giveValue, wantErrMsg), func(t *testing.T) {
+			if err := flag.Validator(giveValue); wantErrMsg != "" {
+				assert.ErrorContains(t, err, wantErrMsg)
+			} else {
+				assert.NoError(t, err)
+			}
+		})
+	}
+}
+
+func TestAddHTTPCodeFlag(t *testing.T) {
+	t.Parallel()
+
+	var flag = shared.AddHTTPCodeFlag
+
+	assert.Equal(t, "add-http-code", flag.Name)
+
+	for name, _tt := range map[string]struct {
+		giveValue  map[string]string
+		wantErrMsg string
+	}{
+		"common": {
+			giveValue: map[string]string{
+				"200": "foo/bar",
+				"404": "foo",
+				"2**": "baz",
+			},
+		},
+
+		"missing HTTP code": {
+			giveValue:  map[string]string{"": "foo/bar"},
+			wantErrMsg: "missing HTTP code",
+		},
+		"wrong HTTP code [6]": {
+			giveValue:  map[string]string{"6": "foo"},
+			wantErrMsg: "wrong HTTP code [6]: it should be 3 characters long",
+		},
+		"wrong HTTP code [66]": {
+			giveValue:  map[string]string{"66": "foo"},
+			wantErrMsg: "wrong HTTP code [66]: it should be 3 characters long",
+		},
+		"wrong HTTP code [1000]": {
+			giveValue:  map[string]string{"1000": "foo"},
+			wantErrMsg: "wrong HTTP code [1000]: it should be 3 characters long",
+		},
+		"missing message and description": {
+			giveValue:  map[string]string{"200": "//"},
+			wantErrMsg: "wrong message/description format for HTTP code [200]: //",
+		},
+		"missing message": {
+			giveValue:  map[string]string{"200": "/bar"},
+			wantErrMsg: "missing message for HTTP code [200]",
+		},
+	} {
+		var tt = _tt
+
+		t.Run(name, func(t *testing.T) {
+			if err := flag.Validator(tt.giveValue); tt.wantErrMsg != "" {
+				assert.ErrorContains(t, err, tt.wantErrMsg)
+			} else {
+				assert.NoError(t, err)
+			}
+		})
+	}
+}

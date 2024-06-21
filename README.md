@@ -15,6 +15,40 @@ Global flags:
 | `--log-level="…"`  | logging level (debug/info/warn/error/fatal) |    `info`     |      `LOG_LEVEL`      |
 | `--log-format="…"` | logging format (console/json)               |   `console`   |     `LOG_FORMAT`      |
 
+### `serve` command (aliases: `s`, `server`, `http`)
+
+Start HTTP server.
+
+Usage:
+
+```bash
+$ error-pages [GLOBAL FLAGS] serve [COMMAND FLAGS] [ARGUMENTS...]
+```
+
+The following flags are supported:
+
+| Name                  | Description                                                                                                                                                      | Default value | Environment variables |
+|-----------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------|:-------------:|:---------------------:|
+| `--port="…"` (`-p`)   | TCP port number                                                                                                                                                  |    `8080`     |     `LISTEN_PORT`     |
+| `--listen="…"` (`-l`) | IP (v4 or v6) address to listen on                                                                                                                               |   `0.0.0.0`   |     `LISTEN_ADDR`     |
+| `--add-template="…"`  | to add a new template, provide the path to the file here (may be specified multiple times; the filename without the extension will be used as the template name) |     `[]`      |        *none*         |
+
+### `healthcheck` command (aliases: `chk`, `health`, `check`)
+
+Health checker for the HTTP server. The use case - docker health check.
+
+Usage:
+
+```bash
+$ error-pages [GLOBAL FLAGS] healthcheck [COMMAND FLAGS] [ARGUMENTS...]
+```
+
+The following flags are supported:
+
+| Name                | Description     | Default value | Environment variables |
+|---------------------|-----------------|:-------------:|:---------------------:|
+| `--port="…"` (`-p`) | TCP port number |    `8080`     |     `LISTEN_PORT`     |
+
 <!--/GENERATED:CLI_DOCS-->
 
 
