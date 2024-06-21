@@ -6,98 +6,79 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/urfave/cli/v2"
+	_ "github.com/urfave/cli-docs/v3" // required for `go generate` to work
+	"github.com/urfave/cli/v3"
 
-	"gh.tarampamp.am/error-pages/internal/checkers"
-	"gh.tarampamp.am/error-pages/internal/cli/build"
-	"gh.tarampamp.am/error-pages/internal/cli/healthcheck"
-	"gh.tarampamp.am/error-pages/internal/cli/serve"
-	"gh.tarampamp.am/error-pages/internal/env"
+	"gh.tarampamp.am/error-pages/internal-old/env"
+	"gh.tarampamp.am/error-pages/internal/appmeta"
 	"gh.tarampamp.am/error-pages/internal/logger"
-	"gh.tarampamp.am/error-pages/internal/version"
 )
 
-// NewApp creates new console application.
-func NewApp(appName string) *cli.App { //nolint:funlen
-	const (
-		logLevelFlagName  = "log-level"
-		logFormatFlagName = "log-format"
-		verboseFlagName   = "verbose"
-		debugFlagName     = "debug"
-		logJSONFlagName   = "log-json"
+//go:generate go run update_readme.go
 
-		defaultLogLevel  = logger.InfoLevel
-		defaultLogFormat = logger.ConsoleFormat
+// NewApp creates a new console application.
+func NewApp(appName string) *cli.Command { //nolint:funlen
+	var (
+		logLevelFlag = cli.StringFlag{
+			Name:     "log-level",
+			Value:    logger.InfoLevel.String(),
+			Usage:    "logging level (" + strings.Join(logger.LevelStrings(), "/") + ")",
+			Sources:  cli.EnvVars(env.LogLevel.String()),
+			OnlyOnce: true,
+			Config:   cli.StringConfig{TrimSpace: true},
+			Validator: func(s string) error {
+				if _, err := logger.ParseLevel(s); err != nil {
+					return err
+				}
+
+				return nil
+			},
+		}
+
+		logFormatFlag = cli.StringFlag{
+			Name:     "log-format",
+			Value:    logger.ConsoleFormat.String(),
+			Usage:    "logging format (" + strings.Join(logger.FormatStrings(), "/") + ")",
+			Sources:  cli.EnvVars(env.LogFormat.String()),
+			OnlyOnce: true,
+			Config:   cli.StringConfig{TrimSpace: true},
+			Validator: func(s string) error {
+				if _, err := logger.ParseFormat(s); err != nil {
+					return err
+				}
+
+				return nil
+			},
+		}
 	)
 
-	// create "default" logger (will be overwritten later with customized)
-	var log, _ = logger.New(defaultLogLevel, defaultLogFormat) // error will never occurs
+	// create a "default" logger (will be swapped later with customized)
+	var log, _ = logger.New(logger.InfoLevel, logger.ConsoleFormat) // error will never occur
 
-	return &cli.App{
-		Usage: appName,
-		Before: func(c *cli.Context) (err error) {
+	return &cli.Command{
+		Usage:   appName,
+		Suggest: true,
+		Before: func(ctx context.Context, c *cli.Command) error {
 			_ = log.Sync() // sync previous logger instance
 
-			var logLevel, logFormat = defaultLogLevel, defaultLogFormat //nolint:ineffassign
+			var (
+				logLevel, _  = logger.ParseLevel(c.String(logLevelFlag.Name))   // error ignored because the flag validates itself
+				logFormat, _ = logger.ParseFormat(c.String(logFormatFlag.Name)) // --//--
+			)
 
-			if c.Bool(verboseFlagName) || c.Bool(debugFlagName) {
-				logLevel = logger.DebugLevel
-			} else {
-				// parse logging level
-				if logLevel, err = logger.ParseLevel(c.String(logLevelFlagName)); err != nil {
-					return err
-				}
-			}
-
-			if c.Bool(logJSONFlagName) {
-				logFormat = logger.JSONFormat
-			} else {
-				// parse logging format
-				if logFormat, err = logger.ParseFormat(c.String(logFormatFlagName)); err != nil {
-					return err
-				}
-			}
-
-			configured, err := logger.New(logLevel, logFormat) // create new logger instance
+			configured, err := logger.New(logLevel, logFormat) // create a new logger instance
 			if err != nil {
 				return err
 			}
 
-			*log = *configured // replace "default" logger with customized
+			*log = *configured // swap the "default" logger with customized
 
 			return nil
 		},
-		Commands: []*cli.Command{
-			healthcheck.NewCommand(checkers.NewHealthChecker(context.TODO())),
-			build.NewCommand(log),
-			serve.NewCommand(log),
-		},
-		Version: fmt.Sprintf("%s (%s)", version.Version(), runtime.Version()),
+		Version: fmt.Sprintf("%s (%s)", appmeta.Version(), runtime.Version()),
 		Flags: []cli.Flag{ // global flags
-			&cli.BoolFlag{ // kept for backward compatibility
-				Name:  verboseFlagName,
-				Usage: "verbose output (DEPRECATED FLAG)",
-			},
-			&cli.BoolFlag{ // kept for backward compatibility
-				Name:  debugFlagName,
-				Usage: "debug output (DEPRECATED FLAG)",
-			},
-			&cli.BoolFlag{ // kept for backward compatibility
-				Name:  logJSONFlagName,
-				Usage: "logs in JSON format (DEPRECATED FLAG)",
-			},
-			&cli.StringFlag{
-				Name:    logLevelFlagName,
-				Value:   defaultLogLevel.String(),
-				Usage:   "logging level (`" + strings.Join(logger.LevelStrings(), "/") + "`)",
-				EnvVars: []string{env.LogLevel.String()},
-			},
-			&cli.StringFlag{
-				Name:    logFormatFlagName,
-				Value:   defaultLogFormat.String(),
-				Usage:   "logging format (`" + strings.Join(logger.FormatStrings(), "/") + "`)",
-				EnvVars: []string{env.LogFormat.String()},
-			},
+			&logLevelFlag,
+			&logFormatFlag,
 		},
 	}
 }

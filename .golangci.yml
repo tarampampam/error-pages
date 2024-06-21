@@ -117,6 +117,10 @@ issues:
     - tmp
     - temp
     - testdata
+    - cmd-old # TODO: remove
+    - internal-old # TODO: remove
+    - templates-old # TODO: remove
+    - test-old # TODO: remove
   exclude-rules:
     - {path: flags\.go, linters: [gochecknoglobals, lll, mnd, dupl]}
     - {path: env\.go, linters: [lll, gosec]}

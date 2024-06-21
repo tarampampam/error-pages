@@ -8,6 +8,7 @@
 ## Temp dirs & trash
 /temp
 /tmp
+/*-old
 /cmd/test*
 .DS_Store
 /go.work*

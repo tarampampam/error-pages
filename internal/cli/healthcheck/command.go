@@ -1,36 +1,32 @@
-// Package healthcheck contains CLI `healthcheck` command implementation.
 package healthcheck
 
 import (
-	"errors"
-	"math"
+	"context"
+	"fmt"
 
-	"github.com/urfave/cli/v2"
+	"github.com/urfave/cli/v3"
+	"go.uber.org/zap"
 
 	"gh.tarampamp.am/error-pages/internal/cli/shared"
 )
 
 type checker interface {
-	Check(port uint16) error
+	Check(ctx context.Context, baseURL string) error
 }
 
 // NewCommand creates `healthcheck` command.
-func NewCommand(checker checker) *cli.Command {
+func NewCommand(_ *zap.Logger, checker checker) *cli.Command {
+	var portFlag = shared.ListenPortFlag
+
 	return &cli.Command{
 		Name:    "healthcheck",
 		Aliases: []string{"chk", "health", "check"},
-		Usage:   "Health checker for the HTTP server. Use case - docker healthcheck",
-		Action: func(c *cli.Context) error {
-			var port = c.Uint(shared.ListenPortFlag.Name)
-
-			if port <= 0 || port > math.MaxUint16 {
-				return errors.New("port value out of range")
-			}
-
-			return checker.Check(uint16(port))
+		Usage:   "Health checker for the HTTP server. The use case - docker health check",
+		Action: func(ctx context.Context, c *cli.Command) error {
+			return checker.Check(ctx, fmt.Sprintf("http://127.0.0.1:%d", c.Uint(portFlag.Name)))
 		},
 		Flags: []cli.Flag{
-			shared.ListenPortFlag,
+			&portFlag,
 		},
 	}
 }

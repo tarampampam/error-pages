@@ -4,7 +4,7 @@
 FROM docker.io/library/golang:1.22-bookworm AS develop
 
 # use the /var/tmp as the GOPATH to reuse the modules cache
-ENV GOPATH="/var/tmp"
+ENV GOPATH="/var/tmp/go"
 
 RUN set -x \
     # renovate: source=github-releases name=abice/go-enum
@@ -28,7 +28,9 @@ WORKDIR /src
 RUN \
     --mount=type=bind,source=go.mod,target=/src/go.mod \
     --mount=type=bind,source=go.sum,target=/src/go.sum \
-    go mod download -x
+    go mod download -x \
+    && find "${GOPATH}" -type d -exec chmod 0777 {} \; \
+    && find "${GOPATH}" -type f -exec chmod 0666 {} \;
 
 # -✂- this stage is used to compile the application -------------------------------------------------------------------
 FROM develop AS compile
@@ -38,7 +40,7 @@ ARG APP_VERSION="undefined@docker"
 
 RUN --mount=type=bind,source=.,target=/src set -x \
     && go generate ./... \
-    && CGO_ENABLED=0 LDFLAGS="-s -w -X gh.tarampamp.am/error-pages/internal/version.version=${APP_VERSION}" \
+    && CGO_ENABLED=0 LDFLAGS="-s -w -X gh.tarampamp.am/error-pages/internal/appmeta.version=${APP_VERSION}" \
       go build -trimpath -ldflags "${LDFLAGS}" -o /tmp/error-pages ./cmd/error-pages/ \
     && /tmp/error-pages --version \
     && /tmp/error-pages -h
@@ -90,13 +92,13 @@ USER 10001:10001
 
 WORKDIR /opt
 
-ENV LISTEN_PORT="8080" \
-    TEMPLATE_NAME="ghost" \
-    DEFAULT_ERROR_PAGE="404" \
-    DEFAULT_HTTP_CODE="404" \
-    SHOW_DETAILS="false" \
-    DISABLE_L10N="false" \
-    READ_BUFFER_SIZE="2048"
+#ENV LISTEN_PORT="8080" \
+#    TEMPLATE_NAME="ghost" \
+#    DEFAULT_ERROR_PAGE="404" \
+#    DEFAULT_HTTP_CODE="404" \
+#    SHOW_DETAILS="false" \
+#    DISABLE_L10N="false" \
+#    READ_BUFFER_SIZE="2048"
 
 # docs: https://docs.docker.com/reference/dockerfile/#healthcheck
 HEALTHCHECK --interval=10s --start-interval=1s --start-period=5s --timeout=2s CMD [\

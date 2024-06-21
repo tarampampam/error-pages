@@ -1,8 +1,6 @@
-package version
+package appmeta
 
-import (
-	"testing"
-)
+import "testing"
 
 func TestVersion(t *testing.T) {
 	for give, want := range map[string]string{
