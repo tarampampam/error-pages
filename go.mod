@@ -1,6 +1,6 @@
 module gh.tarampamp.am/error-pages
 
-go 1.21
+go 1.22
 
 require (
 	github.com/a8m/envsubst v1.4.2

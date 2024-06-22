@@ -7,10 +7,6 @@ FROM docker.io/library/golang:1.22-bookworm AS develop
 ENV GOPATH="/var/tmp/go"
 
 RUN set -x \
-    # renovate: source=github-releases name=abice/go-enum
-    && ABICE_GOENUM_VERSION="0.6.0" \
-    && GOBIN=/bin go install "github.com/abice/go-enum@v${ABICE_GOENUM_VERSION}" \
-    && GOBIN=/bin go install golang.org/x/tools/cmd/goimports@latest \
     && GOBIN=/bin go install gotest.tools/gotestsum@latest \
     && go clean -cache -modcache \
     # renovate: source=github-releases name=golangci/golangci-lint

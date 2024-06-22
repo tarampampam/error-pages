@@ -47,6 +47,10 @@ type Config struct {
 		HttpCode uint16
 	}
 
+	// RotationMode allows to set the rotation mode for templates to switch between them automatically on startup,
+	// on each request, daily, hourly and so on.
+	RotationMode RotationMode
+
 	// ShowDetails determines whether to show additional details in the error response, extracted from the
 	// incoming request (if supported by the template).
 	ShowDetails bool
