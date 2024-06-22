@@ -2,6 +2,8 @@ package config
 
 import (
 	"maps"
+	"net/http"
+	"slices"
 
 	builtinTemplates "gh.tarampamp.am/error-pages/templates"
 )
@@ -20,6 +22,34 @@ type Config struct {
 
 	// Codes hold descriptions for HTTP codes (e.g., 404: "Not Found / The server can not find the requested page").
 	Codes Codes
+
+	// TemplateName is the name of the template to use for rendering error pages. The template must be present in the
+	// Templates map.
+	TemplateName string
+
+	// ProxyHeaders contains a list of HTTP headers that will be proxied from the incoming request to the
+	// error page response.
+	ProxyHeaders []string
+
+	// L10n contains localization settings.
+	L10n struct {
+		// Disable the localization of error pages.
+		Disable bool
+	}
+
+	// Default contains default settings.
+	Default struct {
+		// CodeToRender is the code for the default error page to be displayed. It is used when the requested
+		// code is not defined in the incoming request (i.e., the code to render as the index page).
+		CodeToRender uint16
+
+		// HTTPCode is the HTTP code to return when the requested code is not defined in the incoming request.
+		HttpCode uint16
+	}
+
+	// ShowDetails determines whether to show additional details in the error response, extracted from the
+	// incoming request (if supported by the template).
+	ShowDetails bool
 }
 
 const defaultJSONFormat string = `{
@@ -82,6 +112,14 @@ var defaultCodes = Codes{ //nolint:gochecknoglobals
 	"505": {"HTTP Version Not Supported", "The server does not support the \"http protocol\" version"},
 }
 
+var defaultProxyHeaders = []string{ //nolint:gochecknoglobals
+	// "Traceparent",  // W3C Trace Context
+	// "Tracestate",   // W3C Trace Context
+	"X-Request-Id",    // unofficial HTTP header, used to trace individual HTTP requests
+	"X-Trace-Id",      // same as above
+	"X-Amzn-Trace-Id", // to track HTTP requests from clients to targets or other AWS services
+}
+
 // New creates a new configuration with default values.
 func New() Config {
 	var cfg = Config{
@@ -96,6 +134,20 @@ func New() Config {
 	for name, content := range builtinTemplates.BuiltIn() {
 		cfg.Templates[name] = content
 	}
+
+	// set first template as default
+	for _, name := range cfg.Templates.Names() {
+		cfg.TemplateName = name
+
+		break
+	}
+
+	// set default HTTP headers to proxy
+	cfg.ProxyHeaders = slices.Clone(defaultProxyHeaders)
+
+	// set defaults
+	cfg.Default.CodeToRender = 404
+	cfg.Default.HttpCode = http.StatusNotFound
 
 	return cfg
 }
