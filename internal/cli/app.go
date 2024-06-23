@@ -9,7 +9,6 @@ import (
 	_ "github.com/urfave/cli-docs/v3" // required for `go generate` to work
 	"github.com/urfave/cli/v3"
 
-	"gh.tarampamp.am/error-pages/internal-old/env"
 	"gh.tarampamp.am/error-pages/internal/appmeta"
 	"gh.tarampamp.am/error-pages/internal/cli/healthcheck"
 	"gh.tarampamp.am/error-pages/internal/cli/serve"
@@ -25,7 +24,7 @@ func NewApp(appName string) *cli.Command { //nolint:funlen
 			Name:     "log-level",
 			Value:    logger.InfoLevel.String(),
 			Usage:    "logging level (" + strings.Join(logger.LevelStrings(), "/") + ")",
-			Sources:  cli.EnvVars(env.LogLevel.String()),
+			Sources:  cli.EnvVars("LOG_LEVEL"),
 			OnlyOnce: true,
 			Config:   cli.StringConfig{TrimSpace: true},
 			Validator: func(s string) error {
@@ -41,7 +40,7 @@ func NewApp(appName string) *cli.Command { //nolint:funlen
 			Name:     "log-format",
 			Value:    logger.ConsoleFormat.String(),
 			Usage:    "logging format (" + strings.Join(logger.FormatStrings(), "/") + ")",
-			Sources:  cli.EnvVars(env.LogFormat.String()),
+			Sources:  cli.EnvVars("LOG_FORMAT"),
 			OnlyOnce: true,
 			Config:   cli.StringConfig{TrimSpace: true},
 			Validator: func(s string) error {

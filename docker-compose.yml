@@ -10,7 +10,7 @@ services:
   web:
     build: {target: runtime}
     ports: ['8080:8080/tcp'] # open http://127.0.0.1:8080
-    command: serve --show-details --proxy-headers=X-Foo,Bar,Baz_blah --catch-all
+    command: --log-level debug serve --show-details --proxy-headers=X-Foo,Bar,Baz_blah
     develop: # available since docker compose v2.22, https://docs.docker.com/compose/file-watch/
       watch: [{action: rebuild, path: .}]
     security_opt: [no-new-privileges:true]

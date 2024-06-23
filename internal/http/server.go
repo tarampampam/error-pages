@@ -4,6 +4,7 @@ import (
 	"context"
 	"net"
 	"net/http"
+	"regexp"
 	"strconv"
 	"strings"
 	"time"
@@ -22,7 +23,6 @@ import (
 type Server struct {
 	log    *zap.Logger
 	server *http.Server
-	mux    *http.ServeMux
 }
 
 // NewServer creates a new HTTP server.
@@ -33,44 +33,64 @@ func NewServer(baseCtx context.Context, log *zap.Logger) Server {
 		maxHeaderBytes = (1 << 20) * 5                //nolint:mnd // 5 MB
 	)
 
-	var (
-		mux = http.NewServeMux()
-		srv = &http.Server{
-			Handler:           mux,
+	return Server{
+		log: log,
+		server: &http.Server{
 			ReadTimeout:       readTimeout,
 			WriteTimeout:      writeTimeout,
 			ReadHeaderTimeout: readTimeout,
 			MaxHeaderBytes:    maxHeaderBytes,
 			ErrorLog:          zap.NewStdLog(log),
 			BaseContext:       func(net.Listener) context.Context { return baseCtx },
-		}
-	)
-
-	return Server{log: log, server: srv, mux: mux}
+		},
+	}
 }
 
 // Register server handlers, middlewares, etc.
 func (s *Server) Register(cfg *config.Config) error {
-	// register middleware
+	var (
+		liveHandler       = live.New()
+		versionHandler    = version.New(appmeta.Version())
+		errorPagesHandler = error_page.New()
+
+		errorPageRegex = regexp.MustCompile(`^/(\d{3})(?:\.html|\.htm)?$`) // TODO: rewrite to function
+	)
+
+	s.server.Handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		var url, method = r.URL.Path, r.Method
+
+		switch {
+		// live endpoints
+		case url == "/health/live" || url == "/health" || url == "/healthz" || url == "/live":
+			liveHandler.ServeHTTP(w, r)
+		// version endpoint
+		case url == "/version":
+			versionHandler.ServeHTTP(w, r)
+		// error pages endpoints:
+		//	- /
+		//	-	/{code}.html
+		//	- /{code}.htm
+		//	- /{code}
+		case method == http.MethodGet && (url == "/" || errorPageRegex.MatchString(url)):
+			errorPagesHandler.ServeHTTP(w, r)
+		// wrong requests handling
+		default:
+			switch {
+			case method == http.MethodHead:
+				w.WriteHeader(http.StatusNotFound)
+			case method == http.MethodGet:
+				http.NotFound(w, r)
+			default:
+				http.Error(w, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
+			}
+		}
+	})
+
+	// apply middleware
 	s.server.Handler = logreq.New(s.log, func(r *http.Request) bool {
 		// skip logging healthcheck requests
 		return strings.Contains(strings.ToLower(r.UserAgent()), "healthcheck")
 	})(s.server.Handler)
-
-	{ // register handlers (https://go.dev/blog/routing-enhancements)
-		var errorPageHandler = error_page.New()
-
-		s.mux.Handle("/", errorPageHandler)
-		s.mux.Handle("/{any}", errorPageHandler)
-
-		var liveHandler = live.New()
-
-		s.mux.Handle("GET /health/live", liveHandler)
-		s.mux.Handle("GET /healthz", liveHandler)
-		s.mux.Handle("GET /live", liveHandler)
-
-		s.mux.Handle("GET /version", version.New(appmeta.Version()))
-	}
 
 	return nil
 }

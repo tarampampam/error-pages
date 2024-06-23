@@ -15,8 +15,17 @@ func New(ver string) http.Handler {
 	})
 
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write(body)
+		switch r.Method {
+		case http.MethodGet:
+			w.Header().Set("Content-Type", "application/json; charset=utf-8")
+			w.WriteHeader(http.StatusOK)
+			_, _ = w.Write(body)
+
+		case http.MethodHead:
+			w.WriteHeader(http.StatusOK)
+
+		default:
+			http.Error(w, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
+		}
 	})
 }

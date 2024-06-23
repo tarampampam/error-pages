@@ -5,5 +5,4 @@
 !/cmd
 !/internal
 !/templates
-!/error-pages.yml
 !/go.*

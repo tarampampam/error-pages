@@ -48,22 +48,19 @@ WORKDIR /tmp/rootfs
 
 # prepare rootfs for runtime
 RUN --mount=type=bind,source=.,target=/src set -x \
-    && mkdir -p ./etc ./bin ./opt/html \
+    && mkdir -p ./etc ./bin \
     && echo 'appuser:x:10001:10001::/nonexistent:/sbin/nologin' > ./etc/passwd \
-    && echo 'appuser:x:10001:' > ./etc/group \
-    && cp -rv /src/templates ./opt/templates \
-    && rm -v ./opt/templates/*.md \
-    && cp -rv /src/error-pages.yml ./opt/error-pages.yml
+    && echo 'appuser:x:10001:' > ./etc/group
 
 # take the binary from the compile stage
 COPY --from=compile /tmp/error-pages ./bin/error-pages
 
 WORKDIR /tmp/rootfs/opt
 
-# generate static error pages (for usage inside another docker images, for example)
-RUN set -x \
-    && ./../bin/error-pages --verbose build --config-file ./error-pages.yml --index ./html \
-    && ls -l ./html
+## generate static error pages (for usage inside another docker images, for example)
+#RUN set -x \
+#    && ./../bin/error-pages --verbose build --config-file ./error-pages.yml --index ./html \
+#    && ls -l ./html
 
 # -✂- and this is the final stage (an empty filesystem is used) -------------------------------------------------------
 FROM scratch AS runtime
@@ -98,9 +95,9 @@ WORKDIR /opt
 
 # docs: https://docs.docker.com/reference/dockerfile/#healthcheck
 HEALTHCHECK --interval=10s --start-interval=1s --start-period=5s --timeout=2s CMD [\
-  "/bin/error-pages", "--log-json", "healthcheck" \
+  "/bin/error-pages", "--log-format", "json", "healthcheck" \
 ]
 
 ENTRYPOINT ["/bin/error-pages"]
 
-CMD ["--log-json", "serve"]
+CMD ["--log-format", "json", "serve"]
