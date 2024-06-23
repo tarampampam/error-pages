@@ -37,15 +37,16 @@ type Config struct {
 		Disable bool
 	}
 
-	// Default contains default settings.
-	Default struct {
-		// CodeToRender is the code for the default error page to be displayed. It is used when the requested
-		// code is not defined in the incoming request (i.e., the code to render as the index page).
-		CodeToRender uint16
+	// DefaultCodeToRender is the code for the default error page to be displayed. It is used when the requested
+	// code is not defined in the incoming request (i.e., the code to render as the index page).
+	DefaultCodeToRender uint16
 
-		// HTTPCode is the HTTP code to return when the requested code is not defined in the incoming request.
-		HttpCode uint16
-	}
+	// RespondWithSameHTTPCode determines whether the response should have the same HTTP status code as the requested
+	// error page.
+	// In other words, if set to true and the requested error page has a code of 404, the HTTP response will also have
+	// a status code of 404. If set to false, the HTTP response will have a status code of 200 regardless of the
+	// requested error page's status code.
+	RespondWithSameHTTPCode bool
 
 	// RotationMode allows to set the rotation mode for templates to switch between them automatically on startup,
 	// on each request, daily, hourly and so on.
@@ -150,8 +151,7 @@ func New() Config {
 	cfg.ProxyHeaders = slices.Clone(defaultProxyHeaders)
 
 	// set defaults
-	cfg.Default.CodeToRender = 404
-	cfg.Default.HttpCode = http.StatusNotFound
+	cfg.DefaultCodeToRender = http.StatusNotFound
 
 	return cfg
 }

@@ -1,6 +1,7 @@
 package config_test
 
 import (
+	"net/http"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -20,8 +21,7 @@ func TestNew(t *testing.T) {
 		assert.True(t, len(cfg.Templates) >= 2)
 		assert.NotEmpty(t, cfg.TemplateName)
 		assert.True(t, cfg.Templates.Has(cfg.TemplateName))
-		assert.Equal(t, uint16(404), cfg.Default.CodeToRender)
-		assert.Equal(t, uint16(404), cfg.Default.HttpCode)
+		assert.Equal(t, uint16(http.StatusNotFound), cfg.DefaultCodeToRender)
 	})
 
 	t.Run("changing cfg1 should not affect cfg2", func(t *testing.T) {

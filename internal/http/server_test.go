@@ -7,6 +7,7 @@ import (
 	"io"
 	"net"
 	"net/http"
+	"strconv"
 	"testing"
 	"time"
 
@@ -99,7 +100,133 @@ func TestRouting(t *testing.T) {
 	})
 
 	t.Run("error page", func(t *testing.T) {
-		t.Skip("not implemented")
+		t.Run("success", func(t *testing.T) {
+			var assertErrorPage = func(t *testing.T, wantErrorPageCode int, body []byte, headers http.Header) {
+				t.Helper()
+
+				var bodyStr = string(body)
+
+				assert.NotEmpty(t, bodyStr)
+				assert.Contains(t, bodyStr, "error page")                    // FIXME
+				assert.Contains(t, bodyStr, strconv.Itoa(wantErrorPageCode)) // FIXME?
+				assert.Contains(t, headers.Get("Content-Type"), "text/html") // FIXME
+			}
+
+			t.Run("index, default", func(t *testing.T) {
+				var status, body, headers = sendRequest(t, http.MethodGet, baseUrl+"/")
+
+				assert.Equal(t, http.StatusOK, status)
+				assertErrorPage(t, int(cfg.DefaultCodeToRender), body, headers)
+			})
+
+			t.Run("index, code in HTTP header", func(t *testing.T) {
+				var status, body, headers = sendRequest(t, http.MethodGet, baseUrl+"/", map[string]string{"X-Code": "404"})
+
+				assert.Equal(t, http.StatusOK, status) // because of [cfg.RespondWithSameHTTPCode] is false by default
+				assertErrorPage(t, 404, body, headers)
+			})
+
+			t.Run("code in URL, .html", func(t *testing.T) {
+				var status, body, headers = sendRequest(t, http.MethodGet, baseUrl+"/500.html")
+
+				assert.Equal(t, http.StatusOK, status)
+				assertErrorPage(t, 500, body, headers)
+			})
+
+			t.Run("code in URL, .htm", func(t *testing.T) {
+				var status, body, headers = sendRequest(t, http.MethodGet, baseUrl+"/409.htm")
+
+				assert.Equal(t, http.StatusOK, status)
+				assertErrorPage(t, 409, body, headers)
+			})
+
+			t.Run("code in URL, without extension", func(t *testing.T) {
+				var status, body, headers = sendRequest(t, http.MethodGet, baseUrl+"/405")
+
+				assert.Equal(t, http.StatusOK, status)
+				assertErrorPage(t, 405, body, headers)
+			})
+
+			t.Run("code in the URL have higher priority than in the headers", func(t *testing.T) {
+				var status, body, headers = sendRequest(t, http.MethodGet, baseUrl+"/405", map[string]string{"X-Code": "404"})
+
+				assert.Equal(t, http.StatusOK, status)
+				assertErrorPage(t, 405, body, headers)
+			})
+
+			t.Run("invalid code in HTTP header (with a string)", func(t *testing.T) {
+				var status, body, headers = sendRequest(t, http.MethodGet, baseUrl+"/", map[string]string{"X-Code": "foobar"})
+
+				assert.Equal(t, http.StatusOK, status)
+				assertErrorPage(t, int(cfg.DefaultCodeToRender), body, headers)
+			})
+
+			t.Run("invalid code in HTTP header (too small)", func(t *testing.T) {
+				var status, body, headers = sendRequest(t, http.MethodGet, baseUrl+"/", map[string]string{"X-Code": "0"})
+
+				assert.Equal(t, http.StatusOK, status)
+				assertErrorPage(t, int(cfg.DefaultCodeToRender), body, headers)
+			})
+
+			t.Run("invalid code in HTTP header (too big)", func(t *testing.T) {
+				var status, body, headers = sendRequest(t, http.MethodGet, baseUrl+"/", map[string]string{"X-Code": "1000"})
+
+				assert.Equal(t, http.StatusOK, status)
+				assertErrorPage(t, int(cfg.DefaultCodeToRender), body, headers)
+			})
+		})
+
+		t.Run("failure", func(t *testing.T) {
+			var assertIsNotErrorPage = func(t *testing.T, body []byte) {
+				t.Helper()
+
+				assert.NotContains(t, string(body), "error page") // FIXME
+			}
+
+			t.Run("invalid code in URL (too small)", func(t *testing.T) {
+				var status, body, _ = sendRequest(t, http.MethodGet, baseUrl+"/0.html")
+
+				assert.Equal(t, http.StatusNotFound, status)
+				assertIsNotErrorPage(t, body)
+			})
+
+			t.Run("invalid code in URL (too big)", func(t *testing.T) {
+				var status, body, _ = sendRequest(t, http.MethodGet, baseUrl+"/1000.html")
+
+				assert.Equal(t, http.StatusNotFound, status)
+				assertIsNotErrorPage(t, body)
+			})
+
+			t.Run("invalid code in URL (with a string suffix)", func(t *testing.T) {
+				var status, body, _ = sendRequest(t, http.MethodGet, baseUrl+"/404foobar.html")
+
+				assert.Equal(t, http.StatusNotFound, status)
+				assertIsNotErrorPage(t, body)
+			})
+
+			t.Run("invalid code in URL (with a string prefix)", func(t *testing.T) {
+				var status, body, _ = sendRequest(t, http.MethodGet, baseUrl+"/foobar404.html")
+
+				assert.Equal(t, http.StatusNotFound, status)
+				assertIsNotErrorPage(t, body)
+			})
+
+			t.Run("invalid code in URL (with a string)", func(t *testing.T) {
+				var status, body, _ = sendRequest(t, http.MethodGet, baseUrl+"/foobar.html")
+
+				assert.Equal(t, http.StatusNotFound, status)
+				assertIsNotErrorPage(t, body)
+			})
+
+			t.Run("invalid HTTP methods", func(t *testing.T) {
+				for _, method := range []string{http.MethodDelete, http.MethodPatch, http.MethodPost, http.MethodPut} {
+					var status, body, _ = sendRequest(t, method, baseUrl+"/404.html")
+
+					assert.Equal(t, http.StatusMethodNotAllowed, status)
+					assertIsNotErrorPage(t, body)
+				}
+			})
+		})
 	})
 
 	t.Run("errors handling", func(t *testing.T) {

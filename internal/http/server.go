@@ -4,7 +4,6 @@ import (
 	"context"
 	"net"
 	"net/http"
-	"regexp"
 	"strconv"
 	"strings"
 	"time"
@@ -13,7 +12,7 @@ import (
 
 	"gh.tarampamp.am/error-pages/internal/appmeta"
 	"gh.tarampamp.am/error-pages/internal/config"
-	"gh.tarampamp.am/error-pages/internal/http/handlers/error_page"
+	ep "gh.tarampamp.am/error-pages/internal/http/handlers/error_page"
 	"gh.tarampamp.am/error-pages/internal/http/handlers/live"
 	"gh.tarampamp.am/error-pages/internal/http/handlers/version"
 	"gh.tarampamp.am/error-pages/internal/http/middleware/logreq"
@@ -51,9 +50,7 @@ func (s *Server) Register(cfg *config.Config) error {
 	var (
 		liveHandler       = live.New()
 		versionHandler    = version.New(appmeta.Version())
-		errorPagesHandler = error_page.New()
-
-		errorPageRegex = regexp.MustCompile(`^/(\d{3})(?:\.html|\.htm)?$`) // TODO: rewrite to function
+		errorPagesHandler = ep.New(cfg)
 	)
 
 	s.server.Handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -63,16 +60,19 @@ func (s *Server) Register(cfg *config.Config) error {
 		// live endpoints
 		case url == "/health/live" || url == "/health" || url == "/healthz" || url == "/live":
 			liveHandler.ServeHTTP(w, r)
+
 		// version endpoint
 		case url == "/version":
 			versionHandler.ServeHTTP(w, r)
+
 		// error pages endpoints:
 		//	- /
 		//	-	/{code}.html
 		//	- /{code}.htm
 		//	- /{code}
-		case method == http.MethodGet && (url == "/" || errorPageRegex.MatchString(url)):
+		case method == http.MethodGet && (url == "/" || ep.URLContainsCode(url) || ep.HeadersContainCode(r.Header)):
 			errorPagesHandler.ServeHTTP(w, r)
+
 		// wrong requests handling
 		default:
 			switch {

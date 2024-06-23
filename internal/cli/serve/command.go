@@ -74,7 +74,7 @@ func NewCommand(log *zap.Logger) *cli.Command { //nolint:funlen,gocognit,gocyclo
 		defaultCodeToRenderFlag = cli.UintFlag{
 			Name:    "default-error-page",
 			Usage:   "the code of the default (index page, when a code is not specified) error page to render",
-			Value:   uint64(cfg.Default.CodeToRender),
+			Value:   uint64(cfg.DefaultCodeToRender),
 			Sources: env("DEFAULT_ERROR_PAGE"),
 			Validator: func(code uint64) error {
 				if code > 999 { //nolint:mnd
@@ -85,13 +85,13 @@ func NewCommand(log *zap.Logger) *cli.Command { //nolint:funlen,gocognit,gocyclo
 			},
 			OnlyOnce: true,
 		}
-		defaultHTTPCodeFlag = cli.UintFlag{
-			Name:      "default-http-code",
-			Usage:     "the default (index page, when a code is not specified) HTTP response code",
-			Value:     uint64(cfg.Default.HttpCode),
-			Sources:   env("DEFAULT_HTTP_CODE"),
-			Validator: defaultCodeToRenderFlag.Validator,
-			OnlyOnce:  true,
+		sendSameHTTPCodeFlag = cli.BoolFlag{
+			Name: "send-same-http-code",
+			Usage: "the HTTP response should have the same status code as the requested error page (by default, " +
+				"every response with an error page will have a status code of 200)",
+			Value:    cfg.RespondWithSameHTTPCode,
+			Sources:  env("SEND_SAME_HTTP_CODE"),
+			OnlyOnce: true,
 		}
 		showDetailsFlag = cli.BoolFlag{
 			Name:     "show-details",
@@ -157,8 +157,8 @@ func NewCommand(log *zap.Logger) *cli.Command { //nolint:funlen,gocognit,gocyclo
 
 			cfg.TemplateName = c.String(templateNameFlag.Name)
 			cfg.L10n.Disable = c.Bool(disableL10nFlag.Name)
-			cfg.Default.CodeToRender = uint16(c.Uint(defaultCodeToRenderFlag.Name))
-			cfg.Default.HttpCode = uint16(c.Uint(defaultHTTPCodeFlag.Name))
+			cfg.DefaultCodeToRender = uint16(c.Uint(defaultCodeToRenderFlag.Name))
+			cfg.RespondWithSameHTTPCode = c.Bool(sendSameHTTPCodeFlag.Name)
 			cfg.RotationMode, _ = config.ParseRotationMode(c.String(rotationModeFlag.Name))
 			cfg.ShowDetails = c.Bool(showDetailsFlag.Name)
 
@@ -231,8 +231,8 @@ func NewCommand(log *zap.Logger) *cli.Command { //nolint:funlen,gocognit,gocyclo
 				zap.String("XML format", cfg.Formats.XML),
 				zap.String("template name", cfg.TemplateName),
 				zap.Bool("disable localization", cfg.L10n.Disable),
-				zap.Uint16("default code to render", cfg.Default.CodeToRender),
-				zap.Uint16("default HTTP code", cfg.Default.HttpCode),
+				zap.Uint16("default code to render", cfg.DefaultCodeToRender),
+				zap.Bool("respond with the same HTTP code", cfg.RespondWithSameHTTPCode),
 				zap.Bool("show details", cfg.ShowDetails),
 				zap.Strings("proxy HTTP headers", cfg.ProxyHeaders),
 			)
@@ -249,7 +249,7 @@ func NewCommand(log *zap.Logger) *cli.Command { //nolint:funlen,gocognit,gocyclo
 			&templateNameFlag,
 			&disableL10nFlag,
 			&defaultCodeToRenderFlag,
-			&defaultHTTPCodeFlag,
+			&sendSameHTTPCodeFlag,
 			&showDetailsFlag,
 			&proxyHeadersListFlag,
 			&rotationModeFlag,
