@@ -37,9 +37,9 @@ linters-settings:
     ignore-words: [cancelled]
   lll:
     line-length: 120
-#  forbidigo:
-#    forbid:
-#      - '^(fmt\.Print(|f|ln)|print(|ln))(# it looks like a forgotten debugging printing call)?$'
+  forbidigo:
+    forbid:
+      - '^(fmt\.Print(|f|ln)|print(|ln))(# it looks like a forgotten debugging printing call)?$'
   prealloc:
     simple: true
     range-loops: true
