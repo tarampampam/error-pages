@@ -8,24 +8,23 @@ import (
 	"strings"
 	"time"
 
-	"go.uber.org/zap"
-
 	"gh.tarampamp.am/error-pages/internal/appmeta"
 	"gh.tarampamp.am/error-pages/internal/config"
 	ep "gh.tarampamp.am/error-pages/internal/http/handlers/error_page"
 	"gh.tarampamp.am/error-pages/internal/http/handlers/live"
 	"gh.tarampamp.am/error-pages/internal/http/handlers/version"
 	"gh.tarampamp.am/error-pages/internal/http/middleware/logreq"
+	"gh.tarampamp.am/error-pages/internal/logger"
 )
 
 // Server is an HTTP server for serving error pages.
 type Server struct {
-	log    *zap.Logger
+	log    *logger.Logger
 	server *http.Server
 }
 
 // NewServer creates a new HTTP server.
-func NewServer(baseCtx context.Context, log *zap.Logger) Server {
+func NewServer(baseCtx context.Context, log *logger.Logger) Server {
 	const (
 		readTimeout    = 30 * time.Second
 		writeTimeout   = readTimeout + 10*time.Second // should be bigger than the read timeout
@@ -39,7 +38,7 @@ func NewServer(baseCtx context.Context, log *zap.Logger) Server {
 			WriteTimeout:      writeTimeout,
 			ReadHeaderTimeout: readTimeout,
 			MaxHeaderBytes:    maxHeaderBytes,
-			ErrorLog:          zap.NewStdLog(log),
+			ErrorLog:          logger.NewStdLog(log),
 			BaseContext:       func(net.Listener) context.Context { return baseCtx },
 		},
 	}

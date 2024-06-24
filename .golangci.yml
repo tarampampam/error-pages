@@ -37,15 +37,9 @@ linters-settings:
     ignore-words: [cancelled]
   lll:
     line-length: 120
-  forbidigo:
-    forbid:
-      - '^(fmt\.Print(|f|ln)|print(|ln))(# it looks like a forgotten debugging printing call)?$'
-  depguard:
-    rules:
-      logger:
-        deny:
-          - pkg: log
-            desc: 'logging is allowed only by zaplog'
+#  forbidigo:
+#    forbid:
+#      - '^(fmt\.Print(|f|ln)|print(|ln))(# it looks like a forgotten debugging printing call)?$'
   prealloc:
     simple: true
     range-loops: true
@@ -108,7 +102,6 @@ linters: # All available linters list: <https://golangci-lint.run/usage/linters/
     - durationcheck # Check for two durations multiplied together
     - errchkjson # Checks types passed to the json encoding functions
     - errname # Checks that sentinel errors are prefixed with the Err and error types are suffixed with the Error
-    - depguard # Go linter that checks if package imports are in a list of acceptable packages.
 
 issues:
   exclude-dirs:

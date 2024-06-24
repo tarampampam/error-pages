@@ -6,15 +6,15 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"go.uber.org/zap"
 
 	"gh.tarampamp.am/error-pages/internal/cli/healthcheck"
+	"gh.tarampamp.am/error-pages/internal/logger"
 )
 
 func TestNewCommand(t *testing.T) {
 	t.Parallel()
 
-	var cmd = healthcheck.NewCommand(zap.NewNop(), nil)
+	var cmd = healthcheck.NewCommand(logger.NewNop(), nil)
 
 	assert.Equal(t, "healthcheck", cmd.Name)
 	assert.Equal(t, []string{"chk", "health", "check"}, cmd.Aliases)
@@ -35,7 +35,7 @@ func (m *fakeHealthChecker) Check(_ context.Context, addr string) error {
 func TestCommand_RunSuccess(t *testing.T) {
 	t.Parallel()
 
-	var cmd = healthcheck.NewCommand(zap.NewNop(), &fakeHealthChecker{
+	var cmd = healthcheck.NewCommand(logger.NewNop(), &fakeHealthChecker{
 		t:           t,
 		wantAddress: "http://127.0.0.1:1234",
 	})
@@ -46,7 +46,7 @@ func TestCommand_RunSuccess(t *testing.T) {
 func TestCommand_RunFail(t *testing.T) {
 	t.Parallel()
 
-	cmd := healthcheck.NewCommand(zap.NewNop(), &fakeHealthChecker{
+	cmd := healthcheck.NewCommand(logger.NewNop(), &fakeHealthChecker{
 		t:           t,
 		wantAddress: "http://127.0.0.1:4321",
 		giveErr:     assert.AnError,

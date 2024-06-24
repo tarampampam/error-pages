@@ -60,8 +60,6 @@ func NewApp(appName string) *cli.Command { //nolint:funlen
 		Usage:   appName,
 		Suggest: true,
 		Before: func(ctx context.Context, c *cli.Command) error {
-			_ = log.Sync() // sync previous logger instance
-
 			var (
 				logLevel, _  = logger.ParseLevel(c.String(logLevelFlag.Name))   // error ignored because the flag validates itself
 				logFormat, _ = logger.ParseFormat(c.String(logFormatFlag.Name)) // --//--

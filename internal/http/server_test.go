@@ -13,15 +13,15 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"go.uber.org/zap"
 
 	"gh.tarampamp.am/error-pages/internal/config"
 	appHttp "gh.tarampamp.am/error-pages/internal/http"
+	"gh.tarampamp.am/error-pages/internal/logger"
 )
 
 func TestRouting(t *testing.T) {
 	var (
-		srv = appHttp.NewServer(context.Background(), zap.NewNop())
+		srv = appHttp.NewServer(context.Background(), logger.NewNop())
 		cfg = config.New()
 	)
 

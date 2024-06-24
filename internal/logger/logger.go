@@ -1,60 +1,126 @@
 package logger
 
 import (
+	"context"
 	"errors"
-
-	"go.uber.org/zap"
-	"go.uber.org/zap/zapcore"
+	"io"
+	"log/slog"
+	"os"
+	"strings"
+	"time"
 )
 
-// New creates new "zap" logger with a small customization.
-func New(l Level, f Format) (*zap.Logger, error) {
-	var config zap.Config
+// internalAttrKeyLoggerName is used to store the logger name in the logger context (attributes).
+const internalAttrKeyLoggerName = "named_logger"
 
-	switch f {
-	case ConsoleFormat:
-		config = zap.NewDevelopmentConfig()
-		config.EncoderConfig.EncodeLevel = zapcore.LowercaseColorLevelEncoder
-		config.EncoderConfig.EncodeTime = zapcore.TimeEncoderOfLayout("15:04:05")
+var (
+	// consoleFormatAttrReplacer is a replacer for console format. It replaces some attributes with more
+	// human-readable ones.
+	consoleFormatAttrReplacer = func(_ []string, a slog.Attr) slog.Attr { //nolint:gochecknoglobals
+		switch a.Key {
+		case internalAttrKeyLoggerName:
+			return slog.String("logger", a.Value.String())
+		case "level":
+			return slog.String(a.Key, strings.ToLower(a.Value.String()))
+		default:
+			if ts, ok := a.Value.Any().(time.Time); ok && a.Key == "time" {
+				return slog.String(a.Key, ts.Format("15:04:05"))
+			}
+		}
 
-	case JSONFormat:
-		config = zap.NewProductionConfig() // json encoder is used by default
-
-	default:
-		return nil, errors.New("unsupported logging format")
+		return a
 	}
 
-	// default configuration for all encoders
-	config.Level = zap.NewAtomicLevelAt(zap.InfoLevel)
-	config.Development = false
-	config.DisableStacktrace = true
-	config.DisableCaller = true
+	// jsonFormatAttrReplacer is a replacer for JSON format. It replaces some attributes with more
+	// machine-readable ones.
+	jsonFormatAttrReplacer = func(_ []string, a slog.Attr) slog.Attr { //nolint:gochecknoglobals
+		switch a.Key {
+		case internalAttrKeyLoggerName:
+			return slog.String("logger", a.Value.String())
+		case "level":
+			return slog.String(a.Key, strings.ToLower(a.Value.String()))
+		default:
+			if ts, ok := a.Value.Any().(time.Time); ok && a.Key == "time" {
+				return slog.Float64("ts", float64(ts.Unix())+float64(ts.Nanosecond())/1e9)
+			}
+		}
 
-	// enable additional features for debugging
-	if l <= DebugLevel {
-		config.Development = true
-		config.DisableStacktrace = false
-		config.DisableCaller = false
+		return a
 	}
+)
 
-	var zapLvl zapcore.Level
+// Logger is a simple logger that wraps [slog.Logger]. It provides a more convenient API for logging and
+// formatting messages.
+type Logger struct {
+	ctx  context.Context
+	slog *slog.Logger
+	lvl  Level
+}
 
-	switch l { // convert level to zap.Level
+// New creates a new logger with the given level and format. Optionally, you can specify the writer to write logs to.
+func New(l Level, f Format, writer ...io.Writer) (*Logger, error) {
+	var options slog.HandlerOptions
+
+	switch l {
 	case DebugLevel:
-		zapLvl = zap.DebugLevel
+		options.Level = slog.LevelDebug
 	case InfoLevel:
-		zapLvl = zap.InfoLevel
+		options.Level = slog.LevelInfo
 	case WarnLevel:
-		zapLvl = zap.WarnLevel
+		options.Level = slog.LevelWarn
 	case ErrorLevel:
-		zapLvl = zap.ErrorLevel
-	case FatalLevel:
-		zapLvl = zap.FatalLevel
+		options.Level = slog.LevelError
 	default:
 		return nil, errors.New("unsupported logging level")
 	}
 
-	config.Level = zap.NewAtomicLevelAt(zapLvl)
+	var (
+		handler slog.Handler
+		target  io.Writer
+	)
 
-	return config.Build()
+	if len(writer) > 0 && writer[0] != nil {
+		target = writer[0]
+	} else {
+		target = os.Stderr
+	}
+
+	switch f {
+	case ConsoleFormat:
+		options.ReplaceAttr = consoleFormatAttrReplacer
+
+		handler = slog.NewTextHandler(target, &options)
+	case JSONFormat:
+		options.ReplaceAttr = jsonFormatAttrReplacer
+
+		handler = slog.NewJSONHandler(target, &options)
+	default:
+		return nil, errors.New("unsupported logging format")
+	}
+
+	return &Logger{ctx: context.Background(), slog: slog.New(handler), lvl: l}, nil
 }
+
+// Level returns the logger level.
+func (l *Logger) Level() Level { return l.lvl }
+
+// Named creates a new logger with the same properties as the original logger and the given name.
+func (l *Logger) Named(name string) *Logger {
+	return &Logger{
+		ctx:  l.ctx,
+		slog: l.slog.With(slog.String(internalAttrKeyLoggerName, name)),
+		lvl:  l.lvl,
+	}
+}
+
+// Debug logs a message at DebugLevel.
+func (l *Logger) Debug(msg string, f ...Attr) { l.slog.LogAttrs(l.ctx, slog.LevelDebug, msg, f...) }
+
+// Info logs a message at InfoLevel.
+func (l *Logger) Info(msg string, f ...Attr) { l.slog.LogAttrs(l.ctx, slog.LevelInfo, msg, f...) }
+
+// Warn logs a message at WarnLevel.
+func (l *Logger) Warn(msg string, f ...Attr) { l.slog.LogAttrs(l.ctx, slog.LevelWarn, msg, f...) }
+
+// Error logs a message at ErrorLevel.
+func (l *Logger) Error(msg string, f ...Attr) { l.slog.LogAttrs(l.ctx, slog.LevelError, msg, f...) }

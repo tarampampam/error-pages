@@ -9,11 +9,11 @@ import (
 	"time"
 
 	"github.com/urfave/cli/v3"
-	"go.uber.org/zap"
 
 	"gh.tarampamp.am/error-pages/internal/cli/shared"
 	"gh.tarampamp.am/error-pages/internal/config"
 	appHttp "gh.tarampamp.am/error-pages/internal/http"
+	"gh.tarampamp.am/error-pages/internal/logger"
 )
 
 type command struct {
@@ -29,7 +29,7 @@ type command struct {
 }
 
 // NewCommand creates `serve` command.
-func NewCommand(log *zap.Logger) *cli.Command { //nolint:funlen,gocognit,gocyclo
+func NewCommand(log *logger.Logger) *cli.Command { //nolint:funlen,gocognit,gocyclo
 	var (
 		cmd       command
 		cfg       = config.New()
@@ -182,8 +182,8 @@ func NewCommand(log *zap.Logger) *cli.Command { //nolint:funlen,gocognit,gocyclo
 						return fmt.Errorf("cannot add template from file %s: %w", templatePath, err)
 					} else {
 						log.Info("Template added",
-							zap.String("name", addedName),
-							zap.String("path", templatePath),
+							logger.String("name", addedName),
+							logger.String("path", templatePath),
 						)
 					}
 				}
@@ -207,9 +207,9 @@ func NewCommand(log *zap.Logger) *cli.Command { //nolint:funlen,gocognit,gocyclo
 					cfg.Codes[code] = desc
 
 					log.Info("HTTP code added",
-						zap.String("code", code),
-						zap.String("message", desc.Message),
-						zap.String("description", desc.Description),
+						logger.String("code", code),
+						logger.String("message", desc.Message),
+						logger.String("description", desc.Description),
 					)
 				}
 			}
@@ -225,16 +225,16 @@ func NewCommand(log *zap.Logger) *cli.Command { //nolint:funlen,gocognit,gocyclo
 			}
 
 			log.Debug("Configuration",
-				zap.Strings("loaded templates", cfg.Templates.Names()),
-				zap.Strings("described HTTP codes", cfg.Codes.Codes()),
-				zap.String("JSON format", cfg.Formats.JSON),
-				zap.String("XML format", cfg.Formats.XML),
-				zap.String("template name", cfg.TemplateName),
-				zap.Bool("disable localization", cfg.L10n.Disable),
-				zap.Uint16("default code to render", cfg.DefaultCodeToRender),
-				zap.Bool("respond with the same HTTP code", cfg.RespondWithSameHTTPCode),
-				zap.Bool("show details", cfg.ShowDetails),
-				zap.Strings("proxy HTTP headers", cfg.ProxyHeaders),
+				logger.Strings("loaded templates", cfg.Templates.Names()...),
+				logger.Strings("described HTTP codes", cfg.Codes.Codes()...),
+				logger.String("JSON format", cfg.Formats.JSON),
+				logger.String("XML format", cfg.Formats.XML),
+				logger.String("template name", cfg.TemplateName),
+				logger.Bool("disable localization", cfg.L10n.Disable),
+				logger.Uint16("default code to render", cfg.DefaultCodeToRender),
+				logger.Bool("respond with the same HTTP code", cfg.RespondWithSameHTTPCode),
+				logger.Bool("show details", cfg.ShowDetails),
+				logger.Strings("proxy HTTP headers", cfg.ProxyHeaders...),
 			)
 
 			return cmd.Run(ctx, log, &cfg)
@@ -261,7 +261,7 @@ func NewCommand(log *zap.Logger) *cli.Command { //nolint:funlen,gocognit,gocyclo
 }
 
 // Run current command.
-func (cmd *command) Run(ctx context.Context, log *zap.Logger, cfg *config.Config) error {
+func (cmd *command) Run(ctx context.Context, log *logger.Logger, cfg *config.Config) error {
 	var srv = appHttp.NewServer(ctx, log)
 
 	if err := srv.Register(cfg); err != nil {
@@ -276,12 +276,12 @@ func (cmd *command) Run(ctx context.Context, log *zap.Logger, cfg *config.Config
 		var now = time.Now()
 
 		defer func() {
-			log.Info("HTTP server stopped", zap.Duration("uptime", time.Since(now).Round(time.Millisecond)))
+			log.Info("HTTP server stopped", logger.Duration("uptime", time.Since(now).Round(time.Millisecond)))
 		}()
 
 		log.Info("HTTP server starting",
-			zap.String("addr", cmd.opt.http.addr),
-			zap.Uint16("port", cmd.opt.http.port),
+			logger.String("addr", cmd.opt.http.addr),
+			logger.Uint16("port", cmd.opt.http.port),
 		)
 
 		if err := srv.Start(cmd.opt.http.addr, cmd.opt.http.port); err != nil && !errors.Is(err, http.ErrServerClosed) {
@@ -297,7 +297,7 @@ func (cmd *command) Run(ctx context.Context, log *zap.Logger, cfg *config.Config
 	case <-ctx.Done(): // ..or context cancellation
 		const shutdownTimeout = 5 * time.Second
 
-		log.Info("HTTP server stopping", zap.Duration("with timeout", shutdownTimeout))
+		log.Info("HTTP server stopping", logger.Duration("with timeout", shutdownTimeout))
 
 		if err := srv.Stop(shutdownTimeout); err != nil { //nolint:contextcheck
 			return err

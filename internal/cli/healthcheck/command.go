@@ -5,9 +5,9 @@ import (
 	"fmt"
 
 	"github.com/urfave/cli/v3"
-	"go.uber.org/zap"
 
 	"gh.tarampamp.am/error-pages/internal/cli/shared"
+	"gh.tarampamp.am/error-pages/internal/logger"
 )
 
 type checker interface {
@@ -15,7 +15,7 @@ type checker interface {
 }
 
 // NewCommand creates `healthcheck` command.
-func NewCommand(_ *zap.Logger, checker checker) *cli.Command {
+func NewCommand(_ *logger.Logger, checker checker) *cli.Command {
 	var portFlag = shared.ListenPortFlag
 
 	return &cli.Command{

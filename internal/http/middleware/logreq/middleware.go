@@ -4,13 +4,13 @@ import (
 	"net/http"
 	"time"
 
-	"go.uber.org/zap"
+	"gh.tarampamp.am/error-pages/internal/logger"
 )
 
 // New creates a middleware for [http.ServeMux] that logs every incoming request.
 //
 // The skipper function should return true if the request should be skipped. It's ok to pass nil.
-func New(log *zap.Logger, skipper func(*http.Request) bool) func(http.Handler) http.Handler {
+func New(log *logger.Logger, skipper func(*http.Request) bool) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			if skipper != nil && skipper(r) {
@@ -22,21 +22,21 @@ func New(log *zap.Logger, skipper func(*http.Request) bool) func(http.Handler) h
 			var now = time.Now()
 
 			defer func() {
-				var fields = []zap.Field{
-					zap.String("useragent", r.UserAgent()),
-					zap.String("method", r.Method),
-					zap.String("url", r.URL.String()),
-					zap.String("referer", r.Referer()),
-					zap.String("content type", w.Header().Get("Content-Type")),
-					zap.String("remote addr", r.RemoteAddr),
-					zap.String("method", r.Method),
-					zap.Duration("duration", time.Since(now).Round(time.Microsecond)),
+				var fields = []logger.Attr{
+					logger.String("useragent", r.UserAgent()),
+					logger.String("method", r.Method),
+					logger.String("url", r.URL.String()),
+					logger.String("referer", r.Referer()),
+					logger.String("content type", w.Header().Get("Content-Type")),
+					logger.String("remote addr", r.RemoteAddr),
+					logger.String("method", r.Method),
+					logger.Duration("duration", time.Since(now).Round(time.Microsecond)),
 				}
 
-				if log.Level() <= zap.DebugLevel {
+				if log.Level() <= logger.DebugLevel {
 					fields = append(fields,
-						zap.Any("request headers", r.Header.Clone()),
-						zap.Any("response headers", w.Header().Clone()),
+						logger.Any("request headers", r.Header.Clone()),
+						logger.Any("response headers", w.Header().Clone()),
 					)
 				}
 
