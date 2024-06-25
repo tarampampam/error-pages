@@ -7,7 +7,6 @@ import (
 	"io"
 	"net"
 	"net/http"
-	"strconv"
 	"testing"
 	"time"
 
@@ -19,11 +18,32 @@ import (
 	"gh.tarampamp.am/error-pages/internal/logger"
 )
 
+// TestRouting in fact is a test for the whole server, because it tests all the routes and their handlers.
 func TestRouting(t *testing.T) {
 	var (
 		srv = appHttp.NewServer(context.Background(), logger.NewNop())
 		cfg = config.New()
 	)
+
+	assert.NoError(t, cfg.Templates.Add("unit-test", `<!DOCTYPE html>
+<html lang="en">
+	<h1>Error {{ code }}: {{ message }}</h1>{{ if description }}
+	<h2>{{ description }}</h2>{{ end }}{{ if show_details }}
+
+	<pre>
+		Host: {{ host }}
+		Original URI: {{ original_uri }}
+		Forwarded For: {{ forwarded_for }}
+		Namespace: {{ namespace }}
+		Ingress Name: {{ ingress_name }}
+		Service Name: {{ service_name }}
+		Service Port: {{ service_port }}
+		Request ID: {{ request_id }}
+		Timestamp: {{ now.Unix }}
+	</pre>{{ end }}
+</html>`))
+
+	cfg.TemplateName = "unit-test"
 
 	require.NoError(t, srv.Register(&cfg))
 
@@ -101,78 +121,106 @@ func TestRouting(t *testing.T) {
 
 	t.Run("error page", func(t *testing.T) {
 		t.Run("success", func(t *testing.T) {
-			var assertErrorPage = func(t *testing.T, wantErrorPageCode int, body []byte, headers http.Header) {
-				t.Helper()
-
-				var bodyStr = string(body)
-
-				assert.NotEmpty(t, bodyStr)
-				assert.Contains(t, bodyStr, "error page")                    // FIXME
-				assert.Contains(t, bodyStr, strconv.Itoa(wantErrorPageCode)) // FIXME?
-				assert.Contains(t, headers.Get("Content-Type"), "text/html") // FIXME
-			}
-
-			t.Run("index, default", func(t *testing.T) {
+			t.Run("index, default (plain text by default)", func(t *testing.T) {
 				var status, body, headers = sendRequest(t, http.MethodGet, baseUrl+"/")
 
 				assert.Equal(t, http.StatusOK, status)
-				assertErrorPage(t, int(cfg.DefaultCodeToRender), body, headers)
+				assert.Contains(t, string(body), "404: Not Found")
+				assert.Contains(t, headers.Get("Content-Type"), "text/plain")
+			})
+
+			t.Run("index, default (json format)", func(t *testing.T) {
+				var status, body, headers = sendRequest(t,
+					http.MethodGet, baseUrl+"/", map[string]string{"Accept": "application/json"},
+				)
+
+				assert.Equal(t, http.StatusOK, status)
+				assert.Contains(t, string(body), `"code": 404`)
+				assert.Contains(t, headers.Get("Content-Type"), "application/json")
+			})
+
+			t.Run("index, default (xml format)", func(t *testing.T) {
+				var status, body, headers = sendRequest(t,
+					http.MethodGet, baseUrl+"/", map[string]string{"Accept": "application/xml"},
+				)
+
+				assert.Equal(t, http.StatusOK, status)
+				assert.Contains(t, string(body), `<code>404</code>`)
+				assert.Contains(t, headers.Get("Content-Type"), "application/xml")
+			})
+
+			t.Run("index, default (html format)", func(t *testing.T) {
+				var status, body, headers = sendRequest(t,
+					http.MethodGet, baseUrl+"/", map[string]string{"Content-Type": "text/html"},
+				)
+
+				assert.Equal(t, http.StatusOK, status)
+				assert.Contains(t, string(body), `<h1>Error 404: Not Found</h1>`)
+				assert.Contains(t, headers.Get("Content-Type"), "text/html")
 			})
 
 			t.Run("index, code in HTTP header", func(t *testing.T) {
 				var status, body, headers = sendRequest(t, http.MethodGet, baseUrl+"/", map[string]string{"X-Code": "404"})
 
 				assert.Equal(t, http.StatusOK, status) // because of [cfg.RespondWithSameHTTPCode] is false by default
-				assertErrorPage(t, 404, body, headers)
+				assert.Contains(t, string(body), "404: Not Found")
+				assert.Contains(t, headers.Get("Content-Type"), "text/plain")
 			})
 
 			t.Run("code in URL, .html", func(t *testing.T) {
 				var status, body, headers = sendRequest(t, http.MethodGet, baseUrl+"/500.html")
 
 				assert.Equal(t, http.StatusOK, status)
-				assertErrorPage(t, 500, body, headers)
+				assert.Contains(t, string(body), "500: Internal Server Error")
+				assert.Contains(t, headers.Get("Content-Type"), "text/plain")
 			})
 
 			t.Run("code in URL, .htm", func(t *testing.T) {
 				var status, body, headers = sendRequest(t, http.MethodGet, baseUrl+"/409.htm")
 
 				assert.Equal(t, http.StatusOK, status)
-				assertErrorPage(t, 409, body, headers)
+				assert.Contains(t, string(body), "409: Conflict")
+				assert.Contains(t, headers.Get("Content-Type"), "text/plain")
 			})
 
 			t.Run("code in URL, without extension", func(t *testing.T) {
 				var status, body, headers = sendRequest(t, http.MethodGet, baseUrl+"/405")
 
 				assert.Equal(t, http.StatusOK, status)
-				assertErrorPage(t, 405, body, headers)
+				assert.Contains(t, string(body), "405: Method Not Allowed")
+				assert.Contains(t, headers.Get("Content-Type"), "text/plain")
 			})
 
 			t.Run("code in the URL have higher priority than in the headers", func(t *testing.T) {
 				var status, body, headers = sendRequest(t, http.MethodGet, baseUrl+"/405", map[string]string{"X-Code": "404"})
 
 				assert.Equal(t, http.StatusOK, status)
-				assertErrorPage(t, 405, body, headers)
+				assert.Contains(t, string(body), "405: Method Not Allowed")
+				assert.Contains(t, headers.Get("Content-Type"), "text/plain")
 			})
 
 			t.Run("invalid code in HTTP header (with a string)", func(t *testing.T) {
 				var status, body, headers = sendRequest(t, http.MethodGet, baseUrl+"/", map[string]string{"X-Code": "foobar"})
 
 				assert.Equal(t, http.StatusOK, status)
-				assertErrorPage(t, int(cfg.DefaultCodeToRender), body, headers)
+				assert.Contains(t, string(body), "404: Not Found")
+				assert.Contains(t, headers.Get("Content-Type"), "text/plain")
 			})
 
 			t.Run("invalid code in HTTP header (too small)", func(t *testing.T) {
 				var status, body, headers = sendRequest(t, http.MethodGet, baseUrl+"/", map[string]string{"X-Code": "0"})
 
 				assert.Equal(t, http.StatusOK, status)
-				assertErrorPage(t, int(cfg.DefaultCodeToRender), body, headers)
+				assert.Contains(t, string(body), "404: Not Found")
+				assert.Contains(t, headers.Get("Content-Type"), "text/plain")
 			})
 
 			t.Run("invalid code in HTTP header (too big)", func(t *testing.T) {
 				var status, body, headers = sendRequest(t, http.MethodGet, baseUrl+"/", map[string]string{"X-Code": "1000"})
 
 				assert.Equal(t, http.StatusOK, status)
-				assertErrorPage(t, int(cfg.DefaultCodeToRender), body, headers)
+				assert.Contains(t, string(body), "404: Not Found")
+				assert.Contains(t, headers.Get("Content-Type"), "text/plain")
 			})
 		})
 

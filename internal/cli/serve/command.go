@@ -55,6 +55,13 @@ func NewCommand(log *logger.Logger) *cli.Command { //nolint:funlen,gocognit,gocy
 			OnlyOnce: true,
 			Config:   trim,
 		}
+		plainTextFormatFlag = cli.StringFlag{
+			Name:     "plaintext-format",
+			Usage:    "override the default error page response in plain text format (Go templates are supported)",
+			Sources:  env("RESPONSE_PLAINTEXT_FORMAT"),
+			OnlyOnce: true,
+			Config:   trim,
+		}
 		templateNameFlag = cli.StringFlag{
 			Name:     "template-name",
 			Aliases:  []string{"t"},
@@ -162,6 +169,23 @@ func NewCommand(log *logger.Logger) *cli.Command { //nolint:funlen,gocognit,gocy
 			cfg.RotationMode, _ = config.ParseRotationMode(c.String(rotationModeFlag.Name))
 			cfg.ShowDetails = c.Bool(showDetailsFlag.Name)
 
+			if add := c.StringSlice(addTplFlag.Name); len(add) > 0 { // add templates from files to the config
+				for _, templatePath := range add {
+					if addedName, err := cfg.Templates.AddFromFile(templatePath); err != nil {
+						return fmt.Errorf("cannot add template from file %s: %w", templatePath, err)
+					} else {
+						log.Info("Template added",
+							logger.String("name", addedName),
+							logger.String("path", templatePath),
+						)
+					}
+				}
+			}
+
+			if !cfg.Templates.Has(cfg.TemplateName) {
+				return fmt.Errorf("template %s not found and cannot be used", cfg.TemplateName)
+			}
+
 			if c.IsSet(proxyHeadersListFlag.Name) {
 				var m = make(map[string]struct{}) // map is used to avoid duplicates
 
@@ -173,19 +197,6 @@ func NewCommand(log *logger.Logger) *cli.Command { //nolint:funlen,gocognit,gocy
 
 				for header := range m {
 					cfg.ProxyHeaders = append(cfg.ProxyHeaders, header)
-				}
-			}
-
-			if add := c.StringSlice(addTplFlag.Name); len(add) > 0 { // add templates from files to the config
-				for _, templatePath := range add {
-					if addedName, err := cfg.Templates.AddFromFile(templatePath); err != nil {
-						return fmt.Errorf("cannot add template from file %s: %w", templatePath, err)
-					} else {
-						log.Info("Template added",
-							logger.String("name", addedName),
-							logger.String("path", templatePath),
-						)
-					}
 				}
 			}
 
@@ -216,11 +227,15 @@ func NewCommand(log *logger.Logger) *cli.Command { //nolint:funlen,gocognit,gocy
 
 			{ // override default JSON and XML formats
 				if c.IsSet(jsonFormatFlag.Name) {
-					cfg.Formats.JSON = c.String(jsonFormatFlag.Name)
+					cfg.Formats.JSON = strings.TrimSpace(c.String(jsonFormatFlag.Name))
 				}
 
 				if c.IsSet(xmlFormatFlag.Name) {
-					cfg.Formats.XML = c.String(xmlFormatFlag.Name)
+					cfg.Formats.XML = strings.TrimSpace(c.String(xmlFormatFlag.Name))
+				}
+
+				if c.IsSet(plainTextFormatFlag.Name) {
+					cfg.Formats.PlainText = strings.TrimSpace(c.String(plainTextFormatFlag.Name))
 				}
 			}
 
@@ -246,6 +261,7 @@ func NewCommand(log *logger.Logger) *cli.Command { //nolint:funlen,gocognit,gocy
 			&addCodeFlag,
 			&jsonFormatFlag,
 			&xmlFormatFlag,
+			&plainTextFormatFlag,
 			&templateNameFlag,
 			&disableL10nFlag,
 			&defaultCodeToRenderFlag,

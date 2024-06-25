@@ -4,7 +4,7 @@ import "reflect"
 
 //nolint:lll
 type Props struct {
-	Code               string `token:"code"`          // http status code
+	Code               uint16 `token:"code"`          // http status code
 	Message            string `token:"message"`       // status message
 	Description        string `token:"description"`   // status description
 	OriginalURI        string `token:"original_uri"`  // (ingress-nginx) URI that caused the error

@@ -16,8 +16,9 @@ type Config struct {
 	// Formats contain alternative response formats (e.g., if a client requests a response in one of these formats,
 	// we will render the response using the specified format instead of HTML; Go templates are supported).
 	Formats struct {
-		JSON string
-		XML  string
+		JSON      string
+		XML       string
+		PlainText string
 	}
 
 	// Codes hold descriptions for HTTP codes (e.g., 404: "Not Found / The server can not find the requested page").
@@ -59,7 +60,7 @@ type Config struct {
 
 const defaultJSONFormat string = `{
   "error": true,
-  "Code": {{ Code | json }},
+  "code": {{ code | json }},
   "message": {{ message | json }},
   "description": {{ description | json }}{{ if show_details }},
   "details": {
@@ -77,7 +78,7 @@ const defaultJSONFormat string = `{
 
 const defaultXMLFormat string = `<?xml version="1.0" encoding="utf-8"?>
 <error>
-  <Code>{{ Code }}</Code>
+  <code>{{ code }}</code>
   <message>{{ message }}</message>
   <description>{{ description }}</description>{{ if show_details }}
   <details>
@@ -92,6 +93,19 @@ const defaultXMLFormat string = `<?xml version="1.0" encoding="utf-8"?>
     <timestamp>{{ now.Unix }}</timestamp>
   </details>{{ end }}
 </error>`
+
+const defaultPlainTextFormat string = `Error {{ code }}: {{ message }}{{ if description }}
+{{ description }}{{ end }}{{ if show_details }}
+
+Host: {{ host }}
+Original URI: {{ original_uri }}
+Forwarded For: {{ forwarded_for }}
+Namespace: {{ namespace }}
+Ingress Name: {{ ingress_name }}
+Service Name: {{ service_name }}
+Service Port: {{ service_port }}
+Request ID: {{ request_id }}
+Timestamp: {{ now.Unix }}{{ end }}`
 
 //nolint:lll
 var defaultCodes = Codes{ //nolint:gochecknoglobals
@@ -134,6 +148,7 @@ func New() Config {
 
 	cfg.Formats.JSON = defaultJSONFormat
 	cfg.Formats.XML = defaultXMLFormat
+	cfg.Formats.PlainText = defaultPlainTextFormat
 
 	// add built-in templates
 	for name, content := range builtinTemplates.BuiltIn() {

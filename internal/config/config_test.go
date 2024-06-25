@@ -7,6 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"gh.tarampamp.am/error-pages/internal/config"
+	"gh.tarampamp.am/error-pages/internal/template"
 )
 
 func TestNew(t *testing.T) {
@@ -17,6 +18,7 @@ func TestNew(t *testing.T) {
 
 		assert.NotEmpty(t, cfg.Formats.XML)
 		assert.NotEmpty(t, cfg.Formats.JSON)
+		assert.NotEmpty(t, cfg.Formats.PlainText)
 		assert.True(t, len(cfg.Codes) >= 19)
 		assert.True(t, len(cfg.Templates) >= 2)
 		assert.NotEmpty(t, cfg.TemplateName)
@@ -34,5 +36,22 @@ func TestNew(t *testing.T) {
 		cfg1.ProxyHeaders = append(cfg1.ProxyHeaders, "foo")
 
 		assert.NotEqual(t, cfg1.ProxyHeaders, cfg2.ProxyHeaders)
+	})
+
+	t.Run("render default format templates", func(t *testing.T) {
+		var cfg = config.New()
+
+		for _, content := range []string{cfg.Formats.JSON, cfg.Formats.XML, cfg.Formats.PlainText} {
+			var result, err = template.Render(content, template.Props{
+				ShowRequestDetails: true,
+				Code:               404,
+				Message:            "Not Found",
+			})
+
+			assert.NotEmpty(t, result)
+			assert.NoError(t, err)
+
+			t.Log(result)
+		}
 	})
 }

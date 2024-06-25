@@ -66,7 +66,7 @@ func TestCodes_Find(t *testing.T) {
 		"*":   {Message: "Single"},
 	}
 
-	for name, _tt := range map[string]struct {
+	for name, tt := range map[string]struct {
 		giveCodes config.Codes
 		giveCode  uint16
 
@@ -114,8 +114,6 @@ func TestCodes_Find(t *testing.T) {
 		"empty map": {giveCodes: config.Codes{}, giveCode: 404, wantNotFound: true},
 		"zero code": {giveCodes: common, giveCode: 0, wantNotFound: true},
 	} {
-		var tt = _tt
-
 		t.Run(name, func(t *testing.T) {
 			for i := 0; i < 100; i++ { // repeat the test to ensure the function is idempotent
 				var desc, found = tt.giveCodes.Find(tt.giveCode)

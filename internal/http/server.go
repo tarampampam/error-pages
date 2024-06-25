@@ -49,7 +49,7 @@ func (s *Server) Register(cfg *config.Config) error {
 	var (
 		liveHandler       = live.New()
 		versionHandler    = version.New(appmeta.Version())
-		errorPagesHandler = ep.New(cfg)
+		errorPagesHandler = ep.New(cfg, s.log)
 	)
 
 	s.server.Handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

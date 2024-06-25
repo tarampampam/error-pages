@@ -115,7 +115,7 @@ func TestAddHTTPCodeFlag(t *testing.T) {
 
 	assert.Equal(t, "add-http-code", flag.Name)
 
-	for name, _tt := range map[string]struct {
+	for name, tt := range map[string]struct {
 		giveValue  map[string]string
 		wantErrMsg string
 	}{
@@ -152,8 +152,6 @@ func TestAddHTTPCodeFlag(t *testing.T) {
 			wantErrMsg: "missing message for HTTP code [200]",
 		},
 	} {
-		var tt = _tt
-
 		t.Run(name, func(t *testing.T) {
 			if err := flag.Validator(tt.giveValue); tt.wantErrMsg != "" {
 				assert.ErrorContains(t, err, tt.wantErrMsg)

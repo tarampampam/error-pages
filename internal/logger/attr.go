@@ -38,5 +38,8 @@ func Time(key string, v time.Time) Attr { return slog.Time(key, v) }
 // Duration returns an Attr for a [time.Duration].
 func Duration(key string, v time.Duration) Attr { return slog.Duration(key, v) }
 
+// Error returns an Attr for an error.
+func Error(err error) Attr { return slog.String("error", err.Error()) }
+
 // Any returns an Attr for any value.
 func Any(key string, v any) Attr { return slog.Any(key, v) }

@@ -1,6 +1,8 @@
 package logger_test
 
 import (
+	"errors"
+	"fmt"
 	"testing"
 	"time"
 
@@ -12,9 +14,12 @@ import (
 func TestAttrs(t *testing.T) {
 	t.Parallel()
 
-	var someTime, _ = time.Parse(time.RFC3339, "2021-01-01T00:00:00Z")
+	var (
+		someTime, _ = time.Parse(time.RFC3339, "2021-01-01T00:00:00Z")
+		someErr     = fmt.Errorf("foo: %w", errors.New("bar"))
+	)
 
-	for name, _tt := range map[string]struct {
+	for name, tt := range map[string]struct {
 		giveAttr logger.Attr
 
 		wantKey   string
@@ -30,10 +35,9 @@ func TestAttrs(t *testing.T) {
 		"Bool":     {logger.Bool("key", true), "key", true},
 		"Time":     {logger.Time("key", someTime), "key", someTime},
 		"Duration": {logger.Duration("key", time.Second), "key", time.Second},
+		"Error":    {logger.Error(someErr), "error", "foo: bar"},
 		"Any":      {logger.Any("key", "value"), "key", "value"},
 	} {
-		tt := _tt
-
 		t.Run(name, func(t *testing.T) {
 			t.Parallel()
 

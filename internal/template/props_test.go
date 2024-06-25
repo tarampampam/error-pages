@@ -12,7 +12,7 @@ func TestProps_Values(t *testing.T) {
 	t.Parallel()
 
 	assert.Equal(t, template.Props{
-		Code:               "a",
+		Code:               1,
 		Message:            "b",
 		Description:        "c",
 		OriginalURI:        "d",
@@ -25,7 +25,7 @@ func TestProps_Values(t *testing.T) {
 		L10nDisabled:       true,
 		ShowRequestDetails: false,
 	}.Values(), map[string]any{
-		"code":          "a",
+		"code":          uint16(1),
 		"message":       "b",
 		"description":   "c",
 		"original_uri":  "d",

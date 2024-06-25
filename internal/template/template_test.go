@@ -84,33 +84,33 @@ func TestRender(t *testing.T) {
 	}{
 		"common case": {
 			giveTemplate: "{{code}}: {{ message }} {{description}}",
-			giveProps:    template.Props{Code: "404", Message: "Not found", Description: "Blah"},
+			giveProps:    template.Props{Code: 404, Message: "Not found", Description: "Blah"},
 			wantResult:   "404: Not found Blah",
 		},
 		"html markup": {
 			giveTemplate: "<!-- comment --><html><body>{{code}}: {{ message }} {{description}}</body></html>",
-			giveProps:    template.Props{Code: "201", Message: "lorem ipsum"},
+			giveProps:    template.Props{Code: 201, Message: "lorem ipsum"},
 			wantResult:   "<!-- comment --><html><body>201: lorem ipsum </body></html>",
 		},
 		"with line breakers": {
-			giveTemplate: "\t {{code}}: {{ message }} {{description}}\n",
+			giveTemplate: "\t {{code | json}}: {{ message }} {{description}}\n",
 			giveProps:    template.Props{},
-			wantResult:   "\t :  \n",
+			wantResult:   "\t 0:  \n",
 		},
 		"golang template": {
 			giveTemplate: "\t {{code}} {{ .Code }}{{ if .Message }} Yeah {{end}}",
-			giveProps:    template.Props{Code: "201", Message: "lorem ipsum"},
+			giveProps:    template.Props{Code: 201, Message: "lorem ipsum"},
 			wantResult:   "\t 201 201 Yeah ",
 		},
 
 		"json common case": {
 			giveTemplate: `{"code": {{code | json}}, "message": {"here":[ {{ message | json }} ]}, "desc": "{{description}}"}`,
-			giveProps:    template.Props{Code: `404'"{`, Message: "Not found\t\r\n"},
-			wantResult:   `{"code": "404'\"{", "message": {"here":[ "Not found\t\r\n" ]}, "desc": ""}`,
+			giveProps:    template.Props{Code: 404, Message: "'\"{Not found\t\r\n"},
+			wantResult:   `{"code": 404, "message": {"here":[ "'\"{Not found\t\r\n" ]}, "desc": ""}`,
 		},
 		"json golang template": {
 			giveTemplate: `{"code": "{{code}}", "message": {"here":[ "{{ if .Message }} Yeah {{end}}" ]}}`,
-			giveProps:    template.Props{Code: "201", Message: "lorem ipsum"},
+			giveProps:    template.Props{Code: 201, Message: "lorem ipsum"},
 			wantResult:   `{"code": "201", "message": {"here":[ " Yeah " ]}}`,
 		},
 
@@ -127,7 +127,7 @@ func TestRender(t *testing.T) {
 
 		"complete example with every property and function": {
 			giveProps: template.Props{
-				Code:               "404",
+				Code:               404,
 				Message:            "Not found",
 				Description:        "Blah",
 				OriginalURI:        "/test",
