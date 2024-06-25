@@ -2,12 +2,12 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"os"
 	"os/signal"
 	"path/filepath"
 	"syscall"
 
-	"github.com/fatih/color"
 	"go.uber.org/automaxprocs/maxprocs"
 
 	"gh.tarampamp.am/error-pages/internal/cli"
@@ -19,7 +19,7 @@ func main() {
 	_, _ = maxprocs.Set(maxprocs.Min(1), maxprocs.Logger(func(_ string, _ ...any) {}))
 
 	if err := run(); err != nil {
-		_, _ = color.New(color.FgHiRed, color.Bold).Fprintln(os.Stderr, err.Error())
+		_, _ = fmt.Fprintln(os.Stderr, err.Error())
 
 		os.Exit(1)
 	}
