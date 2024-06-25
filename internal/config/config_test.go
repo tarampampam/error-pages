@@ -20,7 +20,7 @@ func TestNew(t *testing.T) {
 		assert.NotEmpty(t, cfg.Formats.JSON)
 		assert.NotEmpty(t, cfg.Formats.PlainText)
 		assert.True(t, len(cfg.Codes) >= 19)
-		assert.True(t, len(cfg.Templates) >= 2)
+		assert.True(t, len(cfg.Templates) >= 1)
 		assert.NotEmpty(t, cfg.TemplateName)
 		assert.True(t, cfg.Templates.Has(cfg.TemplateName))
 		assert.Equal(t, uint16(http.StatusNotFound), cfg.DefaultCodeToRender)

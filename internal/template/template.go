@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"gh.tarampamp.am/error-pages/internal/appmeta"
+	"gh.tarampamp.am/error-pages/l10n"
 )
 
 var builtInFunctions = template.FuncMap{ //nolint:gochecknoglobals
@@ -99,6 +100,10 @@ var builtInFunctions = template.FuncMap{ //nolint:gochecknoglobals
 	// retrieves the value of the environment variable named by the key:
 	//	`{{ env "SHELL" }}`	// `/bin/bash`
 	"env": os.Getenv,
+
+	// returns the content of the JS file with a script for automatic error page localization:
+	//	`{{ l10nScript }}`	// `Object.defineProperty(window, ...`
+	"l10nScript": l10n.L10n,
 }
 
 func Render(content string, props Props) (string, error) {

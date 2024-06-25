@@ -13,7 +13,7 @@ import (
 const contentTypeHeader = "Content-Type"
 
 // New creates a new handler that returns an error page with the specified status code and format.
-func New(cfg *config.Config, log *logger.Logger) http.Handler { //nolint:funlen,gocognit
+func New(cfg *config.Config, log *logger.Logger) http.Handler { //nolint:funlen,gocognit,gocyclo
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		var code uint16
 
@@ -86,6 +86,7 @@ func New(cfg *config.Config, log *logger.Logger) http.Handler { //nolint:funlen,
 			tplProps.Host = r.Header.Get("Host")                    // the value of the `Host` header
 		}
 
+		// TODO: ADD SUPPORT FOR THE RANDOM TEMPLATE AND SO ON
 		// try to find the code message and description in the config and if not - use the standard status text or fallback
 		if desc, found := cfg.Codes.Find(code); found {
 			tplProps.Message = desc.Message
@@ -140,7 +141,7 @@ func New(cfg *config.Config, log *logger.Logger) http.Handler { //nolint:funlen,
 				}
 			} else {
 				write(w, log, `The requested content format is not supported.
-Please create an issue on the project's GitHub page to request support for it.
+Please create an issue on the project's GitHub page to request support for this format.
 
 Supported formats: JSON, XML, HTML, Plain Text`)
 			}

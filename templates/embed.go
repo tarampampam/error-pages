@@ -10,9 +10,10 @@ import (
 //go:embed *.html
 var content embed.FS
 
-func BuiltIn() map[string]string { // error check is covered by unit tests
+// BuiltIn returns a map of built-in templates. The key is the template name and the value is the template content.
+func BuiltIn() map[string]string {
 	var (
-		list, _ = fs.ReadDir(content, ".")
+		list, _ = fs.ReadDir(content, ".") // error check is covered by unit tests
 		result  = make(map[string]string, len(list))
 	)
 

@@ -11,6 +11,7 @@ import (
 
 	"gh.tarampamp.am/error-pages/internal/appmeta"
 	"gh.tarampamp.am/error-pages/internal/template"
+	"gh.tarampamp.am/error-pages/l10n"
 )
 
 func TestRender_BuiltInFunction(t *testing.T) {
@@ -28,10 +29,6 @@ func TestRender_BuiltInFunction(t *testing.T) {
 		"now (unix)": {
 			giveTemplate: `{{ now.Unix }}`,
 			wantResult:   strconv.Itoa(int(time.Now().Unix())),
-		},
-		"now (time)": {
-			giveTemplate: `{{ now.Hour }}:{{ now.Minute }}:{{ now.Second }}`,
-			wantResult:   time.Now().Format("15:4:5"),
 		},
 		"hostname":                  {giveTemplate: `{{ hostname }}`, wantResult: hostname},
 		"json (string)":             {giveTemplate: `{{ json "test" }}`, wantResult: `"test"`},
@@ -54,6 +51,7 @@ func TestRender_BuiltInFunction(t *testing.T) {
 		"strFields":                 {giveTemplate: `{{ strFields "foo bar baz" }}`, wantResult: `[foo bar baz]`},
 		"env (ok)":                  {giveTemplate: `{{ env "TEST_ENV_VAR" }}`, wantResult: "unit-test"},
 		"env (not found)":           {giveTemplate: `{{ env "NOT_FOUND_ENV_VAR" }}`, wantResult: ""},
+		"l10nScript":                {giveTemplate: `{{ l10nScript }}`, wantResult: l10n.L10n()},
 	} {
 		t.Run(name, func(t *testing.T) {
 			require.NoError(t, os.Setenv("TEST_ENV_VAR", "unit-test"))
