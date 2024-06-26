@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="utf-8">
   <meta name="robots" content="follow, noarchive, noindex">
   <title>{{ code }}: {{ message }}</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -44,19 +44,19 @@
       }
     }
 
-    main {
+    body {
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100%;
     }
 
-    main article {
+    article {
       text-align: center;
       width: 100%;
     }
 
-    main article .ghost {
+    article .ghost {
       animation: float 3s ease-out infinite;
     }
 
@@ -66,12 +66,12 @@
       }
     }
 
-    main article .shadowFrame {
+    article .shadowFrame {
       width: 130px;
       margin: 10px auto 0 auto;
     }
 
-    main article .shadowFrame .shadow {
+    article .shadowFrame .shadow {
       animation: shrink 3s ease-out infinite;
       transform-origin: center center;
     }
@@ -91,13 +91,13 @@
       }
     }
 
-    main article h3 {
+    article h3 {
       font-size: 1.5em;
       text-transform: uppercase;
       margin: 0.3em auto;
     }
 
-    main article .description {
+    article .description {
       font-size: 0.9em;
       opacity: .9;
     }
@@ -141,25 +141,24 @@
   </style>
 </head>
 <body>
-<main>
-  <article>
-    <svg class="ghost" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="127.433px" height="132.743px"
-         viewBox="0 0 127.433 132.743" xml:space="preserve">
+<article>
+  <svg class="ghost" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="127.433px" height="132.743px"
+       viewBox="0 0 127.433 132.743" xml:space="preserve">
       <path d="M116.223,125.064c1.032-1.183,1.323-2.73,1.391-3.747V54.76c0,0-4.625-34.875-36.125-44.375
                s-66,6.625-72.125,44l-0.781,63.219c0.062,4.197,1.105,6.177,1.808,7.006c1.94,1.811,5.408,3.465,10.099-0.6
                c7.5-6.5,8.375-10,12.75-6.875s5.875,9.75,13.625,9.25s12.75-9,13.75-9.625s4.375-1.875,7,1.25s5.375,8.25,12.875,7.875
                s12.625-8.375,12.625-8.375s2.25-3.875,7.25,0.375s7.625,9.75,14.375,8.125C114.739,126.01,115.412,125.902,116.223,125.064z"
             style="fill: var(--color-ghost)"></path>
-      <circle style="fill: var(--color-primary)" cx="86.238" cy="57.885" r="6.667"></circle>
-      <circle style="fill: var(--color-primary)" cx="40.072" cy="57.885" r="6.667"></circle>
-      <path d="M71.916,62.782c0.05-1.108-0.809-2.046-1.917-2.095c-0.673-0.03-1.28,0.279-1.667,0.771
+    <circle style="fill: var(--color-primary)" cx="86.238" cy="57.885" r="6.667"></circle>
+    <circle style="fill: var(--color-primary)" cx="40.072" cy="57.885" r="6.667"></circle>
+    <path d="M71.916,62.782c0.05-1.108-0.809-2.046-1.917-2.095c-0.673-0.03-1.28,0.279-1.667,0.771
                c-0.758,0.766-2.483,2.235-4.696,2.358c-1.696,0.094-3.438-0.625-5.191-2.137c-0.003-0.003-0.007-0.006-0.011-0.009l0.002,0.005
                c-0.332-0.294-0.757-0.488-1.235-0.509c-1.108-0.049-2.046,0.809-2.095,1.917c-0.032,0.724,0.327,1.37,0.887,1.749
                c-0.001,0-0.002-0.001-0.003-0.001c2.221,1.871,4.536,2.88,6.912,2.986c0.333,0.014,0.67,0.012,1.007-0.01
                c3.163-0.191,5.572-1.942,6.888-3.166l0.452-0.453c0.021-0.019,0.04-0.041,0.06-0.061l0.034-0.034
                c-0.007,0.007-0.015,0.014-0.021,0.02C71.666,63.771,71.892,63.307,71.916,62.782z"
-            style="fill: var(--color-primary)"></path>
-      <path d="M116.279,55.814c-0.021-0.286-2.323-28.744-30.221-41.012
+          style="fill: var(--color-primary)"></path>
+    <path d="M116.279,55.814c-0.021-0.286-2.323-28.744-30.221-41.012
                c-7.806-3.433-15.777-5.173-23.691-5.173c-16.889,0-30.283,7.783-37.187,15.067c-9.229,9.736-13.84,26.712-14.191,30.259
                l-0.748,62.332c0.149,2.133,1.389,6.167,5.019,6.167c1.891,0,4.074-1.083,6.672-3.311c4.96-4.251,7.424-6.295,9.226-6.295
                c1.339,0,2.712,1.213,5.102,3.762c4.121,4.396,7.461,6.355,10.833,6.355c2.713,0,5.311-1.296,7.942-3.962
@@ -174,72 +173,72 @@
                c3.893-4.106,10.387-8.632,18.602-11.504c-0.458,0.503-0.744,1.165-0.744,1.898c0,1.565,1.269,2.833,2.833,2.833
                c1.564,0,2.833-1.269,2.833-2.833c0-1.355-0.954-2.485-2.226-2.764c4.419-1.285,9.269-2.074,14.437-2.074
                c7.636,0,15.336,1.684,22.887,5.004c26.766,11.771,29.011,39.047,29.027,39.251V121.405z"
-            stroke-miterlimit="10" style="fill: var(--color-ghost); stroke: var(--color-ghost)"></path>
+          stroke-miterlimit="10" style="fill: var(--color-ghost); stroke: var(--color-ghost)"></path>
     </svg>
 
-    <p class="shadowFrame">
-      <svg class="shadow" xmlns="http://www.w3.org/2000/svg" x="61px" y="20px" width="122.436px" height="39.744px"
-           viewBox="0 0 122.436 39.744" xml:space="preserve">
+  <p class="shadowFrame">
+    <svg class="shadow" xmlns="http://www.w3.org/2000/svg" x="61px" y="20px" width="122.436px" height="39.744px"
+         viewBox="0 0 122.436 39.744" xml:space="preserve">
         <ellipse style="fill: var(--color-ghost); opacity: 0.1" cx="61.128" cy="19.872" rx="49.25" ry="8.916"></ellipse>
       </svg>
-    </p>
+  </p>
 
-    <h3><span data-l10n>Error</span> {{ code }}</h3>
-    <p class="description" data-l10n>{{ description }}</p>
+  <h3><span data-l10n>Error</span> {{ code }}</h3>
+  <p class="description" data-l10n>{{ description }}</p>
 
-    <!-- {{- if show_details -}} -->
-    <table class="details">
-      <tbody>
-        <!-- {{- if host -}} -->
-        <tr>
-          <td class="name" data-l10n>Host</td>
-          <td class="value">{{ host }}</td>
-        </tr>
-        <!-- {{- end }}{{ if original_uri -}} -->
-        <tr>
-          <td class="name" data-l10n>Original URI</td>
-          <td class="value">{{ original_uri }}</td>
-        </tr>
-        <!-- {{- end }}{{ if forwarded_for -}} -->
-        <tr>
-          <td class="name" data-l10n>Forwarded for</td>
-          <td class="value">{{ forwarded_for }}</td>
-        </tr>
-        <!-- {{- end }}{{ if namespace -}} -->
-        <tr>
-          <td class="name" data-l10n>Namespace</td>
-          <td class="value">{{ namespace }}</td>
-        </tr>
-        <!-- {{- end }}{{ if ingress_name -}} -->
-        <tr>
-          <td class="name" data-l10n>Ingress name</td>
-          <td class="value">{{ ingress_name }}</td>
-        </tr>
-        <!-- {{- end }}{{ if service_name -}} -->
-        <tr>
-          <td class="name" data-l10n>Service name</td>
-          <td class="value">{{ service_name }}</td>
-        </tr>
-        <!-- {{- end }}{{ if service_port -}} -->
-        <tr>
-          <td class="name" data-l10n>Service port</td>
-          <td class="value">{{ service_port }}</td>
-        </tr>
-        <!-- {{- end }}{{ if request_id -}} -->
-        <tr>
-          <td class="name" data-l10n>Request ID</td>
-          <td class="value">{{ request_id }}</td>
-        </tr>
-        <!-- {{- end -}} -->
-        <tr>
-          <td class="name" data-l10n>Timestamp</td>
-          <td class="value">{{ now.Unix }}</td>
-        </tr>
-      </tbody>
-    </table>
+  <!-- {{- if show_details -}} -->
+  <table class="details">
+    <tbody>
+    <!-- {{- if host -}} -->
+    <tr>
+      <td class="name" data-l10n>Host</td>
+      <td class="value">{{ host }}</td>
+    </tr>
+    <!-- {{- end }}{{ if original_uri -}} -->
+    <tr>
+      <td class="name" data-l10n>Original URI</td>
+      <td class="value">{{ original_uri }}</td>
+    </tr>
+    <!-- {{- end }}{{ if forwarded_for -}} -->
+    <tr>
+      <td class="name" data-l10n>Forwarded for</td>
+      <td class="value">{{ forwarded_for }}</td>
+    </tr>
+    <!-- {{- end }}{{ if namespace -}} -->
+    <tr>
+      <td class="name" data-l10n>Namespace</td>
+      <td class="value">{{ namespace }}</td>
+    </tr>
+    <!-- {{- end }}{{ if ingress_name -}} -->
+    <tr>
+      <td class="name" data-l10n>Ingress name</td>
+      <td class="value">{{ ingress_name }}</td>
+    </tr>
+    <!-- {{- end }}{{ if service_name -}} -->
+    <tr>
+      <td class="name" data-l10n>Service name</td>
+      <td class="value">{{ service_name }}</td>
+    </tr>
+    <!-- {{- end }}{{ if service_port -}} -->
+    <tr>
+      <td class="name" data-l10n>Service port</td>
+      <td class="value">{{ service_port }}</td>
+    </tr>
+    <!-- {{- end }}{{ if request_id -}} -->
+    <tr>
+      <td class="name" data-l10n>Request ID</td>
+      <td class="value">{{ request_id }}</td>
+    </tr>
     <!-- {{- end -}} -->
-  </article>
-</main>
+    <tr>
+      <td class="name" data-l10n>Timestamp</td>
+      <td class="value">{{ now.Unix }}</td>
+    </tr>
+    </tbody>
+  </table>
+  <!-- {{- end -}} -->
+</article>
+
 <!-- {{- if l10n_enabled -}} -->
 <script> // {{ l10nScript }}</script>
 <!-- {{- end -}} -->
