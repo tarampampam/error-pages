@@ -39,6 +39,10 @@ func TestTemplates_Common(t *testing.T) {
 
 		assert.Equal(t, []string{"_test11", "_test99", "test"}, tpl.Names()) // sorted
 		assert.True(t, tpl.Has("_test99"))
+
+		assert.True(t, tpl.Remove("_test99"))
+		assert.False(t, tpl.Has("_test99"))
+		assert.False(t, tpl.Remove("_test99"))
 	})
 
 	t.Run("adding template without a name should fail", func(t *testing.T) {
@@ -133,4 +137,28 @@ func TestTemplates_AddFromFile(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestTemplates_RandomName(t *testing.T) {
+	t.Parallel()
+
+	var (
+		tpl = templates{"test": "content", "test2": "content", "test3": "content"}
+
+		lastName     = tpl.RandomName()
+		changedCount int
+	)
+
+	for range 1_000 {
+		var name = tpl.RandomName()
+
+		if name != lastName {
+			changedCount++
+		}
+
+		lastName = name
+	}
+
+	// I expect at least 100 different names in 1000 iterations
+	assert.True(t, changedCount > 200)
 }

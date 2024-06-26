@@ -81,3 +81,25 @@ func (tpl templates) Has(name string) (found bool) { _, found = tpl[name]; retur
 
 // Get returns the template content by the specified name, if it exists.
 func (tpl templates) Get(name string) (data string, ok bool) { data, ok = tpl[name]; return } //nolint:nlreturn
+
+// Remove deletes the template by the specified name.
+func (tpl templates) Remove(name string) (ok bool) {
+	if _, ok = tpl[name]; ok {
+		delete(tpl, name)
+	}
+
+	return
+}
+
+// RandomName picks a random template name. It returns an empty string if there are no templates.
+func (tpl templates) RandomName() string {
+	if len(tpl) == 0 {
+		return ""
+	}
+
+	for name := range tpl { // map iteration order is unpredictable (random) by design
+		return name
+	}
+
+	return ""
+}

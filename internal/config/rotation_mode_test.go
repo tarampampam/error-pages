@@ -27,8 +27,8 @@ func TestRotationModes(t *testing.T) {
 		config.RotationModeDisabled,
 		config.RotationModeRandomOnStartup,
 		config.RotationModeRandomOnEachRequest,
-		config.RotationModeRandomDaily,
 		config.RotationModeRandomHourly,
+		config.RotationModeRandomDaily,
 	}, config.RotationModes())
 }
 
@@ -39,8 +39,8 @@ func TestRotationModeStrings(t *testing.T) {
 		"disabled",
 		"random-on-startup",
 		"random-on-each-request",
-		"random-daily",
 		"random-hourly",
+		"random-daily",
 	}, config.RotationModeStrings())
 }
 

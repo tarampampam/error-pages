@@ -39,8 +39,9 @@ func NewCommand(log *logger.Logger) *cli.Command { //nolint:funlen,gocognit,gocy
 	var (
 		addrFlag       = shared.ListenAddrFlag
 		portFlag       = shared.ListenPortFlag
-		addTplFlag     = shared.AddTemplateFlag
-		addCodeFlag    = shared.AddHTTPCodeFlag
+		addTplFlag     = shared.AddTemplatesFlag
+		disableTplFlag = shared.DisableTemplateNamesFlag
+		addCodeFlag    = shared.AddHTTPCodesFlag
 		jsonFormatFlag = cli.StringFlag{
 			Name:     "json-format",
 			Usage:    "override the default error page response in JSON format (Go templates are supported)",
@@ -140,16 +141,6 @@ func NewCommand(log *logger.Logger) *cli.Command { //nolint:funlen,gocognit,gocy
 				return nil
 			},
 		}
-
-		// readBufferSizeFlag = cli.UintFlag{
-		//	Name: "read-buffer-size",
-		//	Usage: "customize the HTTP read buffer size (set per connection for reading requests, also limits the " +
-		//		"maximum header size; consider increasing it if your clients send multi-KB request URIs or multi-KB " +
-		//		"headers, such as large cookies)",
-		//	DefaultText: "not set",
-		//	Sources:     cli.EnvVars("READ_BUFFER_SIZE"),
-		//	OnlyOnce:    true,
-		// }
 	)
 
 	cmd.c = &cli.Command{
@@ -160,16 +151,28 @@ func NewCommand(log *logger.Logger) *cli.Command { //nolint:funlen,gocognit,gocy
 		Action: func(ctx context.Context, c *cli.Command) error {
 			cmd.opt.http.addr = c.String(addrFlag.Name)
 			cmd.opt.http.port = uint16(c.Uint(portFlag.Name))
-			// cmd.opt.http.readBufferSize = uint(c.Uint(readBufferSizeFlag.Name))
-
-			cfg.TemplateName = c.String(templateNameFlag.Name)
 			cfg.L10n.Disable = c.Bool(disableL10nFlag.Name)
 			cfg.DefaultCodeToRender = uint16(c.Uint(defaultCodeToRenderFlag.Name))
 			cfg.RespondWithSameHTTPCode = c.Bool(sendSameHTTPCodeFlag.Name)
 			cfg.RotationMode, _ = config.ParseRotationMode(c.String(rotationModeFlag.Name))
 			cfg.ShowDetails = c.Bool(showDetailsFlag.Name)
 
-			if add := c.StringSlice(addTplFlag.Name); len(add) > 0 { // add templates from files to the config
+			{ // override default JSON, XML, and PlainText formats
+				if c.IsSet(jsonFormatFlag.Name) {
+					cfg.Formats.JSON = strings.TrimSpace(c.String(jsonFormatFlag.Name))
+				}
+
+				if c.IsSet(xmlFormatFlag.Name) {
+					cfg.Formats.XML = strings.TrimSpace(c.String(xmlFormatFlag.Name))
+				}
+
+				if c.IsSet(plainTextFormatFlag.Name) {
+					cfg.Formats.PlainText = strings.TrimSpace(c.String(plainTextFormatFlag.Name))
+				}
+			}
+
+			// add templates from files to the configuration
+			if add := c.StringSlice(addTplFlag.Name); len(add) > 0 {
 				for _, templatePath := range add {
 					if addedName, err := cfg.Templates.AddFromFile(templatePath); err != nil {
 						return fmt.Errorf("cannot add template from file %s: %w", templatePath, err)
@@ -182,10 +185,7 @@ func NewCommand(log *logger.Logger) *cli.Command { //nolint:funlen,gocognit,gocy
 				}
 			}
 
-			if !cfg.Templates.Has(cfg.TemplateName) {
-				return fmt.Errorf("template %s not found and cannot be used", cfg.TemplateName)
-			}
-
+			// set the list of HTTP headers we need to proxy from the incoming request to the error page response
 			if c.IsSet(proxyHeadersListFlag.Name) {
 				var m = make(map[string]struct{}) // map is used to avoid duplicates
 
@@ -200,7 +200,8 @@ func NewCommand(log *logger.Logger) *cli.Command { //nolint:funlen,gocognit,gocy
 				}
 			}
 
-			if add := c.StringMap(addCodeFlag.Name); len(add) > 0 { // add custom HTTP codes
+			// add custom HTTP codes to the configuration
+			if add := c.StringMap(addCodeFlag.Name); len(add) > 0 {
 				for code, msgAndDesc := range add {
 					var (
 						parts = strings.SplitN(msgAndDesc, "/", 2) //nolint:mnd
@@ -225,17 +226,24 @@ func NewCommand(log *logger.Logger) *cli.Command { //nolint:funlen,gocognit,gocy
 				}
 			}
 
-			{ // override default JSON and XML formats
-				if c.IsSet(jsonFormatFlag.Name) {
-					cfg.Formats.JSON = strings.TrimSpace(c.String(jsonFormatFlag.Name))
+			// disable templates specified by the user
+			if disable := c.StringSlice(disableTplFlag.Name); len(disable) > 0 {
+				for _, templateName := range disable {
+					if ok := cfg.Templates.Remove(templateName); ok {
+						log.Info("Template disabled", logger.String("name", templateName))
+					}
 				}
+			}
 
-				if c.IsSet(xmlFormatFlag.Name) {
-					cfg.Formats.XML = strings.TrimSpace(c.String(xmlFormatFlag.Name))
-				}
+			// if the rotation mode is set to random-on-startup, pick a random template (ignore the user-provided
+			// template name)
+			if cfg.RotationMode == config.RotationModeRandomOnStartup {
+				cfg.TemplateName = cfg.Templates.RandomName()
+			} else { // otherwise, use the user-provided template name
+				cfg.TemplateName = c.String(templateNameFlag.Name)
 
-				if c.IsSet(plainTextFormatFlag.Name) {
-					cfg.Formats.PlainText = strings.TrimSpace(c.String(plainTextFormatFlag.Name))
+				if !cfg.Templates.Has(cfg.TemplateName) {
+					return fmt.Errorf("template %s not found and cannot be used", cfg.TemplateName)
 				}
 			}
 
@@ -244,10 +252,12 @@ func NewCommand(log *logger.Logger) *cli.Command { //nolint:funlen,gocognit,gocy
 				logger.Strings("described HTTP codes", cfg.Codes.Codes()...),
 				logger.String("JSON format", cfg.Formats.JSON),
 				logger.String("XML format", cfg.Formats.XML),
+				logger.String("plain text format", cfg.Formats.PlainText),
 				logger.String("template name", cfg.TemplateName),
 				logger.Bool("disable localization", cfg.L10n.Disable),
 				logger.Uint16("default code to render", cfg.DefaultCodeToRender),
 				logger.Bool("respond with the same HTTP code", cfg.RespondWithSameHTTPCode),
+				logger.String("rotation mode", cfg.RotationMode.String()),
 				logger.Bool("show details", cfg.ShowDetails),
 				logger.Strings("proxy HTTP headers", cfg.ProxyHeaders...),
 			)
@@ -258,6 +268,7 @@ func NewCommand(log *logger.Logger) *cli.Command { //nolint:funlen,gocognit,gocy
 			&addrFlag,
 			&portFlag,
 			&addTplFlag,
+			&disableTplFlag,
 			&addCodeFlag,
 			&jsonFormatFlag,
 			&xmlFormatFlag,
@@ -269,7 +280,6 @@ func NewCommand(log *logger.Logger) *cli.Command { //nolint:funlen,gocognit,gocy
 			&showDetailsFlag,
 			&proxyHeadersListFlag,
 			&rotationModeFlag,
-			// &readBufferSizeFlag,
 		},
 	}
 

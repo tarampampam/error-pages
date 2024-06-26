@@ -74,7 +74,8 @@ const defaultJSONFormat string = `{
     "request_id": {{ request_id | json }},
     "timestamp": {{ now.Unix }}
   }{{ end }}
-}`
+}
+` // an empty line at the end is important for better UX
 
 const defaultXMLFormat string = `<?xml version="1.0" encoding="utf-8"?>
 <error>
@@ -92,7 +93,8 @@ const defaultXMLFormat string = `<?xml version="1.0" encoding="utf-8"?>
     <requestID>{{ request_id }}</requestID>
     <timestamp>{{ now.Unix }}</timestamp>
   </details>{{ end }}
-</error>`
+</error>
+` // an empty line at the end is important for better UX
 
 const defaultPlainTextFormat string = `Error {{ code }}: {{ message }}{{ if description }}
 {{ description }}{{ end }}{{ if show_details }}
@@ -105,7 +107,8 @@ Ingress Name: {{ ingress_name }}
 Service Name: {{ service_name }}
 Service Port: {{ service_port }}
 Request ID: {{ request_id }}
-Timestamp: {{ now.Unix }}{{ end }}`
+Timestamp: {{ now.Unix }}{{ end }}
+` // an empty line at the end is important for better UX
 
 //nolint:lll
 var defaultCodes = Codes{ //nolint:gochecknoglobals

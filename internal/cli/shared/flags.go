@@ -49,7 +49,7 @@ var ListenPortFlag = cli.UintFlag{
 	},
 }
 
-var AddTemplateFlag = cli.StringSliceFlag{
+var AddTemplatesFlag = cli.StringSliceFlag{
 	Name: "add-template",
 	Usage: "to add a new template, provide the path to the file using this flag (the filename without the extension " +
 		"will be used as the template name)",
@@ -69,7 +69,13 @@ var AddTemplateFlag = cli.StringSliceFlag{
 	},
 }
 
-var AddHTTPCodeFlag = cli.StringMapFlag{
+var DisableTemplateNamesFlag = cli.StringSliceFlag{
+	Name:   "disable-template",
+	Usage:  "disable the specified template by its name",
+	Config: cli.StringConfig{TrimSpace: true},
+}
+
+var AddHTTPCodesFlag = cli.StringMapFlag{
 	Name: "add-http-code",
 	Usage: "to add a new HTTP status code, provide the code and its message/description using this flag (the format " +
 		"should be '%code%=%message%/%description%'; the code may contain a wildcard '*' to cover multiple codes at once, " +

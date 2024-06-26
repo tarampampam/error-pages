@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"sync/atomic"
+	"time"
 
 	"gh.tarampamp.am/error-pages/internal/config"
 	"gh.tarampamp.am/error-pages/internal/logger"
@@ -86,7 +88,6 @@ func New(cfg *config.Config, log *logger.Logger) http.Handler { //nolint:funlen,
 			tplProps.Host = r.Header.Get("Host")                    // the value of the `Host` header
 		}
 
-		// TODO: ADD SUPPORT FOR THE RANDOM TEMPLATE AND SO ON
 		// try to find the code message and description in the config and if not - use the standard status text or fallback
 		if desc, found := cfg.Codes.Find(code); found {
 			tplProps.Message = desc.Message
@@ -116,11 +117,13 @@ func New(cfg *config.Config, log *logger.Logger) http.Handler { //nolint:funlen,
 			}
 
 		case format == htmlFormat:
-			if tpl, found := cfg.Templates.Get(cfg.TemplateName); found {
+			var templateName = templateToUse(cfg)
+
+			if tpl, found := cfg.Templates.Get(templateName); found {
 				if content, err := template.Render(tpl, tplProps); err != nil {
 					write(w, log, fmt.Sprintf(
 						"<!DOCTYPE html>\n<html><body>Failed to render the HTML template %s: %s</body></html>",
-						cfg.TemplateName,
+						templateName,
 						err.Error(),
 					))
 				} else {
@@ -128,7 +131,7 @@ func New(cfg *config.Config, log *logger.Logger) http.Handler { //nolint:funlen,
 				}
 			} else {
 				write(w, log, fmt.Sprintf(
-					"<!DOCTYPE html>\n<html><body>Template %s not found and cannot be used</body></html>", cfg.TemplateName,
+					"<!DOCTYPE html>\n<html><body>Template %s not found and cannot be used</body></html>", templateName,
 				))
 			}
 
@@ -149,6 +152,54 @@ Supported formats: JSON, XML, HTML, Plain Text`)
 	})
 }
 
+var (
+	templateChangedAt atomic.Pointer[time.Time] //nolint:gochecknoglobals // the time when the theme was changed last time
+	pickedTemplate    atomic.Pointer[string]    //nolint:gochecknoglobals // the name of the randomly picked template
+)
+
+// templateToUse decides which template to use based on the rotation mode and the last time the template was changed.
+func templateToUse(cfg *config.Config) string {
+	switch rotationMode := cfg.RotationMode; rotationMode {
+	case config.RotationModeDisabled:
+		return cfg.TemplateName // not needed to do anything
+	case config.RotationModeRandomOnStartup:
+		return cfg.TemplateName // do nothing, the scope of this rotation mode is not here
+	case config.RotationModeRandomOnEachRequest:
+		return cfg.Templates.RandomName() // pick a random template on each request
+	case config.RotationModeRandomHourly, config.RotationModeRandomDaily:
+		var now, rndTemplate = time.Now(), cfg.Templates.RandomName()
+
+		if changedAt := templateChangedAt.Load(); changedAt == nil {
+			// the template was not changed yet (first request)
+			templateChangedAt.Store(&now)
+			pickedTemplate.Store(&rndTemplate)
+
+			return rndTemplate
+		} else {
+			// is it time to change the template?
+			if (rotationMode == config.RotationModeRandomHourly && changedAt.Hour() != now.Hour()) ||
+				(rotationMode == config.RotationModeRandomDaily && changedAt.Day() != now.Day()) {
+				templateChangedAt.Store(&now)
+				pickedTemplate.Store(&rndTemplate)
+
+				return rndTemplate
+			} else if lastUsed := pickedTemplate.Load(); lastUsed != nil {
+				// time to change the template has not come yet, so use the last picked template
+				return *lastUsed
+			} else {
+				// in case if the last picked template is not set, pick a random one and store it
+				templateChangedAt.Store(&now)
+				pickedTemplate.Store(&rndTemplate)
+
+				return rndTemplate
+			}
+		}
+	}
+
+	return cfg.TemplateName // the fallback of the fallback :D
+}
+
+// write the content to the response writer and log the error if any.
 func write[T string | []byte](w http.ResponseWriter, log *logger.Logger, content T) {
 	var data []byte
 

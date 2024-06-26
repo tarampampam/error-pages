@@ -84,10 +84,10 @@ func TestListenPortFlag(t *testing.T) {
 	}
 }
 
-func TestAddTemplateFlag(t *testing.T) {
+func TestAddTemplatesFlag(t *testing.T) {
 	t.Parallel()
 
-	var flag = shared.AddTemplateFlag
+	var flag = shared.AddTemplatesFlag
 
 	assert.Equal(t, "add-template", flag.Name)
 
@@ -108,10 +108,18 @@ func TestAddTemplateFlag(t *testing.T) {
 	}
 }
 
-func TestAddHTTPCodeFlag(t *testing.T) {
+func TestDisableTemplateNamesFlag(t *testing.T) {
 	t.Parallel()
 
-	var flag = shared.AddHTTPCodeFlag
+	var flag = shared.DisableTemplateNamesFlag
+
+	assert.Equal(t, "disable-template", flag.Name)
+}
+
+func TestAddHTTPCodesFlag(t *testing.T) {
+	t.Parallel()
+
+	var flag = shared.AddHTTPCodesFlag
 
 	assert.Equal(t, "add-http-code", flag.Name)
 

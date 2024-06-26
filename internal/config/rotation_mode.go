@@ -12,8 +12,8 @@ const (
 	RotationModeDisabled            RotationMode = iota // do not rotate templates, default
 	RotationModeRandomOnStartup                         // pick a random template on startup
 	RotationModeRandomOnEachRequest                     // pick a random template on each request
-	RotationModeRandomDaily                             // once a day switch to a random template
 	RotationModeRandomHourly                            // once an hour switch to a random template
+	RotationModeRandomDaily                             // once a day switch to a random template
 )
 
 // String returns a human-readable representation of the rotation mode.
@@ -25,10 +25,10 @@ func (rm RotationMode) String() string {
 		return "random-on-startup"
 	case RotationModeRandomOnEachRequest:
 		return "random-on-each-request"
-	case RotationModeRandomDaily:
-		return "random-daily"
 	case RotationModeRandomHourly:
 		return "random-hourly"
+	case RotationModeRandomDaily:
+		return "random-daily"
 	}
 
 	return fmt.Sprintf("RotationMode(%d)", rm)
@@ -40,8 +40,8 @@ func RotationModes() []RotationMode {
 		RotationModeDisabled,
 		RotationModeRandomOnStartup,
 		RotationModeRandomOnEachRequest,
-		RotationModeRandomDaily,
 		RotationModeRandomHourly,
+		RotationModeRandomDaily,
 	}
 }
 
@@ -77,11 +77,11 @@ func ParseRotationMode[T string | []byte](text T) (RotationMode, error) {
 		return RotationModeRandomOnStartup, nil
 	case RotationModeRandomOnEachRequest.String():
 		return RotationModeRandomOnEachRequest, nil
-	case RotationModeRandomDaily.String():
-		return RotationModeRandomDaily, nil
 	case RotationModeRandomHourly.String():
 		return RotationModeRandomHourly, nil
+	case RotationModeRandomDaily.String():
+		return RotationModeRandomDaily, nil
 	}
 
-	return RotationMode(0), fmt.Errorf("unrecognized rotation mode: %q", mode)
+	return RotationModeDisabled, fmt.Errorf("unrecognized rotation mode: %q", mode)
 }
