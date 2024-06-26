@@ -85,7 +85,7 @@ func New(cfg *config.Config, log *logger.Logger) http.Handler { //nolint:funlen,
 			tplProps.ServicePort = r.Header.Get("X-Service-Port")   // (ingress-nginx) port number of the Service backing the backend
 			tplProps.RequestID = r.Header.Get("X-Request-Id")       // (ingress-nginx) unique ID that identifies the request - same as for backend service
 			tplProps.ForwardedFor = r.Header.Get("X-Forwarded-For") // the value of the `X-Forwarded-For` header
-			tplProps.Host = r.Header.Get("Host")                    // the value of the `Host` header
+			tplProps.Host = r.Host                                  // the value of the `Host` header
 		}
 
 		// try to find the code message and description in the config and if not - use the standard status text or fallback
@@ -121,6 +121,7 @@ func New(cfg *config.Config, log *logger.Logger) http.Handler { //nolint:funlen,
 
 			if tpl, found := cfg.Templates.Get(templateName); found {
 				if content, err := template.Render(tpl, tplProps); err != nil {
+					// TODO: add GZIP compression for the HTML content support
 					write(w, log, fmt.Sprintf(
 						"<!DOCTYPE html>\n<html><body>Failed to render the HTML template %s: %s</body></html>",
 						templateName,
