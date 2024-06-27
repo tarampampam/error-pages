@@ -3,6 +3,7 @@ package template
 import (
 	"encoding/json"
 	"fmt"
+	"html"
 	"maps"
 	"os"
 	"strconv"
@@ -100,6 +101,10 @@ var builtInFunctions = template.FuncMap{ //nolint:gochecknoglobals
 	// retrieves the value of the environment variable named by the key:
 	//	`{{ env "SHELL" }}`	// `/bin/bash`
 	"env": os.Getenv,
+
+	// escapes special characters like "<" to become "&lt;":
+	//	`{{ escape "<test>" }}`	// `&lt;test&gt;`
+	"escape": html.EscapeString,
 
 	// returns the content of the JS file with a script for automatic error page localization:
 	//	`{{ l10nScript }}`	// `Object.defineProperty(window, ...`

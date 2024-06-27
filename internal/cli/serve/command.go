@@ -243,7 +243,11 @@ func NewCommand(log *logger.Logger) *cli.Command { //nolint:funlen,gocognit,gocy
 				cfg.TemplateName = c.String(templateNameFlag.Name)
 
 				if !cfg.Templates.Has(cfg.TemplateName) {
-					return fmt.Errorf("template %s not found and cannot be used", cfg.TemplateName)
+					return fmt.Errorf(
+						"template '%s' not found and cannot be used (available templates: %s)",
+						cfg.TemplateName,
+						cfg.Templates.Names(),
+					)
 				}
 			}
 

@@ -52,6 +52,10 @@ func TestRender_BuiltInFunction(t *testing.T) {
 		"env (ok)":                  {giveTemplate: `{{ env "TEST_ENV_VAR" }}`, wantResult: "unit-test"},
 		"env (not found)":           {giveTemplate: `{{ env "NOT_FOUND_ENV_VAR" }}`, wantResult: ""},
 		"l10nScript":                {giveTemplate: `{{ l10nScript }}`, wantResult: l10n.L10n()},
+		"escape": {
+			giveTemplate: `{{ escape "<script>alert('XSS' + \"HERE\")</script>" }}`,
+			wantResult:   "&lt;script&gt;alert(&#39;XSS&#39; + &#34;HERE&#34;)&lt;/script&gt;",
+		},
 	} {
 		t.Run(name, func(t *testing.T) {
 			require.NoError(t, os.Setenv("TEST_ENV_VAR", "unit-test"))
