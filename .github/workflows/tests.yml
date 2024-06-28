@@ -92,7 +92,7 @@ jobs: # Docs: <https://git.io/JvxXE>
         os: [linux, darwin] # linux, freebsd, darwin, windows
         arch: [amd64]  # amd64, 386
 #    needs: [golangci-lint, go-test, validate-config-file]
-      needs: [go-test, validate-config-file]
+    needs: [go-test, validate-config-file]
     steps:
       - uses: actions/checkout@v4
 
