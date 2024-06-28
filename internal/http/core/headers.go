@@ -23,7 +23,7 @@ const (
 	ServicePort = "X-Service-Port"
 
 	//// RequestID is a unique ID that identifies the request - same as for backend service
-	//RequestID = "X-Request-ID"
+	// RequestID = "X-Request-ID"
 
 	// ForwardedFor identifies the user of this session
 	ForwardedFor = "Cf-Connecting-Ip"
@@ -38,5 +38,5 @@ const (
 	RayID = "Cf-Ray"
 
 	//// Host identifies the hosts origin
-	//Host = "Host"
+	// Host = "Host"
 )
