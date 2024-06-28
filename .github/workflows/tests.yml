@@ -91,7 +91,8 @@ jobs: # Docs: <https://git.io/JvxXE>
       matrix:
         os: [linux, darwin] # linux, freebsd, darwin, windows
         arch: [amd64]  # amd64, 386
-    needs: [golangci-lint, go-test, validate-config-file]
+#    needs: [golangci-lint, go-test, validate-config-file]
+      needs: [go-test, validate-config-file]
     steps:
       - uses: actions/checkout@v4
 
@@ -157,7 +158,8 @@ jobs: # Docs: <https://git.io/JvxXE>
   docker-image:
     name: Build docker image
     runs-on: ubuntu-latest
-    needs: [golangci-lint, go-test, validate-config-file]
+#    needs: [golangci-lint, go-test, validate-config-file]
+    needs: [go-test, validate-config-file]
     steps:
       - uses: actions/checkout@v4
 
