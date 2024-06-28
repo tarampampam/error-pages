@@ -316,6 +316,8 @@ func (cmd *command) Run(ctx context.Context, log *logger.Logger, cfg *config.Con
 	//	![Used times](https://img.shields.io/badge/dynamic/json?
 	//		url=https%3A%2F%2Ferror-pages.goatcounter.com%2Fcounter%2F%2Fuse-template%2Flost-in-space.json
 	//		&query=%24.count&label=Used%20times)
+	//
+	// if you wish, you may view the collected statistics at any time here - https://error-pages.goatcounter.com/
 	go func() {
 		var tpl = url.QueryEscape(cfg.TemplateName)
 
@@ -327,7 +329,7 @@ func (cmd *command) Run(ctx context.Context, log *logger.Logger, cfg *config.Con
 			return
 		}
 
-		req.Header.Set("User-Agent", "error-pages") // by default, the User-Agent is "Go-http-client/x.x"
+		req.Header.Set("User-Agent", fmt.Sprintf("Mozilla/5.0 (error-pages, rnd:%d)", time.Now().UnixNano()))
 
 		resp, respErr := (&http.Client{Timeout: 10 * time.Second}).Do(req) //nolint:mnd // don't care about the response
 		if respErr != nil {

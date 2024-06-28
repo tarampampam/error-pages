@@ -12,10 +12,10 @@ import (
 	"gh.tarampamp.am/error-pages/internal/template"
 )
 
-const contentTypeHeader = "Content-Type"
-
 // New creates a new handler that returns an error page with the specified status code and format.
 func New(cfg *config.Config, log *logger.Logger) http.Handler { //nolint:funlen,gocognit,gocyclo
+	const contentTypeHeader = "Content-Type"
+
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		var code uint16
 
