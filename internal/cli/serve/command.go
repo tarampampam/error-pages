@@ -317,12 +317,17 @@ func (cmd *command) Run(ctx context.Context, log *logger.Logger, cfg *config.Con
 	//		url=https%3A%2F%2Ferror-pages.goatcounter.com%2Fcounter%2F%2Fuse-template%2Flost-in-space.json
 	//		&query=%24.count&label=Used%20times)
 	go func() {
+		var tpl = url.QueryEscape(cfg.TemplateName)
+
 		req, reqErr := http.NewRequestWithContext(ctx, http.MethodGet, fmt.Sprintf(
-			"https://error-pages.goatcounter.com/count?event=true&p=/use-template/%s", url.QueryEscape(cfg.TemplateName),
+			// https://www.goatcounter.com/help/pixel
+			"https://error-pages.goatcounter.com/count?e=true&p=/use-template/%s&t=%s", tpl, tpl,
 		), http.NoBody)
 		if reqErr != nil {
 			return
 		}
+
+		req.Header.Set("User-Agent", "error-pages") // by default, the User-Agent is "Go-http-client/x.x"
 
 		resp, respErr := (&http.Client{Timeout: 10 * time.Second}).Do(req) //nolint:mnd // don't care about the response
 		if respErr != nil {
