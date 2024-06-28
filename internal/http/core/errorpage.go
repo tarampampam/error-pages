@@ -1,9 +1,9 @@
 package core
 
 import (
-	"strconv"
-
+	"github.com/google/uuid"
 	"github.com/valyala/fasthttp"
+	"strconv"
 
 	"gh.tarampamp.am/error-pages/internal/config"
 	"gh.tarampamp.am/error-pages/internal/options"
@@ -17,6 +17,18 @@ type templatePicker interface {
 
 type renderer interface {
 	Render(content []byte, props tpl.Properties) ([]byte, error)
+}
+
+// GenHostName 生成 hostName 的函数 随机生成类似country + c8824f96ccdb的字符串 country 是 header 中的 Cf-Ipcountry 如果没有则默认为 CN
+func GenHostName(ctx *fasthttp.RequestCtx) string {
+	var country = string(ctx.Request.Header.Peek(DataCenter))
+
+	if country == "" {
+		country = "CN"
+	}
+
+	return country + "-" + uuid.New().String()[:12]
+
 }
 
 func RespondWithErrorPage( //nolint:funlen,gocyclo
@@ -47,9 +59,11 @@ func RespondWithErrorPage( //nolint:funlen,gocyclo
 		props.IngressName = string(ctx.Request.Header.Peek(IngressName))
 		props.ServiceName = string(ctx.Request.Header.Peek(ServiceName))
 		props.ServicePort = string(ctx.Request.Header.Peek(ServicePort))
-		props.RequestID = string(ctx.Request.Header.Peek(RequestID))
+		props.RequestID = string(ctx.Request.Header.Peek(RayID))
 		props.ForwardedFor = string(ctx.Request.Header.Peek(ForwardedFor))
-		props.Host = string(ctx.Request.Header.Peek(Host))
+		props.Host = GenHostName(ctx)
+		props.DataCenter = string(ctx.Request.Header.Peek(DataCenter))
+		props.Proto = string(ctx.Request.Header.Peek(Proto))
 	}
 
 	if page, exists := cfg.Pages[pageCode]; exists {

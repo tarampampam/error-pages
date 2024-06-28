@@ -141,6 +141,8 @@
             {{- if service_name }}<li><span><span data-l10n>Service name</span>:</span> <code>{{ service_name }}</code></li>{{ end -}}
             {{- if service_port }}<li><span><span data-l10n>Service port</span>:</span> <code>{{ service_port }}</code></li>{{ end -}}
             {{- if request_id }}<li><span><span data-l10n>Request ID</span>:</span> <code>{{ request_id }}</code></li>{{ end -}}
+            {{- if datacenter }}<li><span><span data-l10n>DataCenter</span>:</span> <code>{{ datacenter }}</code></li>{{ end -}}
+            {{- if proto }}<li><span><span data-l10n>Proto</span>:</span> <code>{{ proto }}</code></li>{{ end -}}
             <li><span><span data-l10n>Timestamp</span>:</span> <code>{{ now.Unix }}</code></li>
         </ul>
     </div>

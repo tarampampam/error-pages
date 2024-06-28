@@ -638,6 +638,12 @@ Object.defineProperty(window, 'l10n', {
                 id: 'Diteruskan untuk',
                 pl: 'Przekazane do',
             },
+            'DataCenter': {
+              zh: '数据中心',
+            },
+            'Proto': {
+              zh: '协议',
+            },
             'Namespace': {
                 fr: 'Espace de noms',
                 ru: 'Пространство имён',

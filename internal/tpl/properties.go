@@ -18,6 +18,8 @@ type Properties struct { // only string properties with a "token" tag, please
 	Host               string `token:"host"`
 	L10nDisabled       bool
 	ShowRequestDetails bool
+	DataCenter         string
+	Proto              string
 }
 
 // Replaces return a map with strings for the replacing, where the map key is a token.
