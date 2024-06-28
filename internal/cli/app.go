@@ -11,6 +11,7 @@ import (
 
 	"gh.tarampamp.am/error-pages/internal/appmeta"
 	"gh.tarampamp.am/error-pages/internal/cli/healthcheck"
+	"gh.tarampamp.am/error-pages/internal/cli/perftest"
 	"gh.tarampamp.am/error-pages/internal/cli/serve"
 	"gh.tarampamp.am/error-pages/internal/logger"
 )
@@ -77,6 +78,7 @@ func NewApp(appName string) *cli.Command { //nolint:funlen
 		Commands: []*cli.Command{
 			serve.NewCommand(log),
 			healthcheck.NewCommand(log, healthcheck.NewHTTPHealthChecker()),
+			perftest.NewCommand(log),
 		},
 		Version: fmt.Sprintf("%s (%s)", appmeta.Version(), runtime.Version()),
 		Flags: []cli.Flag{ // global flags
