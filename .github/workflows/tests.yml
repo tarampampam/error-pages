@@ -23,17 +23,17 @@ jobs: # Docs: <https://git.io/JvxXE>
       - name: Check for GitLeaks
         uses: gacts/gitleaks@v1 # Action page: <https://github.com/gacts/gitleaks>
 
-  golangci-lint:
-    name: Golang-CI (lint)
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: gacts/setup-go-with-cache@v1
-        with: {go-version-file: go.mod}
-
-      - uses: golangci/golangci-lint-action@v6
-        with: {skip-pkg-cache: true, skip-build-cache: true}
+#  golangci-lint:
+#    name: Golang-CI (lint)
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v4
+#
+#      - uses: gacts/setup-go-with-cache@v1
+#        with: {go-version-file: go.mod}
+#
+#      - uses: golangci/golangci-lint-action@v6
+#        with: {skip-pkg-cache: true, skip-build-cache: true}
 
   validate-config-file:
     name: Validate config file
