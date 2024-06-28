@@ -321,7 +321,7 @@ func (cmd *command) Run(ctx context.Context, log *logger.Logger, cfg *config.Con
 
 		req, reqErr := http.NewRequestWithContext(ctx, http.MethodGet, fmt.Sprintf(
 			// https://www.goatcounter.com/help/pixel
-			"https://error-pages.goatcounter.com/count?e=true&p=/use-template/%s&t=%s", tpl, tpl,
+			"https://error-pages.goatcounter.com/count?p=/use-template/%s&t=%s", tpl, tpl,
 		), http.NoBody)
 		if reqErr != nil {
 			return
