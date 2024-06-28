@@ -53,9 +53,12 @@ func New(cfg *config.Config, log *logger.Logger) http.Handler { //nolint:funlen,
 			// disallow indexing of the error pages
 			w.Header().Set("X-Robots-Tag", "noindex")
 
-			if code >= 500 && code < 600 {
+			switch code {
+			case http.StatusRequestTimeout, http.StatusTooEarly, http.StatusTooManyRequests,
+				http.StatusInternalServerError, http.StatusBadGateway, http.StatusServiceUnavailable,
+				http.StatusGatewayTimeout:
 				// https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Retry-After
-				// tell the client (search crawler) to retry the request after 120 seconds, it makes sense for the 5xx errors
+				// tell the client (search crawler) to retry the request after 120 seconds
 				w.Header().Set("Retry-After", "120")
 			}
 

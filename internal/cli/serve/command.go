@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"strings"
 	"time"
 
@@ -109,7 +110,7 @@ func NewCommand(log *logger.Logger) *cli.Command { //nolint:funlen,gocognit,gocy
 			OnlyOnce: true,
 		}
 		proxyHeadersListFlag = cli.StringFlag{
-			Name: "proxy-headers",
+			Name: "proxy-headers", // TODO: add support for the "*" wildcard
 			Usage: "listed here HTTP headers will be proxied from the original request to the error page response " +
 				"(comma-separated list)",
 			Value:   strings.Join(cfg.ProxyHeaders, ","),
@@ -235,6 +236,11 @@ func NewCommand(log *logger.Logger) *cli.Command { //nolint:funlen,gocognit,gocy
 				}
 			}
 
+			// check if there are any templates available to render error pages
+			if len(cfg.Templates.Names()) == 0 {
+				return errors.New("no templates available to render error pages")
+			}
+
 			// if the rotation mode is set to random-on-startup, pick a random template (ignore the user-provided
 			// template name)
 			if cfg.RotationMode == config.RotationModeRandomOnStartup {
@@ -291,7 +297,7 @@ func NewCommand(log *logger.Logger) *cli.Command { //nolint:funlen,gocognit,gocy
 }
 
 // Run current command.
-func (cmd *command) Run(ctx context.Context, log *logger.Logger, cfg *config.Config) error {
+func (cmd *command) Run(ctx context.Context, log *logger.Logger, cfg *config.Config) error { //nolint:funlen
 	var srv = appHttp.NewServer(ctx, log)
 
 	if err := srv.Register(cfg); err != nil {
@@ -300,6 +306,33 @@ func (cmd *command) Run(ctx context.Context, log *logger.Logger, cfg *config.Con
 
 	var startingErrCh = make(chan error, 1) // channel for server starting error
 	defer close(startingErrCh)
+
+	// to track the frequency of each template's use, we send a simple GET request to the GoatCounter API
+	// (https://goatcounter.com, https://github.com/arp242/goatcounter) to increment the counter. this service is
+	// free and does not require an API key. no private data is sent, as shown in the URL below. this is necessary
+	// to render a badge displaying the number of template usages on the error-pages repository README file :D
+	//
+	// badge code example:
+	//	![Used times](https://img.shields.io/badge/dynamic/json?
+	//		url=https%3A%2F%2Ferror-pages.goatcounter.com%2Fcounter%2F%2Fuse-template%2Flost-in-space.json
+	//		&query=%24.count&label=Used%20times)
+	go func() {
+		req, reqErr := http.NewRequestWithContext(ctx, http.MethodGet, fmt.Sprintf(
+			"https://error-pages.goatcounter.com/count?event=true&p=/use-template/%s", url.QueryEscape(cfg.TemplateName),
+		), http.NoBody)
+		if reqErr != nil {
+			return
+		}
+
+		resp, respErr := (&http.Client{Timeout: 10 * time.Second}).Do(req) //nolint:mnd // don't care about the response
+		if respErr != nil {
+			log.Debug("Cannot send a request to increment the template usage counter", logger.Error(respErr))
+
+			return
+		} else if resp != nil {
+			_ = resp.Body.Close()
+		}
+	}()
 
 	// start HTTP server in separate goroutine
 	go func(errCh chan<- error) {

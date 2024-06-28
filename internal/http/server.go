@@ -12,6 +12,7 @@ import (
 	"gh.tarampamp.am/error-pages/internal/config"
 	ep "gh.tarampamp.am/error-pages/internal/http/handlers/error_page"
 	"gh.tarampamp.am/error-pages/internal/http/handlers/live"
+	"gh.tarampamp.am/error-pages/internal/http/handlers/static"
 	"gh.tarampamp.am/error-pages/internal/http/handlers/version"
 	"gh.tarampamp.am/error-pages/internal/http/middleware/logreq"
 	"gh.tarampamp.am/error-pages/internal/logger"
@@ -50,6 +51,7 @@ func (s *Server) Register(cfg *config.Config) error {
 		liveHandler       = live.New()
 		versionHandler    = version.New(appmeta.Version())
 		errorPagesHandler = ep.New(cfg, s.log)
+		faviconHandler    = static.New(static.Favicon)
 	)
 
 	s.server.Handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -63,6 +65,10 @@ func (s *Server) Register(cfg *config.Config) error {
 		// version endpoint
 		case url == "/version":
 			versionHandler.ServeHTTP(w, r)
+
+		// favicon.ico endpoint
+		case url == "/favicon.ico":
+			faviconHandler.ServeHTTP(w, r)
 
 		// error pages endpoints:
 		//	- /
@@ -87,8 +93,9 @@ func (s *Server) Register(cfg *config.Config) error {
 
 	// apply middleware
 	s.server.Handler = logreq.New(s.log, func(r *http.Request) bool {
-		// skip logging healthcheck requests
-		return strings.Contains(strings.ToLower(r.UserAgent()), "healthcheck")
+		// skip logging healthcheck and .ico (favicon) requests
+		return strings.Contains(strings.ToLower(r.UserAgent()), "healthcheck") ||
+			strings.HasSuffix(r.URL.Path, ".ico")
 	})(s.server.Handler)
 
 	return nil
