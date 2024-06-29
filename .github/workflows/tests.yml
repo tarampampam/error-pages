@@ -83,10 +83,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - {uses: gacts/github-slug@v1, id: slug}
+      - uses: docker/setup-qemu-action@v3
+      - uses: docker/setup-buildx-action@v3
       - uses: docker/build-push-action@v5
         with:
           context: .
           file: Dockerfile
           push: false
+          platforms: linux/amd64,linux/arm64,linux/arm/v7,linux/arm64/v8
           build-args: "APP_VERSION=${{ steps.slug.outputs.commit-hash-short }}"
           tags: app:ci
