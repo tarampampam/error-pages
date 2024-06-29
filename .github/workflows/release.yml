@@ -84,14 +84,14 @@ jobs:
           platforms: linux/amd64,linux/arm64,linux/arm/v7,linux/arm64/v8
           build-args: "APP_VERSION=${{ steps.slug.outputs.version }}"
           tags: |
-            tarampampam/error-pages:${{ steps.slug.outputs.version }}
-            tarampampam/error-pages:${{ steps.slug.outputs.version-major }}.${{ steps.slug.outputs.version-minor }}
-            tarampampam/error-pages:${{ steps.slug.outputs.version-major }}
+            binaryyuki/error-pages:${{ steps.slug.outputs.version }}
+            binaryyuki/error-pages:${{ steps.slug.outputs.version-major }}.${{ steps.slug.outputs.version-minor }}
+            binaryyuki/error-pages:${{ steps.slug.outputs.version-major }}
             tarampampam/error-pages:latest
-            ghcr.io/binaryyuki/${{ github.event.repository.name }}:${{ steps.slug.outputs.version }}
-            ghcr.io/binaryyuki/${{ github.event.repository.name }}:${{ steps.slug.outputs.version-major }}.${{ steps.slug.outputs.version-minor }}
-            ghcr.io/binaryyuki/${{ github.event.repository.name }}:${{ steps.slug.outputs.version-major }}
-            ghcr.io/binaryyuki/${{ github.event.repository.name }}:latest
+            ghcr.io/binaryyuki/error-pages:${{ steps.slug.outputs.version }}
+            ghcr.io/binaryyuki/error-pages:${{ steps.slug.outputs.version-major }}.${{ steps.slug.outputs.version-minor }}
+            ghcr.io/binaryyuki/error-pages:${{ steps.slug.outputs.version-major }}
+            ghcr.io/binaryyuki/error-pages:latest
 
   demo:
     name: Update the demonstration
