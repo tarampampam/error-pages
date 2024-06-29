@@ -46,7 +46,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [linux, darwin, windows] # freebsd
-        arch: [amd64, arm64]  # amd64, 386
+        arch: [amd64, arm64]  # 386
     needs: [golangci-lint, go-test]
     steps:
       - uses: actions/checkout@v4
@@ -58,11 +58,11 @@ jobs:
           CGO_ENABLED: 0
           LDFLAGS: -s -w -X gh.tarampamp.am/error-pages/internal/appmeta.version=${{ steps.slug.outputs.commit-hash-short }}
         run: go build -trimpath -ldflags "$LDFLAGS" -o ./error-pages ./cmd/error-pages/
-      - if: matrix.os == 'linux' && matrix.arch == 'amd64'
+      - if: matrix.os == runner.os && matrix.arch == runner.arch
         run: ./error-pages --version && ./error-pages -h
-      - if: matrix.os == 'linux' && matrix.arch == 'amd64'
+      - if: matrix.os == runner.os && matrix.arch == runner.arch
         run: mkdir ./out && ./error-pages --log-level=debug build --index --target-dir ./out
-      - if: matrix.os == 'linux' && matrix.arch == 'amd64'
+      - if: matrix.os == runner.os && matrix.arch == runner.arch
         run: |
           test -f ./out/index.html
           test -f ./out/ghost/404.html
@@ -79,17 +79,14 @@ jobs:
   docker-image:
     name: Build the docker image
     runs-on: ubuntu-latest
-    needs: [golangci-lint]
+    needs: [golangci-lint, go-test]
     steps:
       - uses: actions/checkout@v4
       - {uses: gacts/github-slug@v1, id: slug}
-      - uses: docker/setup-qemu-action@v3
-      - uses: docker/setup-buildx-action@v3
       - uses: docker/build-push-action@v5
         with:
           context: .
           file: Dockerfile
           push: false
-          platforms: linux/amd64,linux/arm64,linux/arm/v7,linux/arm64/v8
           build-args: "APP_VERSION=${{ steps.slug.outputs.commit-hash-short }}"
           tags: app:ci
