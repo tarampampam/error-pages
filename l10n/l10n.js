@@ -638,7 +638,7 @@ Object.defineProperty(window, 'l10n', {
                 id: 'Diteruskan untuk',
                 pl: 'Przekazane do',
             },
-            'DataCenter': {
+            'data_center': {
               'fr': 'Centre de données',
               'ru': 'Центр обработки данных',
               'uk': 'Центр обробки даних',
@@ -650,7 +650,7 @@ Object.defineProperty(window, 'l10n', {
               'id': 'Pusat Data',
               'pl': 'Centrum danych'
             },
-            'Proto': {
+            'proto': {
               'fr': 'Protocole',
               'ru': 'Протокол',
               'uk': 'Протокол',
