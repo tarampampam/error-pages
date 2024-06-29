@@ -45,6 +45,12 @@ jobs:
           LDFLAGS: -s -w -X gh.tarampamp.am/error-pages/internal/version.version=${{ steps.slug.outputs.version }}
         run: go build -trimpath -ldflags "$LDFLAGS" -o "./${{ steps.values.outputs.binary-name }}" ./cmd/error-pages/
 
+      - name: set lower case owner name
+        run: |
+          echo "OWNER_LC=${OWNER,,}" >>${GITHUB_ENV}
+        env:
+          OWNER: '${{ github.repository_owner }}'
+
       - name: Upload binary file to release
         uses: svenstaro/upload-release-action@v2
         with:
