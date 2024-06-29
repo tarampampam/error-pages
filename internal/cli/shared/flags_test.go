@@ -7,6 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"gh.tarampamp.am/error-pages/internal/cli/shared"
+	"gh.tarampamp.am/error-pages/internal/config"
 )
 
 func TestListenAddrFlag(t *testing.T) {
@@ -168,4 +169,50 @@ func TestAddHTTPCodesFlag(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestParseHTTPCodes(t *testing.T) {
+	t.Parallel()
+
+	assert.Equal(t, shared.ParseHTTPCodes(nil), map[string]config.CodeDescription{})
+
+	assert.Equal(t,
+		shared.ParseHTTPCodes(map[string]string{"200": "msg"}),
+		map[string]config.CodeDescription{"200": {Message: "msg", Description: ""}},
+	)
+
+	assert.Equal(t,
+		shared.ParseHTTPCodes(map[string]string{"200": "/aaa"}),
+		map[string]config.CodeDescription{"200": {Message: "", Description: "aaa"}},
+	)
+
+	assert.Equal(t, // not sure here
+		shared.ParseHTTPCodes(map[string]string{"aa": "////aaa"}),
+		map[string]config.CodeDescription{"aa": {Message: "", Description: "///aaa"}},
+	)
+
+	assert.Equal(t,
+		shared.ParseHTTPCodes(map[string]string{"200": "msg/desc"}),
+		map[string]config.CodeDescription{"200": {Message: "msg", Description: "desc"}},
+	)
+
+	assert.Equal(t,
+		shared.ParseHTTPCodes(map[string]string{
+			"200": "msg/desc",
+			"foo": "Word word/Desc desc // adsadas",
+		}),
+		map[string]config.CodeDescription{
+			"200": {Message: "msg", Description: "desc"},
+			"foo": {Message: "Word word", Description: "Desc desc // adsadas"},
+		},
+	)
+}
+
+func TestDisableL10nFlag(t *testing.T) {
+	t.Parallel()
+
+	var flag = shared.DisableL10nFlag
+
+	assert.Equal(t, "disable-l10n", flag.Name)
+	assert.Contains(t, flag.Sources.String(), "DISABLE_L10N")
 }

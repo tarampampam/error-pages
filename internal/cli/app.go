@@ -10,6 +10,7 @@ import (
 	"github.com/urfave/cli/v3"
 
 	"gh.tarampamp.am/error-pages/internal/appmeta"
+	"gh.tarampamp.am/error-pages/internal/cli/build"
 	"gh.tarampamp.am/error-pages/internal/cli/healthcheck"
 	"gh.tarampamp.am/error-pages/internal/cli/perftest"
 	"gh.tarampamp.am/error-pages/internal/cli/serve"
@@ -77,6 +78,7 @@ func NewApp(appName string) *cli.Command { //nolint:funlen
 		},
 		Commands: []*cli.Command{
 			serve.NewCommand(log),
+			build.NewCommand(log),
 			healthcheck.NewCommand(log, healthcheck.NewHTTPHealthChecker()),
 			perftest.NewCommand(log),
 		},

@@ -58,11 +58,7 @@ jobs:
           CGO_ENABLED: 0
           LDFLAGS: -s -w -X gh.tarampamp.am/error-pages/internal/appmeta.version=${{ steps.slug.outputs.branch-name-slug }}
         run: go build -trimpath -ldflags "$LDFLAGS" -o ./error-pages ./cmd/error-pages/
-
-      - name: Try to execute
-        if: matrix.os == 'linux'
-        run: ./error-pages --version && ./error-pages -h
-
+      - {if: matrix.os == 'linux', run: ./error-pages --version && ./error-pages -h}
       - uses: actions/upload-artifact@v4
         with:
           name: error-pages-${{ matrix.os }}-${{ matrix.arch }}

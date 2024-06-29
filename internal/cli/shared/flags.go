@@ -7,6 +7,8 @@ import (
 	"strings"
 
 	"github.com/urfave/cli/v3"
+
+	"gh.tarampamp.am/error-pages/internal/config"
 )
 
 // Note: Don't use pointers for flags, because they have own state which is not thread-safe.
@@ -98,4 +100,34 @@ var AddHTTPCodesFlag = cli.StringMapFlag{
 
 		return nil
 	},
+}
+
+// ParseHTTPCodes converts a map of HTTP status codes and their messages/descriptions into a map of codes and
+// descriptions. Should be used together with [AddHTTPCodesFlag].
+func ParseHTTPCodes(codes map[string]string) map[string]config.CodeDescription {
+	var result = make(map[string]config.CodeDescription, len(codes))
+
+	for code, msgAndDesc := range codes {
+		var (
+			parts = strings.SplitN(msgAndDesc, "/", 2)
+			desc  config.CodeDescription
+		)
+
+		desc.Message = strings.TrimSpace(parts[0])
+
+		if len(parts) > 1 {
+			desc.Description = strings.TrimSpace(parts[1])
+		}
+
+		result[code] = desc
+	}
+
+	return result
+}
+
+var DisableL10nFlag = cli.BoolFlag{
+	Name:     "disable-l10n",
+	Usage:    "disable localization of error pages (if the template supports localization)",
+	Sources:  cli.EnvVars("DISABLE_L10N"),
+	OnlyOnce: true,
 }

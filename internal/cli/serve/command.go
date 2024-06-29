@@ -38,12 +38,13 @@ func NewCommand(log *logger.Logger) *cli.Command { //nolint:funlen,gocognit,gocy
 	)
 
 	var (
-		addrFlag       = shared.ListenAddrFlag
-		portFlag       = shared.ListenPortFlag
-		addTplFlag     = shared.AddTemplatesFlag
-		disableTplFlag = shared.DisableTemplateNamesFlag
-		addCodeFlag    = shared.AddHTTPCodesFlag
-		jsonFormatFlag = cli.StringFlag{
+		addrFlag        = shared.ListenAddrFlag
+		portFlag        = shared.ListenPortFlag
+		addTplFlag      = shared.AddTemplatesFlag
+		disableTplFlag  = shared.DisableTemplateNamesFlag
+		addCodeFlag     = shared.AddHTTPCodesFlag
+		disableL10nFlag = shared.DisableL10nFlag
+		jsonFormatFlag  = cli.StringFlag{
 			Name:     "json-format",
 			Usage:    "override the default error page response in JSON format (Go templates are supported)",
 			Sources:  env("RESPONSE_JSON_FORMAT"),
@@ -72,13 +73,6 @@ func NewCommand(log *logger.Logger) *cli.Command { //nolint:funlen,gocognit,gocy
 			Sources:  env("TEMPLATE_NAME"),
 			OnlyOnce: true,
 			Config:   trim,
-		}
-		disableL10nFlag = cli.BoolFlag{
-			Name:     "disable-l10n",
-			Usage:    "disable localization of error pages (if the template supports localization)",
-			Value:    cfg.L10n.Disable,
-			Sources:  env("DISABLE_L10N"),
-			OnlyOnce: true,
 		}
 		defaultCodeToRenderFlag = cli.UintFlag{
 			Name:    "default-error-page",
@@ -144,6 +138,8 @@ func NewCommand(log *logger.Logger) *cli.Command { //nolint:funlen,gocognit,gocy
 		}
 	)
 
+	disableL10nFlag.Value = cfg.L10n.Disable // set the default value depending on the configuration
+
 	cmd.c = &cli.Command{
 		Name:    "serve",
 		Aliases: []string{"s", "server", "http"},
@@ -203,20 +199,7 @@ func NewCommand(log *logger.Logger) *cli.Command { //nolint:funlen,gocognit,gocy
 
 			// add custom HTTP codes to the configuration
 			if add := c.StringMap(addCodeFlag.Name); len(add) > 0 {
-				for code, msgAndDesc := range add {
-					var (
-						parts = strings.SplitN(msgAndDesc, "/", 2) //nolint:mnd
-						desc  config.CodeDescription
-					)
-
-					if len(parts) > 0 {
-						desc.Message = strings.TrimSpace(parts[0])
-					}
-
-					if len(parts) > 1 {
-						desc.Description = strings.TrimSpace(parts[1])
-					}
-
+				for code, desc := range shared.ParseHTTPCodes(add) {
 					cfg.Codes[code] = desc
 
 					log.Info("HTTP code added",

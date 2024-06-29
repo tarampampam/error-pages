@@ -45,6 +45,25 @@ The following flags are supported:
 | `--proxy-headers="…"`        | listed here HTTP headers will be proxied from the original request to the error page response (comma-separated list)                                                                                                                                                                                                        | `X-Request-Id,X-Trace-Id,X-Amzn-Trace-Id` |    `PROXY_HTTP_HEADERS`     |
 | `--rotation-mode="…"`        | templates automatic rotation mode (disabled/random-on-startup/random-on-each-request/random-hourly/random-daily)                                                                                                                                                                                                            |                `disabled`                 |  `TEMPLATES_ROTATION_MODE`  |
 
+### `build` command (aliases: `b`)
+
+Build the static error pages and put them into a specified directory.
+
+Usage:
+
+```bash
+$ error-pages [GLOBAL FLAGS] build [COMMAND FLAGS] [ARGUMENTS...]
+```
+
+The following flags are supported:
+
+| Name                     | Description                                                                                                                                                                                                                                                                                                                 | Default value | Environment variables |
+|--------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:-------------:|:---------------------:|
+| `--add-template="…"`     | to add a new template, provide the path to the file using this flag (the filename without the extension will be used as the template name)                                                                                                                                                                                  |     `[]`      |        *none*         |
+| `--disable-template="…"` | disable the specified template by its name                                                                                                                                                                                                                                                                                  |     `[]`      |        *none*         |
+| `--add-http-code="…"`    | to add a new HTTP status code, provide the code and its message/description using this flag (the format should be '%code%=%message%/%description%'; the code may contain a wildcard '*' to cover multiple codes at once, for example, '4**' will cover all 4xx codes, unless a more specific code was described previously) |    `map[]`    |        *none*         |
+| `--disable-l10n`         | disable localization of error pages (if the template supports localization)                                                                                                                                                                                                                                                 |    `false`    |    `DISABLE_L10N`     |
+
 ### `healthcheck` command (aliases: `chk`, `health`, `check`)
 
 Health checker for the HTTP server. The use case - docker health check.
