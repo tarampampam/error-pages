@@ -650,7 +650,7 @@ Object.defineProperty(window, 'l10n', {
               'id': 'Pusat Data',
               'pl': 'Centrum danych'
             },
-            'proto': {
+            'Proto': {
               'fr': 'Protocole',
               'ru': 'Протокол',
               'uk': 'Протокол',
