@@ -634,7 +634,7 @@ Object.defineProperty(window, 'l10n', {
                 nl: 'Doorgestuurd voor',
                 de: 'Weitergeleitet für',
                 es: 'Remitido para',
-                zh: '源地址',
+                zh: '源请求地址',
                 id: 'Diteruskan untuk',
                 pl: 'Przekazane do',
             },
