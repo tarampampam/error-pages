@@ -99,7 +99,10 @@ jobs:
       - uses: actions/checkout@v4
       - {uses: gacts/github-slug@v1, id: slug}
       - uses: docker/build-push-action@v5
-        with: {push: false, build-args: "APP_VERSION=${{ steps.slug.outputs.commit-hash-short }}", tags: app:ci}
+        with:
+          push: false
+          build-args: "APP_VERSION=${{ steps.slug.outputs.commit-hash-short }}"
+          tags: app:ci
       - run: docker save app:ci > ./docker-image.tar
       - uses: actions/upload-artifact@v4
         with: {name: docker-image, path: ./docker-image.tar, retention-days: 1}
