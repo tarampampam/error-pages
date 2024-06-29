@@ -58,11 +58,11 @@ jobs:
           CGO_ENABLED: 0
           LDFLAGS: -s -w -X gh.tarampamp.am/error-pages/internal/appmeta.version=${{ steps.slug.outputs.commit-hash-short }}
         run: go build -trimpath -ldflags "$LDFLAGS" -o ./error-pages ./cmd/error-pages/
-      - if: contains(matrix.os, runner.os) && contains(matrix.arch, runner.arch)
+      - if: &{{ contains(matrix.os, runner.os) && contains(matrix.arch, runner.arch) }}
         run: ./error-pages --version && ./error-pages -h
-      - if: contains(matrix.os, runner.os) && contains(matrix.arch, runner.arch)
+      - if: &{{ contains(matrix.os, runner.os) && contains(matrix.arch, runner.arch) }}
         run: mkdir ./out && ./error-pages --log-level=debug build --index --target-dir ./out
-      - if: contains(matrix.os, runner.os) && contains(matrix.arch, runner.arch)
+      - if: &{{ contains(matrix.os, runner.os) && contains(matrix.arch, runner.arch) }}
         run: |
           test -f ./out/index.html
           test -f ./out/ghost/404.html
