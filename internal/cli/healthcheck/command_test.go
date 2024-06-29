@@ -33,8 +33,6 @@ func (m *fakeHealthChecker) Check(_ context.Context, addr string) error {
 }
 
 func TestCommand_RunSuccess(t *testing.T) {
-	t.Parallel()
-
 	var cmd = healthcheck.NewCommand(logger.NewNop(), &fakeHealthChecker{
 		t:           t,
 		wantAddress: "http://127.0.0.1:1234",
@@ -44,8 +42,6 @@ func TestCommand_RunSuccess(t *testing.T) {
 }
 
 func TestCommand_RunFail(t *testing.T) {
-	t.Parallel()
-
 	cmd := healthcheck.NewCommand(logger.NewNop(), &fakeHealthChecker{
 		t:           t,
 		wantAddress: "http://127.0.0.1:4321",
