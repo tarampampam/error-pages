@@ -7,6 +7,9 @@ COPY ./go.* /src/
 
 WORKDIR /src
 
+# Set the GOPROXY to the default value
+ENV GOPROXY=https://goproxy.cn,direct
+
 # burn the modules cache
 RUN go mod download
 

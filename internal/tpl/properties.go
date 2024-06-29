@@ -16,10 +16,10 @@ type Properties struct { // only string properties with a "token" tag, please
 	RequestID          string `token:"request_id"`
 	ForwardedFor       string `token:"forwarded_for"`
 	Host               string `token:"host"`
+	DataCenter         string `token:"data_center"`
+	Proto              string `token:"proto"`
 	L10nDisabled       bool
 	ShowRequestDetails bool
-	DataCenter         string
-	Proto              string
 }
 
 // Replaces return a map with strings for the replacing, where the map key is a token.
