@@ -73,12 +73,13 @@ var AddTemplatesFlag = cli.StringSliceFlag{
 
 var DisableTemplateNamesFlag = cli.StringSliceFlag{
 	Name:   "disable-template",
-	Usage:  "disable the specified template by its name",
+	Usage:  "disable the specified template by its name (can be found useful to disable the builtit templates and use only custom ones)",
 	Config: cli.StringConfig{TrimSpace: true},
 }
 
 var AddHTTPCodesFlag = cli.StringMapFlag{
-	Name: "add-http-code",
+	Name:    "add-http-code",
+	Aliases: []string{"add-code"},
 	Usage: "to add a new HTTP status code, provide the code and its message/description using this flag (the format " +
 		"should be '%code%=%message%/%description%'; the code may contain a wildcard '*' to cover multiple codes at once, " +
 		"for example, '4**' will cover all 4xx codes, unless a more specific code was described previously)",

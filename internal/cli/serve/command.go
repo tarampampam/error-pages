@@ -46,21 +46,21 @@ func NewCommand(log *logger.Logger) *cli.Command { //nolint:funlen,gocognit,gocy
 		disableL10nFlag = shared.DisableL10nFlag
 		jsonFormatFlag  = cli.StringFlag{
 			Name:     "json-format",
-			Usage:    "override the default error page response in JSON format (Go templates are supported)",
+			Usage:    "override the default error page response in JSON format (Go templates are supported; the error page will use this template if the client requests JSON content type)",
 			Sources:  env("RESPONSE_JSON_FORMAT"),
 			OnlyOnce: true,
 			Config:   trim,
 		}
 		xmlFormatFlag = cli.StringFlag{
 			Name:     "xml-format",
-			Usage:    "override the default error page response in XML format (Go templates are supported)",
+			Usage:    "override the default error page response in XML format (Go templates are supported; the error page will use this template if the client requests XML content type)",
 			Sources:  env("RESPONSE_XML_FORMAT"),
 			OnlyOnce: true,
 			Config:   trim,
 		}
 		plainTextFormatFlag = cli.StringFlag{
 			Name:     "plaintext-format",
-			Usage:    "override the default error page response in plain text format (Go templates are supported)",
+			Usage:    "override the default error page response in plain text format (Go templates are supported; the error page will use this template if the client requests PlainText content type or does not specify any)",
 			Sources:  env("RESPONSE_PLAINTEXT_FORMAT"),
 			OnlyOnce: true,
 			Config:   trim,
@@ -69,7 +69,7 @@ func NewCommand(log *logger.Logger) *cli.Command { //nolint:funlen,gocognit,gocy
 			Name:     "template-name",
 			Aliases:  []string{"t"},
 			Value:    cfg.TemplateName,
-			Usage:    "name of the template to use for rendering error pages",
+			Usage:    "name of the template to use for rendering error pages (builtin templates: " + strings.Join(cfg.Templates.Names(), ", ") + ")",
 			Sources:  env("TEMPLATE_NAME"),
 			OnlyOnce: true,
 			Config:   trim,
@@ -137,6 +137,9 @@ func NewCommand(log *logger.Logger) *cli.Command { //nolint:funlen,gocognit,gocy
 			},
 		}
 	)
+
+	addrFlag.Usage = "the HTTP server will listen on this IP (v4 or v6) address (set 127.0.0.1 for localhost, 0.0.0.0 to listen on all interfaces, or specify a custom IP)"
+	portFlag.Usage = "the TPC port number for the HTTP server to listen on (0-65535)"
 
 	disableL10nFlag.Value = cfg.L10n.Disable // set the default value depending on the configuration
 

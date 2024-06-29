@@ -2,24 +2,34 @@ package build
 
 import (
 	"context"
+	_ "embed"
 	"errors"
 	"fmt"
+	"html/template"
 	"os"
+	"path"
 	"path/filepath"
+	"slices"
+	"strconv"
+	"strings"
 
 	"github.com/urfave/cli/v3"
 
 	"gh.tarampamp.am/error-pages/internal/cli/shared"
 	"gh.tarampamp.am/error-pages/internal/config"
 	"gh.tarampamp.am/error-pages/internal/logger"
+	appTemplate "gh.tarampamp.am/error-pages/internal/template"
 )
+
+//go:embed index.html
+var indexHtml string
 
 type command struct {
 	c *cli.Command
 
 	opt struct {
-		createIndex bool
-		targetDir   string
+		createIndex      bool
+		targetDirAbsPath string
 	}
 }
 
@@ -70,7 +80,7 @@ func NewCommand(log *logger.Logger) *cli.Command { //nolint:funlen,gocognit
 		Action: func(ctx context.Context, c *cli.Command) error {
 			cfg.L10n.Disable = c.Bool(disableL10nFlag.Name)
 			cmd.opt.createIndex = c.Bool(createIndexFlag.Name)
-			cmd.opt.targetDir, _ = filepath.Abs(c.String(targetDirFlag.Name)) // an error checked by [os.Stat] validator
+			cmd.opt.targetDirAbsPath, _ = filepath.Abs(c.String(targetDirFlag.Name)) // an error checked by [os.Stat] validator
 
 			// add templates from files to the configuration
 			if add := c.StringSlice(addTplFlag.Name); len(add) > 0 {
@@ -112,6 +122,13 @@ func NewCommand(log *logger.Logger) *cli.Command { //nolint:funlen,gocognit
 				return errors.New("no templates specified")
 			}
 
+			log.Info("Building error pages",
+				logger.String("targetDir", cmd.opt.targetDirAbsPath),
+				logger.Strings("templates", cfg.Templates.Names()...),
+				logger.Bool("index", cmd.opt.createIndex),
+				logger.Bool("l10n", !cfg.L10n.Disable),
+			)
+
 			return cmd.Run(ctx, log, &cfg)
 		},
 		Flags: []cli.Flag{
@@ -127,10 +144,97 @@ func NewCommand(log *logger.Logger) *cli.Command { //nolint:funlen,gocognit
 	return cmd.c
 }
 
-func (cmd *command) Run(
+func (cmd *command) Run( //nolint:funlen
 	ctx context.Context,
 	log *logger.Logger,
 	cfg *config.Config,
 ) error {
+	type historyItem struct{ Code, Message, RelativePath string }
+
+	var history = make(map[string][]historyItem, len(cfg.Codes)*len(cfg.Templates)) // map[template_name]codes
+
+	for templateName, templateContent := range cfg.Templates {
+		log.Debug("Processing template", logger.String("name", templateName))
+
+		for code, codeDescription := range cfg.Codes {
+			if err := createDirectory(filepath.Join(cmd.opt.targetDirAbsPath, templateName)); err != nil {
+				return fmt.Errorf("cannot create directory for template '%s': %w", templateName, err)
+			}
+
+			var codeAsUint, codeParsingErr = strconv.ParseUint(code, 10, 32)
+			if codeParsingErr != nil {
+				log.Warn("Cannot parse code", logger.String("code", code))
+
+				continue
+			}
+
+			var outFilePath = path.Join(cmd.opt.targetDirAbsPath, templateName, code+".html")
+
+			if content, renderErr := appTemplate.Render(templateContent, appTemplate.Props{
+				Code:               uint16(codeAsUint),
+				Message:            codeDescription.Message,
+				Description:        codeDescription.Description,
+				L10nDisabled:       cfg.L10n.Disable,
+				ShowRequestDetails: false,
+			}); renderErr == nil {
+				if err := os.WriteFile(outFilePath, []byte(content), os.FileMode(0664)); err != nil { //nolint:mnd
+					return err
+				}
+			} else {
+				return fmt.Errorf("cannot render template '%s': %w", templateName, renderErr)
+			}
+
+			log.Debug("Page built", logger.String("template", templateName), logger.String("code", code))
+
+			history[templateName] = append(history[templateName], historyItem{
+				Code:         code,
+				Message:      codeDescription.Message,
+				RelativePath: "." + strings.TrimPrefix(outFilePath, cmd.opt.targetDirAbsPath), // to make it relative
+			})
+		}
+	}
+
+	if cmd.opt.createIndex {
+		log.Debug("Creating the index file")
+
+		for name := range history {
+			slices.SortFunc(history[name], func(a, b historyItem) int { return strings.Compare(a.Code, b.Code) })
+		}
+
+		indexTpl, tplErr := template.New("index").Parse(indexHtml)
+		if tplErr != nil {
+			return tplErr
+		}
+
+		var buf strings.Builder
+
+		if err := indexTpl.Execute(&buf, history); err != nil {
+			return err
+		}
+
+		return os.WriteFile(
+			filepath.Join(cmd.opt.targetDirAbsPath, "index.html"),
+			[]byte(buf.String()),
+			os.FileMode(0664), //nolint:mnd
+		)
+	}
+
+	return nil
+}
+
+func createDirectory(path string) error {
+	var stat, err = os.Stat(path)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return os.MkdirAll(path, os.FileMode(0775)) //nolint:mnd
+		}
+
+		return err
+	}
+
+	if !stat.IsDir() {
+		return errors.New("is not a directory")
+	}
+
 	return nil
 }
