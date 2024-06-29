@@ -73,7 +73,7 @@ jobs:
       - uses: docker/login-action@v3 # Action page: <https://github.com/docker/login-action>
         with:
           registry: ghcr.io
-          username: ${{ github.actor }}
+          username: binaryyuki
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: docker/build-push-action@v5 # Action page: <https://github.com/docker/build-push-action>
@@ -88,10 +88,10 @@ jobs:
             tarampampam/error-pages:${{ steps.slug.outputs.version-major }}.${{ steps.slug.outputs.version-minor }}
             tarampampam/error-pages:${{ steps.slug.outputs.version-major }}
             tarampampam/error-pages:latest
-            ghcr.io/${{ github.actor }}/${{ github.event.repository.name }}:${{ steps.slug.outputs.version }}
-            ghcr.io/${{ github.actor }}/${{ github.event.repository.name }}:${{ steps.slug.outputs.version-major }}.${{ steps.slug.outputs.version-minor }}
-            ghcr.io/${{ github.actor }}/${{ github.event.repository.name }}:${{ steps.slug.outputs.version-major }}
-            ghcr.io/${{ github.actor }}/${{ github.event.repository.name }}:latest
+            ghcr.io/binaryyuki/${{ github.event.repository.name }}:${{ steps.slug.outputs.version }}
+            ghcr.io/binaryyuki/${{ github.event.repository.name }}:${{ steps.slug.outputs.version-major }}.${{ steps.slug.outputs.version-minor }}
+            ghcr.io/binaryyuki/${{ github.event.repository.name }}:${{ steps.slug.outputs.version-major }}
+            ghcr.io/binaryyuki/${{ github.event.repository.name }}:latest
 
   demo:
     name: Update the demonstration
@@ -102,7 +102,7 @@ jobs:
 
       - name: Take rendered templates from the built docker image
         run: |
-          docker create --name img ghcr.io/${{ github.actor }}/${{ github.event.repository.name }}:${{ steps.slug.outputs.version }}
+          docker create --name img ghcr.io/binaryyuki/${{ github.event.repository.name }}:${{ steps.slug.outputs.version }}
           docker cp img:/opt/html ./out
           docker rm -f img
 
