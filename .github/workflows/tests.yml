@@ -59,25 +59,9 @@ jobs:
           LDFLAGS: -s -w -X gh.tarampamp.am/error-pages/internal/appmeta.version=${{ steps.slug.outputs.commit-hash-short }}
         run: go build -trimpath -ldflags "$LDFLAGS" -o ./error-pages ./cmd/error-pages/
       - {if: matrix.os == 'linux', run: ./error-pages --version && ./error-pages -h}
-      - uses: actions/upload-artifact@v4
-        with:
-          name: error-pages-${{ matrix.os }}-${{ matrix.arch }}
-          path: error-pages
-          if-no-files-found: error
-          retention-days: 1
-
-  generate:
-    name: Run the templates generator
-    runs-on: ubuntu-latest
-    needs: [build]
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
-        with: {name: error-pages-linux-amd64, path: .artifact}
-      - working-directory: .artifact
-        run: mv ./error-pages ./../error-pages && chmod +x ./../error-pages
-      - run: mkdir ./out && ./error-pages --log-level=debug build --index --target-dir ./out
-      - run: |
+      - {if: matrix.os == 'linux', run: mkdir ./out && ./error-pages --log-level=debug build --index --target-dir ./out}
+      - if: matrix.os == 'linux'
+        run: |
           test -f ./out/index.html
           test -f ./out/ghost/404.html
           test -f ./out/l7-dark/404.html
@@ -100,9 +84,8 @@ jobs:
       - {uses: gacts/github-slug@v1, id: slug}
       - uses: docker/build-push-action@v5
         with:
+          context: .
+          file: Dockerfile
           push: false
           build-args: "APP_VERSION=${{ steps.slug.outputs.commit-hash-short }}"
           tags: app:ci
-      - run: docker save app:ci > ./docker-image.tar
-      - uses: actions/upload-artifact@v4
-        with: {name: docker-image, path: ./docker-image.tar, retention-days: 1}
