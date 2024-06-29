@@ -57,7 +57,7 @@ jobs:
       - uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./.artifact/out
+          publish_dir: ./.artifact
 
   docker-image:
     name: Build the docker image
@@ -81,7 +81,7 @@ jobs:
           context: .
           file: Dockerfile
           push: true
-          platforms: linux/amd64,linux/arm64,linux/arm/v7,linux/arm64/v8
+          platforms: linux/amd64,linux/arm/v7,linux/arm64/v8
           build-args: "APP_VERSION=${{ steps.slug.outputs.version }}"
           tags: ghcr.io/${{ github.actor }}/${{ github.event.repository.name }}:${{ steps.slug.outputs.version }}
 #         tags: | # TODO: uncomment after the stable release
