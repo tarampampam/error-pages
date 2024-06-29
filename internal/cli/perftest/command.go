@@ -73,7 +73,7 @@ func NewCommand(log *logger.Logger) *cli.Command { //nolint:funlen,gocognit
 					logger.Uint64("failed", failed.Load()),
 					logger.Duration("duration", time.Since(startedAt)),
 					logger.Float64("RPS", float64(success.Load()+failed.Load())/time.Since(startedAt).Seconds()),
-					logger.Float64("errors rate", float64(failed.Load())/float64(success.Load()+failed.Load())*100),
+					logger.Float64("errors rate", float64(failed.Load())/float64(success.Load()+failed.Load())*100), //nolint:mnd
 				)
 			}()
 
@@ -99,7 +99,7 @@ func NewCommand(log *logger.Logger) *cli.Command { //nolint:funlen,gocognit
 
 					var req, rErr = makeRequest(perfCtx, uint16(c.Uint(portFlag.Name)))
 					if rErr != nil {
-						log.Error("failed to create a new request", logger.Error(rErr))
+						log.Error("Failed to create a new request", logger.Error(rErr))
 
 						return
 					}
@@ -110,11 +110,11 @@ func NewCommand(log *logger.Logger) *cli.Command { //nolint:funlen,gocognit
 						var resp, respErr = httpClient.Do(req)
 						if resp != nil {
 							if _, err := io.Copy(io.Discard, resp.Body); err != nil && !errIsDone(err) {
-								log.Error("failed to read response body", logger.Error(err))
+								log.Error("Failed to read response body", logger.Error(err))
 							}
 
 							if err := resp.Body.Close(); err != nil && !errIsDone(err) {
-								log.Error("failed to close response body", logger.Error(err))
+								log.Error("Failed to close response body", logger.Error(err))
 							}
 						}
 
@@ -123,7 +123,7 @@ func NewCommand(log *logger.Logger) *cli.Command { //nolint:funlen,gocognit
 								return
 							}
 
-							log.Error("request failed", logger.Error(respErr))
+							log.Error("Request failed", logger.Error(respErr))
 							failed.Add(1)
 
 							continue

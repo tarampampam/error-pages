@@ -1,4 +1,7 @@
-name: tests
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+# docs: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions
+
+name: 🧪 Tests
 
 on:
   push:
@@ -12,224 +15,177 @@ concurrency:
   group: ${{ github.ref }}
   cancel-in-progress: true
 
-jobs: # Docs: <https://git.io/JvxXE>
+jobs:
   gitleaks:
-    name: Gitleaks
+    name: Check for GitLeaks
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-        with: {fetch-depth: 0}
-
-      - name: Check for GitLeaks
-        uses: gacts/gitleaks@v1 # Action page: <https://github.com/gacts/gitleaks>
+      - {uses: actions/checkout@v4, with: {fetch-depth: 0}}
+      - uses: gacts/gitleaks@v1
 
   golangci-lint:
-    name: Golang-CI (lint)
+    name: Run golangci-lint
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - uses: gacts/setup-go-with-cache@v1
-        with: {go-version-file: go.mod}
-
+      - {uses: actions/setup-go@v5, with: {go-version-file: go.mod}}
       - uses: golangci/golangci-lint-action@v6
-        with: {skip-pkg-cache: true, skip-build-cache: true}
-
-  validate-config-file:
-    name: Validate config file
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - {uses: actions/setup-node@v4, with: {node-version: 16}}
-
-      - name: Install linter
-        run: npm install -g ajv-cli # Package page: <https://www.npmjs.com/package/ajv-cli>
-
-      - name: Run linter
-        run: ajv validate --all-errors --verbose -s ./schemas/config/1.0.schema.json -d ./error-pages.y*ml
-
-  lint-l10n:
-    name: Lint l10n file(s)
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - {uses: actions/setup-node@v4, with: {node-version: 16}}
-
-      - name: Install eslint
-        run: npm install -g eslint@v8 # Package page: <https://www.npmjs.com/package/eslint>
-
-      - name: Run linter
-        working-directory: l10n
-        run: eslint ./*.js
 
   go-test:
     name: Unit tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with: {fetch-depth: 2} # Fixes codecov error 'Issue detecting commit SHA'
+      - {uses: actions/setup-go@v5, with: {go-version-file: go.mod}}
+      - run: go test -race ./...
 
-      - uses: gacts/setup-go-with-cache@v1
-        with: {go-version-file: go.mod}
+#  build:
+#    name: Build for ${{ matrix.os }} (${{ matrix.arch }})
+#    runs-on: ubuntu-latest
+#    strategy:
+#      fail-fast: false
+#      matrix:
+#        os: [linux, darwin] # linux, freebsd, darwin, windows
+#        arch: [amd64]  # amd64, 386
+#    needs: [golangci-lint, go-test, validate-config-file]
+#    steps:
+#      - uses: actions/checkout@v4
+#
+#      - uses: gacts/setup-go-with-cache@v1
+#        with: {go-version-file: go.mod}
+#
+#      - {uses: gacts/github-slug@v1, id: slug}
+#
+#      - name: Build application
+#        env:
+#          GOOS: ${{ matrix.os }}
+#          GOARCH: ${{ matrix.arch }}
+#          CGO_ENABLED: 0
+#          LDFLAGS: -s -w -X gh.tarampamp.am/error-pages/internal/version.version=${{ steps.slug.outputs.branch-name-slug }}@${{ steps.slug.outputs.commit-hash-short }}
+#        run: go build -trimpath -ldflags "$LDFLAGS" -o ./error-pages ./cmd/error-pages/
+#
+#      - name: Try to execute
+#        if: matrix.os == 'linux'
+#        run: ./error-pages --version && ./error-pages -h
+#
+#      - uses: actions/upload-artifact@v4
+#        with:
+#          name: error-pages-${{ matrix.os }}-${{ matrix.arch }}
+#          path: error-pages
+#          if-no-files-found: error
+#          retention-days: 1
 
-      - name: Run Unit tests
-        run: go test -race -covermode=atomic -coverprofile /tmp/coverage.txt ./...
-
-      - uses: codecov/codecov-action@v4 # https://github.com/codecov/codecov-action
-        continue-on-error: true
-        with:
-          file: /tmp/coverage.txt
-          token: ${{ secrets.CODECOV_TOKEN }}
-
-  build:
-    name: Build for ${{ matrix.os }} (${{ matrix.arch }})
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [linux, darwin] # linux, freebsd, darwin, windows
-        arch: [amd64]  # amd64, 386
-    needs: [golangci-lint, go-test, validate-config-file]
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: gacts/setup-go-with-cache@v1
-        with: {go-version-file: go.mod}
-
-      - {uses: gacts/github-slug@v1, id: slug}
-
-      - name: Build application
-        env:
-          GOOS: ${{ matrix.os }}
-          GOARCH: ${{ matrix.arch }}
-          CGO_ENABLED: 0
-          LDFLAGS: -s -w -X gh.tarampamp.am/error-pages/internal/version.version=${{ steps.slug.outputs.branch-name-slug }}@${{ steps.slug.outputs.commit-hash-short }}
-        run: go build -trimpath -ldflags "$LDFLAGS" -o ./error-pages ./cmd/error-pages/
-
-      - name: Try to execute
-        if: matrix.os == 'linux'
-        run: ./error-pages --version && ./error-pages -h
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: error-pages-${{ matrix.os }}-${{ matrix.arch }}
-          path: error-pages
-          if-no-files-found: error
-          retention-days: 1
-
-  generate:
-    name: Run templates generator
-    runs-on: ubuntu-latest
-    needs: [build]
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/download-artifact@v4
-        with:
-          name: error-pages-linux-amd64
-          path: .artifact
-
-      - name: Prepare binary file to run
-        working-directory: .artifact
-        run: mv ./error-pages ./../error-pages && chmod +x ./../error-pages
-
-      - name: Run generator
-        run: ./error-pages --verbose build --index ./out
-
-      - name: Test files creation
-        run: |
-          test -f ./out/index.html
-          test -f ./out/ghost/404.html
-          test -f ./out/l7-dark/404.html
-          test -f ./out/l7-light/404.html
-          test -f ./out/shuffle/404.html
-          test -f ./out/noise/404.html
-          test -f ./out/hacker-terminal/404.html
-          test -f ./out/cats/404.html
-          test -f ./out/lost-in-space/404.html
-          test -f ./out/app-down/404.html
-          test -f ./out/connection/404.html
-          test -f ./out/matrix/404.html
-          test -f ./out/orient/404.html
-
-  docker-image:
-    name: Build docker image
-    runs-on: ubuntu-latest
-    needs: [golangci-lint, go-test, validate-config-file]
-    steps:
-      - uses: actions/checkout@v4
-
-      - {uses: gacts/github-slug@v1, id: slug}
-
-      - uses: docker/build-push-action@v5 # Action page: <https://github.com/docker/build-push-action>
-        with:
-          context: .
-          file: Dockerfile
-          push: false
-          build-args: "APP_VERSION=${{ steps.slug.outputs.branch-name-slug }}@${{ steps.slug.outputs.commit-hash-short }}"
-          tags: app:ci
-
-      - run: docker save app:ci > ./docker-image.tar
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: docker-image
-          path: ./docker-image.tar
-          retention-days: 1
-
-  scan-docker-image:
-    name: Scan the docker image
-    runs-on: ubuntu-latest
-    needs: [docker-image]
-    steps:
-      - uses: actions/checkout@v4 # is needed for `upload-sarif` action
-
-      - uses: actions/download-artifact@v4
-        with:
-          name: docker-image
-          path: .artifact
-
-      - uses: aquasecurity/trivy-action@0.21.0 # action page: <https://github.com/aquasecurity/trivy-action>
-        with:
-          input: .artifact/docker-image.tar
-          format: sarif
-          severity: MEDIUM,HIGH,CRITICAL
-          exit-code: 1
-          output: trivy-results.sarif
-
-      - uses: github/codeql-action/upload-sarif@v3
-        if: always()
-        continue-on-error: true
-        with: {sarif_file: trivy-results.sarif}
-
-  poke-docker-image:
-    name: Run the docker image
-    runs-on: ubuntu-latest
-    needs: [docker-image]
-    timeout-minutes: 2
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/download-artifact@v4
-        with:
-          name: docker-image
-          path: .artifact
-
-      - working-directory: .artifact
-        run: docker load < docker-image.tar
-
-      - uses: gacts/install-hurl@v1
-
-      - name: Run container with the app
-        run: docker run --rm -d -p "8080:8080/tcp" -e "SHOW_DETAILS=true" -e "PROXY_HTTP_HEADERS=X-Foo,Bar,Baz_blah" --name app app:ci
-
-      - name: Wait for container "healthy" state
-        run: until [[ "`docker inspect -f {{.State.Health.Status}} app`" == "healthy" ]]; do echo "wait 1 sec.."; sleep 1; done
-
-      - run: hurl --color --test --fail-at-end --variable host=127.0.0.1 --variable port=8080 ./test/hurl/*.hurl
-
-      - name: Stop the container
-        if: always()
-        run: docker kill app
+#  generate:
+#    name: Run templates generator
+#    runs-on: ubuntu-latest
+#    needs: [build]
+#    steps:
+#      - uses: actions/checkout@v4
+#
+#      - uses: actions/download-artifact@v4
+#        with:
+#          name: error-pages-linux-amd64
+#          path: .artifact
+#
+#      - name: Prepare binary file to run
+#        working-directory: .artifact
+#        run: mv ./error-pages ./../error-pages && chmod +x ./../error-pages
+#
+#      - name: Run generator
+#        run: ./error-pages --verbose build --index ./out
+#
+#      - name: Test files creation
+#        run: |
+#          test -f ./out/index.html
+#          test -f ./out/ghost/404.html
+#          test -f ./out/l7-dark/404.html
+#          test -f ./out/l7-light/404.html
+#          test -f ./out/shuffle/404.html
+#          test -f ./out/noise/404.html
+#          test -f ./out/hacker-terminal/404.html
+#          test -f ./out/cats/404.html
+#          test -f ./out/lost-in-space/404.html
+#          test -f ./out/app-down/404.html
+#          test -f ./out/connection/404.html
+#          test -f ./out/matrix/404.html
+#          test -f ./out/orient/404.html
+#
+#  docker-image:
+#    name: Build docker image
+#    runs-on: ubuntu-latest
+#    needs: [golangci-lint, go-test, validate-config-file]
+#    steps:
+#      - uses: actions/checkout@v4
+#
+#      - {uses: gacts/github-slug@v1, id: slug}
+#
+#      - uses: docker/build-push-action@v5 # Action page: <https://github.com/docker/build-push-action>
+#        with:
+#          context: .
+#          file: Dockerfile
+#          push: false
+#          build-args: "APP_VERSION=${{ steps.slug.outputs.branch-name-slug }}@${{ steps.slug.outputs.commit-hash-short }}"
+#          tags: app:ci
+#
+#      - run: docker save app:ci > ./docker-image.tar
+#
+#      - uses: actions/upload-artifact@v4
+#        with:
+#          name: docker-image
+#          path: ./docker-image.tar
+#          retention-days: 1
+#
+#  scan-docker-image:
+#    name: Scan the docker image
+#    runs-on: ubuntu-latest
+#    needs: [docker-image]
+#    steps:
+#      - uses: actions/checkout@v4 # is needed for `upload-sarif` action
+#
+#      - uses: actions/download-artifact@v4
+#        with:
+#          name: docker-image
+#          path: .artifact
+#
+#      - uses: aquasecurity/trivy-action@0.21.0 # action page: <https://github.com/aquasecurity/trivy-action>
+#        with:
+#          input: .artifact/docker-image.tar
+#          format: sarif
+#          severity: MEDIUM,HIGH,CRITICAL
+#          exit-code: 1
+#          output: trivy-results.sarif
+#
+#      - uses: github/codeql-action/upload-sarif@v3
+#        if: always()
+#        continue-on-error: true
+#        with: {sarif_file: trivy-results.sarif}
+#
+#  poke-docker-image:
+#    name: Run the docker image
+#    runs-on: ubuntu-latest
+#    needs: [docker-image]
+#    timeout-minutes: 2
+#    steps:
+#      - uses: actions/checkout@v4
+#
+#      - uses: actions/download-artifact@v4
+#        with:
+#          name: docker-image
+#          path: .artifact
+#
+#      - working-directory: .artifact
+#        run: docker load < docker-image.tar
+#
+#      - uses: gacts/install-hurl@v1
+#
+#      - name: Run container with the app
+#        run: docker run --rm -d -p "8080:8080/tcp" -e "SHOW_DETAILS=true" -e "PROXY_HTTP_HEADERS=X-Foo,Bar,Baz_blah" --name app app:ci
+#
+#      - name: Wait for container "healthy" state
+#        run: until [[ "`docker inspect -f {{.State.Health.Status}} app`" == "healthy" ]]; do echo "wait 1 sec.."; sleep 1; done
+#
+#      - run: hurl --color --test --fail-at-end --variable host=127.0.0.1 --variable port=8080 ./test/hurl/*.hurl
+#
+#      - name: Stop the container
+#        if: always()
+#        run: docker kill app

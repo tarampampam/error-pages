@@ -110,7 +110,7 @@ func NewCommand(log *logger.Logger) *cli.Command { //nolint:funlen,gocognit,gocy
 			OnlyOnce: true,
 		}
 		proxyHeadersListFlag = cli.StringFlag{
-			Name: "proxy-headers", // TODO: add support for the "*" wildcard
+			Name: "proxy-headers",
 			Usage: "listed here HTTP headers will be proxied from the original request to the error page response " +
 				"(comma-separated list)",
 			Value:   strings.Join(cfg.ProxyHeaders, ","),

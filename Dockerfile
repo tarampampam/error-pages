@@ -7,8 +7,6 @@ FROM docker.io/library/golang:1.22-bookworm AS develop
 ENV GOPATH="/var/tmp/go"
 
 RUN set -x \
-    && GOBIN=/bin go install gotest.tools/gotestsum@latest \
-    && go clean -cache -modcache \
     # renovate: source=github-releases name=golangci/golangci-lint
     && GOLANGCI_LINT_VERSION="1.59.1" \
     && wget -O- -nv "https://cdn.jsdelivr.net/gh/golangci/golangci-lint@v${GOLANGCI_LINT_VERSION}/install.sh" \
