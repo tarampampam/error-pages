@@ -8,48 +8,42 @@ on:
     types: [published]
 
 jobs:
-  wip:
+  build:
+    name: Build for ${{ matrix.os }} (${{ matrix.arch }})
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [linux, darwin] # linux, freebsd, darwin, windows
+        arch: [amd64]  # amd64, 386
     steps:
-      - run: echo WIP
+      - uses: actions/checkout@v4
 
-#jobs:
-#  build:
-#    name: Build for ${{ matrix.os }} (${{ matrix.arch }})
-#    runs-on: ubuntu-latest
-#    strategy:
-#      fail-fast: false
-#      matrix:
-#        os: [linux, darwin] # linux, freebsd, darwin, windows
-#        arch: [amd64]  # amd64, 386
-#    steps:
-#      - uses: actions/checkout@v4
-#
-#      - uses: gacts/setup-go-with-cache@v1
-#        with: {go-version-file: go.mod}
-#
-#      - {uses: gacts/github-slug@v1, id: slug}
-#
-#      - name: Generate builder values
-#        id: values
-#        run: echo "binary-name=error-pages-${{ matrix.os }}-${{ matrix.arch }}" >> $GITHUB_OUTPUT
-#
-#      - name: Build application
-#        env:
-#          GOOS: ${{ matrix.os }}
-#          GOARCH: ${{ matrix.arch }}
-#          CGO_ENABLED: 0
-#          LDFLAGS: -s -w -X gh.tarampamp.am/error-pages/internal/version.version=${{ steps.slug.outputs.version }}
-#        run: go build -trimpath -ldflags "$LDFLAGS" -o "./${{ steps.values.outputs.binary-name }}" ./cmd/error-pages/
-#
-#      - name: Upload binary file to release
-#        uses: svenstaro/upload-release-action@v2
-#        with:
-#          repo_token: ${{ secrets.GITHUB_TOKEN }}
-#          file: ${{ steps.values.outputs.binary-name }}
-#          asset_name: ${{ steps.values.outputs.binary-name }}
-#          tag: ${{ github.ref }}
-#
+      - uses: gacts/setup-go-with-cache@v1
+        with: {go-version-file: go.mod}
+
+      - {uses: gacts/github-slug@v1, id: slug}
+
+      - name: Generate builder values
+        id: values
+        run: echo "binary-name=error-pages-${{ matrix.os }}-${{ matrix.arch }}" >> $GITHUB_OUTPUT
+
+      - name: Build application
+        env:
+          GOOS: ${{ matrix.os }}
+          GOARCH: ${{ matrix.arch }}
+          CGO_ENABLED: 0
+          LDFLAGS: -s -w -X gh.tarampamp.am/error-pages/internal/version.version=${{ steps.slug.outputs.version }}
+        run: go build -trimpath -ldflags "$LDFLAGS" -o "./${{ steps.values.outputs.binary-name }}" ./cmd/error-pages/
+
+      - name: Upload binary file to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: ${{ steps.values.outputs.binary-name }}
+          asset_name: ${{ steps.values.outputs.binary-name }}
+          tag: ${{ github.ref }}
+
 #  docker-image:
 #    name: Build docker image
 #    runs-on: ubuntu-latest

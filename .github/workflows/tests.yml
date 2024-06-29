@@ -58,9 +58,11 @@ jobs:
           CGO_ENABLED: 0
           LDFLAGS: -s -w -X gh.tarampamp.am/error-pages/internal/appmeta.version=${{ steps.slug.outputs.commit-hash-short }}
         run: go build -trimpath -ldflags "$LDFLAGS" -o ./error-pages ./cmd/error-pages/
-      - {if: matrix.os == 'linux', run: ./error-pages --version && ./error-pages -h}
-      - {if: matrix.os == 'linux', run: mkdir ./out && ./error-pages --log-level=debug build --index --target-dir ./out}
-      - if: matrix.os == 'linux'
+      - if: matrix.os == 'linux' && matrix.arch == 'amd64'
+        run: ./error-pages --version && ./error-pages -h
+      - if: matrix.os == 'linux' && matrix.arch == 'amd64'
+        run: mkdir ./out && ./error-pages --log-level=debug build --index --target-dir ./out
+      - if: matrix.os == 'linux' && matrix.arch == 'amd64'
         run: |
           test -f ./out/index.html
           test -f ./out/ghost/404.html
