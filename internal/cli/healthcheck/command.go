@@ -18,6 +18,8 @@ type checker interface {
 func NewCommand(_ *logger.Logger, checker checker) *cli.Command {
 	var portFlag = shared.ListenPortFlag
 
+	portFlag.Usage = "TCP port number with the HTTP server to check"
+
 	return &cli.Command{
 		Name:    "healthcheck",
 		Aliases: []string{"chk", "health", "check"},

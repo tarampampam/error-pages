@@ -15,12 +15,5 @@ services:
       watch: [{action: rebuild, path: .}]
     security_opt: [no-new-privileges:true]
 
-  hurl:
-    image: ghcr.io/orange-opensource/hurl:4.3.0
-    volumes: [.:/src:ro]
-    working_dir: /src
-    depends_on: {web: {condition: service_healthy}}
-    security_opt: [no-new-privileges:true]
-
 volumes:
   tmp-data: {}

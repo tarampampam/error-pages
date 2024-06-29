@@ -55,10 +55,11 @@ COPY --from=compile /tmp/error-pages ./bin/error-pages
 
 WORKDIR /tmp/rootfs/opt
 
-## generate static error pages (for usage inside another docker images, for example)
-#RUN set -x \
-#    && ./../bin/error-pages --verbose build --config-file ./error-pages.yml --index ./html \
-#    && ls -l ./html
+# generate static error pages (for use inside other Docker images, for example)
+RUN set -x \
+    && mkdir ./html \
+    && ./../bin/error-pages build --index --target-dir ./html \
+    && ls -l ./html
 
 # -✂- and this is the final stage (an empty filesystem is used) -------------------------------------------------------
 FROM scratch AS runtime
@@ -83,13 +84,8 @@ USER 10001:10001
 
 WORKDIR /opt
 
-#ENV LISTEN_PORT="8080" \
-#    TEMPLATE_NAME="ghost" \
-#    DEFAULT_ERROR_PAGE="404" \
-#    DEFAULT_HTTP_CODE="404" \
-#    SHOW_DETAILS="false" \
-#    DISABLE_L10N="false" \
-#    READ_BUFFER_SIZE="2048"
+# to find out which environment variables and CLI arguments are supported by the application, run the app
+# with the `--help` flag or refer to the documentation at https://github.com/tarampampam/error-pages#readme
 
 # docs: https://docs.docker.com/reference/dockerfile/#healthcheck
 HEALTHCHECK --interval=10s --start-interval=1s --start-period=5s --timeout=2s CMD [\

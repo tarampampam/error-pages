@@ -36,6 +36,3 @@ lint: ## Run linters
 .PHONY: gen
 gen: ## Generate code
 	docker compose run $(DC_RUN_ARGS) develop go generate ./...
-
-hurl: ## Run integration tests using hurl
-	docker compose run $(DC_RUN_ARGS) hurl --color --test --fail-at-end --variable host=web --variable port=8080 ./test/hurl/*.hurl
