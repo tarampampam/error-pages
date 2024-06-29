@@ -4,6 +4,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/valyala/fasthttp"
 	"strconv"
+	"strings"
 
 	"gh.tarampamp.am/error-pages/internal/config"
 	"gh.tarampamp.am/error-pages/internal/options"
@@ -27,7 +28,8 @@ func GenHostName(ctx *fasthttp.RequestCtx) string {
 		country = "CN"
 	}
 
-	return country + "-" + uuid.New().String()[:12]
+	// 增加处理 如果 country 带有空格 删掉空格
+	return strings.ReplaceAll(country, " ", "") + "-" + uuid.New().String()[:12]
 
 }
 
