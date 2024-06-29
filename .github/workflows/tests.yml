@@ -45,8 +45,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [linux, darwin] # linux, freebsd, darwin, windows
-        arch: [amd64]  # amd64, 386
+        os: [linux, darwin, windows] # freebsd
+        arch: [amd64, arm64]  # amd64, 386
     needs: [golangci-lint, go-test]
     steps:
       - uses: actions/checkout@v4

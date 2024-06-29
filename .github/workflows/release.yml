@@ -14,18 +14,6 @@ jobs:
       - run: echo WIP
 
 #jobs:
-#  purge-cdn-cache:
-#    name: Purge jsDelivr CDN cache
-#    runs-on: ubuntu-latest
-#    steps:
-#      - uses: gacts/purge-jsdelivr-cache@v1 # Action page: <https://github.com/gacts/purge-jsdelivr-cache>
-#        with:
-#          url: |
-#            https://cdn.jsdelivr.net/gh/tarampampam/error-pages@2/l10n/l10n.js
-#            https://cdn.jsdelivr.net/gh/tarampampam/error-pages@2/l10n/l10n.min.js
-#            https://cdn.jsdelivr.net/gh/tarampampam/error-pages@latest/l10n/l10n.js
-#            https://cdn.jsdelivr.net/gh/tarampampam/error-pages@latest/l10n/l10n.min.js
-#
 #  build:
 #    name: Build for ${{ matrix.os }} (${{ matrix.arch }})
 #    runs-on: ubuntu-latest
