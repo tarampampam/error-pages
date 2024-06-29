@@ -39,41 +39,36 @@ jobs:
       - {uses: actions/setup-go@v5, with: {go-version-file: go.mod}}
       - run: go test -race ./...
 
-#  build:
-#    name: Build for ${{ matrix.os }} (${{ matrix.arch }})
-#    runs-on: ubuntu-latest
-#    strategy:
-#      fail-fast: false
-#      matrix:
-#        os: [linux, darwin] # linux, freebsd, darwin, windows
-#        arch: [amd64]  # amd64, 386
-#    needs: [golangci-lint, go-test, validate-config-file]
-#    steps:
-#      - uses: actions/checkout@v4
-#
-#      - uses: gacts/setup-go-with-cache@v1
-#        with: {go-version-file: go.mod}
-#
-#      - {uses: gacts/github-slug@v1, id: slug}
-#
-#      - name: Build application
-#        env:
-#          GOOS: ${{ matrix.os }}
-#          GOARCH: ${{ matrix.arch }}
-#          CGO_ENABLED: 0
-#          LDFLAGS: -s -w -X gh.tarampamp.am/error-pages/internal/version.version=${{ steps.slug.outputs.branch-name-slug }}@${{ steps.slug.outputs.commit-hash-short }}
-#        run: go build -trimpath -ldflags "$LDFLAGS" -o ./error-pages ./cmd/error-pages/
-#
-#      - name: Try to execute
-#        if: matrix.os == 'linux'
-#        run: ./error-pages --version && ./error-pages -h
-#
-#      - uses: actions/upload-artifact@v4
-#        with:
-#          name: error-pages-${{ matrix.os }}-${{ matrix.arch }}
-#          path: error-pages
-#          if-no-files-found: error
-#          retention-days: 1
+  build:
+    name: Build for ${{ matrix.os }} (${{ matrix.arch }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [linux, darwin] # linux, freebsd, darwin, windows
+        arch: [amd64]  # amd64, 386
+    needs: [golangci-lint, go-test]
+    steps:
+      - uses: actions/checkout@v4
+      - {uses: actions/setup-go@v5, with: {go-version-file: go.mod}}
+      - {uses: gacts/github-slug@v1, id: slug}
+      - env:
+          GOOS: ${{ matrix.os }}
+          GOARCH: ${{ matrix.arch }}
+          CGO_ENABLED: 0
+          LDFLAGS: -s -w -X gh.tarampamp.am/error-pages/internal/appmeta.version=${{ steps.slug.outputs.branch-name-slug }}
+        run: go build -trimpath -ldflags "$LDFLAGS" -o ./error-pages ./cmd/error-pages/
+
+      - name: Try to execute
+        if: matrix.os == 'linux'
+        run: ./error-pages --version && ./error-pages -h
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: error-pages-${{ matrix.os }}-${{ matrix.arch }}
+          path: error-pages
+          if-no-files-found: error
+          retention-days: 1
 
 #  generate:
 #    name: Run templates generator
