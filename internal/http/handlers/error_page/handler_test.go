@@ -61,7 +61,7 @@ func TestHandler(t *testing.T) {
 
 				return &cfg
 			},
-			giveUrl:     "http://testing/503.html",
+			giveUrl:     "http://testing/503.html?rnd=123",
 			giveHeaders: map[string]string{"Accept": "application/json", "X-FooBar": "baz"},
 
 			wantStatusCode: http.StatusServiceUnavailable,

@@ -62,7 +62,7 @@ func (s *Server) Register(cfg *config.Config) error {
 	)
 
 	s.server.Handler = func(ctx *fasthttp.RequestCtx) {
-		var url, method = string(ctx.RequestURI()), string(ctx.Method())
+		var url, method = string(ctx.Path()), string(ctx.Method())
 
 		switch {
 		// live endpoints

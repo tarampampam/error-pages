@@ -22,7 +22,7 @@ func New(cfg *config.Config, log *logger.Logger) fasthttp.RequestHandler { //nol
 			code       uint16
 		)
 
-		if fromUrl, okUrl := extractCodeFromURL(string(ctx.RequestURI())); okUrl {
+		if fromUrl, okUrl := extractCodeFromURL(string(ctx.Path())); okUrl {
 			code = fromUrl
 		} else if fromHeader, okHeaders := extractCodeFromHeaders(reqHeaders); okHeaders {
 			code = fromHeader
