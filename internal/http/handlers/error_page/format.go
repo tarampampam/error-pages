@@ -2,10 +2,11 @@ package error_page
 
 import (
 	"math"
-	"net/http"
 	"slices"
 	"strconv"
 	"strings"
+
+	"github.com/valyala/fasthttp"
 )
 
 type preferredFormat = byte
@@ -21,10 +22,10 @@ const (
 // detectPreferredFormatForClient detects the preferred format for the client based on the headers.
 // It supports the following headers: Content-Type, Accept, X-Format.
 // If the headers are not set or the format is not recognized, it returns unknownFormat.
-func detectPreferredFormatForClient(headers http.Header) preferredFormat { //nolint:funlen,gocognit
+func detectPreferredFormatForClient(headers *fasthttp.RequestHeader) preferredFormat { //nolint:funlen,gocognit
 	var contentType, accept string
 
-	if contentTypeHeader := strings.TrimSpace(headers.Get("Content-Type")); contentTypeHeader != "" { //nolint:nestif
+	if contentTypeHeader := strings.TrimSpace(string(headers.Peek("Content-Type"))); contentTypeHeader != "" { //nolint:nestif,lll
 		// https://developer.mozilla.org/docs/Web/HTTP/Headers/Content-Type
 		//	text/html; charset=utf-8
 		//	multipart/form-data; boundary=something
@@ -38,11 +39,11 @@ func detectPreferredFormatForClient(headers http.Header) preferredFormat { //nol
 			// take the whole value
 			contentType = contentTypeHeader
 		}
-	} else if xFormatHeader := strings.TrimSpace(headers.Get("X-Format")); xFormatHeader != "" {
+	} else if xFormatHeader := strings.TrimSpace(string(headers.Peek("X-Format"))); xFormatHeader != "" {
 		// https://kubernetes.github.io/ingress-nginx/user-guide/custom-errors/
 		// Value of the `Accept` header sent by the client
 		accept = xFormatHeader
-	} else if acceptHeader := strings.TrimSpace(headers.Get("Accept")); acceptHeader != "" {
+	} else if acceptHeader := strings.TrimSpace(string(headers.Peek("Accept"))); acceptHeader != "" {
 		// https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept
 		//	text/html, application/xhtml+xml, application/xml;q=0.9, image/webp, */*;q=0.8
 		//	text/html

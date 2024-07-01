@@ -2,13 +2,14 @@ package error_page_test
 
 import (
 	"net/http"
-	"net/http/httptest"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	"gh.tarampamp.am/error-pages/internal/config"
 	"gh.tarampamp.am/error-pages/internal/http/handlers/error_page"
+	"gh.tarampamp.am/error-pages/internal/http/httptest"
 	"gh.tarampamp.am/error-pages/internal/logger"
 )
 
@@ -26,7 +27,7 @@ func TestHandler(t *testing.T) {
 	}{
 		"common, plain text": {
 			giveConfig:  func() *config.Config { cfg := config.New(); return &cfg },
-			giveUrl:     "/",
+			giveUrl:     "http://testing/",
 			giveHeaders: map[string]string{"Content-Type": "text/plain"},
 
 			wantStatusCode:   http.StatusOK,
@@ -41,7 +42,7 @@ func TestHandler(t *testing.T) {
 
 				return &cfg
 			},
-			giveUrl:     "/",
+			giveUrl:     "http://testing/",
 			giveHeaders: map[string]string{"X-Format": "text/html", "X-Code": "407"},
 
 			wantStatusCode: http.StatusOK,
@@ -60,7 +61,7 @@ func TestHandler(t *testing.T) {
 
 				return &cfg
 			},
-			giveUrl:     "/503.html",
+			giveUrl:     "http://testing/503.html",
 			giveHeaders: map[string]string{"Accept": "application/json", "X-FooBar": "baz"},
 
 			wantStatusCode: http.StatusServiceUnavailable,
@@ -78,7 +79,7 @@ func TestHandler(t *testing.T) {
 
 				return &cfg
 			},
-			giveUrl:     "/500",
+			giveUrl:     "http://testing/500",
 			giveHeaders: map[string]string{"Accept": "application/xml", "X-FooBar": "baz"},
 
 			wantStatusCode: http.StatusOK,
@@ -96,7 +97,7 @@ func TestHandler(t *testing.T) {
 
 				return &cfg
 			},
-			giveUrl: "/503",
+			giveUrl: "http://example.com/503",
 			giveHeaders: map[string]string{
 				"Accept":          "application/json",
 				"X-Original-URI":  "/foo/bar",
@@ -106,7 +107,6 @@ func TestHandler(t *testing.T) {
 				"X-Service-Port":  "666",
 				"X-Request-ID":    "req-id-777",
 				"X-Forwarded-For": "123.123.123.123:12312",
-				"Host":            "example.com",
 			},
 
 			wantStatusCode: http.StatusOK,
@@ -133,7 +133,7 @@ func TestHandler(t *testing.T) {
 
 				return &cfg
 			},
-			giveUrl:     "/100",
+			giveUrl:     "http://testing/100",
 			giveHeaders: map[string]string{"Accept": "application/json"},
 
 			wantStatusCode:   http.StatusOK,
@@ -148,7 +148,7 @@ func TestHandler(t *testing.T) {
 
 				return &cfg
 			},
-			giveUrl:     "/1",
+			giveUrl:     "http://testing/1",
 			giveHeaders: map[string]string{"Accept": "application/json"},
 
 			wantStatusCode:   http.StatusOK,
@@ -159,31 +159,30 @@ func TestHandler(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			t.Parallel()
 
-			var (
-				req     = httptest.NewRequest(http.MethodGet, tt.giveUrl, http.NoBody)
-				handler = error_page.New(tt.giveConfig(), logger.NewNop())
-				rr      = httptest.NewRecorder()
-			)
+			var handler = error_page.New(tt.giveConfig(), logger.NewNop())
+
+			req, reqErr := http.NewRequest(http.MethodGet, tt.giveUrl, http.NoBody)
+			require.NoError(t, reqErr)
 
 			for k, v := range tt.giveHeaders {
 				req.Header.Set(k, v)
 			}
 
-			handler.ServeHTTP(rr, req)
+			httptest.HandleFastRequest(t, handler, req, func(status int, body string, headers http.Header) {
+				assert.Equal(t, tt.wantStatusCode, status)
 
-			assert.Equal(t, rr.Code, tt.wantStatusCode)
-
-			for hName, hWant := range tt.wantHeaders {
-				for hGot := range rr.Header() {
-					if hGot == hName {
-						assert.Contains(t, hWant, rr.Header().Get(hGot))
+				for hName, hWant := range tt.wantHeaders {
+					for hGot := range headers {
+						if hGot == hName {
+							assert.Contains(t, hWant, headers.Get(hGot))
+						}
 					}
 				}
-			}
 
-			for _, wantBodyInclude := range tt.wantBodyIncludes {
-				assert.Contains(t, rr.Body.String(), wantBodyInclude)
-			}
+				for _, wantBodyInclude := range tt.wantBodyIncludes {
+					assert.Contains(t, body, wantBodyInclude)
+				}
+			})
 		})
 	}
 }
@@ -207,19 +206,17 @@ func TestRotationModeOnEachRequest(t *testing.T) {
 	)
 
 	for range 300 {
-		var (
-			req = httptest.NewRequest(http.MethodGet, "/", http.NoBody)
-			rr  = httptest.NewRecorder()
-		)
+		req, reqErr := http.NewRequest(http.MethodGet, "http://testing/", http.NoBody)
+		require.NoError(t, reqErr)
 
 		req.Header.Set("Accept", "text/html")
 
-		handler.ServeHTTP(rr, req)
-
-		if lastResponseBody != rr.Body.String() {
-			changedTimes++
-			lastResponseBody = rr.Body.String()
-		}
+		httptest.HandleFastRequest(t, handler, req, func(status int, body string, headers http.Header) {
+			if lastResponseBody != body {
+				changedTimes++
+				lastResponseBody = body
+			}
+		})
 	}
 
 	assert.True(t, changedTimes > 30, "the template should be changed at least 30 times")

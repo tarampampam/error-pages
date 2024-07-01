@@ -1,10 +1,10 @@
 package error_page_test
 
 import (
-	"net/http"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/valyala/fasthttp"
 
 	"gh.tarampamp.am/error-pages/internal/http/handlers/error_page"
 )
@@ -36,18 +36,26 @@ func TestURLContainsCode(t *testing.T) {
 func TestHeadersContainCode(t *testing.T) {
 	t.Parallel()
 
+	var mkHeaders = func(key, value string) *fasthttp.RequestHeader {
+		var out = new(fasthttp.RequestHeader)
+
+		out.Set(key, value)
+
+		return out
+	}
+
 	for name, _tt := range map[string]struct {
-		giveHeaders http.Header
+		giveHeaders *fasthttp.RequestHeader
 		wantOk      bool
 	}{
-		"with code": {giveHeaders: http.Header{"X-Code": {"404"}}, wantOk: true},
+		"with code": {giveHeaders: mkHeaders("X-Code", "404"), wantOk: true},
 
 		"empty":     {giveHeaders: nil},
-		"no code":   {giveHeaders: http.Header{"X-Code": {""}}},
-		"wrong":     {giveHeaders: http.Header{"X-Code": {"foo"}}},
-		"too big":   {giveHeaders: http.Header{"X-Code": {"1000"}}},
-		"too small": {giveHeaders: http.Header{"X-Code": {"0"}}},
-		"negative":  {giveHeaders: http.Header{"X-Code": {"-1"}}},
+		"no code":   {giveHeaders: mkHeaders("X-Code", "")},
+		"wrong":     {giveHeaders: mkHeaders("X-Code", "foo")},
+		"too big":   {giveHeaders: mkHeaders("X-Code", "1000")},
+		"too small": {giveHeaders: mkHeaders("X-Code", "0")},
+		"negative":  {giveHeaders: mkHeaders("X-Code", "-1")},
 	} {
 		tt := _tt
 

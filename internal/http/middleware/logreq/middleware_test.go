@@ -3,11 +3,12 @@ package logreq_test
 import (
 	"bytes"
 	"net/http"
-	"net/http/httptest"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/valyala/fasthttp"
 
+	"gh.tarampamp.am/error-pages/internal/http/httptest"
 	"gh.tarampamp.am/error-pages/internal/http/middleware/logreq"
 	"gh.tarampamp.am/error-pages/internal/logger"
 )
@@ -19,18 +20,19 @@ func TestNew(t *testing.T) {
 		buf    bytes.Buffer
 		log, _ = logger.New(logger.DebugLevel, logger.JSONFormat, &buf)
 
-		mw  = logreq.New(log, nil)
-		rr  = httptest.NewRecorder()
-		req = httptest.NewRequest(http.MethodPut, "/foo/bar", http.NoBody)
+		mw     = logreq.New(log, nil)
+		req, _ = http.NewRequest(http.MethodPut, "http://testing/foo/bar", http.NoBody)
 	)
 
 	req.Header.Set("User-Agent", "test")
 	req.Header.Set("Referer", "https://example.com")
 	req.Header.Set("Content-Type", "application/json")
 
-	mw(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusOK)
-	})).ServeHTTP(rr, req)
+	httptest.HandleFastRequest(t,
+		mw(func(ctx *fasthttp.RequestCtx) { ctx.SetStatusCode(http.StatusOK) }),
+		req,
+		func(status int, body string, _ http.Header) { assert.Equal(t, http.StatusOK, status) },
+	)
 
 	var logRecord = buf.String()
 

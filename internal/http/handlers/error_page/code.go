@@ -1,10 +1,11 @@
 package error_page
 
 import (
-	"net/http"
 	"path/filepath"
 	"strconv"
 	"strings"
+
+	"github.com/valyala/fasthttp"
 )
 
 // extractCodeFromURL extracts the error code from the given URL.
@@ -37,11 +38,15 @@ func extractCodeFromURL(url string) (uint16, bool) {
 func URLContainsCode(url string) (ok bool) { _, ok = extractCodeFromURL(url); return } //nolint:nlreturn
 
 // extractCodeFromHeaders extracts the error code from the given headers.
-func extractCodeFromHeaders(headers http.Header) (uint16, bool) {
+func extractCodeFromHeaders(headers *fasthttp.RequestHeader) (uint16, bool) {
+	if headers == nil {
+		return 0, false
+	}
+
 	// https://kubernetes.github.io/ingress-nginx/user-guide/custom-errors/
 	// HTTP status code returned by the request
-	if value := headers.Get("X-Code"); len(value) > 0 && len(value) <= 3 {
-		if code, err := strconv.ParseUint(value, 10, 16); err == nil && code > 0 && code < 999 {
+	if value := headers.Peek("X-Code"); len(value) > 0 && len(value) <= 3 {
+		if code, err := strconv.ParseUint(string(value), 10, 16); err == nil && code > 0 && code < 999 {
 			return uint16(code), true
 		}
 	}
@@ -50,7 +55,7 @@ func extractCodeFromHeaders(headers http.Header) (uint16, bool) {
 }
 
 // HeadersContainCode checks if the given headers contain an error code.
-func HeadersContainCode(headers http.Header) (ok bool) {
+func HeadersContainCode(headers *fasthttp.RequestHeader) (ok bool) {
 	_, ok = extractCodeFromHeaders(headers)
 
 	return

@@ -290,7 +290,7 @@ func NewCommand(log *logger.Logger) *cli.Command { //nolint:funlen,gocognit,gocy
 
 // Run current command.
 func (cmd *command) Run(ctx context.Context, log *logger.Logger, cfg *config.Config) error { //nolint:funlen
-	var srv = appHttp.NewServer(ctx, log)
+	var srv = appHttp.NewServer(log)
 
 	if err := srv.Register(cfg); err != nil {
 		return err

@@ -2,24 +2,29 @@ package live
 
 import (
 	"net/http"
+
+	"github.com/valyala/fasthttp"
 )
 
 // New creates a new handler that returns "OK" for GET and HEAD requests.
-func New() http.Handler {
-	var body = []byte("OK\n")
+func New() fasthttp.RequestHandler {
+	var (
+		body       = []byte("OK\n")
+		notAllowed = http.StatusText(http.StatusMethodNotAllowed) + "\n"
+	)
 
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		switch r.Method {
-		case http.MethodGet:
-			w.Header().Set("Content-Type", "text/plain; charset=utf-8")
-			w.WriteHeader(http.StatusOK)
-			_, _ = w.Write(body)
+	return func(ctx *fasthttp.RequestCtx) {
+		switch string(ctx.Method()) {
+		case fasthttp.MethodGet:
+			ctx.SetContentType("text/plain; charset=utf-8")
+			ctx.SetStatusCode(http.StatusOK)
+			_, _ = ctx.Write(body)
 
-		case http.MethodHead:
-			w.WriteHeader(http.StatusOK)
+		case fasthttp.MethodHead:
+			ctx.SetStatusCode(http.StatusOK)
 
 		default:
-			http.Error(w, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
+			ctx.Error(notAllowed, http.StatusMethodNotAllowed)
 		}
-	})
+	}
 }

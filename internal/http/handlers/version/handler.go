@@ -4,28 +4,32 @@ import (
 	"encoding/json"
 	"net/http"
 	"strings"
+
+	"github.com/valyala/fasthttp"
 )
 
 // New creates a handler that returns the version of the service in JSON format.
-func New(ver string) http.Handler {
+func New(ver string) fasthttp.RequestHandler {
 	var body, _ = json.Marshal(struct { //nolint:errchkjson
 		Version string `json:"version"`
 	}{
 		Version: strings.TrimSpace(ver),
 	})
 
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		switch r.Method {
-		case http.MethodGet:
-			w.Header().Set("Content-Type", "application/json; charset=utf-8")
-			w.WriteHeader(http.StatusOK)
-			_, _ = w.Write(body)
+	var notAllowed = http.StatusText(http.StatusMethodNotAllowed) + "\n"
 
-		case http.MethodHead:
-			w.WriteHeader(http.StatusOK)
+	return func(ctx *fasthttp.RequestCtx) {
+		switch string(ctx.Method()) {
+		case fasthttp.MethodGet:
+			ctx.SetContentType("application/json; charset=utf-8")
+			ctx.SetStatusCode(http.StatusOK)
+			_, _ = ctx.Write(body)
+
+		case fasthttp.MethodHead:
+			ctx.SetStatusCode(http.StatusOK)
 
 		default:
-			http.Error(w, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
+			ctx.Error(notAllowed, http.StatusMethodNotAllowed)
 		}
-	})
+	}
 }

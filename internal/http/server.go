@@ -2,11 +2,14 @@ package http
 
 import (
 	"context"
+	"errors"
+	"fmt"
 	"net"
 	"net/http"
-	"strconv"
 	"strings"
 	"time"
+
+	"github.com/valyala/fasthttp"
 
 	"gh.tarampamp.am/error-pages/internal/appmeta"
 	"gh.tarampamp.am/error-pages/internal/config"
@@ -21,11 +24,11 @@ import (
 // Server is an HTTP server for serving error pages.
 type Server struct {
 	log    *logger.Logger
-	server *http.Server
+	server *fasthttp.Server
 }
 
 // NewServer creates a new HTTP server.
-func NewServer(baseCtx context.Context, log *logger.Logger) Server {
+func NewServer(log *logger.Logger) Server {
 	const (
 		readTimeout    = 30 * time.Second
 		writeTimeout   = readTimeout + 10*time.Second // should be bigger than the read timeout
@@ -34,13 +37,14 @@ func NewServer(baseCtx context.Context, log *logger.Logger) Server {
 
 	return Server{
 		log: log,
-		server: &http.Server{
-			ReadTimeout:       readTimeout,
-			WriteTimeout:      writeTimeout,
-			ReadHeaderTimeout: readTimeout,
-			MaxHeaderBytes:    maxHeaderBytes,
-			ErrorLog:          logger.NewStdLog(log),
-			BaseContext:       func(net.Listener) context.Context { return baseCtx },
+		server: &fasthttp.Server{
+			ReadTimeout:                  readTimeout,
+			WriteTimeout:                 writeTimeout,
+			ReadBufferSize:               maxHeaderBytes,
+			DisablePreParseMultipartForm: true,
+			NoDefaultServerHeader:        true,
+			CloseOnShutdown:              true,
+			Logger:                       logger.NewStdLog(log),
 		},
 	}
 }
@@ -52,60 +56,78 @@ func (s *Server) Register(cfg *config.Config) error {
 		versionHandler    = version.New(appmeta.Version())
 		errorPagesHandler = ep.New(cfg, s.log)
 		faviconHandler    = static.New(static.Favicon)
+
+		notFound   = http.StatusText(http.StatusNotFound) + "\n"
+		notAllowed = http.StatusText(http.StatusMethodNotAllowed) + "\n"
 	)
 
-	s.server.Handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		var url, method = r.URL.Path, r.Method
+	s.server.Handler = func(ctx *fasthttp.RequestCtx) {
+		var url, method = string(ctx.RequestURI()), string(ctx.Method())
 
 		switch {
 		// live endpoints
 		case url == "/health/live" || url == "/health" || url == "/healthz" || url == "/live":
-			liveHandler.ServeHTTP(w, r)
+			liveHandler(ctx)
 
 		// version endpoint
 		case url == "/version":
-			versionHandler.ServeHTTP(w, r)
+			versionHandler(ctx)
 
 		// favicon.ico endpoint
 		case url == "/favicon.ico":
-			faviconHandler.ServeHTTP(w, r)
+			faviconHandler(ctx)
 
 		// error pages endpoints:
 		//	- /
 		//	-	/{code}.html
 		//	- /{code}.htm
 		//	- /{code}
-		case method == http.MethodGet && (url == "/" || ep.URLContainsCode(url) || ep.HeadersContainCode(r.Header)):
-			errorPagesHandler.ServeHTTP(w, r)
+		case method == fasthttp.MethodGet &&
+			(url == "/" || ep.URLContainsCode(url) || ep.HeadersContainCode(&ctx.Request.Header)):
+			errorPagesHandler(ctx)
 
 		// wrong requests handling
 		default:
 			switch {
-			case method == http.MethodHead:
-				w.WriteHeader(http.StatusNotFound)
-			case method == http.MethodGet:
-				http.NotFound(w, r)
+			case method == fasthttp.MethodHead:
+				ctx.Error(notAllowed, fasthttp.StatusNotFound)
+			case method == fasthttp.MethodGet:
+				ctx.Error(notFound, fasthttp.StatusNotFound)
 			default:
-				http.Error(w, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
+				ctx.Error(notAllowed, fasthttp.StatusMethodNotAllowed)
 			}
 		}
-	})
+	}
 
 	// apply middleware
-	s.server.Handler = logreq.New(s.log, func(r *http.Request) bool {
+	s.server.Handler = logreq.New(s.log, func(ctx *fasthttp.RequestCtx) bool {
 		// skip logging healthcheck and .ico (favicon) requests
-		return strings.Contains(strings.ToLower(r.UserAgent()), "healthcheck") ||
-			strings.HasSuffix(r.URL.Path, ".ico")
+		return strings.Contains(strings.ToLower(string(ctx.UserAgent())), "healthcheck") ||
+			strings.HasSuffix(string(ctx.Path()), ".ico")
 	})(s.server.Handler)
 
 	return nil
 }
 
 // Start server.
-func (s *Server) Start(ip string, port uint16) error {
-	s.server.Addr = ip + ":" + strconv.Itoa(int(port))
+func (s *Server) Start(ip string, port uint16) (err error) {
+	if net.ParseIP(ip) == nil {
+		return errors.New("invalid IP address")
+	}
 
-	return s.server.ListenAndServe()
+	var ln net.Listener
+
+	if strings.Count(ip, ":") >= 2 { //nolint:mnd // ipv6
+		if ln, err = net.Listen("tcp6", fmt.Sprintf("[%s]:%d", ip, port)); err != nil {
+			return err
+		}
+	} else { // ipv4
+		if ln, err = net.Listen("tcp4", fmt.Sprintf("%s:%d", ip, port)); err != nil {
+			return err
+		}
+	}
+
+	return s.server.Serve(ln)
 }
 
 // Stop server gracefully.
@@ -113,5 +135,5 @@ func (s *Server) Stop(timeout time.Duration) error {
 	var ctx, cancel = context.WithTimeout(context.Background(), timeout)
 	defer cancel()
 
-	return s.server.Shutdown(ctx)
+	return s.server.ShutdownWithContext(ctx)
 }

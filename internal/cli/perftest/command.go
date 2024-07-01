@@ -55,7 +55,7 @@ func NewCommand(log *logger.Logger) *cli.Command { //nolint:funlen,gocognit
 		Aliases: []string{"perf", "test"},
 		Hidden:  true,
 		Usage:   "Simple performance (load) test for the HTTP server",
-		Action: func(ctx context.Context, c *cli.Command) error {
+		Action: func(ctx context.Context, c *cli.Command) error { // TODO: use fasthttp.Client
 			var (
 				perfCtx, cancel = context.WithTimeout(ctx, c.Duration(durationFlag.Name))
 				startedAt       = time.Now()

@@ -2,43 +2,37 @@ package version_test
 
 import (
 	"net/http"
-	"net/http/httptest"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 
 	"gh.tarampamp.am/error-pages/internal/http/handlers/version"
+	"gh.tarampamp.am/error-pages/internal/http/httptest"
 )
 
 func TestServeHTTP(t *testing.T) {
 	t.Parallel()
 
-	var handler = version.New("\t\n foo@bar ")
+	var (
+		handler = version.New("\t\n foo@bar ")
+		url     = "http://testing"
+		body    = http.NoBody
+	)
 
 	t.Run("get", func(t *testing.T) {
-		var (
-			req = httptest.NewRequest(http.MethodGet, "http://testing", http.NoBody)
-			rr  = httptest.NewRecorder()
-		)
-
-		handler.ServeHTTP(rr, req)
-
-		assert.Equal(t, rr.Header().Get("Content-Type"), "application/json; charset=utf-8")
-		assert.Equal(t, rr.Code, http.StatusOK)
-		assert.Equal(t, rr.Body.String(), `{"version":"foo@bar"}`)
+		httptest.HandleFast(t, handler, http.MethodGet, url, body, func(status int, body string, headers http.Header) {
+			assert.Equal(t, http.StatusOK, status)
+			assert.Equal(t, "application/json; charset=utf-8", headers.Get("Content-Type"))
+			assert.Equal(t, `{"version":"foo@bar"}`, body)
+		})
 	})
 
 	t.Run("head", func(t *testing.T) {
-		var (
-			req = httptest.NewRequest(http.MethodHead, "http://testing", http.NoBody)
-			rr  = httptest.NewRecorder()
-		)
-
-		handler.ServeHTTP(rr, req)
-
-		assert.Equal(t, rr.Code, http.StatusOK)
-		assert.Empty(t, rr.Header().Get("Content-Type"))
-		assert.Empty(t, rr.Body.Bytes())
+		httptest.HandleFast(t, handler, http.MethodHead, url, body, func(status int, body string, headers http.Header) {
+			assert.Equal(t, http.StatusOK, status)
+			assert.Empty(t, headers.Get("Content-Type"))
+			assert.Empty(t, body)
+		})
 	})
 
 	t.Run("method not allowed", func(t *testing.T) {
@@ -48,16 +42,11 @@ func TestServeHTTP(t *testing.T) {
 			http.MethodPost,
 			http.MethodPut,
 		} {
-			var (
-				req = httptest.NewRequest(method, "http://testing", http.NoBody)
-				rr  = httptest.NewRecorder()
-			)
-
-			handler.ServeHTTP(rr, req)
-
-			assert.Equal(t, rr.Header().Get("Content-Type"), "text/plain; charset=utf-8")
-			assert.Equal(t, rr.Code, http.StatusMethodNotAllowed)
-			assert.Equal(t, "Method Not Allowed\n", rr.Body.String())
+			httptest.HandleFast(t, handler, method, url, body, func(status int, body string, headers http.Header) {
+				assert.Equal(t, http.StatusMethodNotAllowed, status)
+				assert.Equal(t, "text/plain; charset=utf-8", headers.Get("Content-Type"))
+				assert.Equal(t, "Method Not Allowed\n", body)
+			})
 		}
 	})
 }
