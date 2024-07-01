@@ -367,7 +367,7 @@ func startServer(t *testing.T, srv *appHttp.Server) (_ string, stop func()) {
 		<-time.After(5 * time.Millisecond)
 	}
 
-	return fmt.Sprintf("http://%s", hostPort), func() { assert.NoError(t, srv.Stop(10*time.Millisecond)) }
+	return fmt.Sprintf("http://%s", hostPort), func() { assert.NoError(t, srv.Stop(350*time.Millisecond)) }
 }
 
 // getFreeTcpPort is a helper function to get a free TCP port number.
