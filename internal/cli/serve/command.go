@@ -22,9 +22,9 @@ type command struct {
 
 	opt struct {
 		http struct { // our HTTP server
-			addr string
-			port uint16
-			// readBufferSize uint
+			addr           string
+			port           uint16
+			readBufferSize uint
 		}
 	}
 }
@@ -140,6 +140,15 @@ func NewCommand(log *logger.Logger) *cli.Command { //nolint:funlen,gocognit,gocy
 				return nil
 			},
 		}
+		readBufferSizeFlag = cli.UintFlag{
+			Name: "read-buffer-size",
+			Usage: "per-connection buffer size in bytes for reading requests, this also limits the maximum header size " +
+				"(increase this buffer if your clients send multi-KB Request URIs and/or multi-KB headers (e.g., " +
+				"large cookies), note that increasing this value will increase memory consumption)",
+			Value:    1024 * 5, //nolint:mnd // 5 KB
+			Sources:  env("READ_BUFFER_SIZE"),
+			OnlyOnce: true,
+		}
 	)
 
 	// override some flag usage messages
@@ -157,6 +166,7 @@ func NewCommand(log *logger.Logger) *cli.Command { //nolint:funlen,gocognit,gocy
 		Action: func(ctx context.Context, c *cli.Command) error {
 			cmd.opt.http.addr = c.String(addrFlag.Name)
 			cmd.opt.http.port = uint16(c.Uint(portFlag.Name))
+			cmd.opt.http.readBufferSize = uint(c.Uint(readBufferSizeFlag.Name))
 			cfg.L10n.Disable = c.Bool(disableL10nFlag.Name)
 			cfg.DefaultCodeToRender = uint16(c.Uint(defaultCodeToRenderFlag.Name))
 			cfg.RespondWithSameHTTPCode = c.Bool(sendSameHTTPCodeFlag.Name)
@@ -282,6 +292,7 @@ func NewCommand(log *logger.Logger) *cli.Command { //nolint:funlen,gocognit,gocy
 			&showDetailsFlag,
 			&proxyHeadersListFlag,
 			&rotationModeFlag,
+			&readBufferSizeFlag,
 		},
 	}
 
@@ -290,7 +301,7 @@ func NewCommand(log *logger.Logger) *cli.Command { //nolint:funlen,gocognit,gocy
 
 // Run current command.
 func (cmd *command) Run(ctx context.Context, log *logger.Logger, cfg *config.Config) error { //nolint:funlen
-	var srv = appHttp.NewServer(log)
+	var srv = appHttp.NewServer(log, cmd.opt.http.readBufferSize)
 
 	if err := srv.Register(cfg); err != nil {
 		return err

@@ -28,11 +28,10 @@ type Server struct {
 }
 
 // NewServer creates a new HTTP server.
-func NewServer(log *logger.Logger) Server {
+func NewServer(log *logger.Logger, readBufferSize uint) Server {
 	const (
-		readTimeout    = 30 * time.Second
-		writeTimeout   = readTimeout + 10*time.Second // should be bigger than the read timeout
-		maxHeaderBytes = (1 << 20) * 5                //nolint:mnd // 5 MB
+		readTimeout  = 30 * time.Second
+		writeTimeout = readTimeout + 10*time.Second // should be bigger than the read timeout
 	)
 
 	return Server{
@@ -40,7 +39,7 @@ func NewServer(log *logger.Logger) Server {
 		server: &fasthttp.Server{
 			ReadTimeout:                  readTimeout,
 			WriteTimeout:                 writeTimeout,
-			ReadBufferSize:               maxHeaderBytes,
+			ReadBufferSize:               int(readBufferSize),
 			DisablePreParseMultipartForm: true,
 			NoDefaultServerHeader:        true,
 			CloseOnShutdown:              true,

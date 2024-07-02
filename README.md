@@ -44,6 +44,7 @@ The following flags are supported:
 | `--show-details`                     | show request details in the error page response (if supported by the template)                                                                                                                                                                                                                                            |                  `false`                  |       `SHOW_DETAILS`        |
 | `--proxy-headers="…"`                | HTTP headers listed here will be proxied from the original request to the error page response (comma-separated list)                                                                                                                                                                                                      | `X-Request-Id,X-Trace-Id,X-Amzn-Trace-Id` |    `PROXY_HTTP_HEADERS`     |
 | `--rotation-mode="…"`                | templates automatic rotation mode (disabled/random-on-startup/random-on-each-request/random-hourly/random-daily)                                                                                                                                                                                                          |                `disabled`                 |  `TEMPLATES_ROTATION_MODE`  |
+| `--read-buffer-size="…"`             | per-connection buffer size in bytes for reading requests, this also limits the maximum header size (increase this buffer if your clients send multi-KB Request URIs and/or multi-KB headers (e.g., large cookies), note that increasing this value will increase memory consumption)                                      |                  `5120`                   |     `READ_BUFFER_SIZE`      |
 
 ### `build` command (aliases: `b`)
 
@@ -90,7 +91,7 @@ The following templates are built-in and available for use without any additiona
 
 > [!NOTE]
 > The `cat` template is the only one of those that fetches resources (the actual cat pictures)
-> from external servers - all other templates are self contained.
+> from external servers - all other templates are self-contained.
 
 <table>
   <thead>

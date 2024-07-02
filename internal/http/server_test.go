@@ -20,7 +20,7 @@ import (
 // TestRouting in fact is a test for the whole server, because it tests all the routes and their handlers.
 func TestRouting(t *testing.T) {
 	var (
-		srv = appHttp.NewServer(logger.NewNop())
+		srv = appHttp.NewServer(logger.NewNop(), 1025*5)
 		cfg = config.New()
 	)
 
