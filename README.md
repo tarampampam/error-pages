@@ -88,6 +88,10 @@ The following flags are supported:
 
 The following templates are built-in and available for use without any additional setup:
 
+> [!NOTE]
+> The `cat` template is the only one of those that fetches resources (the actual cat pictures)
+> from external servers - all other templates are self contained.
+
 <table>
   <thead>
     <tr>
