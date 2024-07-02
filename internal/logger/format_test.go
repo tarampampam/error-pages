@@ -60,3 +60,11 @@ func TestParseFormat(t *testing.T) {
 		})
 	}
 }
+
+func TestFormats(t *testing.T) {
+	require.Equal(t, []logger.Format{logger.ConsoleFormat, logger.JSONFormat}, logger.Formats())
+}
+
+func TestFormatStrings(t *testing.T) {
+	require.Equal(t, []string{"console", "json"}, logger.FormatStrings())
+}

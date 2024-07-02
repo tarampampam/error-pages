@@ -1,255 +1,175 @@
 package config
 
 import (
-	"os"
-	"path"
-	"path/filepath"
-	"strconv"
-	"strings"
+	"maps"
+	"net/http"
+	"slices"
 
-	"github.com/a8m/envsubst"
-	"github.com/pkg/errors"
-	"gopkg.in/yaml.v3"
+	builtinTemplates "gh.tarampamp.am/error-pages/templates"
 )
 
-// Config is a main (exportable) config struct.
 type Config struct {
-	Templates []Template
-	Pages     map[string]Page   // map key is a page code
-	Formats   map[string]Format // map key is a format name
+	// Templates hold all templates, with the key being the template name and the value being the template content
+	// in HTML format (Go templates are supported here).
+	Templates templates
+
+	// Formats contain alternative response formats (e.g., if a client requests a response in one of these formats,
+	// we will render the response using the specified format instead of HTML; Go templates are supported).
+	Formats struct {
+		JSON      string
+		XML       string
+		PlainText string
+	}
+
+	// Codes hold descriptions for HTTP codes (e.g., 404: "Not Found / The server can not find the requested page").
+	Codes Codes
+
+	// TemplateName is the name of the template to use for rendering error pages. The template must be present in the
+	// Templates map.
+	TemplateName string
+
+	// ProxyHeaders contains a list of HTTP headers that will be proxied from the incoming request to the
+	// error page response.
+	ProxyHeaders []string
+
+	// L10n contains localization settings.
+	L10n struct {
+		// Disable the localization of error pages.
+		Disable bool
+	}
+
+	// DefaultCodeToRender is the code for the default error page to be displayed. It is used when the requested
+	// code is not defined in the incoming request (i.e., the code to render as the index page).
+	DefaultCodeToRender uint16
+
+	// RespondWithSameHTTPCode determines whether the response should have the same HTTP status code as the requested
+	// error page.
+	// In other words, if set to true and the requested error page has a code of 404, the HTTP response will also have
+	// a status code of 404. If set to false, the HTTP response will have a status code of 200 regardless of the
+	// requested error page's status code.
+	RespondWithSameHTTPCode bool
+
+	// RotationMode allows to set the rotation mode for templates to switch between them automatically on startup,
+	// on each request, daily, hourly and so on.
+	RotationMode RotationMode
+
+	// ShowDetails determines whether to show additional details in the error response, extracted from the
+	// incoming request (if supported by the template).
+	ShowDetails bool
 }
 
-// Template returns a Template with the passes name.
-func (c *Config) Template(name string) (*Template, bool) {
-	for i := 0; i < len(c.Templates); i++ {
-		if c.Templates[i].name == name {
-			return &c.Templates[i], true
-		}
-	}
+const defaultJSONFormat string = `{
+  "error": true,
+  "code": {{ code | json }},
+  "message": {{ message | json }},
+  "description": {{ description | json }}{{ if show_details }},
+  "details": {
+    "host": {{ host | json }},
+    "original_uri": {{ original_uri | json }},
+    "forwarded_for": {{ forwarded_for | json }},
+    "namespace": {{ namespace | json }},
+    "ingress_name": {{ ingress_name | json }},
+    "service_name": {{ service_name | json }},
+    "service_port": {{ service_port | json }},
+    "request_id": {{ request_id | json }},
+    "timestamp": {{ now.Unix }}
+  }{{ end }}
+}
+` // an empty line at the end is important for better UX
 
-	return &Template{}, false
+const defaultXMLFormat string = `<?xml version="1.0" encoding="utf-8"?>
+<error>
+  <code>{{ code }}</code>
+  <message>{{ message }}</message>
+  <description>{{ description }}</description>{{ if show_details }}
+  <details>
+    <host>{{ host }}</host>
+    <originalURI>{{ original_uri }}</originalURI>
+    <forwardedFor>{{ forwarded_for }}</forwardedFor>
+    <namespace>{{ namespace }}</namespace>
+    <ingressName>{{ ingress_name }}</ingressName>
+    <serviceName>{{ service_name }}</serviceName>
+    <servicePort>{{ service_port }}</servicePort>
+    <requestID>{{ request_id }}</requestID>
+    <timestamp>{{ now.Unix }}</timestamp>
+  </details>{{ end }}
+</error>
+` // an empty line at the end is important for better UX
+
+const defaultPlainTextFormat string = `Error {{ code }}: {{ message }}{{ if description }}
+{{ description }}{{ end }}{{ if show_details }}
+
+Host: {{ host }}
+Original URI: {{ original_uri }}
+Forwarded For: {{ forwarded_for }}
+Namespace: {{ namespace }}
+Ingress Name: {{ ingress_name }}
+Service Name: {{ service_name }}
+Service Port: {{ service_port }}
+Request ID: {{ request_id }}
+Timestamp: {{ now.Unix }}{{ end }}
+` // an empty line at the end is important for better UX
+
+//nolint:lll
+var defaultCodes = Codes{ //nolint:gochecknoglobals
+	"400": {"Bad Request", "The server did not understand the request"},
+	"401": {"Unauthorized", "The requested page needs a username and a password"},
+	"403": {"Forbidden", "Access is forbidden to the requested page"},
+	"404": {"Not Found", "The server can not find the requested page"},
+	"405": {"Method Not Allowed", "The method specified in the request is not allowed"},
+	"407": {"Proxy Authentication Required", "You must authenticate with a proxy server before this request can be served"},
+	"408": {"Request Timeout", "The request took longer than the server was prepared to wait"},
+	"409": {"Conflict", "The request could not be completed because of a conflict"},
+	"410": {"Gone", "The requested page is no longer available"},
+	"411": {"Length Required", "The \"Content-Length\" is not defined. The server will not accept the request without it"},
+	"412": {"Precondition Failed", "The pre condition given in the request evaluated to false by the server"},
+	"413": {"Payload Too Large", "The server will not accept the request, because the request entity is too large"},
+	"416": {"Requested Range Not Satisfiable", "The requested byte range is not available and is out of bounds"},
+	"418": {"I'm a teapot", "Attempt to brew coffee with a teapot is not supported"},
+	"429": {"Too Many Requests", "Too many requests in a given amount of time"},
+	"500": {"Internal Server Error", "The server met an unexpected condition"},
+	"502": {"Bad Gateway", "The server received an invalid response from the upstream server"},
+	"503": {"Service Unavailable", "The server is temporarily overloading or down"},
+	"504": {"Gateway Timeout", "The gateway has timed out"},
+	"505": {"HTTP Version Not Supported", "The server does not support the \"http protocol\" version"},
 }
 
-func (c *Config) JSONFormat() (*Format, bool) { return c.format("json") }
-func (c *Config) XMLFormat() (*Format, bool)  { return c.format("xml") }
-
-func (c *Config) format(name string) (*Format, bool) {
-	if f, ok := c.Formats[name]; ok {
-		if len(f.content) > 0 {
-			return &f, true
-		}
-	}
-
-	return &Format{}, false
+var defaultProxyHeaders = []string{ //nolint:gochecknoglobals
+	// "Traceparent",  // W3C Trace Context
+	// "Tracestate",   // W3C Trace Context
+	"X-Request-Id",    // unofficial HTTP header, used to trace individual HTTP requests
+	"X-Trace-Id",      // same as above
+	"X-Amzn-Trace-Id", // to track HTTP requests from clients to targets or other AWS services
 }
 
-// TemplateNames returns all template names.
-func (c *Config) TemplateNames() []string {
-	n := make([]string, len(c.Templates))
-
-	for i, t := range c.Templates {
-		n[i] = t.name
+// New creates a new configuration with default values.
+func New() Config {
+	var cfg = Config{
+		Templates: make(templates),          // allocate memory for templates
+		Codes:     maps.Clone(defaultCodes), // copy default codes
 	}
 
-	return n
-}
+	cfg.Formats.JSON = defaultJSONFormat
+	cfg.Formats.XML = defaultXMLFormat
+	cfg.Formats.PlainText = defaultPlainTextFormat
 
-// Template describes HTTP error page template.
-type Template struct {
-	name    string
-	content []byte
-}
-
-// Name returns the name of the template.
-func (t Template) Name() string { return t.name }
-
-// Content returns the template content.
-func (t Template) Content() []byte { return t.content }
-
-func (t *Template) loadContentFromFile(filePath string) (err error) {
-	if t.content, err = os.ReadFile(filePath); err != nil {
-		return errors.Wrap(err, "cannot load content for the template "+t.Name()+" from file "+filePath)
+	// add built-in templates
+	for name, content := range builtinTemplates.BuiltIn() {
+		cfg.Templates[name] = content
 	}
 
-	return
-}
+	// set first template as default
+	for _, name := range cfg.Templates.Names() {
+		cfg.TemplateName = name
 
-// Page describes error page.
-type Page struct {
-	code        string
-	message     string
-	description string
-}
-
-// Code returns the code of the Page.
-func (p Page) Code() string { return p.code }
-
-// Message returns the message of the Page.
-func (p Page) Message() string { return p.message }
-
-// Description returns the description of the Page.
-func (p Page) Description() string { return p.description }
-
-// Format describes different response formats.
-type Format struct {
-	name    string
-	content []byte
-}
-
-// Name returns the name of the format.
-func (f Format) Name() string { return f.name }
-
-// Content returns the format content.
-func (f Format) Content() []byte { return f.content }
-
-// config is internal struct for marshaling/unmarshaling configuration file content.
-type config struct {
-	Templates []struct {
-		Path    string `yaml:"path"`
-		Name    string `yaml:"name"`
-		Content string `yaml:"content"`
-	} `yaml:"templates"`
-
-	Formats map[string]struct {
-		Content string `yaml:"content"`
-	} `yaml:"formats"`
-
-	Pages map[string]struct {
-		Message     string `yaml:"message"`
-		Description string `yaml:"description"`
-	} `yaml:"pages"`
-}
-
-// Validate the config struct and return an error if something is wrong.
-func (c config) Validate() error {
-	if len(c.Templates) == 0 {
-		return errors.New("empty templates list")
-	} else {
-		for i := 0; i < len(c.Templates); i++ {
-			if c.Templates[i].Name == "" && c.Templates[i].Path == "" {
-				return errors.New("empty path and name with index " + strconv.Itoa(i))
-			}
-
-			if c.Templates[i].Path == "" && c.Templates[i].Content == "" {
-				return errors.New("empty path and template content with index " + strconv.Itoa(i))
-			}
-		}
+		break
 	}
 
-	if len(c.Pages) == 0 {
-		return errors.New("empty pages list")
-	} else {
-		for code := range c.Pages {
-			if code == "" {
-				return errors.New("empty page code")
-			}
+	// set default HTTP headers to proxy
+	cfg.ProxyHeaders = slices.Clone(defaultProxyHeaders)
 
-			if strings.ContainsRune(code, ' ') {
-				return errors.New("code should not contain whitespaces")
-			}
-		}
-	}
+	// set defaults
+	cfg.DefaultCodeToRender = http.StatusNotFound
 
-	if len(c.Formats) > 0 {
-		for name := range c.Formats {
-			if name == "" {
-				return errors.New("empty format name")
-			}
-
-			if strings.ContainsRune(name, ' ') {
-				return errors.New("format should not contain whitespaces")
-			}
-		}
-	}
-
-	return nil
-}
-
-// Export the config struct into Config.
-func (c *config) Export() (*Config, error) {
-	cfg := &Config{}
-
-	cfg.Templates = make([]Template, 0, len(c.Templates))
-
-	for i := 0; i < len(c.Templates); i++ {
-		tpl := Template{name: c.Templates[i].Name}
-
-		if c.Templates[i].Content == "" {
-			if c.Templates[i].Path == "" {
-				return nil, errors.New("path to the template " + c.Templates[i].Name + " not provided")
-			}
-
-			if err := tpl.loadContentFromFile(c.Templates[i].Path); err != nil {
-				return nil, err
-			}
-		} else {
-			tpl.content = []byte(c.Templates[i].Content)
-		}
-
-		cfg.Templates = append(cfg.Templates, tpl)
-	}
-
-	cfg.Pages = make(map[string]Page, len(c.Pages))
-
-	for code, p := range c.Pages {
-		cfg.Pages[code] = Page{code: code, message: p.Message, description: p.Description}
-	}
-
-	cfg.Formats = make(map[string]Format, len(c.Formats))
-
-	for name, f := range c.Formats {
-		cfg.Formats[name] = Format{name: name, content: []byte(strings.TrimSpace(f.Content))}
-	}
-
-	return cfg, nil
-}
-
-// FromYaml creates new Config instance using YAML-structured content.
-func FromYaml(in []byte) (_ *Config, err error) {
-	in, err = envsubst.Bytes(in)
-	if err != nil {
-		return nil, err
-	}
-
-	c := &config{}
-
-	if err = yaml.Unmarshal(in, c); err != nil {
-		return nil, errors.Wrap(err, "cannot parse configuration file")
-	}
-
-	var basename string
-
-	for i := 0; i < len(c.Templates); i++ {
-		if c.Templates[i].Name == "" { // set the template name from file path
-			basename = filepath.Base(c.Templates[i].Path)
-			c.Templates[i].Name = strings.TrimSuffix(basename, filepath.Ext(basename))
-		}
-	}
-
-	if err = c.Validate(); err != nil {
-		return nil, err
-	}
-
-	return c.Export()
-}
-
-// FromYamlFile creates new Config instance using YAML file.
-func FromYamlFile(filepath string) (*Config, error) {
-	bytes, err := os.ReadFile(filepath)
-	if err != nil {
-		return nil, errors.Wrap(err, "cannot read configuration file")
-	}
-
-	// the following code makes it possible to use the relative links in the config file (`.` means "directory with
-	// the config file")
-	cwd, err := os.Getwd()
-	if err == nil {
-		if err = os.Chdir(path.Dir(filepath)); err != nil {
-			return nil, err
-		}
-
-		defer func() { _ = os.Chdir(cwd) }()
-	}
-
-	return FromYaml(bytes)
+	return cfg
 }

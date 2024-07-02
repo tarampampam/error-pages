@@ -1,4 +1,7 @@
-name: documentation
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+# docs: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions
+
+name: 📚 Documentation
 
 on:
   push:
@@ -12,7 +15,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: peter-evans/dockerhub-description@v4 # Action page: <https://github.com/peter-evans/dockerhub-description>
+      - uses: peter-evans/dockerhub-description@v4
         with:
           username: ${{ secrets.DOCKER_LOGIN }}
           password: ${{ secrets.DOCKER_USER_PASSWORD }}
