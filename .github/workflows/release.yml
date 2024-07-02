@@ -44,6 +44,16 @@ jobs:
           path: out/
           if-no-files-found: error
           retention-days: 1
+      - if: matrix.os == 'linux' && matrix.arch == 'amd64'
+        working-directory: ./out
+        run: zip -r ./../templates.zip .
+      - if: matrix.os == 'linux' && matrix.arch == 'amd64'
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: templates.zip
+          asset_name: error-pages-static.zip
+          tag: ${{ github.ref }}
 
   demo:
     name: Update the demo (GitHub Pages)
