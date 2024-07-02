@@ -1,6 +1,7 @@
 package cli_test
 
 import (
+	"context"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -8,12 +9,10 @@ import (
 	"gh.tarampamp.am/error-pages/internal/cli"
 )
 
-func TestNewCommand(t *testing.T) {
+func TestNewApp(t *testing.T) {
 	t.Parallel()
 
-	app := cli.NewApp("app")
+	app := cli.NewApp("appName")
 
-	assert.NotEmpty(t, app.Flags)
-
-	assert.NoError(t, app.Run([]string{"", "--log-level", "debug", "--log-format", "json"}))
+	assert.NoError(t, app.Run(context.Background(), []string{""}))
 }

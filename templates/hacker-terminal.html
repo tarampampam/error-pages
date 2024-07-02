@@ -1,183 +1,186 @@
 <!DOCTYPE html>
-<!--
-    Error {{ code }}: {{ message }}
-    Description: {{ description }}
--->
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="robots" content="noindex, nofollow" />
-    <title>{{ message }}</title>
-    <link rel="preconnect" href="https://fonts.bunny.net" crossorigin>
-    <link rel="dns-prefetch" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css2?family=Inconsolata:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        /** Idea author: https://codepen.io/robinselmer */
-        html, body {
-            height: 100%;
-            overflow: hidden;
-            margin: 0;
-            padding: 0;
-            font-size: 0;
-        }
+  <meta charset="utf-8">
+  <meta name="robots" content="nofollow,noarchive,noindex">
+  <title>{{ message }}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- {{ if or (eq code 408) (eq code 425) (eq code 429) (eq code 500) (eq code 502) (eq code 503) (eq code 504) }} -->
+  <meta http-equiv="refresh" content="30">
+  <!-- {{ end }} -->
+  <meta name="title" content="{{ code }}: {{ message | escape }}">
+  <meta name="description" content="{{ description | escape }}">
+  <meta property="og:title" content="{{ code }}: {{ message | escape }}">
+  <meta property="og:description" content="{{ description | escape }}">
+  <meta property="twitter:title" content="{{ code }}: {{ message | escape }}">
+  <meta property="twitter:description" content="{{ description | escape }}">
+  <style>
+    /** Idea author: https://codepen.io/robinselmer */
+    html, body {
+      margin: 0;
+      padding: 0;
+      min-height: 100%;
+      height: 100%;
+      width: 100%;
+      font-family: monospace;
+      font-size: 16px;
+      overflow: hidden;
+    }
 
-        body {
-            box-sizing: border-box;
-            background-color: #000000;
-            background-image: radial-gradient(#11581E, #041607);
-            background-repeat: no-repeat;
-            background-size: cover;
-            font-family: 'Inconsolata', Helvetica, sans-serif;
-            color: rgba(128, 255, 128, 0.8);
-            text-shadow:
-                0 0 11px rgba(51, 255, 51, 1),
-                0 0 2px rgba(255, 255, 255, 0.8);
-        }
+    body {
+      box-sizing: border-box;
+      background-color: #000;
+      background-image: radial-gradient(#11581E, #041607);
+      background-repeat: no-repeat;
+      background-size: cover;
+      color: rgba(128, 255, 128, 0.8);
+      text-shadow: 0 0 11px rgba(51, 255, 51, 1), 0 0 2px rgba(255, 255, 255, 0.8);
+    }
 
-        .overlay {
-            pointer-events: none;
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background:
-                repeating-linear-gradient(
-                    180deg,
-                    rgba(0, 0, 0, 0) 0,
-                    rgba(0, 0, 0, 0.3) 50%,
-                    rgba(0, 0, 0, 0) 100%);
-            background-size: auto 4px;
-            z-index: 1;
-        }
+    .overlay {
+      pointer-events: none;
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: repeating-linear-gradient(
+        180deg,
+        rgba(0, 0, 0, 0) 0,
+        rgba(0, 0, 0, 0.3) 50%,
+        rgba(0, 0, 0, 0) 100%);
+      background-size: auto 4px;
+      z-index: 1;
+    }
 
-        .overlay::before {
-            content: "";
-            pointer-events: none;
-            position: absolute;
-            display: block;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            width: 100%;
-            height: 100%;
-            background-image: linear-gradient(
-                0deg,
-                transparent 0%,
-                rgba(32, 128, 32, 0.2) 2%,
-                rgba(32, 128, 32, 0.8) 3%,
-                rgba(32, 128, 32, 0.2) 3%,
-                transparent 100%);
-            background-repeat: no-repeat;
-            animation: scan 7.5s linear 0s infinite;
-        }
+    .overlay::before {
+      content: '';
+      pointer-events: none;
+      position: absolute;
+      display: block;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      width: 100%;
+      height: 100%;
+      background-image: linear-gradient(
+        0deg,
+        transparent 0%,
+        rgba(32, 128, 32, 0.2) 2%,
+        rgba(32, 128, 32, 0.8) 3%,
+        rgba(32, 128, 32, 0.2) 3%,
+        transparent 100%);
+      background-repeat: no-repeat;
+      animation: scan 7.5s linear 0s infinite;
+    }
 
-        @keyframes scan {
-            0%        { background-position: 0 -100vh; }
-            35%, 100% { background-position: 0 100vh; }
-        }
+    @keyframes scan {
+      0% {
+        background-position: 0 -100vh;
+      }
+      35%, 100% {
+        background-position: 0 100vh;
+      }
+    }
 
-        .terminal {
-            box-sizing: inherit;
-            position: absolute;
-            height: 100%;
-            width: 1000px;
-            max-width: 100%;
-            padding: 64px;
-            text-transform: uppercase;
-        }
+    main {
+      box-sizing: inherit;
+      position: absolute;
+      height: 100%;
+      width: 1000px;
+      max-width: 100%;
+      padding: 64px;
+      text-transform: uppercase;
+    }
 
-        h1 {
-            font-size: 48px;
-        }
+    h1 {
+      font-size: 48px;
+    }
 
-        p {
-            font-size: 24px;
-        }
+    p {
+      font-size: 24px;
+    }
 
-        .output {
-            color: rgba(128, 255, 128, 0.8);
-            text-shadow:
-                0 0 1px rgba(51, 255, 51, 0.4),
-                0 0 2px rgba(255, 255, 255, 0.8);
-        }
+    .output {
+      color: rgba(128, 255, 128, 0.8);
+      text-shadow: 0 0 1px rgba(51, 255, 51, 0.4),
+      0 0 2px rgba(255, 255, 255, 0.8);
+    }
 
-        .output::before {
-            content: "> ";
-        }
+    .output::before {
+      content: "> ";
+    }
 
-        a {
-            color: #fff;
-            text-decoration: none;
-        }
+    a {
+      color: #fff;
+      text-decoration: none;
+    }
 
-        a::before {
-            content: "[";
-        }
+    a::before {
+      content: "[";
+    }
 
-        a::after {
-            content: "]";
-        }
+    a::after {
+      content: "]";
+    }
 
-        .error_code {
-            color: white;
-        }
+    .error_code {
+      color: white;
+    }
 
-        /* {{ if show_details }} */
-        .details p {
-            margin-top: .5em;
-            margin-bottom: .5em;
-        }
+    /* {{ if show_details }} */
+    .details p {
+      margin-top: .5em;
+      margin-bottom: .5em;
+    }
 
-        .details * {
-            font-size: 15px;
-        }
+    .details * {
+      font-size: 15px;
+    }
 
-        .details p::before {
-            content: "$ ";
-        }
+    .details p::before {
+      content: "$ ";
+    }
 
-        .details code {
-            font-size: 0.9em;
-        }
-        /* {{ end }} */
-    </style>
+    .details code {
+      font-size: 0.9em;
+    }
+
+    /* {{ end }} */
+  </style>
 </head>
 <body>
 <div class="overlay"></div>
-<div class="terminal">
-    <h1><span data-l10n>Error</span> <span class="error_code">{{ code }}</span></h1>
-    <p class="output" data-l10n>{{ description }}.</p>
-    <p class="output"><span data-l10n>Good luck</span>.</p>
-    {{ if show_details }}
-    <div class="details">
-        {{- if host }}<p class="output small"><span data-l10n>Host</span>: <code>{{ host }}</code></p>{{ end -}}
-        {{- if original_uri }}<p class="output small"><span data-l10n>Original URI</span>: <code>{{ original_uri }}</code></p>{{ end -}}
-        {{- if forwarded_for }}<p class="output small"><span data-l10n>Forwarded for</span>: <code>{{ forwarded_for }}</code></p>{{ end -}}
-        {{- if namespace }}<p class="output small"><span data-l10n>Namespace</span>: <code>{{ namespace }}</code></p>{{ end -}}
-        {{- if ingress_name }}<p class="output small"><span data-l10n>Ingress name</span>: <code>{{ ingress_name }}</code></p>{{ end -}}
-        {{- if service_name }}<p class="output small"><span data-l10n>Service name</span>: <code>{{ service_name }}</code></p>{{ end -}}
-        {{- if service_port }}<p class="output small"><span data-l10n>Service port</span>: <code>{{ service_port }}</code></p>{{ end -}}
-        {{- if request_id }}<p class="output small"><span data-l10n>Request ID</span>: <code>{{ request_id }}</code></p>{{ end -}}
-        <p class="output small"><span data-l10n>Timestamp</span>: <code>{{ now.Unix }}</code></p>
-    </div>
-    {{ end }}
-</div>
-<script>
-    // {{ if l10n_enabled }}
-    if (navigator.language.substring(0, 2).toLowerCase() !== 'en') {
-        ((s, p) => { // localize the page (details here - https://github.com/tarampampam/error-pages/tree/master/l10n)
-            s.src = 'https://cdn.jsdelivr.net/gh/tarampampam/error-pages@2/l10n/l10n.min.js'; // '../l10n/l10n.js';
-            s.async = s.defer = true;
-            s.addEventListener('load', () => p.removeChild(s));
-            p.appendChild(s);
-        })(document.createElement('script'), document.body);
-    }
-    // {{ end }}
-</script>
+
+<main>
+  <h1><span data-l10n>Error</span> <span class="error_code">{{ code }}</span></h1>
+  <p class="output" data-l10n>{{ description }}.</p>
+  <p class="output"><span data-l10n>Good luck</span>.</p>
+  <!-- {{- if show_details -}} -->
+  <div class="details">
+    <!-- {{- if host -}} -->
+    <p class="output small"><span data-l10n>Host</span>: <code>{{ host }}</code></p>
+    <!-- {{- end }}{{ if original_uri -}} -->
+    <p class="output small"><span data-l10n>Original URI</span>: <code>{{ original_uri }}</code></p>
+    <!-- {{- end }}{{ if forwarded_for -}} -->
+    <p class="output small"><span data-l10n>Forwarded for</span>: <code>{{ forwarded_for }}</code></p>
+    <!-- {{- end }}{{ if namespace -}} -->
+    <p class="output small"><span data-l10n>Namespace</span>: <code>{{ namespace }}</code></p>
+    <!-- {{- end }}{{ if ingress_name -}} -->
+    <p class="output small"><span data-l10n>Ingress name</span>: <code>{{ ingress_name }}</code></p>
+    <!-- {{- end }}{{ if service_name -}} -->
+    <p class="output small"><span data-l10n>Service name</span>: <code>{{ service_name }}</code></p>
+    <!-- {{- end }}{{ if service_port -}} -->
+    <p class="output small"><span data-l10n>Service port</span>: <code>{{ service_port }}</code></p>
+    <!-- {{- end }}{{ if request_id -}} -->
+    <p class="output small"><span data-l10n>Request ID</span>: <code>{{ request_id }}</code></p>
+    <!-- {{- end -}} -->
+    <p class="output small"><span data-l10n>Timestamp</span>: <code>{{ now.Unix }}</code></p>
+  </div>
+  <!-- {{- end -}} -->
+</main>
+
+<!-- {{- if l10n_enabled -}} -->
+<script>// {{ l10nScript }}</script>
+<!-- {{- end -}} -->
 </body>
-<!--
-    Error {{ code }}: {{ message }}
-    Description: {{ description }}
--->
 </html>

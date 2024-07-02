@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="robots" content="follow,index">
+  <title>Error pages list</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root {
+      --color-primary: #fff;
+      --color-inverted: #202020;
+      --color-link: #395364;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --color-primary: #1a1a1a;
+        --color-inverted: #fff;
+        --color-link: #5cb0d3;
+      }
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      min-height: 100%;
+      height: 100%;
+      width: 100%;
+      background-color: var(--color-primary);
+      color: var(--color-inverted);
+      font-family: sans-serif;
+      font-size: 16px;
+    }
+
+    @media screen and (min-width: 2000px) {
+      html, body {
+        font-size: 20px;
+      }
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+    }
+
+    a {
+      color: var(--color-link);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    main {
+      width: 1200px;
+      height: 100%;
+      text-align: left;
+    }
+
+    header {
+      padding: 3em 0;
+    }
+
+    header h1 {
+      font-size: 3em;
+      text-align: center;
+      margin: 0;
+    }
+
+    article h2 {
+      font-size: 1.7em;
+    }
+
+    article h2 code {
+      text-decoration: underline;
+    }
+
+    article ul {
+      list-style: none;
+      margin: 1em 0;
+      padding: 0 0 0 1em;
+    }
+
+    article ul li {
+      margin: 0;
+      padding: 0;
+    }
+
+    footer {
+      padding: 3em 0;
+      text-align: center;
+      font-size: 0.8em;
+    }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>Error pages index</h1>
+  </header>
+
+  <article>
+    <!-- {{- range $templateName, $details := . -}} -->
+    <h2>Template name: <Code>{{ $templateName }}</Code></h2>
+    <ul class="mb-5">
+      <!-- {{ range $details -}}-->
+      <li><a href="{{ .RelativePath }}"><strong>{{ .Code }}</strong>: {{ .Message }}</a></li>
+      <!-- {{ end -}} -->
+    </ul>
+    <!-- {{ end }} -->
+  </article>
+
+  <footer>
+    For online documentation and support please refer to the
+    <a href="https://gh.tarampamp.am/error-pages">project repository</a>.
+  </footer>
+</main>
+</body>
+</html>

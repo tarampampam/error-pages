@@ -1,4 +1,5 @@
-# Docs: <https://git.io/JR5E4>
+# yaml-language-server: $schema=https://json.schemastore.org/github-issue-forms.json
+# docs: https://git.io/JR5E4
 
 name: 💡 Feature request
 description: Suggest an idea for this project

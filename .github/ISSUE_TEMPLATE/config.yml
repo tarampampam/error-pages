@@ -1,4 +1,5 @@
-# Docs: <https://git.io/JP3tm>
+# yaml-language-server: $schema=https://json.schemastore.org/github-issue-config.json
+# docs: https://git.io/JP3tm
 
 blank_issues_enabled: false
 

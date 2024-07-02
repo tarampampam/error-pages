@@ -18,7 +18,6 @@ func TestLevel_String(t *testing.T) {
 		"info":      {giveLevel: logger.InfoLevel, wantString: "info"},
 		"warn":      {giveLevel: logger.WarnLevel, wantString: "warn"},
 		"error":     {giveLevel: logger.ErrorLevel, wantString: "error"},
-		"fatal":     {giveLevel: logger.FatalLevel, wantString: "fatal"},
 		"<unknown>": {giveLevel: logger.Level(127), wantString: "level(127)"},
 	} {
 		t.Run(name, func(t *testing.T) {
@@ -43,8 +42,6 @@ func TestParseLevel(t *testing.T) {
 		"info":                   {giveBytes: []byte("info"), wantLevel: logger.InfoLevel},
 		"warn":                   {giveBytes: []byte("warn"), wantLevel: logger.WarnLevel},
 		"error":                  {giveBytes: []byte("error"), wantLevel: logger.ErrorLevel},
-		"fatal":                  {giveBytes: []byte("fatal"), wantLevel: logger.FatalLevel},
-		"fatal (string)":         {giveString: "fatal", wantLevel: logger.FatalLevel},
 		"foobar":                 {giveBytes: []byte("foobar"), wantError: errors.New("unrecognized logging level: \"foobar\"")}, //nolint:lll
 	} {
 		t.Run(name, func(t *testing.T) {
@@ -75,10 +72,9 @@ func TestLevels(t *testing.T) {
 		logger.InfoLevel,
 		logger.WarnLevel,
 		logger.ErrorLevel,
-		logger.FatalLevel,
 	}, logger.Levels())
 }
 
 func TestLevelStrings(t *testing.T) {
-	require.Equal(t, []string{"debug", "info", "warn", "error", "fatal"}, logger.LevelStrings())
+	require.Equal(t, []string{"debug", "info", "warn", "error"}, logger.LevelStrings())
 }

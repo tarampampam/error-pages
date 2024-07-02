@@ -1,4 +1,5 @@
-# Docs: <https://docs.github.com/en/free-pro-team@latest/github/administering-a-repository/customizing-dependency-updates>
+# yaml-language-server: $schema=https://json.schemastore.org/dependabot-2.0.json
+# docs: https://docs.github.com/en/free-pro-team@latest/github/administering-a-repository/customizing-dependency-updates
 
 version: 2
 

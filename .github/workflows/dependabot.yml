@@ -1,4 +1,7 @@
-name: dependabot
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+# docs: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions
+
+name: 🤖 Dependabot
 
 on:
   pull_request: {}
@@ -9,6 +12,7 @@ permissions:
 
 jobs:
   dependabot: # https://tinyurl.com/e69djmen
+    name: Enable auto-merge for Dependabot PRs
     runs-on: ubuntu-latest
     if: ${{ github.actor == 'dependabot[bot]' }}
     steps:
@@ -16,10 +20,8 @@ jobs:
         id: metadata
         with: {github-token: "${{ secrets.GITHUB_TOKEN }}"}
 
-      - name: Enable auto-merge for Dependabot PRs
-        if: ${{ contains(fromJSON('["version-update:semver-minor", "version-update:semver-patch"]'), steps.metadata.outputs.update-type) }}
+      - if: ${{ contains(fromJSON('["version-update:semver-minor", "version-update:semver-patch"]'), steps.metadata.outputs.update-type) }}
         run: gh pr merge --auto --merge "$PR_URL"
-        continue-on-error: true
         env:
           PR_URL: ${{ github.event.pull_request.html_url }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

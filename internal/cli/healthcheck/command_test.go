@@ -1,47 +1,55 @@
 package healthcheck_test
 
 import (
-	"errors"
-	"flag"
+	"context"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/urfave/cli/v2"
+	"github.com/stretchr/testify/require"
 
 	"gh.tarampamp.am/error-pages/internal/cli/healthcheck"
+	"gh.tarampamp.am/error-pages/internal/logger"
 )
 
-type fakeChecker struct{ err error }
+func TestNewCommand(t *testing.T) {
+	t.Parallel()
 
-func (c *fakeChecker) Check(port uint16) error { return c.err }
-
-func TestProperties(t *testing.T) {
-	cmd := healthcheck.NewCommand(&fakeChecker{err: nil})
+	var cmd = healthcheck.NewCommand(logger.NewNop(), nil)
 
 	assert.Equal(t, "healthcheck", cmd.Name)
-	assert.ElementsMatch(t, []string{"chk", "health", "check"}, cmd.Aliases)
-	assert.NotNil(t, cmd.Action)
+	assert.Equal(t, []string{"chk", "health", "check"}, cmd.Aliases)
 }
 
-func TestCommandRun(t *testing.T) {
-	cmd := healthcheck.NewCommand(&fakeChecker{err: nil})
-
-	assert.NoError(t, cmd.Run(cli.NewContext(cli.NewApp(), &flag.FlagSet{}, nil)))
+type fakeHealthChecker struct {
+	t           *testing.T
+	wantAddress string
+	giveErr     error
 }
 
-func TestCommandRunFailed(t *testing.T) {
-	cmd := healthcheck.NewCommand(&fakeChecker{err: errors.New("foo err")})
+func (m *fakeHealthChecker) Check(_ context.Context, addr string) error {
+	assert.Equal(m.t, m.wantAddress, addr)
 
-	assert.ErrorContains(t, cmd.Run(cli.NewContext(cli.NewApp(), &flag.FlagSet{}, nil)), "foo err")
+	return m.giveErr
 }
 
-func TestPortFlagWrongArgument(t *testing.T) {
-	cmd := healthcheck.NewCommand(&fakeChecker{err: nil})
+func TestCommand_RunSuccess(t *testing.T) {
+	var cmd = healthcheck.NewCommand(logger.NewNop(), &fakeHealthChecker{
+		t:           t,
+		wantAddress: "http://127.0.0.1:1234",
+	})
 
-	err := cmd.Run(
-		cli.NewContext(cli.NewApp(), &flag.FlagSet{}, nil),
-		"", "-p", "65536",
+	require.NoError(t, cmd.Run(context.Background(), []string{"", "--port", "1234"}))
+}
+
+func TestCommand_RunFail(t *testing.T) {
+	cmd := healthcheck.NewCommand(logger.NewNop(), &fakeHealthChecker{
+		t:           t,
+		wantAddress: "http://127.0.0.1:4321",
+		giveErr:     assert.AnError,
+	})
+
+	assert.ErrorIs(t,
+		cmd.Run(context.Background(), []string{"", "--port", "4321"}),
+		assert.AnError,
 	)
-
-	assert.ErrorContains(t, err, "port value out of range")
 }

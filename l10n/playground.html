@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>L10n playground</title>
+  <style>
+    :root {
+      --color-bg-primary: #fff;
+      --color-text-primary: #0e0620;
+      --color-ui-bg-primary: #0e0620;
+      --color-ui-bg-inverted: #fff;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --color-bg-primary: #212121;
+        --color-text-primary: #fafafa;
+        --color-ui-bg-primary: #fafafa;
+        --color-ui-bg-inverted: #212121;
+      }
+    }
+
+    html, body {
+      margin: 0 auto;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      max-width: 1200px;
+      min-width: 400px;
+      background-color: var(--color-bg-primary);
+      color: var(--color-text-primary);
+    }
+
+    #lang-switch {
+      list-style-type: none;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      flex-grow: 4;
+      gap: 1em;
+      padding: 2em 0;
+
+      button {
+        background-color: var(--color-bg-primary);
+        color: var(--color-text-primary);
+        border: 1px solid var(--color-text-primary);
+        padding: 0.5em 1em;
+        cursor: pointer;
+        font-size: 1.2em;
+        font-weight: bold;
+        border-radius: 1em 0 1em 0;
+        transition: background-color 0.3s, color 0.3s;
+
+        &:hover {
+          background-color: var(--color-ui-bg-primary);
+          color: var(--color-ui-bg-inverted);
+        }
+      }
+    }
+
+    #tokens-list {
+      list-style-type: none;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1em;
+      padding: 0 1em;
+
+      li {
+        padding: 0.5em 1em;
+        font-size: 1.2em;
+
+        &::first-letter {
+          font-weight: bold;
+        }
+      }
+    }
+  </style>
+</head>
+<body>
+<ul id="lang-switch"></ul>
+<ul id="tokens-list"></ul>
+<script type="module">
+  const $tokensList = document.getElementById('tokens-list');
+
+  [
+    'Error', 'Good luck', 'UH OH', 'Request details', 'Double-check the URL', 'Alternatively, go back', 'Host',
+    "Here's what might have happened", 'You may have mistyped the URL', 'The site was moved', 'It was never here',
+    'Bad Request', 'The server did not understand the request', 'Unauthorized', 'Method Not Allowed', 'Bad Gateway',
+    'The requested page needs a username and a password', 'Forbidden', 'Access is forbidden to the requested page',
+    'Not Found', 'The server can not find the requested page', 'The method specified in the request is not allowed',
+    'Proxy Authentication Required', 'You must authenticate with a proxy server before this request can be served',
+    'Request Timeout', 'The request took longer than the server was prepared to wait', 'Conflict', "I'm a teapot",
+    'The request could not be completed because of a conflict', 'Gone', 'The requested page is no longer available',
+    'Length Required', 'The "Content-Length" is not defined. The server will not accept the request without it',
+    'Precondition Failed', 'The pre condition given in the request evaluated to false by the server', 'Namespace',
+    'Payload Too Large', 'The server will not accept the request, because the request entity is too large',
+    'Requested Range Not Satisfiable', 'The requested byte range is not available and is out of bounds',
+    'Attempt to brew coffee with a teapot is not supported', 'Too Many Requests', 'Gateway Timeout', 'Service port',
+    'Too many requests in a given amount of time', 'Internal Server Error', 'The server met an unexpected condition',
+    'The server received an invalid response from the upstream server', 'Service Unavailable', 'Service name',
+    'The server is temporarily overloading or down', 'The gateway has timed out', 'HTTP Version Not Supported',
+    'The server does not support the "http protocol" version', 'Original URI', 'Forwarded for', 'Ingress name',
+    'Request ID', 'Timestamp', 'client-side error', 'server-side error', 'Your Client', 'Network', 'Web Server',
+    'What happened?', 'What can i do?', 'Please try again in a few minutes', 'Working', 'Unknown',
+    'Please try to change the request method, headers, payload, or URL', 'Please check your authorization data',
+    'Please double-check the URL and try again',
+  ].forEach((token) => {
+    const $li = document.createElement('li');
+
+    $li.textContent = token;
+    $li.setAttribute('data-l10n', '');
+    $li.title = token;
+
+    $tokensList.appendChild($li);
+  });
+
+  const $langSwitch = document.getElementById('lang-switch');
+
+  ['fr', 'ru', 'uk', 'pt', 'nl', 'de', 'es', 'zh', 'id', 'pl'].forEach((lang) => {
+    //                                                     ^^^ add your newly added locale here
+    const $li = document.createElement('li');
+    const $btn = document.createElement('button');
+
+    $btn.textContent = lang;
+    $btn.addEventListener('click', () => {
+      window.l10n.setLocale(lang);
+      window.l10n.localizeDocument();
+    });
+
+    $li.appendChild($btn);
+    $langSwitch.appendChild($li);
+  });
+</script>
+<script src="l10n.js" defer async></script>
+</body>
+</html>

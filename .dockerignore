@@ -4,6 +4,6 @@
 ## Except the following files and directories
 !/cmd
 !/internal
+!/l10n
 !/templates
-!/error-pages.yml
 !/go.*
