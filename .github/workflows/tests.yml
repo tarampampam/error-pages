@@ -83,7 +83,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - {uses: gacts/github-slug@v1, id: slug}
-      - uses: docker/build-push-action@v5
+      - uses: docker/build-push-action@v6
         with:
           context: .
           file: Dockerfile
