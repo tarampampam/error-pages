@@ -38,7 +38,7 @@ func TestRouting(t *testing.T) {
 		Service Name: {{ service_name }}
 		Service Port: {{ service_port }}
 		Request ID: {{ request_id }}
-		Timestamp: {{ now.Unix }}
+		Timestamp: {{ nowUnix }}
 	</pre>{{ end }}
 </html>`))
 

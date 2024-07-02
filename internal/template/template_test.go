@@ -27,7 +27,7 @@ func TestRender_BuiltInFunction(t *testing.T) {
 		wantErrMsg   string
 	}{
 		"now (unix)": {
-			giveTemplate: `{{ now.Unix }}`,
+			giveTemplate: `{{ nowUnix }}`,
 			wantResult:   strconv.Itoa(int(time.Now().Unix())),
 		},
 		"hostname":                  {giveTemplate: `{{ hostname }}`, wantResult: hostname},

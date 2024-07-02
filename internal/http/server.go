@@ -23,8 +23,9 @@ import (
 
 // Server is an HTTP server for serving error pages.
 type Server struct {
-	log    *logger.Logger
-	server *fasthttp.Server
+	log        *logger.Logger
+	server     *fasthttp.Server
+	beforeStop func()
 }
 
 // NewServer creates a new HTTP server.
@@ -45,20 +46,25 @@ func NewServer(log *logger.Logger, readBufferSize uint) Server {
 			CloseOnShutdown:              true,
 			Logger:                       logger.NewStdLog(log),
 		},
+		beforeStop: func() {}, // noop
 	}
 }
 
 // Register server handlers, middlewares, etc.
 func (s *Server) Register(cfg *config.Config) error {
 	var (
-		liveHandler       = live.New()
-		versionHandler    = version.New(appmeta.Version())
-		errorPagesHandler = ep.New(cfg, s.log)
-		faviconHandler    = static.New(static.Favicon)
+		liveHandler    = live.New()
+		versionHandler = version.New(appmeta.Version())
+		faviconHandler = static.New(static.Favicon)
+
+		errorPagesHandler, closeCache = ep.New(cfg, s.log)
 
 		notFound   = http.StatusText(http.StatusNotFound) + "\n"
 		notAllowed = http.StatusText(http.StatusMethodNotAllowed) + "\n"
 	)
+
+	// wrap the before shutdown function to close the cache
+	s.beforeStop = closeCache
 
 	s.server.Handler = func(ctx *fasthttp.RequestCtx) {
 		var url, method = string(ctx.Path()), string(ctx.Method())
@@ -133,6 +139,8 @@ func (s *Server) Start(ip string, port uint16) (err error) {
 func (s *Server) Stop(timeout time.Duration) error {
 	var ctx, cancel = context.WithTimeout(context.Background(), timeout)
 	defer cancel()
+
+	s.beforeStop()
 
 	return s.server.ShutdownWithContext(ctx)
 }

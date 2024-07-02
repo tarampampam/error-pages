@@ -16,10 +16,9 @@ import (
 )
 
 var builtInFunctions = template.FuncMap{ //nolint:gochecknoglobals
-	// current time:
-	//	`{{ now.Unix }}`	// `1631610000`
-	//	`{{ now.Hour }}:{{ now.Minute }}:{{ now.Second }}`	// `15:4:5`
-	"now": time.Now,
+	// the current time in unix format (seconds since 1970 UTC):
+	//	`{{ nowUnix }}`	// `1631610000`
+	"nowUnix": func() int64 { return time.Now().Unix() },
 
 	// current hostname:
 	//	`{{ hostname }}`	// `localhost`

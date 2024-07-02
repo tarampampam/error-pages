@@ -159,7 +159,8 @@ func TestHandler(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			t.Parallel()
 
-			var handler = error_page.New(tt.giveConfig(), logger.NewNop())
+			var handler, closeCache = error_page.New(tt.giveConfig(), logger.NewNop())
+			defer closeCache()
 
 			req, reqErr := http.NewRequest(http.MethodGet, tt.giveUrl, http.NoBody)
 			require.NoError(t, reqErr)
@@ -202,8 +203,10 @@ func TestRotationModeOnEachRequest(t *testing.T) {
 		lastResponseBody string
 		changedTimes     int
 
-		handler = error_page.New(&cfg, logger.NewNop())
+		handler, closeCache = error_page.New(&cfg, logger.NewNop())
 	)
+
+	defer func() { closeCache(); closeCache(); closeCache() }() // multiple calls should not panic
 
 	for range 300 {
 		req, reqErr := http.NewRequest(http.MethodGet, "http://testing/", http.NoBody)

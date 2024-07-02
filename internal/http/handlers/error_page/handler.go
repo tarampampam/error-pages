@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"sync"
 	"sync/atomic"
 	"time"
 
@@ -15,7 +16,32 @@ import (
 )
 
 // New creates a new handler that returns an error page with the specified status code and format.
-func New(cfg *config.Config, log *logger.Logger) fasthttp.RequestHandler { //nolint:funlen,gocognit,gocyclo
+func New(cfg *config.Config, log *logger.Logger) (_ fasthttp.RequestHandler, closeCache func()) { //nolint:funlen,gocognit,gocyclo,lll
+	// if the ttl will be bigger than 1 second, the template functions like `nowUnix` will not work as expected
+	const cacheTtl = 900 * time.Millisecond // the cache TTL
+
+	var (
+		cache, stopCh = NewRenderedCache(cacheTtl), make(chan struct{})
+		stopOnce      sync.Once
+	)
+
+	// run a goroutine that will clear the cache from expired items. to stop the goroutine - close the stop channel
+	// or call the closeCache
+	go func() {
+		var timer = time.NewTimer(cacheTtl)
+		defer func() { timer.Stop(); cache.Clear() }()
+
+		for {
+			select {
+			case <-timer.C:
+				cache.ClearExpired()
+				timer.Reset(cacheTtl)
+			case <-stopCh:
+				return
+			}
+		}
+	}()
+
 	return func(ctx *fasthttp.RequestCtx) {
 		var (
 			reqHeaders = &ctx.Request.Header
@@ -106,57 +132,82 @@ func New(cfg *config.Config, log *logger.Logger) fasthttp.RequestHandler { //nol
 
 		switch {
 		case format == jsonFormat && cfg.Formats.JSON != "":
-			if content, err := template.Render(cfg.Formats.JSON, tplProps); err != nil {
-				j, _ := json.Marshal(fmt.Sprintf("Failed to render the JSON template: %s", err.Error()))
-				write(ctx, log, j)
-			} else {
-				write(ctx, log, content)
+			if cached, ok := cache.Get(cfg.Formats.JSON, tplProps); ok { // cache hit
+				write(ctx, log, cached)
+			} else { // cache miss
+				if content, err := template.Render(cfg.Formats.JSON, tplProps); err != nil {
+					errAsJson, _ := json.Marshal(fmt.Sprintf("Failed to render the JSON template: %s", err.Error()))
+					write(ctx, log, errAsJson) // error during rendering
+				} else {
+					cache.Put(cfg.Formats.JSON, tplProps, []byte(content))
+
+					write(ctx, log, content) // rendered successfully
+				}
 			}
 
 		case format == xmlFormat && cfg.Formats.XML != "":
-			if content, err := template.Render(cfg.Formats.XML, tplProps); err != nil {
-				write(ctx, log, fmt.Sprintf(
-					"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<error>Failed to render the XML template: %s</error>", err.Error(),
-				))
-			} else {
-				write(ctx, log, content)
+			if cached, ok := cache.Get(cfg.Formats.XML, tplProps); ok { // cache hit
+				write(ctx, log, cached)
+			} else { // cache miss
+				if content, err := template.Render(cfg.Formats.XML, tplProps); err != nil {
+					write(ctx, log, fmt.Sprintf(
+						"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<error>Failed to render the XML template: %s</error>\n", err.Error(),
+					))
+				} else {
+					cache.Put(cfg.Formats.XML, tplProps, []byte(content))
+
+					write(ctx, log, content)
+				}
 			}
 
 		case format == htmlFormat:
 			var templateName = templateToUse(cfg)
 
-			if tpl, found := cfg.Templates.Get(templateName); found {
-				if content, err := template.Render(tpl, tplProps); err != nil {
-					// TODO: add GZIP compression for the HTML content support
-					write(ctx, log, fmt.Sprintf(
-						"<!DOCTYPE html>\n<html><body>Failed to render the HTML template %s: %s</body></html>",
-						templateName,
-						err.Error(),
-					))
-				} else {
-					write(ctx, log, content)
+			if tpl, found := cfg.Templates.Get(templateName); found { //nolint:nestif
+				if cached, ok := cache.Get(tpl, tplProps); ok { // cache hit
+					write(ctx, log, cached)
+				} else { // cache miss
+					if content, err := template.Render(tpl, tplProps); err != nil {
+						// TODO: add GZIP compression for the HTML content support
+						write(ctx, log, fmt.Sprintf(
+							"<!DOCTYPE html>\n<html><body>Failed to render the HTML template %s: %s</body></html>\n",
+							templateName,
+							err.Error(),
+						))
+					} else {
+						cache.Put(tpl, tplProps, []byte(content))
+
+						write(ctx, log, content)
+					}
 				}
 			} else {
 				write(ctx, log, fmt.Sprintf(
-					"<!DOCTYPE html>\n<html><body>Template %s not found and cannot be used</body></html>", templateName,
+					"<!DOCTYPE html>\n<html><body>Template %s not found and cannot be used</body></html>\n", templateName,
 				))
 			}
 
 		default: // plainTextFormat as default
-			if cfg.Formats.PlainText != "" {
-				if content, err := template.Render(cfg.Formats.PlainText, tplProps); err != nil {
-					write(ctx, log, fmt.Sprintf("Failed to render the PlainText template: %s", err.Error()))
-				} else {
-					write(ctx, log, content)
+			if cfg.Formats.PlainText != "" { //nolint:nestif
+				if cached, ok := cache.Get(cfg.Formats.PlainText, tplProps); ok { // cache hit
+					write(ctx, log, cached)
+				} else { // cache miss
+					if content, err := template.Render(cfg.Formats.PlainText, tplProps); err != nil {
+						write(ctx, log, fmt.Sprintf("Failed to render the PlainText template: %s", err.Error()))
+					} else {
+						cache.Put(cfg.Formats.PlainText, tplProps, []byte(content))
+
+						write(ctx, log, content)
+					}
 				}
 			} else {
 				write(ctx, log, `The requested content format is not supported.
 Please create an issue on the project's GitHub page to request support for this format.
 
-Supported formats: JSON, XML, HTML, Plain Text`)
+Supported formats: JSON, XML, HTML, Plain Text
+`)
 			}
 		}
-	}
+	}, func() { stopOnce.Do(func() { close(stopCh) }) }
 }
 
 var (

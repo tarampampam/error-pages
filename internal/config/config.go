@@ -72,7 +72,7 @@ const defaultJSONFormat string = `{
     "service_name": {{ service_name | json }},
     "service_port": {{ service_port | json }},
     "request_id": {{ request_id | json }},
-    "timestamp": {{ now.Unix }}
+    "timestamp": {{ nowUnix }}
   }{{ end }}
 }
 ` // an empty line at the end is important for better UX
@@ -91,7 +91,7 @@ const defaultXMLFormat string = `<?xml version="1.0" encoding="utf-8"?>
     <serviceName>{{ service_name }}</serviceName>
     <servicePort>{{ service_port }}</servicePort>
     <requestID>{{ request_id }}</requestID>
-    <timestamp>{{ now.Unix }}</timestamp>
+    <timestamp>{{ nowUnix }}</timestamp>
   </details>{{ end }}
 </error>
 ` // an empty line at the end is important for better UX
@@ -107,7 +107,7 @@ Ingress Name: {{ ingress_name }}
 Service Name: {{ service_name }}
 Service Port: {{ service_port }}
 Request ID: {{ request_id }}
-Timestamp: {{ now.Unix }}{{ end }}
+Timestamp: {{ nowUnix }}{{ end }}
 ` // an empty line at the end is important for better UX
 
 //nolint:lll
