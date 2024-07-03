@@ -15,15 +15,16 @@ One day, you might want to replace the standard error pages of your HTTP server 
 original and attractive. That's why this repository was created :) It contains:
 
 - A simple error page generator written in Go
-- Single-page error templates (themes) with various designs (located in the [templates](templates) directory) that
+- Single-page error templates (themes) with various designs (located in the [templates][templates-dir] directory) that
   you can customize as you wish
 - A fast and lightweight HTTP server is available as a single binary file and Docker image. It includes built-in error
   page templates from this repository. You don't need anything except the compiled binary file or Docker image
-- Pre-generated error pages (sources can be [found here][preview-sources], and the **demo** is always
-  accessible [here][preview-demo])
+- Pre-generated error pages (sources can be [found here][preview-sources], and the [**demo** is always
+  accessible here][preview-demo])
 
 [preview-sources]:https://github.com/tarampampam/error-pages/tree/gh-pages
 [preview-demo]:https://tarampampam.github.io/error-pages/
+[templates-dir]:https://github.com/tarampampam/error-pages/tree/master/templates
 
 ## 🔥 Features List
 
@@ -40,10 +41,11 @@ original and attractive. That's why this repository was created :) It contains:
 - Fully configurable
 - Distributed as a Docker image and compiled binary files
 - Localized HTML error pages (🇺🇸, 🇫🇷, 🇺🇦, 🇷🇺, 🇵🇹, 🇳🇱, 🇩🇪, 🇪🇸, 🇨🇳, 🇮🇩, 🇵🇱) - translation process
-  [described here](l10n) - other translations are welcome!
+  [described here][l10n-dir] - other translations are welcome!
 
 [fasthttp]:https://github.com/valyala/fasthttp
 [traefik]:https://github.com/traefik/traefik
+[l10n-dir]:https://github.com/tarampampam/error-pages/tree/master/l10n
 
 ## 🧩 Install
 
