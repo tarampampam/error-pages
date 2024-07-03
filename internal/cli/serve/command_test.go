@@ -36,7 +36,7 @@ func TestCommand_Run(t *testing.T) {
 			"--add-template", "./testdata/foo-template.html",
 			"--disable-template", "ghost",
 			"--disable-template", "<unknown>",
-			"--add-http-code", "200=Code/Description",
+			"--add-code", "200=Code/Description",
 			"--json-format", "json format",
 			"--xml-format", "xml format",
 			"--plaintext-format", "plaintext format",

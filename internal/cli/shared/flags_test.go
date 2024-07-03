@@ -122,7 +122,7 @@ func TestAddHTTPCodesFlag(t *testing.T) {
 
 	var flag = shared.AddHTTPCodesFlag
 
-	assert.Equal(t, "add-http-code", flag.Name)
+	assert.Equal(t, "add-code", flag.Name)
 
 	for name, tt := range map[string]struct {
 		giveValue  map[string]string
