@@ -130,7 +130,7 @@ And simply start the server with the following command:
 ```bash
 docker run --rm \
   -v "$(pwd)/my-super-theme.html:/opt/my-template.html:ro" \
-  -p '8080:8080/tcp' ghcr.io/tarampampam/error-pages:3.0.0-beta-1 \
+  -p '8080:8080/tcp' ghcr.io/tarampampam/error-pages:3 \
     serve --add-template /opt/my-template.html --template-name my-template
 ```
 
