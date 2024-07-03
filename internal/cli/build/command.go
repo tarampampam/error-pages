@@ -44,16 +44,18 @@ func NewCommand(log *logger.Logger) *cli.Command { //nolint:funlen,gocognit
 		addCodeFlag     = shared.AddHTTPCodesFlag
 		disableL10nFlag = shared.DisableL10nFlag
 		createIndexFlag = cli.BoolFlag{
-			Name:    "index",
-			Aliases: []string{"i"},
-			Usage:   "generate index.html file with links to all error pages",
+			Name:     "index",
+			Aliases:  []string{"i"},
+			Usage:    "Generate index.html file with links to all error pages",
+			Category: shared.CategoryBuild,
 		}
 		targetDirFlag = cli.StringFlag{
 			Name:     "target-dir",
 			Aliases:  []string{"out", "dir", "o"},
-			Usage:    "directory to put the built error pages into",
+			Usage:    "Directory to put the built error pages into",
 			Value:    ".", // current directory by default
 			Config:   cli.StringConfig{TrimSpace: true},
+			Category: shared.CategoryBuild,
 			OnlyOnce: true,
 			Validator: func(dir string) error {
 				if dir == "" {

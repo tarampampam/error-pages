@@ -11,6 +11,15 @@ import (
 	"gh.tarampamp.am/error-pages/internal/config"
 )
 
+const (
+	CategoryHTTP      = "HTTP:"
+	CategoryTemplates = "TEMPLATES:"
+	CategoryCodes     = "HTTP CODES:"
+	CategoryFormats   = "FORMATS:"
+	CategoryBuild     = "BUILD:"
+	CategoryOther     = "OTHER:"
+)
+
 // Note: Don't use pointers for flags, because they have own state which is not thread-safe.
 // https://github.com/urfave/cli/issues/1926
 
@@ -20,6 +29,7 @@ var ListenAddrFlag = cli.StringFlag{
 	Usage:    "IP (v4 or v6) address to listen on",
 	Value:    "0.0.0.0", // bind to all interfaces by default
 	Sources:  cli.EnvVars("LISTEN_ADDR"),
+	Category: CategoryHTTP,
 	OnlyOnce: true,
 	Config:   cli.StringConfig{TrimSpace: true},
 	Validator: func(ip string) error {
@@ -41,6 +51,7 @@ var ListenPortFlag = cli.UintFlag{
 	Usage:    "TCP port number",
 	Value:    8080, // default port number
 	Sources:  cli.EnvVars("LISTEN_PORT"),
+	Category: CategoryHTTP,
 	OnlyOnce: true,
 	Validator: func(port uint64) error {
 		if port == 0 || port > 65535 {
@@ -53,9 +64,10 @@ var ListenPortFlag = cli.UintFlag{
 
 var AddTemplatesFlag = cli.StringSliceFlag{
 	Name: "add-template",
-	Usage: "to add a new template, provide the path to the file using this flag (the filename without the extension " +
+	Usage: "To add a new template, provide the path to the file using this flag (the filename without the extension " +
 		"will be used as the template name)",
-	Config: cli.StringConfig{TrimSpace: true},
+	Config:   cli.StringConfig{TrimSpace: true},
+	Category: CategoryTemplates,
 	Validator: func(paths []string) error {
 		for _, path := range paths {
 			if path == "" {
@@ -72,18 +84,19 @@ var AddTemplatesFlag = cli.StringSliceFlag{
 }
 
 var DisableTemplateNamesFlag = cli.StringSliceFlag{
-	Name:   "disable-template",
-	Usage:  "disable the specified template by its name (useful to disable the built-in templates and use only custom ones)",
-	Config: cli.StringConfig{TrimSpace: true},
+	Name:     "disable-template",
+	Usage:    "Disable the specified template by its name (useful to disable the built-in templates and use only custom ones)",
+	Config:   cli.StringConfig{TrimSpace: true},
+	Category: CategoryTemplates,
 }
 
 var AddHTTPCodesFlag = cli.StringMapFlag{
-	Name:    "add-http-code",
-	Aliases: []string{"add-code"},
-	Usage: "to add a new HTTP status code, provide the code and its message/description using this flag (the format " +
+	Name: "add-code",
+	Usage: "To add a new HTTP status code, provide the code and its message/description using this flag (the format " +
 		"should be '%code%=%message%/%description%'; the code may contain a wildcard '*' to cover multiple codes at " +
 		"once, for example, '4**' will cover all 4xx codes unless a more specific code is described previously)",
-	Config: cli.StringConfig{TrimSpace: true},
+	Config:   cli.StringConfig{TrimSpace: true},
+	Category: CategoryCodes,
 	Validator: func(codes map[string]string) error {
 		for code, msgAndDesc := range codes {
 			if code == "" {
@@ -128,7 +141,8 @@ func ParseHTTPCodes(codes map[string]string) map[string]config.CodeDescription {
 
 var DisableL10nFlag = cli.BoolFlag{
 	Name:     "disable-l10n",
-	Usage:    "disable localization of error pages (if the template supports localization)",
+	Usage:    "Disable localization of error pages (if the template supports localization)",
 	Sources:  cli.EnvVars("DISABLE_L10N"),
+	Category: CategoryOther,
 	OnlyOnce: true,
 }

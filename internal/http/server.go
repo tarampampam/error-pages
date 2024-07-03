@@ -71,7 +71,7 @@ func (s *Server) Register(cfg *config.Config) error {
 
 		switch {
 		// live endpoints
-		case url == "/health/live" || url == "/health" || url == "/healthz" || url == "/live":
+		case url == "/healthz" || url == "/health/live" || url == "/health" || url == "/live":
 			liveHandler(ctx)
 
 		// version endpoint

@@ -46,25 +46,28 @@ func NewCommand(log *logger.Logger) *cli.Command { //nolint:funlen,gocognit,gocy
 		disableL10nFlag = shared.DisableL10nFlag
 		jsonFormatFlag  = cli.StringFlag{
 			Name: "json-format",
-			Usage: "override the default error page response in JSON format (Go templates are supported; the error " +
+			Usage: "Override the default error page response in JSON format (Go templates are supported; the error " +
 				"page will use this template if the client requests JSON content type)",
 			Sources:  env("RESPONSE_JSON_FORMAT"),
+			Category: shared.CategoryFormats,
 			OnlyOnce: true,
 			Config:   trim,
 		}
 		xmlFormatFlag = cli.StringFlag{
 			Name: "xml-format",
-			Usage: "override the default error page response in XML format (Go templates are supported; the error " +
+			Usage: "Override the default error page response in XML format (Go templates are supported; the error " +
 				"page will use this template if the client requests XML content type)",
 			Sources:  env("RESPONSE_XML_FORMAT"),
+			Category: shared.CategoryFormats,
 			OnlyOnce: true,
 			Config:   trim,
 		}
 		plainTextFormatFlag = cli.StringFlag{
 			Name: "plaintext-format",
-			Usage: "override the default error page response in plain text format (Go templates are supported; the " +
+			Usage: "Override the default error page response in plain text format (Go templates are supported; the " +
 				"error page will use this template if the client requests plain text content type or does not specify any)",
 			Sources:  env("RESPONSE_PLAINTEXT_FORMAT"),
+			Category: shared.CategoryFormats,
 			OnlyOnce: true,
 			Config:   trim,
 		}
@@ -72,17 +75,19 @@ func NewCommand(log *logger.Logger) *cli.Command { //nolint:funlen,gocognit,gocy
 			Name:    "template-name",
 			Aliases: []string{"t"},
 			Value:   cfg.TemplateName,
-			Usage: "name of the template to use for rendering error pages (built-in templates: " +
+			Usage: "Name of the template to use for rendering error pages (built-in templates: " +
 				strings.Join(cfg.Templates.Names(), ", ") + ")",
 			Sources:  env("TEMPLATE_NAME"),
+			Category: shared.CategoryTemplates,
 			OnlyOnce: true,
 			Config:   trim,
 		}
 		defaultCodeToRenderFlag = cli.UintFlag{
-			Name:    "default-error-page",
-			Usage:   "the code of the default (index page, when a code is not specified) error page to render",
-			Value:   uint64(cfg.DefaultCodeToRender),
-			Sources: env("DEFAULT_ERROR_PAGE"),
+			Name:     "default-error-page",
+			Usage:    "The code of the default (index page, when a code is not specified) error page to render",
+			Value:    uint64(cfg.DefaultCodeToRender),
+			Sources:  env("DEFAULT_ERROR_PAGE"),
+			Category: shared.CategoryCodes,
 			Validator: func(code uint64) error {
 				if code > 999 { //nolint:mnd
 					return fmt.Errorf("wrong HTTP code [%d] for the default error page", code)
@@ -94,17 +99,19 @@ func NewCommand(log *logger.Logger) *cli.Command { //nolint:funlen,gocognit,gocy
 		}
 		sendSameHTTPCodeFlag = cli.BoolFlag{
 			Name: "send-same-http-code",
-			Usage: "the HTTP response should have the same status code as the requested error page (by default, " +
+			Usage: "The HTTP response should have the same status code as the requested error page (by default, " +
 				"every response with an error page will have a status code of 200)",
 			Value:    cfg.RespondWithSameHTTPCode,
 			Sources:  env("SEND_SAME_HTTP_CODE"),
+			Category: shared.CategoryOther,
 			OnlyOnce: true,
 		}
 		showDetailsFlag = cli.BoolFlag{
 			Name:     "show-details",
-			Usage:    "show request details in the error page response (if supported by the template)",
+			Usage:    "Show request details in the error page response (if supported by the template)",
 			Value:    cfg.ShowDetails,
 			Sources:  env("SHOW_DETAILS"),
+			Category: shared.CategoryOther,
 			OnlyOnce: true,
 		}
 		proxyHeadersListFlag = cli.StringFlag{
@@ -122,14 +129,16 @@ func NewCommand(log *logger.Logger) *cli.Command { //nolint:funlen,gocognit,gocy
 
 				return nil
 			},
+			Category: shared.CategoryOther,
 			OnlyOnce: true,
 			Config:   trim,
 		}
 		rotationModeFlag = cli.StringFlag{
 			Name:     "rotation-mode",
 			Value:    config.RotationModeDisabled.String(),
-			Usage:    "templates automatic rotation mode (" + strings.Join(config.RotationModeStrings(), "/") + ")",
+			Usage:    "Templates automatic rotation mode (" + strings.Join(config.RotationModeStrings(), "/") + ")",
 			Sources:  env("TEMPLATES_ROTATION_MODE"),
+			Category: shared.CategoryTemplates,
 			OnlyOnce: true,
 			Config:   trim,
 			Validator: func(s string) error {
@@ -142,26 +151,27 @@ func NewCommand(log *logger.Logger) *cli.Command { //nolint:funlen,gocognit,gocy
 		}
 		readBufferSizeFlag = cli.UintFlag{
 			Name: "read-buffer-size",
-			Usage: "per-connection buffer size in bytes for reading requests, this also limits the maximum header size " +
+			Usage: "Per-connection buffer size in bytes for reading requests, this also limits the maximum header size " +
 				"(increase this buffer if your clients send multi-KB Request URIs and/or multi-KB headers (e.g., " +
 				"large cookies), note that increasing this value will increase memory consumption)",
 			Value:    1024 * 5, //nolint:mnd // 5 KB
 			Sources:  env("READ_BUFFER_SIZE"),
+			Category: shared.CategoryOther,
 			OnlyOnce: true,
 		}
 	)
 
 	// override some flag usage messages
-	addrFlag.Usage = "the HTTP server will listen on this IP (v4 or v6) address (set 127.0.0.1 for localhost, " +
+	addrFlag.Usage = "The HTTP server will listen on this IP (v4 or v6) address (set 127.0.0.1/::1 for localhost, " +
 		"0.0.0.0 to listen on all interfaces, or specify a custom IP)"
-	portFlag.Usage = "the TCP port number for the HTTP server to listen on (0-65535)"
+	portFlag.Usage = "The TCP port number for the HTTP server to listen on (0-65535)"
 
 	disableL10nFlag.Value = cfg.L10n.Disable // set the default value depending on the configuration
 
 	cmd.c = &cli.Command{
 		Name:    "serve",
 		Aliases: []string{"s", "server", "http"},
-		Usage:   "Start HTTP server",
+		Usage:   "Please start the HTTP server to serve the error pages. You can configure various options - please RTFM :D",
 		Suggest: true,
 		Action: func(ctx context.Context, c *cli.Command) error {
 			cmd.opt.http.addr = c.String(addrFlag.Name)

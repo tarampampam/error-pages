@@ -1,32 +1,59 @@
 package perftest
 
 import (
+	"bytes"
 	"context"
 	"errors"
 	"fmt"
 	"io"
-	"math/rand"
-	"net/http"
+	"math"
+	"os"
+	"os/exec"
 	"runtime"
-	"sync"
-	"sync/atomic"
+	"strconv"
 	"time"
 
 	"github.com/urfave/cli/v3"
 
 	"gh.tarampamp.am/error-pages/internal/cli/shared"
-	"gh.tarampamp.am/error-pages/internal/logger"
 )
 
+const wrkOneCodeTestLua = `
+local formats = { 'application/json', 'application/xml', 'text/html', 'text/plain' }
+
+request = function()
+		wrk.headers["User-Agent"] = "wrk"
+    wrk.headers["X-Namespace"] = "NAMESPACE_" .. tostring(math.random(0, 99999999))
+    wrk.headers["X-Request-ID"] = "REQ_ID_" .. tostring(math.random(0, 99999999))
+    wrk.headers["Content-Type"] = formats[ math.random( 0, #formats - 1 ) ]
+
+    return wrk.format("GET", "/500.html?rnd=" .. tostring(math.random(0, 99999999)), nil, nil)
+end
+`
+
+//nolint:lll
+const bombDifferentCodes = `
+local formats = { 'application/json', 'application/xml', 'text/html', 'text/plain' }
+
+request = function()
+		wrk.headers["User-Agent"] = "wrk"
+    wrk.headers["X-Namespace"] = "NAMESPACE_" .. tostring(math.random(0, 99999999))
+    wrk.headers["X-Request-ID"] = "REQ_ID_" .. tostring(math.random(0, 99999999))
+    wrk.headers["Content-Type"] = formats[ math.random( 0, #formats - 1 ) ]
+
+    return wrk.format("GET", "/" .. tostring(math.random(400, 599)) .. ".html?rnd=" .. tostring(math.random(0, 99999999)), nil, nil)
+end
+`
+
 // NewCommand creates `perftest` command.
-func NewCommand(log *logger.Logger) *cli.Command { //nolint:funlen,gocognit
+func NewCommand() *cli.Command { //nolint:funlen
 	var (
 		portFlag     = shared.ListenPortFlag
 		durationFlag = cli.DurationFlag{
 			Name:    "duration",
 			Aliases: []string{"d"},
-			Usage:   "duration of the test",
-			Value:   10 * time.Second, //nolint:mnd
+			Usage:   "Duration of test",
+			Value:   15 * time.Second, //nolint:mnd
 			Validator: func(d time.Duration) error {
 				if d <= time.Second {
 					return errors.New("duration can't be less than 1 second")
@@ -38,11 +65,28 @@ func NewCommand(log *logger.Logger) *cli.Command { //nolint:funlen,gocognit
 		threadsFlag = cli.UintFlag{
 			Name:    "threads",
 			Aliases: []string{"t"},
-			Usage:   "number of threads",
-			Value:   max(2, uint64(runtime.NumCPU()/2)), //nolint:mnd
+			Usage:   "Number of threads to use",
+			Value:   max(2, uint64(math.Round(float64(runtime.NumCPU())/1.3))), //nolint:mnd
 			Validator: func(u uint64) error {
 				if u == 0 {
 					return errors.New("threads number can't be zero")
+				} else if u > math.MaxUint16 {
+					return errors.New("threads number can't be greater than 65535")
+				}
+
+				return nil
+			},
+		}
+		connectionsFlag = cli.UintFlag{
+			Name:    "connections",
+			Aliases: []string{"c"},
+			Usage:   "Number of connections to keep open",
+			Value:   max(16, uint64(runtime.NumCPU()*25)), //nolint:mnd
+			Validator: func(u uint64) error {
+				if u == 0 {
+					return errors.New("threads number can't be zero")
+				} else if u > math.MaxUint16 {
+					return errors.New("threads number can't be greater than 65535")
 				}
 
 				return nil
@@ -52,97 +96,47 @@ func NewCommand(log *logger.Logger) *cli.Command { //nolint:funlen,gocognit
 
 	return &cli.Command{
 		Name:    "perftest",
-		Aliases: []string{"perf", "test"},
+		Aliases: []string{"perf", "benchmark", "bench"},
 		Hidden:  true,
-		Usage:   "Simple performance (load) test for the HTTP server",
-		Action: func(ctx context.Context, c *cli.Command) error { // TODO: use fasthttp.Client
-			var (
-				perfCtx, cancel = context.WithTimeout(ctx, c.Duration(durationFlag.Name))
-				startedAt       = time.Now()
-
-				wg      sync.WaitGroup
-				success atomic.Uint64
-				failed  atomic.Uint64
-			)
-
-			defer func() {
-				cancel()
-
-				log.Info("Summary",
-					logger.Uint64("success", success.Load()),
-					logger.Uint64("failed", failed.Load()),
-					logger.Duration("duration", time.Since(startedAt)),
-					logger.Float64("RPS", float64(success.Load()+failed.Load())/time.Since(startedAt).Seconds()),
-					logger.Float64("errors rate", float64(failed.Load())/float64(success.Load()+failed.Load())*100), //nolint:mnd
-				)
-			}()
-
-			log.Info("Running test",
-				logger.Uint64("threads", c.Uint(threadsFlag.Name)),
-				logger.Duration("duration", c.Duration(durationFlag.Name)),
-			)
-
-			var httpClient = &http.Client{
-				Transport: &http.Transport{MaxConnsPerHost: max(2, int(c.Uint(threadsFlag.Name))-1)}, //nolint:mnd
-				Timeout:   c.Duration(durationFlag.Name) + time.Second,
+		Usage:   "Performance (load) test for the HTTP server (locally installed wrk is required)",
+		Action: func(ctx context.Context, c *cli.Command) error {
+			var wrkBinPath, lErr = exec.LookPath("wrk")
+			if lErr != nil {
+				return fmt.Errorf("seems like wrk (https://github.com/wg/wrk) is not installed: %w", lErr)
 			}
 
-			for i := uint64(0); i < c.Uint(threadsFlag.Name); i++ {
-				wg.Add(1)
+			var runTest = func(scriptContent string) error {
+				if stdOut, stdErr, err := wrkRunTest(ctx,
+					wrkBinPath,
+					uint16(c.Uint(threadsFlag.Name)),
+					uint16(c.Uint(connectionsFlag.Name)),
+					c.Duration(durationFlag.Name),
+					uint16(c.Uint(portFlag.Name)),
+					scriptContent,
+				); err != nil {
+					var errData, _ = io.ReadAll(stdErr)
 
-				go func(log *logger.Logger) {
-					defer wg.Done()
+					return fmt.Errorf("failed to execute the test: %w (%s)", err, string(errData))
+				} else {
+					var outData, _ = io.ReadAll(stdOut)
 
-					if perfCtx.Err() != nil {
-						return
-					}
+					printf("Test completed successfully. Here is the output:\n\n%s\n", string(outData))
+				}
 
-					var req, rErr = makeRequest(perfCtx, uint16(c.Uint(portFlag.Name)))
-					if rErr != nil {
-						log.Error("Failed to create a new request", logger.Error(rErr))
-
-						return
-					}
-
-					for {
-						var sentAt = time.Now()
-
-						var resp, respErr = httpClient.Do(req)
-						if resp != nil {
-							if _, err := io.Copy(io.Discard, resp.Body); err != nil && !errIsDone(err) {
-								log.Error("Failed to read response body", logger.Error(err))
-							}
-
-							if err := resp.Body.Close(); err != nil && !errIsDone(err) {
-								log.Error("Failed to close response body", logger.Error(err))
-							}
-						}
-
-						if respErr != nil {
-							if errIsDone(respErr) {
-								return
-							}
-
-							log.Error("Request failed", logger.Error(respErr))
-							failed.Add(1)
-
-							continue
-						}
-
-						log.Debug("Response received",
-							logger.String("status", resp.Status),
-							logger.Duration("duration", time.Since(sentAt)),
-							logger.Int64("size", resp.ContentLength),
-							logger.Uint64("success", success.Load()),
-							logger.Uint64("failed", failed.Load()),
-						)
-
-						success.Add(1)
-					}
-				}(log.Named(fmt.Sprintf("thread-%d", i)))
+				return nil
 			}
 
-			wg.Wait()
+			printf("Starting the test to bomb ONE PAGE (code). Please, be patient...\n")
+
+			if err := runTest(wrkOneCodeTestLua); err != nil {
+				return err
+			}
+
+			printf("Starting the test to bomb DIFFERENT PAGES (codes). Please, be patient...\n")
+
+			if err := runTest(bombDifferentCodes); err != nil {
+				return err
+			}
 
 			return nil
 		},
@@ -150,54 +144,51 @@ func NewCommand(log *logger.Logger) *cli.Command { //nolint:funlen,gocognit
 			&portFlag,
 			&durationFlag,
 			&threadsFlag,
+			&connectionsFlag,
 		},
 	}
 }
 
-// randomIntBetween returns a random integer between min and max.
-func randomIntBetween(min, max int) int { return min + rand.Intn(max-min) } //nolint:gosec
+func printf(format string, args ...any) { fmt.Printf(format, args...) } //nolint:forbidigo
 
-// makeRequest creates a new HTTP request for the performance test.
-func makeRequest(ctx context.Context, port uint16) (*http.Request, error) {
-	var req, rErr = http.NewRequestWithContext(ctx,
-		http.MethodGet,
-		fmt.Sprintf(
-			"http://127.0.0.1:%d/%d.html?rnd=%d", // for load testing purposes only
-			port,
-			randomIntBetween(400, 418),       //nolint:mnd
-			randomIntBetween(1, 999_999_999), //nolint:mnd
-		),
-		http.NoBody,
+func wrkRunTest(
+	ctx context.Context,
+	wrkBinPath string,
+	threadsCount, connectionsCount uint16,
+	duration time.Duration,
+	port uint16,
+	scriptContent string,
+) (io.Reader, io.Reader, error) {
+	var tmpFile, tErr = os.CreateTemp("", "ep-perf-one-page")
+	if tErr != nil {
+		return nil, nil, fmt.Errorf("failed to create a temporary file: %w", tErr)
+	}
+
+	defer func() {
+		_ = tmpFile.Close()
+		_ = os.Remove(tmpFile.Name())
+	}()
+
+	if _, err := tmpFile.WriteString(scriptContent); err != nil {
+		return nil, nil, fmt.Errorf("failed to write to a temporary file: %w", err)
+	}
+
+	if err := tmpFile.Close(); err != nil {
+		return nil, nil, err
+	}
+
+	var stdout, stderr bytes.Buffer
+
+	var cmd = exec.CommandContext(ctx, wrkBinPath, //nolint:gosec
+		"--timeout", "1s",
+		"--threads", strconv.FormatUint(uint64(threadsCount), 10),
+		"--connections", strconv.FormatUint(uint64(connectionsCount), 10),
+		"--duration", duration.String(),
+		"--script", tmpFile.Name(),
+		fmt.Sprintf("http://127.0.0.1:%d/", port),
 	)
 
-	if rErr != nil {
-		return nil, rErr
-	}
+	cmd.Stdout, cmd.Stderr = &stdout, &stderr
 
-	req.Header.Set("Connection", "keep-alive")
-	req.Header.Set("User-Agent", "perftest")
-	req.Header.Set("X-Namespace", fmt.Sprintf("namespace-%d", randomIntBetween(1, 999_999_999))) //nolint:mnd
-	req.Header.Set("X-Request-ID", fmt.Sprintf("req-id-%d", randomIntBetween(1, 999_999_999)))   //nolint:mnd
-
-	var contentType string
-
-	switch randomIntBetween(1, 4) { //nolint:mnd
-	case 1:
-		contentType = "application/json"
-	case 2: //nolint:mnd
-		contentType = "application/xml"
-	case 3: //nolint:mnd
-		contentType = "text/html"
-	default:
-		contentType = "text/plain"
-	}
-
-	req.Header.Set("Content-Type", contentType)
-
-	return req, nil
-}
-
-// errIsDone checks if the error is a context.DeadlineExceeded or context.Canceled.
-func errIsDone(err error) bool {
-	return errors.Is(err, context.DeadlineExceeded) || errors.Is(err, context.Canceled)
+	return &stdout, &stderr, cmd.Run() // execute
 }

@@ -25,7 +25,7 @@ func NewApp(appName string) *cli.Command { //nolint:funlen
 		logLevelFlag = cli.StringFlag{
 			Name:     "log-level",
 			Value:    logger.InfoLevel.String(),
-			Usage:    "logging level (" + strings.Join(logger.LevelStrings(), "/") + ")",
+			Usage:    "Logging level (" + strings.Join(logger.LevelStrings(), "/") + ")",
 			Sources:  cli.EnvVars("LOG_LEVEL"),
 			OnlyOnce: true,
 			Config:   cli.StringConfig{TrimSpace: true},
@@ -41,7 +41,7 @@ func NewApp(appName string) *cli.Command { //nolint:funlen
 		logFormatFlag = cli.StringFlag{
 			Name:     "log-format",
 			Value:    logger.ConsoleFormat.String(),
-			Usage:    "logging format (" + strings.Join(logger.FormatStrings(), "/") + ")",
+			Usage:    "Logging format (" + strings.Join(logger.FormatStrings(), "/") + ")",
 			Sources:  cli.EnvVars("LOG_FORMAT"),
 			OnlyOnce: true,
 			Config:   cli.StringConfig{TrimSpace: true},
@@ -80,7 +80,7 @@ func NewApp(appName string) *cli.Command { //nolint:funlen
 			serve.NewCommand(log),
 			build.NewCommand(log),
 			healthcheck.NewCommand(log, healthcheck.NewHTTPHealthChecker()),
-			perftest.NewCommand(log),
+			perftest.NewCommand(),
 		},
 		Version: fmt.Sprintf("%s (%s)", appmeta.Version(), runtime.Version()),
 		Flags: []cli.Flag{ // global flags
