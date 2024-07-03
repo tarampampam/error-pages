@@ -17,7 +17,8 @@ original and attractive. That's why this repository was created :) It contains:
 - A simple error page generator written in Go
 - Single-page error templates (themes) with various designs (located in the [templates](templates) directory) that
   you can customize as you wish
-- A fast and lightweight HTTP server available as a single binary file and Docker image
+- A fast and lightweight HTTP server is available as a single binary file and Docker image. It includes built-in error
+  page templates from this repository. You don't need anything except the compiled binary file or Docker image
 - Pre-generated error pages (sources can be [found here][preview-sources], and the **demo** is always
   accessible [here][preview-demo])
 
@@ -69,8 +70,6 @@ Download the latest binary file for your OS/architecture from the [releases page
 ## 🛠 Usage scenarios
 
 ### HTTP server starting, utilizing either a binary file or Docker image
-
-Here's a revised version of your message:
 
 First, ensure you have a precompiled binary file on your machine or have Docker/Podman installed. Next, start the
 server with the following command:
