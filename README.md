@@ -43,7 +43,6 @@ original and attractive. That's why this repository was created :) It contains:
 
 [fasthttp]:https://github.com/valyala/fasthttp
 [traefik]:https://github.com/traefik/traefik
-[ingress-nginx]:https://github.com/kubernetes/ingress-nginx/tree/main/charts/ingress-nginx
 
 ## 🧩 Install
 
@@ -51,8 +50,8 @@ Download the latest binary file for your OS/architecture from the [releases page
 
 | Registry                          | Image                             |
 |-----------------------------------|-----------------------------------|
-| [Docker Hub][docker-hub]          | `tarampampam/error-pages`         |
 | [GitHub Container Registry][ghcr] | `ghcr.io/tarampampam/error-pages` |
+| [Docker Hub][docker-hub] (mirror) | `tarampampam/error-pages`         |
 
 > [!IMPORTANT]
 > Using the `latest` tag for the Docker image is highly discouraged due to potential backward-incompatible changes
@@ -69,7 +68,277 @@ Download the latest binary file for your OS/architecture from the [releases page
 
 ## 🛠 Usage scenarios
 
-> TODO
+### HTTP server starting, utilizing either a binary file or Docker image
+
+Here's a revised version of your message:
+
+First, ensure you have a precompiled binary file on your machine or have Docker/Podman installed. Next, start the
+server with the following command:
+
+```bash
+./error-pages serve
+# or
+docker run --rm -p '8080:8080/tcp' tarampampam/error-pages serve
+```
+
+That's it! The server will begin running and listen on address `0.0.0.0` and port `8080`. Access error pages using
+URLs like `http://127.0.0.1:8080/{page_code}.html`.
+
+To retrieve different error page codes using a static URL, use the `X-Code` HTTP header:
+
+```bash
+curl -H 'X-Code: 500' http://127.0.0.1:8080/
+```
+
+The server respects the `Content-Type` HTTP header (and `X-Format`), delivering responses in requested formats
+such as HTML, XML, JSON, and PlainText. Customization of these formats is possible via CLI flags or environment
+variables.
+
+For integration with [ingress-nginx][ingress-nginx] or debugging purposes, start the server with `--show-details`
+(or set the environment variable `SHOW_DETAILS=true`) to enrich error pages (including JSON and XML responses)
+with upstream proxy information.
+
+Switch themes using the `TEMPLATE_NAME` environment variable or the `--template-name` flag; available templates
+are detailed in the readme file below.
+
+> [!TIP]
+> Use the `--rotation-mode` flag or the `TEMPLATES_ROTATION_MODE` environment variable to automate theme
+> rotation. Available modes include `random-on-startup`, `random-on-each-request`, `random-hourly`,
+> and `random-daily`.
+
+To proxy HTTP headers from requests to responses, utilize the `--proxy-headers` flag or environment variable
+(comma-separated list of headers).
+
+<details>
+  <summary><strong>🚀 Generate a set of error pages using built-in or my own template</strong></summary>
+
+Generating a set of error pages is straightforward. If you prefer to use your own template, start by crafting it.
+Create a file like this:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>{{ code }}</title>
+</head>
+<body>
+  <h1>{{ message }}: {{ description }}</h1>
+</body>
+</html>
+```
+
+Save it as `my-template.html` and use it as your custom template. Then, generate your error pages using the command:
+
+```bash
+mkdir -p /path/to/output
+./error-pages build --add-template /path/to/your/my-template.html --target-dir /path/to/output
+```
+
+This will create error pages based on your template in the specified output directory:
+
+```bash
+$ cd /path/to/output && tree .
+├── my-template
+│   ├── 400.html
+│   ├── 401.html
+│   ├── 403.html
+│   ├── 404.html
+│   ├── 405.html
+│   ├── 407.html
+│   ├── 408.html
+│   ├── 409.html
+│   ├── 410.html
+│   ├── 411.html
+│   ├── 412.html
+│   ├── 413.html
+│   ├── 416.html
+│   ├── 418.html
+│   ├── 429.html
+│   ├── 500.html
+│   ├── 502.html
+│   ├── 503.html
+│   ├── 504.html
+│   └── 505.html
+…
+
+$ cat my-template/403.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>403</title>
+</head>
+<body>
+  <h1>Forbidden: Access is forbidden to the requested page</h1>
+</body>
+</html>
+```
+
+</details>
+
+<details>
+  <summary><strong>🚀 Customize error pages within your own Nginx Docker image</strong></summary>
+
+To create this cocktail, we need two components:
+
+- Nginx configuration file
+- A Dockerfile to build the image
+
+Let's start with the Nginx configuration file:
+
+```nginx
+# File: nginx.conf
+
+server {
+  listen      80;
+  server_name localhost;
+
+  error_page 401 /_error-pages/401.html;
+  error_page 403 /_error-pages/403.html;
+  error_page 404 /_error-pages/404.html;
+  error_page 500 /_error-pages/500.html;
+  error_page 502 /_error-pages/502.html;
+  error_page 503 /_error-pages/503.html;
+
+  location ^~ /_error-pages/ {
+    internal;
+    root /usr/share/nginx/errorpages;
+  }
+
+  location / {
+    root  /usr/share/nginx/html;
+    index index.html index.htm;
+  }
+}
+```
+
+And the Dockerfile:
+
+```dockerfile
+FROM docker.io/library/nginx:1.27-alpine
+
+# override default Nginx configuration
+COPY --chown=nginx ./nginx.conf /etc/nginx/conf.d/default.conf
+
+# copy statically built error pages from the error-pages image
+# (instead of `ghost` you may use any other template)
+COPY --chown=nginx \
+     --from=ghcr.io/tarampampam/error-pages:3 \
+     /opt/html/ghost /usr/share/nginx/errorpages/_error-pages
+```
+
+Now, we can build the image:
+
+```bash
+docker build --tag your-nginx:local -f ./Dockerfile .
+```
+
+And voilà! Let's start the image and test if everything is working as expected:
+
+```bash
+docker run --rm -p '8081:80/tcp' your-nginx:local
+curl http://127.0.0.1:8081/foobar | head -n 15 # in another terminal
+```
+
+</details>
+
+<details>
+  <summary><strong>🚀 Usage with Traefik and local Docker Compose</strong></summary>
+
+Instead of thousands of words, let's take a look at one compose file:
+
+```yaml
+# file: compose.yml (or docker-compose.yml)
+
+services:
+  traefik:
+    image: docker.io/library/traefik:v3.1
+    command:
+      #- --log.level=DEBUG
+      - --api.dashboard=true # activate dashboard
+      - --api.insecure=true # enable the API in insecure mode
+      - --providers.docker=true # enable Docker backend with default settings
+      - --providers.docker.exposedbydefault=false # do not expose containers by default
+      - --entrypoints.web.address=:80 # --entrypoints.<name>.address for ports, 80 (i.e., name = web)
+    ports:
+      - "80:80/tcp" # HTTP (web)
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    labels:
+      traefik.enable: true
+      # dashboard
+      traefik.http.routers.traefik.rule: Host(`traefik.localtest.me`)
+      traefik.http.routers.traefik.service: api@internal
+      traefik.http.routers.traefik.entrypoints: web
+      traefik.http.routers.traefik.middlewares: error-pages-middleware
+    depends_on:
+      error-pages: {condition: service_healthy}
+
+  error-pages:
+    image: ghcr.io/tarampampam/error-pages:3 # using the latest tag is highly discouraged
+    environment:
+      TEMPLATE_NAME: l7 # set the error pages template
+    labels:
+      traefik.enable: true
+      # use as "fallback" for any NON-registered services (with priority below normal)
+      traefik.http.routers.error-pages-router.rule: HostRegexp(`.+`)
+      traefik.http.routers.error-pages-router.priority: 10
+      # should say that all of your services work on https
+      traefik.http.routers.error-pages-router.entrypoints: web
+      traefik.http.routers.error-pages-router.middlewares: error-pages-middleware
+      # "errors" middleware settings
+      traefik.http.middlewares.error-pages-middleware.errors.status: 400-599
+      traefik.http.middlewares.error-pages-middleware.errors.service: error-pages-service
+      traefik.http.middlewares.error-pages-middleware.errors.query: /{status}.html
+      # define service properties
+      traefik.http.services.error-pages-service.loadbalancer.server.port: 8080
+
+  nginx-or-any-another-service:
+    image: docker.io/library/nginx:1.27-alpine
+    labels:
+      traefik.enable: true
+      traefik.http.routers.test-service.rule: Host(`test.localtest.me`)
+      traefik.http.routers.test-service.entrypoints: web
+      traefik.http.routers.test-service.middlewares: error-pages-middleware
+```
+
+After executing `docker compose up` in the same directory as the `compose.yml` file, you can:
+
+- Open the Traefik dashboard [at `traefik.localtest.me`](http://traefik.localtest.me/dashboard/#/)
+- [View customized error pages on the Traefik dashboard](http://traefik.localtest.me/foobar404)
+- Open the nginx index page [at `test.localtest.me`](http://test.localtest.me/)
+- View customized error pages for non-existent [pages](http://test.localtest.me/404) and [domains](http://404.localtest.me/)
+
+Isn't this kind of magic? 😀
+
+</details>
+
+<details>
+  <summary><strong>🚀 Kubernetes (K8s) & Ingress Nginx</strong></summary>
+
+Error-pages can be configured to work with the [ingress-nginx][ingress-nginx] helm chart in Kubernetes.
+
+- Set the `custom-http-errors` config value
+- Enable default backend
+- Set the default backend image
+
+```yaml
+controller:
+  config:
+    custom-http-errors: >-
+      401,403,404,500,501,502,503
+defaultBackend:
+  enabled: true
+  image:
+    repository: ghcr.io/tarampampam/error-pages
+    tag: '3' # using the latest tag is highly discouraged
+  extraEnvs:
+  - name: TEMPLATE_NAME # Optional: change the default theme
+    value: l7
+  - name: SHOW_DETAILS # Optional: enables the output of additional information on error pages
+    value: 'true'
+```
+
+</details>
 
 ## 🦾 Performance
 
@@ -376,3 +645,5 @@ If you encounter any bugs in the project, please [create an issue][new-issue] in
 This is open-sourced software licensed under the [MIT License][license].
 
 [license]:https://github.com/tarampampam/error-pages/blob/master/LICENSE
+
+[ingress-nginx]:https://github.com/kubernetes/ingress-nginx/tree/main/charts/ingress-nginx
