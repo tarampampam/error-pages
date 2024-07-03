@@ -1,63 +1,118 @@
 package http
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"net"
+	"net/http"
 	"strings"
 	"time"
 
-	"github.com/fasthttp/router"
 	"github.com/valyala/fasthttp"
-	"go.uber.org/zap"
 
-	"gh.tarampamp.am/error-pages/internal/checkers"
+	"gh.tarampamp.am/error-pages/internal/appmeta"
 	"gh.tarampamp.am/error-pages/internal/config"
-	"gh.tarampamp.am/error-pages/internal/http/common"
-	errorpageHandler "gh.tarampamp.am/error-pages/internal/http/handlers/errorpage"
-	healthzHandler "gh.tarampamp.am/error-pages/internal/http/handlers/healthz"
-	indexHandler "gh.tarampamp.am/error-pages/internal/http/handlers/index"
-	metricsHandler "gh.tarampamp.am/error-pages/internal/http/handlers/metrics"
-	notfoundHandler "gh.tarampamp.am/error-pages/internal/http/handlers/notfound"
-	versionHandler "gh.tarampamp.am/error-pages/internal/http/handlers/version"
-	"gh.tarampamp.am/error-pages/internal/metrics"
-	"gh.tarampamp.am/error-pages/internal/options"
-	"gh.tarampamp.am/error-pages/internal/tpl"
-	"gh.tarampamp.am/error-pages/internal/version"
+	ep "gh.tarampamp.am/error-pages/internal/http/handlers/error_page"
+	"gh.tarampamp.am/error-pages/internal/http/handlers/live"
+	"gh.tarampamp.am/error-pages/internal/http/handlers/static"
+	"gh.tarampamp.am/error-pages/internal/http/handlers/version"
+	"gh.tarampamp.am/error-pages/internal/http/middleware/logreq"
+	"gh.tarampamp.am/error-pages/internal/logger"
 )
 
+// Server is an HTTP server for serving error pages.
 type Server struct {
-	log    *zap.Logger
-	fast   *fasthttp.Server
-	router *router.Router
-	rdr    *tpl.TemplateRenderer
+	log        *logger.Logger
+	server     *fasthttp.Server
+	beforeStop func()
 }
 
-const (
-	defaultWriteTimeout = time.Second * 4
-	defaultReadTimeout  = time.Second * 4
-	defaultIdleTimeout  = time.Second * 6
-)
-
-func NewServer(log *zap.Logger, readBufferSize uint) Server {
-	rdr := tpl.NewTemplateRenderer()
+// NewServer creates a new HTTP server.
+func NewServer(log *logger.Logger, readBufferSize uint) Server {
+	const (
+		readTimeout  = 30 * time.Second
+		writeTimeout = readTimeout + 10*time.Second // should be bigger than the read timeout
+	)
 
 	return Server{
-		// fasthttp docs: <https://github.com/valyala/fasthttp>
-		fast: &fasthttp.Server{
-			WriteTimeout:          defaultWriteTimeout,
-			ReadBufferSize:        int(readBufferSize),
-			ReadTimeout:           defaultReadTimeout,
-			IdleTimeout:           defaultIdleTimeout,
-			NoDefaultServerHeader: true,
-			ReduceMemoryUsage:     true,
-			CloseOnShutdown:       true,
-			Logger:                zap.NewStdLog(log),
+		log: log,
+		server: &fasthttp.Server{
+			ReadTimeout:                  readTimeout,
+			WriteTimeout:                 writeTimeout,
+			ReadBufferSize:               int(readBufferSize),
+			DisablePreParseMultipartForm: true,
+			NoDefaultServerHeader:        true,
+			CloseOnShutdown:              true,
+			Logger:                       logger.NewStdLog(log),
 		},
-		router: router.New(),
-		log:    log,
-		rdr:    rdr,
+		beforeStop: func() {}, // noop
 	}
+}
+
+// Register server handlers, middlewares, etc.
+func (s *Server) Register(cfg *config.Config) error { //nolint:funlen
+	var (
+		liveHandler    = live.New()
+		versionHandler = version.New(appmeta.Version())
+		faviconHandler = static.New(static.Favicon)
+
+		errorPagesHandler, closeCache = ep.New(cfg, s.log)
+
+		notFound   = http.StatusText(http.StatusNotFound) + "\n"
+		notAllowed = http.StatusText(http.StatusMethodNotAllowed) + "\n"
+	)
+
+	// wrap the before shutdown function to close the cache
+	s.beforeStop = closeCache
+
+	s.server.Handler = func(ctx *fasthttp.RequestCtx) {
+		var url, method = string(ctx.Path()), string(ctx.Method())
+
+		switch {
+		// live endpoints
+		case url == "/healthz" || url == "/health/live" || url == "/health" || url == "/live":
+			liveHandler(ctx)
+
+		// version endpoint
+		case url == "/version":
+			versionHandler(ctx)
+
+		// favicon.ico endpoint
+		case url == "/favicon.ico":
+			faviconHandler(ctx)
+
+		// error pages endpoints:
+		//	- /
+		//	-	/{code}.html
+		//	- /{code}.htm
+		//	- /{code}
+		//
+		// the HTTP method is not limited to GET and HEAD - it can be any
+		case url == "/" || ep.URLContainsCode(url) || ep.HeadersContainCode(&ctx.Request.Header):
+			errorPagesHandler(ctx)
+
+		// wrong requests handling
+		default:
+			switch {
+			case method == fasthttp.MethodHead:
+				ctx.Error(notAllowed, fasthttp.StatusNotFound)
+			case method == fasthttp.MethodGet:
+				ctx.Error(notFound, fasthttp.StatusNotFound)
+			default:
+				ctx.Error(notAllowed, fasthttp.StatusMethodNotAllowed)
+			}
+		}
+	}
+
+	// apply middleware
+	s.server.Handler = logreq.New(s.log, func(ctx *fasthttp.RequestCtx) bool {
+		// skip logging healthcheck and .ico (favicon) requests
+		return strings.Contains(strings.ToLower(string(ctx.UserAgent())), "healthcheck") ||
+			strings.HasSuffix(string(ctx.Path()), ".ico")
+	})(s.server.Handler)
+
+	return nil
 }
 
 // Start server.
@@ -68,7 +123,7 @@ func (s *Server) Start(ip string, port uint16) (err error) {
 
 	var ln net.Listener
 
-	if strings.Count(ip, ":") >= 2 { //nolint:gomnd // ipv6
+	if strings.Count(ip, ":") >= 2 { //nolint:mnd // ipv6
 		if ln, err = net.Listen("tcp6", fmt.Sprintf("[%s]:%d", ip, port)); err != nil {
 			return err
 		}
@@ -78,54 +133,15 @@ func (s *Server) Start(ip string, port uint16) (err error) {
 		}
 	}
 
-	return s.fast.Serve(ln)
+	return s.server.Serve(ln)
 }
 
-type templatePicker interface {
-	// Pick the template name for responding.
-	Pick() string
-}
+// Stop server gracefully.
+func (s *Server) Stop(timeout time.Duration) error {
+	var ctx, cancel = context.WithTimeout(context.Background(), timeout)
+	defer cancel()
 
-// Register server routes, middlewares, etc.
-// Router docs: <https://github.com/fasthttp/router>
-func (s *Server) Register(cfg *config.Config, templatePicker templatePicker, opt options.ErrorPage) error {
-	reg, m := metrics.NewRegistry(), metrics.NewMetrics()
+	s.beforeStop()
 
-	if err := m.Register(reg); err != nil {
-		return err
-	}
-
-	s.fast.Handler = common.DurationMetrics(common.LogRequest(s.router.Handler, s.log), &m)
-
-	s.router.GET("/", indexHandler.NewHandler(cfg, templatePicker, s.rdr, opt))
-	s.router.GET("/{code}.html", errorpageHandler.NewHandler(cfg, templatePicker, s.rdr, opt))
-
-	s.router.GET("/version", versionHandler.NewHandler(version.Version()))
-
-	liveHandler := healthzHandler.NewHandler(checkers.NewLiveChecker())
-	s.router.ANY("/healthz", liveHandler)
-	s.router.ANY("/health/live", liveHandler) // deprecated
-
-	s.router.GET("/metrics", metricsHandler.NewHandler(reg))
-
-	// use index handler to catch all paths? Uses DEFAULT_ERROR_PAGE
-	if opt.CatchAll {
-		s.router.NotFound = indexHandler.NewHandler(cfg, templatePicker, s.rdr, opt)
-	} else {
-		// use default not found handler
-		s.router.NotFound = notfoundHandler.NewHandler(cfg, templatePicker, s.rdr, opt)
-	}
-
-	return nil
-}
-
-// Stop server.
-func (s *Server) Stop() error {
-	if err := s.rdr.Close(); err != nil {
-		defer func() { _ = s.fast.Shutdown() }()
-
-		return err
-	}
-
-	return s.fast.Shutdown()
+	return s.server.ShutdownWithContext(ctx)
 }

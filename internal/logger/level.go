@@ -13,7 +13,6 @@ const (
 	InfoLevel        // default level (zero-value)
 	WarnLevel
 	ErrorLevel
-	FatalLevel
 )
 
 // String returns a lower-case ASCII representation of the log level.
@@ -27,8 +26,6 @@ func (l Level) String() string {
 		return "warn"
 	case ErrorLevel:
 		return "error"
-	case FatalLevel:
-		return "fatal"
 	}
 
 	return fmt.Sprintf("level(%d)", l)
@@ -36,7 +33,7 @@ func (l Level) String() string {
 
 // Levels returns a slice of all logging levels.
 func Levels() []Level {
-	return []Level{DebugLevel, InfoLevel, WarnLevel, ErrorLevel, FatalLevel}
+	return []Level{DebugLevel, InfoLevel, WarnLevel, ErrorLevel}
 }
 
 // LevelStrings returns a slice of all logging levels as strings.
@@ -75,8 +72,6 @@ func ParseLevel[T string | []byte](text T) (Level, error) {
 		return WarnLevel, nil
 	case "error":
 		return ErrorLevel, nil
-	case "fatal":
-		return FatalLevel, nil
 	}
 
 	return Level(0), fmt.Errorf("unrecognized logging level: %q", text)

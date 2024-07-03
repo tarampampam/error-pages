@@ -1,0 +1,13 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-release-config.json
+# docs: https://docs.github.com/en/repositories/releasing-projects-on-github/automatically-generated-release-notes
+
+changelog:
+  categories:
+    - title: 🛠 Fixes
+      labels: [type:fix, type:bug]
+    - title: 🚀 Features
+      labels: [type:feature, type:feature_request]
+    - title: 📦 Dependency updates
+      labels: [dependencies]
+    - title: Other Changes
+      labels: ['*']

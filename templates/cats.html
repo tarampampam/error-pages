@@ -1,123 +1,163 @@
 <!DOCTYPE html>
-<!--
-    Error {{ code }}: {{ message }}
-    Description: {{ description }}
--->
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="robots" content="noindex, nofollow"/>
-    <title>{{ message }}</title>
-    <style>
-        html, body {
-            margin: 0;
-            height: 100vh;
-            background-color: #000;
-            color: #ddd;
-            font-family: 'Open Sans', sans-serif;
-            font-size: 0;
-        }
+  <meta charset="utf-8">
+  <meta name="robots" content="nofollow,noarchive,noindex">
+  <title>{{ message }}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- {{ if or (eq code 408) (eq code 425) (eq code 429) (eq code 500) (eq code 502) (eq code 503) (eq code 504) }} -->
+  <meta http-equiv="refresh" content="30">
+  <!-- {{ end }} -->
+  <meta name="title" content="{{ code }}: {{ message | escape }}">
+  <meta name="description" content="{{ description | escape }}">
+  <meta property="og:title" content="{{ code }}: {{ message | escape }}">
+  <meta property="og:description" content="{{ description | escape }}">
+  <meta property="twitter:title" content="{{ code }}: {{ message | escape }}">
+  <meta property="twitter:description" content="{{ description | escape }}">
+  <style>
+    :root {
+      --color-primary: #fff;
+      --color-inverted: #202020;
+    }
 
-        .centered {
-            height: 100vh;
-            align-items: center;
-            display: flex;
-            justify-content: center
-        }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --color-primary: #000;
+        --color-inverted: #fff;
+      }
+    }
 
-        .centered img {
-            max-width: 750px;
-            width: 100%;
-        }
+    html, body {
+      margin: 0;
+      padding: 0;
+      min-height: 100%;
+      height: 100%;
+      width: 100%;
+      background-color: var(--color-primary);
+      color: var(--color-inverted);
+      font-family: sans-serif;
+      font-size: 16px;
+    }
 
-        /* {{ if show_details }} */
-        .details table {
-            width: 100%;
-        }
+    @media screen and (min-width: 2000px) {
+      html, body {
+        font-size: 22px;
+      }
+    }
 
-        .details td {
-            font-size: 11px;
-        }
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      height: 100%;
+    }
 
-        .details td.name {
-            text-align: right;
-            padding-right: .6em;
-            width: 50%;
-        }
+    article img {
+      width: 100%;
+      max-width: 750px;
+      box-shadow: 0 30px 0 -20px rgba(0, 0, 0, 0.2);
+    }
 
-        .details td.value {
-            text-align: left;
-            padding-left: .6em;
-            font-family: 'Lucida Console', 'Courier New', monospace;
-        }
-        /* {{ end }} */
-    </style>
+    /* {{ if show_details }} */
+    table.details {
+      table-layout: fixed;
+      width: 100%;
+      opacity: .8;
+      padding-top: 1.5em;
+    }
+
+    table.details td {
+      white-space: nowrap;
+      font-size: 0.7em;
+    }
+
+    table.details .name,
+    table.details .value {
+      width: 50%;
+    }
+
+    table.details .name::first-letter,
+    table.details .value::first-letter {
+      font-weight: bold;
+    }
+
+    table.details .name {
+      text-align: right;
+      padding-right: .4em;
+      width: 50%;
+    }
+
+    table.details .value {
+      text-align: left;
+      padding-left: .4em;
+      font-family: monospace;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* {{ end }} */
+  </style>
 </head>
 <body>
-<div class="centered">
-    <!-- Pictures provider: <https://http.cat/> -->
-    <div>
-        <img src="https://http.cat/{{ code }}.jpg" alt="{{ message }}">
-        {{ if show_details }}
-        <div class="details">
-            <table>
-                {{- if host }}<tr>
-                    <td class="name" data-l10n>Host</td>
-                    <td class="value">{{ host }}</td>
-                </tr>{{ end -}}
-                {{- if original_uri }}<tr>
-                    <td class="name" data-l10n>Original URI</td>
-                    <td class="value">{{ original_uri }}</td>
-                </tr>{{ end -}}
-                {{- if forwarded_for }}<tr>
-                    <td class="name" data-l10n>Forwarded for</td>
-                    <td class="value">{{ forwarded_for }}</td>
-                </tr>{{ end -}}
-                {{- if namespace }}<tr>
-                    <td class="name" data-l10n>Namespace</td>
-                    <td class="value">{{ namespace }}</td>
-                </tr>{{ end -}}
-                {{- if ingress_name }}<tr>
-                    <td class="name" data-l10n>Ingress name</td>
-                    <td class="value">{{ ingress_name }}</td>
-                </tr>{{ end -}}
-                {{- if service_name }}<tr>
-                    <td class="name" data-l10n>Service name</td>
-                    <td class="value">{{ service_name }}</td>
-                </tr>{{ end -}}
-                {{- if service_port }}<tr>
-                    <td class="name" data-l10n>Service port</td>
-                    <td class="value">{{ service_port }}</td>
-                </tr>{{ end -}}
-                {{- if request_id }}<tr>
-                    <td class="name" data-l10n>Request ID</td>
-                    <td class="value">{{ request_id }}</td>
-                </tr>{{ end -}}
-                <tr>
-                    <td class="name" data-l10n>Timestamp</td>
-                    <td class="value">{{ now.Unix }}</td>
-                </tr>
-            </table>
-        </div>
-        {{ end }}
-    </div>
-</div>
-<script>
-    // {{ if l10n_enabled }}
-    if (navigator.language.substring(0, 2).toLowerCase() !== 'en') {
-        ((s, p) => { // localize the page (details here - https://github.com/tarampampam/error-pages/tree/master/l10n)
-            s.src = 'https://cdn.jsdelivr.net/gh/tarampampam/error-pages@2/l10n/l10n.min.js'; // '../l10n/l10n.js';
-            s.async = s.defer = true;
-            s.addEventListener('load', () => p.removeChild(s));
-            p.appendChild(s);
-        })(document.createElement('script'), document.body);
-    }
-    // {{ end }}
-</script>
+<article>
+  <img src="https://http.cat/{{ code }}.jpg" alt="{{ message }}">
+</article>
+
+<!-- {{- if show_details -}} -->
+<table class="details">
+  <tbody>
+  <!-- {{- if host -}} -->
+  <tr>
+    <td class="name" data-l10n>Host</td>
+    <td class="value">{{ host }}</td>
+  </tr>
+  <!-- {{- end }}{{ if original_uri -}} -->
+  <tr>
+    <td class="name" data-l10n>Original URI</td>
+    <td class="value">{{ original_uri }}</td>
+  </tr>
+  <!-- {{- end }}{{ if forwarded_for -}} -->
+  <tr>
+    <td class="name" data-l10n>Forwarded for</td>
+    <td class="value">{{ forwarded_for }}</td>
+  </tr>
+  <!-- {{- end }}{{ if namespace -}} -->
+  <tr>
+    <td class="name" data-l10n>Namespace</td>
+    <td class="value">{{ namespace }}</td>
+  </tr>
+  <!-- {{- end }}{{ if ingress_name -}} -->
+  <tr>
+    <td class="name" data-l10n>Ingress name</td>
+    <td class="value">{{ ingress_name }}</td>
+  </tr>
+  <!-- {{- end }}{{ if service_name -}} -->
+  <tr>
+    <td class="name" data-l10n>Service name</td>
+    <td class="value">{{ service_name }}</td>
+  </tr>
+  <!-- {{- end }}{{ if service_port -}} -->
+  <tr>
+    <td class="name" data-l10n>Service port</td>
+    <td class="value">{{ service_port }}</td>
+  </tr>
+  <!-- {{- end }}{{ if request_id -}} -->
+  <tr>
+    <td class="name" data-l10n>Request ID</td>
+    <td class="value">{{ request_id }}</td>
+  </tr>
+  <!-- {{- end -}} -->
+  <tr>
+    <td class="name" data-l10n>Timestamp</td>
+    <td class="value">{{ nowUnix }}</td>
+  </tr>
+  </tbody>
+</table>
+<!-- {{- end -}} -->
+
+<!-- {{- if l10n_enabled -}} -->
+<script>// {{ l10nScript }}</script>
+<!-- {{- end -}} -->
 </body>
-<!--
-    Error {{ code }}: {{ message }}
-    Description: {{ description }}
--->
 </html>
