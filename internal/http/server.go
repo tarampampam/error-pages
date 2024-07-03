@@ -51,7 +51,7 @@ func NewServer(log *logger.Logger, readBufferSize uint) Server {
 }
 
 // Register server handlers, middlewares, etc.
-func (s *Server) Register(cfg *config.Config) error {
+func (s *Server) Register(cfg *config.Config) error { //nolint:funlen
 	var (
 		liveHandler    = live.New()
 		versionHandler = version.New(appmeta.Version())
@@ -87,8 +87,9 @@ func (s *Server) Register(cfg *config.Config) error {
 		//	-	/{code}.html
 		//	- /{code}.htm
 		//	- /{code}
-		case method == fasthttp.MethodGet &&
-			(url == "/" || ep.URLContainsCode(url) || ep.HeadersContainCode(&ctx.Request.Header)):
+		//
+		// the HTTP method is not limited to GET and HEAD - it can be any
+		case url == "/" || ep.URLContainsCode(url) || ep.HeadersContainCode(&ctx.Request.Header):
 			errorPagesHandler(ctx)
 
 		// wrong requests handling

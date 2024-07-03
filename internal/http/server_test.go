@@ -221,6 +221,16 @@ func TestRouting(t *testing.T) {
 				assert.Contains(t, string(body), "404: Not Found")
 				assert.Contains(t, headers.Get("Content-Type"), "text/plain")
 			})
+
+			t.Run("other HTTP methods", func(t *testing.T) {
+				for _, method := range []string{http.MethodDelete, http.MethodPatch, http.MethodPost, http.MethodPut} {
+					var status, body, headers = sendRequest(t, method, baseUrl+"/404.html")
+
+					assert.Equal(t, http.StatusOK, status)
+					assert.Contains(t, string(body), "404: Not Found")
+					assert.Contains(t, headers.Get("Content-Type"), "text/plain")
+				}
+			})
 		})
 
 		t.Run("failure", func(t *testing.T) {
@@ -263,15 +273,6 @@ func TestRouting(t *testing.T) {
 
 				assert.Equal(t, http.StatusNotFound, status)
 				assertIsNotErrorPage(t, body)
-			})
-
-			t.Run("invalid HTTP methods", func(t *testing.T) {
-				for _, method := range []string{http.MethodDelete, http.MethodPatch, http.MethodPost, http.MethodPut} {
-					var status, body, _ = sendRequest(t, method, baseUrl+"/404.html")
-
-					assert.Equal(t, http.StatusMethodNotAllowed, status)
-					assertIsNotErrorPage(t, body)
-				}
 			})
 		})
 	})
