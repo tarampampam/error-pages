@@ -109,6 +109,50 @@ To proxy HTTP headers from requests to responses, utilize the `--proxy-headers` 
 (comma-separated list of headers).
 
 <details>
+  <summary><strong>🚀 Start the HTTP server with my custom template (theme)</strong></summary>
+
+First, create your own template file, for example `my-super-theme.html`:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>{{ code }}</title>
+</head>
+<body>
+  <h1>YEAH! {{ message }}: {{ description }}</h1>
+</body>
+</html>
+```
+
+And simply start the server with the following command:
+
+```bash
+docker run --rm \
+  -v "$(pwd)/my-super-theme.html:/opt/my-template.html:ro" \
+  -p '8080:8080/tcp' ghcr.io/tarampampam/error-pages:3.0.0-beta-1 \
+    serve --add-template /opt/my-template.html --template-name my-template
+```
+
+And test it:
+
+```bash
+$ curl -H "Accept: text/html" http://127.0.0.1:8080/503
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>503</title>
+</head>
+<body>
+  <h1>YEAH! Service Unavailable: The server is temporarily overloading or down</h1>
+</body>
+</html>
+```
+
+</details>
+
+<details>
   <summary><strong>🚀 Generate a set of error pages using built-in or my own template</strong></summary>
 
 Generating a set of error pages is straightforward. If you prefer to use your own template, start by crafting it.
