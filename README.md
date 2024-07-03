@@ -67,6 +67,149 @@ Download the latest binary file for your OS/architecture from the [releases page
 [pages-pack-zip]:https://github.com/tarampampam/error-pages/zipball/gh-pages/
 [pages-pack-tar-gz]:https://github.com/tarampampam/error-pages/tarball/gh-pages/
 
+## 🪂 Templates (themes)
+
+The following templates are built-in and available for use without any additional setup:
+
+> [!NOTE]
+> The `cats` template is the only one of those that fetches resources (the actual cat pictures) from external
+> servers - all other templates are self-contained.
+
+<table>
+  <thead>
+    <tr>
+      <th>Template</th>
+      <th>Preview</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td align="center">
+        <code>app-down</code><br/><br/>
+        <img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Ferror-pages.goatcounter.com%2Fcounter%2F%2Fuse-template%2Fapp-down.json&query=%24.count&label=used%20times" alt="used times">
+      </td>
+      <td>
+        <picture>
+          <source media="(prefers-color-scheme: dark)" srcset="https://github.com/tarampampam/error-pages/assets/7326800/4e668a56-a4c4-47cd-ac4d-b6b45db54ab8">
+          <img align="center" src="https://github.com/tarampampam/error-pages/assets/7326800/ad4b4fd7-7c7b-4bdc-a6b6-44f9ba7f77ca">
+        </picture>
+      </td>
+    </tr>
+    <tr>
+      <td align="center">
+        <code>cats</code><br/><br/>
+        <img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Ferror-pages.goatcounter.com%2Fcounter%2F%2Fuse-template%2Fcats.json&query=%24.count&label=used%20times" alt="used times">
+      </td>
+      <td>
+        <picture>
+          <source media="(prefers-color-scheme: dark)" srcset="https://github.com/tarampampam/error-pages/assets/7326800/5689880b-f770-406c-81dd-2d28629e6f2e">
+          <img align="center" src="https://github.com/tarampampam/error-pages/assets/7326800/056cd00e-bc9a-4120-8325-310d7b0ebd1b">
+        </picture>
+      </td>
+    </tr>
+    <tr>
+      <td align="center">
+        <code>connection</code><br/><br/>
+        <img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Ferror-pages.goatcounter.com%2Fcounter%2F%2Fuse-template%2Fconnection.json&query=%24.count&label=used%20times" alt="used times">
+      </td>
+      <td>
+        <picture>
+          <source media="(prefers-color-scheme: dark)" srcset="https://github.com/tarampampam/error-pages/assets/7326800/3f03dc1b-c1ee-4a91-b3d7-e3b93c79020e">
+          <img align="center" src="https://github.com/tarampampam/error-pages/assets/7326800/099ecc2d-e724-4d9c-b5ed-66ddabd71139">
+        </picture>
+      </td>
+    </tr>
+    <tr>
+      <td align="center">
+        <code>ghost</code><br/><br/>
+        <img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Ferror-pages.goatcounter.com%2Fcounter%2F%2Fuse-template%2Fghost.json&query=%24.count&label=used%20times" alt="used times">
+      </td>
+      <td>
+        <picture>
+          <source media="(prefers-color-scheme: dark)" srcset="https://github.com/tarampampam/error-pages/assets/7326800/714482ab-f8c1-4455-8ae8-b2ae78f7a2c6">
+          <img align="center" src="https://github.com/tarampampam/error-pages/assets/7326800/f253dfe7-96a0-4e96-915b-d4c544d4a237">
+        </picture>
+      </td>
+    </tr>
+    <tr>
+      <td align="center">
+        <code>hacker-terminal</code><br/><br/>
+        <img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Ferror-pages.goatcounter.com%2Fcounter%2F%2Fuse-template%2Fhacker-terminal.json&query=%24.count&label=used%20times" alt="used times">
+      </td>
+      <td>
+        <picture>
+          <img align="center" src="https://github.com/tarampampam/error-pages/assets/7326800/c197fc35-0844-43d0-9830-82440cee4559">
+        </picture>
+      </td>
+    </tr>
+    <tr>
+      <td align="center">
+        <code>l7</code><br/><br/>
+        <img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Ferror-pages.goatcounter.com%2Fcounter%2F%2Fuse-template%2Fl7.json&query=%24.count&label=used%20times" alt="used times">
+      </td>
+      <td>
+        <picture>
+          <source media="(prefers-color-scheme: dark)" srcset="https://github.com/tarampampam/error-pages/assets/7326800/18e43ea3-6389-4459-be41-0fc6566a073f">
+          <img align="center" src="https://github.com/tarampampam/error-pages/assets/7326800/05f26669-94ec-40ce-8d67-a199cde54202">
+        </picture>
+      </td>
+    </tr>
+    <tr>
+      <td align="center">
+        <code>lost-in-space</code><br/><br/>
+        <img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Ferror-pages.goatcounter.com%2Fcounter%2F%2Fuse-template%2Flost-in-space.json&query=%24.count&label=used%20times" alt="used times">
+      </td>
+      <td>
+        <picture>
+          <source media="(prefers-color-scheme: dark)" srcset="https://github.com/tarampampam/error-pages/assets/7326800/debf87c0-6f27-41a8-b141-ee3464cbd6cc">
+          <img align="center" src="https://github.com/tarampampam/error-pages/assets/7326800/c347e63d-13a7-46d4-81b9-b25266819a1d">
+        </picture>
+      </td>
+    </tr>
+    <tr>
+      <td align="center">
+        <code>noise</code><br/><br/>
+        <img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Ferror-pages.goatcounter.com%2Fcounter%2F%2Fuse-template%2Fnoise.json&query=%24.count&label=used%20times" alt="used times">
+      </td>
+      <td>
+        <picture>
+          <img align="center" src="https://github.com/tarampampam/error-pages/assets/7326800/4cc5c3bd-6ebb-4e96-bee8-02d4ad4e7266">
+        </picture>
+      </td>
+    </tr>
+    <tr>
+      <td align="center">
+        <code>orient</code><br/><br/>
+        <img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Ferror-pages.goatcounter.com%2Fcounter%2F%2Fuse-template%2Forient.json&query=%24.count&label=used%20times" alt="used times">
+      </td>
+      <td>
+        <picture>
+          <source media="(prefers-color-scheme: dark)" srcset="https://github.com/tarampampam/error-pages/assets/7326800/bc2b0dad-c32c-4628-98f6-e3eab61dd1f2">
+          <img align="center" src="https://github.com/tarampampam/error-pages/assets/7326800/8fc0a7ea-694d-49ce-bb50-3ea032d52d1e">
+        </picture>
+      </td>
+    </tr>
+    <tr>
+      <td align="center">
+        <code>shuffle</code><br/><br/>
+        <img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Ferror-pages.goatcounter.com%2Fcounter%2F%2Fuse-template%2Fshuffle.json&query=%24.count&label=used%20times" alt="used times">
+      </td>
+      <td>
+        <picture>
+          <source media="(prefers-color-scheme: dark)" srcset="https://github.com/tarampampam/error-pages/assets/7326800/7504b7c3-b0cb-4991-9ac2-759cd6c50fc0">
+          <img align="center" src="https://github.com/tarampampam/error-pages/assets/7326800/d2a73fc8-cf5f-4f42-bff8-cce33d8ae47e">
+        </picture>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+> [!NOTE]
+> The "used times" counter increments when someone start the server with the specified template. Stats service does
+> not collect any information about location, IP addresses, and so on. Moreover, the stats are open and available for
+> everyone at [error-pages.goatcounter.com](https://error-pages.goatcounter.com/). This is simply a counter to display
+> how often a particular template is used, nothing more.
+
 ## 🛠 Usage scenarios
 
 ### HTTP server starting, utilizing either a binary file or Docker image
@@ -75,9 +218,9 @@ First, ensure you have a precompiled binary file on your machine or have Docker/
 server with the following command:
 
 ```bash
-./error-pages serve
-# or
-docker run --rm -p '8080:8080/tcp' tarampampam/error-pages serve
+$ ./error-pages serve
+# --- or ---
+$ docker run --rm -p '8080:8080/tcp' tarampampam/error-pages serve
 ```
 
 That's it! The server will begin running and listen on address `0.0.0.0` and port `8080`. Access error pages using
@@ -86,7 +229,7 @@ URLs like `http://127.0.0.1:8080/{page_code}.html`.
 To retrieve different error page codes using a static URL, use the `X-Code` HTTP header:
 
 ```bash
-curl -H 'X-Code: 500' http://127.0.0.1:8080/
+$ curl -H 'X-Code: 500' http://127.0.0.1:8080/
 ```
 
 The server respects the `Content-Type` HTTP header (and `X-Format`), delivering responses in requested formats
@@ -128,10 +271,15 @@ First, create your own template file, for example `my-super-theme.html`:
 And simply start the server with the following command:
 
 ```bash
-docker run --rm \
+$ docker run --rm \
   -v "$(pwd)/my-super-theme.html:/opt/my-template.html:ro" \
-  -p '8080:8080/tcp' ghcr.io/tarampampam/error-pages:3 \
-    serve --add-template /opt/my-template.html --template-name my-template
+  -p '8080:8080/tcp' ghcr.io/tarampampam/error-pages:3 serve \
+    --add-template /opt/my-template.html \
+    --template-name my-template
+# --- or ---
+$ ./error-pages serve \
+  --add-template /opt/my-template.html \
+  --template-name my-template
 ```
 
 And test it:
@@ -173,8 +321,8 @@ Create a file like this:
 Save it as `my-template.html` and use it as your custom template. Then, generate your error pages using the command:
 
 ```bash
-mkdir -p /path/to/output
-./error-pages build --add-template /path/to/your/my-template.html --target-dir /path/to/output
+$ mkdir -p /path/to/output
+$ ./error-pages build --add-template /path/to/your/my-template.html --target-dir /path/to/output
 ```
 
 This will create error pages based on your template in the specified output directory:
@@ -272,14 +420,15 @@ COPY --chown=nginx \
 Now, we can build the image:
 
 ```bash
-docker build --tag your-nginx:local -f ./Dockerfile .
+$ docker build --tag your-nginx:local -f ./Dockerfile .
 ```
 
 And voilà! Let's start the image and test if everything is working as expected:
 
 ```bash
-docker run --rm -p '8081:80/tcp' your-nginx:local
-curl http://127.0.0.1:8081/foobar | head -n 15 # in another terminal
+$ docker run --rm -p '8081:80/tcp' your-nginx:local
+
+$ curl http://127.0.0.1:8081/foobar | head -n 15 # in another terminal
 ```
 
 </details>
@@ -369,6 +518,7 @@ controller:
   config:
     custom-http-errors: >-
       401,403,404,500,501,502,503
+
 defaultBackend:
   enabled: true
   image:
@@ -518,149 +668,6 @@ The following flags are supported:
 | `--port="…"` (`-p`) | TCP port number with the HTTP server to check |    `8080`     |     `LISTEN_PORT`     |
 
 <!--/GENERATED:CLI_DOCS-->
-
-## 🪂 Templates (themes)
-
-The following templates are built-in and available for use without any additional setup:
-
-> [!NOTE]
-> The `cats` template is the only one of those that fetches resources (the actual cat pictures) from external
-> servers - all other templates are self-contained.
-
-<table>
-  <thead>
-    <tr>
-      <th>Template</th>
-      <th>Preview</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td align="center">
-        <code>app-down</code><br/><br/>
-        <img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Ferror-pages.goatcounter.com%2Fcounter%2F%2Fuse-template%2Fapp-down.json&query=%24.count&label=used%20times" alt="used times">
-      </td>
-      <td>
-        <picture>
-          <source media="(prefers-color-scheme: dark)" srcset="https://github.com/tarampampam/error-pages/assets/7326800/4e668a56-a4c4-47cd-ac4d-b6b45db54ab8">
-          <img align="center" src="https://github.com/tarampampam/error-pages/assets/7326800/ad4b4fd7-7c7b-4bdc-a6b6-44f9ba7f77ca">
-        </picture>
-      </td>
-    </tr>
-    <tr>
-      <td align="center">
-        <code>cats</code><br/><br/>
-        <img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Ferror-pages.goatcounter.com%2Fcounter%2F%2Fuse-template%2Fcats.json&query=%24.count&label=used%20times" alt="used times">
-      </td>
-      <td>
-        <picture>
-          <source media="(prefers-color-scheme: dark)" srcset="https://github.com/tarampampam/error-pages/assets/7326800/5689880b-f770-406c-81dd-2d28629e6f2e">
-          <img align="center" src="https://github.com/tarampampam/error-pages/assets/7326800/056cd00e-bc9a-4120-8325-310d7b0ebd1b">
-        </picture>
-      </td>
-    </tr>
-    <tr>
-      <td align="center">
-        <code>connection</code><br/><br/>
-        <img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Ferror-pages.goatcounter.com%2Fcounter%2F%2Fuse-template%2Fconnection.json&query=%24.count&label=used%20times" alt="used times">
-      </td>
-      <td>
-        <picture>
-          <source media="(prefers-color-scheme: dark)" srcset="https://github.com/tarampampam/error-pages/assets/7326800/3f03dc1b-c1ee-4a91-b3d7-e3b93c79020e">
-          <img align="center" src="https://github.com/tarampampam/error-pages/assets/7326800/099ecc2d-e724-4d9c-b5ed-66ddabd71139">
-        </picture>
-      </td>
-    </tr>
-    <tr>
-      <td align="center">
-        <code>ghost</code><br/><br/>
-        <img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Ferror-pages.goatcounter.com%2Fcounter%2F%2Fuse-template%2Fghost.json&query=%24.count&label=used%20times" alt="used times">
-      </td>
-      <td>
-        <picture>
-          <source media="(prefers-color-scheme: dark)" srcset="https://github.com/tarampampam/error-pages/assets/7326800/714482ab-f8c1-4455-8ae8-b2ae78f7a2c6">
-          <img align="center" src="https://github.com/tarampampam/error-pages/assets/7326800/f253dfe7-96a0-4e96-915b-d4c544d4a237">
-        </picture>
-      </td>
-    </tr>
-    <tr>
-      <td align="center">
-        <code>hacker-terminal</code><br/><br/>
-        <img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Ferror-pages.goatcounter.com%2Fcounter%2F%2Fuse-template%2Fhacker-terminal.json&query=%24.count&label=used%20times" alt="used times">
-      </td>
-      <td>
-        <picture>
-          <img align="center" src="https://github.com/tarampampam/error-pages/assets/7326800/c197fc35-0844-43d0-9830-82440cee4559">
-        </picture>
-      </td>
-    </tr>
-    <tr>
-      <td align="center">
-        <code>l7</code><br/><br/>
-        <img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Ferror-pages.goatcounter.com%2Fcounter%2F%2Fuse-template%2Fl7.json&query=%24.count&label=used%20times" alt="used times">
-      </td>
-      <td>
-        <picture>
-          <source media="(prefers-color-scheme: dark)" srcset="https://github.com/tarampampam/error-pages/assets/7326800/18e43ea3-6389-4459-be41-0fc6566a073f">
-          <img align="center" src="https://github.com/tarampampam/error-pages/assets/7326800/05f26669-94ec-40ce-8d67-a199cde54202">
-        </picture>
-      </td>
-    </tr>
-    <tr>
-      <td align="center">
-        <code>lost-in-space</code><br/><br/>
-        <img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Ferror-pages.goatcounter.com%2Fcounter%2F%2Fuse-template%2Flost-in-space.json&query=%24.count&label=used%20times" alt="used times">
-      </td>
-      <td>
-        <picture>
-          <source media="(prefers-color-scheme: dark)" srcset="https://github.com/tarampampam/error-pages/assets/7326800/debf87c0-6f27-41a8-b141-ee3464cbd6cc">
-          <img align="center" src="https://github.com/tarampampam/error-pages/assets/7326800/c347e63d-13a7-46d4-81b9-b25266819a1d">
-        </picture>
-      </td>
-    </tr>
-    <tr>
-      <td align="center">
-        <code>noise</code><br/><br/>
-        <img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Ferror-pages.goatcounter.com%2Fcounter%2F%2Fuse-template%2Fnoise.json&query=%24.count&label=used%20times" alt="used times">
-      </td>
-      <td>
-        <picture>
-          <img align="center" src="https://github.com/tarampampam/error-pages/assets/7326800/4cc5c3bd-6ebb-4e96-bee8-02d4ad4e7266">
-        </picture>
-      </td>
-    </tr>
-    <tr>
-      <td align="center">
-        <code>orient</code><br/><br/>
-        <img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Ferror-pages.goatcounter.com%2Fcounter%2F%2Fuse-template%2Forient.json&query=%24.count&label=used%20times" alt="used times">
-      </td>
-      <td>
-        <picture>
-          <source media="(prefers-color-scheme: dark)" srcset="https://github.com/tarampampam/error-pages/assets/7326800/bc2b0dad-c32c-4628-98f6-e3eab61dd1f2">
-          <img align="center" src="https://github.com/tarampampam/error-pages/assets/7326800/8fc0a7ea-694d-49ce-bb50-3ea032d52d1e">
-        </picture>
-      </td>
-    </tr>
-    <tr>
-      <td align="center">
-        <code>shuffle</code><br/><br/>
-        <img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Ferror-pages.goatcounter.com%2Fcounter%2F%2Fuse-template%2Fshuffle.json&query=%24.count&label=used%20times" alt="used times">
-      </td>
-      <td>
-        <picture>
-          <source media="(prefers-color-scheme: dark)" srcset="https://github.com/tarampampam/error-pages/assets/7326800/7504b7c3-b0cb-4991-9ac2-759cd6c50fc0">
-          <img align="center" src="https://github.com/tarampampam/error-pages/assets/7326800/d2a73fc8-cf5f-4f42-bff8-cce33d8ae47e">
-        </picture>
-      </td>
-    </tr>
-  </tbody>
-</table>
-
-> [!NOTE]
-> The "used times" counter increments when someone start the server with the specified template. Stats service does
-> not collect any information about location, IP addresses, and so on. Moreover, the stats are open and available for
-> everyone at [error-pages.goatcounter.com](https://error-pages.goatcounter.com/). This is simply a counter to display
-> how often a particular template is used, nothing more.
 
 ## 🦾 Contributors
 
