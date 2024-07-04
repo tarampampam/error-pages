@@ -3,7 +3,7 @@
 # -✂- this stage is used to develop and build the application locally -------------------------------------------------
 FROM docker.io/library/golang:1.22-bookworm AS develop
 
-# use the /var/tmp as the GOPATH to reuse the modules cache
+# use the /var/tmp/go as the GOPATH to reuse the modules cache
 ENV GOPATH="/var/tmp/go"
 
 RUN set -x \
@@ -45,7 +45,7 @@ FROM docker.io/library/alpine:3.20 AS rootfs
 WORKDIR /tmp/rootfs
 
 # prepare rootfs for runtime
-RUN --mount=type=bind,source=.,target=/src set -x \
+RUN set -x \
     && mkdir -p ./etc ./bin \
     && echo 'appuser:x:10001:10001::/nonexistent:/sbin/nologin' > ./etc/passwd \
     && echo 'appuser:x:10001:' > ./etc/group
@@ -69,7 +69,7 @@ ARG APP_VERSION="undefined@docker"
 LABEL \
     # docs: https://github.com/opencontainers/image-spec/blob/master/annotations.md
     org.opencontainers.image.title="error-pages" \
-    org.opencontainers.image.description="Static server error pages in the docker image" \
+    org.opencontainers.image.description="Pretty server's error pages" \
     org.opencontainers.image.url="https://github.com/tarampampam/error-pages" \
     org.opencontainers.image.source="https://github.com/tarampampam/error-pages" \
     org.opencontainers.image.vendor="tarampampam" \
