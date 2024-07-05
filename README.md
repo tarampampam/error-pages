@@ -31,6 +31,8 @@ original and attractive. That's why this repository was created :) It contains:
 - HTTP server written in Go, utilizing the extremely fast [FastHTTP][fasthttp] and in-memory caching
   - Respects the `Content-Type` HTTP header (and `X-Format`) value, responding with the corresponding format
     (supported formats: `json`, `xml`, and `plaintext`)
+  - Error pages are configured to be excluded from search engine indexing (using meta tags and HTTP headers) to
+    prevent SEO issues on your website
   - Logs written in `json` format
   - Contains a health check endpoint (`/healthz`)
   - Consumes very few resources and is suitable for use in resource-constrained environments
