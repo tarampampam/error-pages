@@ -93,13 +93,12 @@ jobs:
           push: true
           platforms: linux/amd64,linux/arm/v7,linux/arm64/v8
           build-args: "APP_VERSION=${{ steps.slug.outputs.version }}"
-          tags: ghcr.io/${{ github.actor }}/${{ github.event.repository.name }}:${{ steps.slug.outputs.version }}
-#         tags: | # TODO: uncomment after the stable release
-#           tarampampam/error-pages:latest
-#           tarampampam/error-pages:${{ steps.slug.outputs.version }}
-#           tarampampam/error-pages:${{ steps.slug.outputs.version-major }}.${{ steps.slug.outputs.version-minor }}
-#           tarampampam/error-pages:${{ steps.slug.outputs.version-major }}
-#           ghcr.io/${{ github.actor }}/${{ github.event.repository.name }}:latest
-#           ghcr.io/${{ github.actor }}/${{ github.event.repository.name }}:${{ steps.slug.outputs.version }}
-#           ghcr.io/${{ github.actor }}/${{ github.event.repository.name }}:${{ steps.slug.outputs.version-major }}.${{ steps.slug.outputs.version-minor }}
-#           ghcr.io/${{ github.actor }}/${{ github.event.repository.name }}:${{ steps.slug.outputs.version-major }}
+          tags:
+            tarampampam/error-pages:latest
+            tarampampam/error-pages:${{ steps.slug.outputs.version }}
+            tarampampam/error-pages:${{ steps.slug.outputs.version-major }}.${{ steps.slug.outputs.version-minor }}
+            tarampampam/error-pages:${{ steps.slug.outputs.version-major }}
+            ghcr.io/${{ github.actor }}/${{ github.event.repository.name }}:latest
+            ghcr.io/${{ github.actor }}/${{ github.event.repository.name }}:${{ steps.slug.outputs.version }}
+            ghcr.io/${{ github.actor }}/${{ github.event.repository.name }}:${{ steps.slug.outputs.version-major }}.${{ steps.slug.outputs.version-minor }}
+            ghcr.io/${{ github.actor }}/${{ github.event.repository.name }}:${{ steps.slug.outputs.version-major }}
