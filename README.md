@@ -88,119 +88,159 @@ The following templates are built-in and available for use without any additiona
     <tr>
       <td align="center">
         <code>app-down</code><br/><br/>
-        <img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Ferror-pages.goatcounter.com%2Fcounter%2F%2Fuse-template%2Fapp-down.json&query=%24.count&label=used%20times" alt="used times">
+        <picture>
+          <img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Ferror-pages.goatcounter.com%2Fcounter%2F%2Fuse-template%2Fapp-down.json&query=%24.count&label=used%20times" alt="used times">
+        </picture>
       </td>
       <td>
-        <picture>
-          <source media="(prefers-color-scheme: dark)" srcset="https://github.com/tarampampam/error-pages/assets/7326800/4e668a56-a4c4-47cd-ac4d-b6b45db54ab8">
-          <img align="center" src="https://github.com/tarampampam/error-pages/assets/7326800/ad4b4fd7-7c7b-4bdc-a6b6-44f9ba7f77ca">
-        </picture>
+        <a href="https://tarampampam.github.io/error-pages/app-down/404.html">
+          <picture>
+            <source media="(prefers-color-scheme: dark)" srcset="https://github.com/tarampampam/error-pages/assets/7326800/4e668a56-a4c4-47cd-ac4d-b6b45db54ab8">
+            <img align="center" src="https://github.com/tarampampam/error-pages/assets/7326800/ad4b4fd7-7c7b-4bdc-a6b6-44f9ba7f77ca">
+          </picture>
+        </a>
       </td>
     </tr>
     <tr>
       <td align="center">
         <code>cats</code><br/><br/>
-        <img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Ferror-pages.goatcounter.com%2Fcounter%2F%2Fuse-template%2Fcats.json&query=%24.count&label=used%20times" alt="used times">
+        <picture>
+          <img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Ferror-pages.goatcounter.com%2Fcounter%2F%2Fuse-template%2Fcats.json&query=%24.count&label=used%20times" alt="used times">
+        </picture>
       </td>
       <td>
-        <picture>
-          <source media="(prefers-color-scheme: dark)" srcset="https://github.com/tarampampam/error-pages/assets/7326800/5689880b-f770-406c-81dd-2d28629e6f2e">
-          <img align="center" src="https://github.com/tarampampam/error-pages/assets/7326800/056cd00e-bc9a-4120-8325-310d7b0ebd1b">
-        </picture>
+        <a href="https://tarampampam.github.io/error-pages/cats/404.html">
+          <picture>
+            <source media="(prefers-color-scheme: dark)" srcset="https://github.com/tarampampam/error-pages/assets/7326800/5689880b-f770-406c-81dd-2d28629e6f2e">
+            <img align="center" src="https://github.com/tarampampam/error-pages/assets/7326800/056cd00e-bc9a-4120-8325-310d7b0ebd1b">
+          </picture>
+        </a>
       </td>
     </tr>
     <tr>
       <td align="center">
         <code>connection</code><br/><br/>
-        <img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Ferror-pages.goatcounter.com%2Fcounter%2F%2Fuse-template%2Fconnection.json&query=%24.count&label=used%20times" alt="used times">
+        <picture>
+          <img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Ferror-pages.goatcounter.com%2Fcounter%2F%2Fuse-template%2Fconnection.json&query=%24.count&label=used%20times" alt="used times">
+        </picture>
       </td>
       <td>
-        <picture>
-          <source media="(prefers-color-scheme: dark)" srcset="https://github.com/tarampampam/error-pages/assets/7326800/3f03dc1b-c1ee-4a91-b3d7-e3b93c79020e">
-          <img align="center" src="https://github.com/tarampampam/error-pages/assets/7326800/099ecc2d-e724-4d9c-b5ed-66ddabd71139">
-        </picture>
+        <a href="https://tarampampam.github.io/error-pages/connection/404.html">
+          <picture>
+            <source media="(prefers-color-scheme: dark)" srcset="https://github.com/tarampampam/error-pages/assets/7326800/3f03dc1b-c1ee-4a91-b3d7-e3b93c79020e">
+            <img align="center" src="https://github.com/tarampampam/error-pages/assets/7326800/099ecc2d-e724-4d9c-b5ed-66ddabd71139">
+          </picture>
+        </a>
       </td>
     </tr>
     <tr>
       <td align="center">
         <code>ghost</code><br/><br/>
-        <img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Ferror-pages.goatcounter.com%2Fcounter%2F%2Fuse-template%2Fghost.json&query=%24.count&label=used%20times" alt="used times">
+        <picture>
+          <img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Ferror-pages.goatcounter.com%2Fcounter%2F%2Fuse-template%2Fghost.json&query=%24.count&label=used%20times" alt="used times">
+        </picture>
       </td>
       <td>
-        <picture>
-          <source media="(prefers-color-scheme: dark)" srcset="https://github.com/tarampampam/error-pages/assets/7326800/714482ab-f8c1-4455-8ae8-b2ae78f7a2c6">
-          <img align="center" src="https://github.com/tarampampam/error-pages/assets/7326800/f253dfe7-96a0-4e96-915b-d4c544d4a237">
-        </picture>
+        <a href="https://tarampampam.github.io/error-pages/ghost/404.html">
+          <picture>
+            <source media="(prefers-color-scheme: dark)" srcset="https://github.com/tarampampam/error-pages/assets/7326800/714482ab-f8c1-4455-8ae8-b2ae78f7a2c6">
+            <img align="center" src="https://github.com/tarampampam/error-pages/assets/7326800/f253dfe7-96a0-4e96-915b-d4c544d4a237">
+          </picture>
+        </a>
       </td>
     </tr>
     <tr>
       <td align="center">
         <code>hacker-terminal</code><br/><br/>
-        <img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Ferror-pages.goatcounter.com%2Fcounter%2F%2Fuse-template%2Fhacker-terminal.json&query=%24.count&label=used%20times" alt="used times">
+        <picture>
+          <img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Ferror-pages.goatcounter.com%2Fcounter%2F%2Fuse-template%2Fhacker-terminal.json&query=%24.count&label=used%20times" alt="used times">
+        </picture>
       </td>
       <td>
-        <picture>
-          <img align="center" src="https://github.com/tarampampam/error-pages/assets/7326800/c197fc35-0844-43d0-9830-82440cee4559">
-        </picture>
+        <a href="https://tarampampam.github.io/error-pages/hacker-terminal/404.html">
+          <picture>
+            <img align="center" src="https://github.com/tarampampam/error-pages/assets/7326800/c197fc35-0844-43d0-9830-82440cee4559">
+          </picture>
+        </a>
       </td>
     </tr>
     <tr>
       <td align="center">
         <code>l7</code><br/><br/>
-        <img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Ferror-pages.goatcounter.com%2Fcounter%2F%2Fuse-template%2Fl7.json&query=%24.count&label=used%20times" alt="used times">
+        <picture>
+          <img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Ferror-pages.goatcounter.com%2Fcounter%2F%2Fuse-template%2Fl7.json&query=%24.count&label=used%20times" alt="used times">
+        </picture>
       </td>
       <td>
-        <picture>
-          <source media="(prefers-color-scheme: dark)" srcset="https://github.com/tarampampam/error-pages/assets/7326800/18e43ea3-6389-4459-be41-0fc6566a073f">
-          <img align="center" src="https://github.com/tarampampam/error-pages/assets/7326800/05f26669-94ec-40ce-8d67-a199cde54202">
-        </picture>
+        <a href="https://tarampampam.github.io/error-pages/l7/404.html">
+          <picture>
+            <source media="(prefers-color-scheme: dark)" srcset="https://github.com/tarampampam/error-pages/assets/7326800/18e43ea3-6389-4459-be41-0fc6566a073f">
+            <img align="center" src="https://github.com/tarampampam/error-pages/assets/7326800/05f26669-94ec-40ce-8d67-a199cde54202">
+          </picture>
+        </a>
       </td>
     </tr>
     <tr>
       <td align="center">
         <code>lost-in-space</code><br/><br/>
-        <img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Ferror-pages.goatcounter.com%2Fcounter%2F%2Fuse-template%2Flost-in-space.json&query=%24.count&label=used%20times" alt="used times">
+        <picture>
+          <img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Ferror-pages.goatcounter.com%2Fcounter%2F%2Fuse-template%2Flost-in-space.json&query=%24.count&label=used%20times" alt="used times">
+        </picture>
       </td>
       <td>
-        <picture>
-          <source media="(prefers-color-scheme: dark)" srcset="https://github.com/tarampampam/error-pages/assets/7326800/debf87c0-6f27-41a8-b141-ee3464cbd6cc">
-          <img align="center" src="https://github.com/tarampampam/error-pages/assets/7326800/c347e63d-13a7-46d4-81b9-b25266819a1d">
-        </picture>
+        <a href="https://tarampampam.github.io/error-pages/lost-in-space/404.html">
+          <picture>
+            <source media="(prefers-color-scheme: dark)" srcset="https://github.com/tarampampam/error-pages/assets/7326800/debf87c0-6f27-41a8-b141-ee3464cbd6cc">
+            <img align="center" src="https://github.com/tarampampam/error-pages/assets/7326800/c347e63d-13a7-46d4-81b9-b25266819a1d">
+          </picture>
+        </a>
       </td>
     </tr>
     <tr>
       <td align="center">
         <code>noise</code><br/><br/>
-        <img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Ferror-pages.goatcounter.com%2Fcounter%2F%2Fuse-template%2Fnoise.json&query=%24.count&label=used%20times" alt="used times">
+        <picture>
+          <img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Ferror-pages.goatcounter.com%2Fcounter%2F%2Fuse-template%2Fnoise.json&query=%24.count&label=used%20times" alt="used times">
+        </picture>
       </td>
       <td>
-        <picture>
-          <img align="center" src="https://github.com/tarampampam/error-pages/assets/7326800/4cc5c3bd-6ebb-4e96-bee8-02d4ad4e7266">
-        </picture>
+        <a href="https://tarampampam.github.io/error-pages/noise/404.html">
+          <picture>
+            <img align="center" src="https://github.com/tarampampam/error-pages/assets/7326800/4cc5c3bd-6ebb-4e96-bee8-02d4ad4e7266">
+          </picture>
+        </a>
       </td>
     </tr>
     <tr>
       <td align="center">
         <code>orient</code><br/><br/>
-        <img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Ferror-pages.goatcounter.com%2Fcounter%2F%2Fuse-template%2Forient.json&query=%24.count&label=used%20times" alt="used times">
+        <picture>
+          <img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Ferror-pages.goatcounter.com%2Fcounter%2F%2Fuse-template%2Forient.json&query=%24.count&label=used%20times" alt="used times">
+        </picture>
       </td>
       <td>
-        <picture>
-          <source media="(prefers-color-scheme: dark)" srcset="https://github.com/tarampampam/error-pages/assets/7326800/bc2b0dad-c32c-4628-98f6-e3eab61dd1f2">
-          <img align="center" src="https://github.com/tarampampam/error-pages/assets/7326800/8fc0a7ea-694d-49ce-bb50-3ea032d52d1e">
-        </picture>
+        <a href="https://tarampampam.github.io/error-pages/orient/404.html">
+          <picture>
+            <source media="(prefers-color-scheme: dark)" srcset="https://github.com/tarampampam/error-pages/assets/7326800/bc2b0dad-c32c-4628-98f6-e3eab61dd1f2">
+            <img align="center" src="https://github.com/tarampampam/error-pages/assets/7326800/8fc0a7ea-694d-49ce-bb50-3ea032d52d1e">
+          </picture>
+        </a>
       </td>
     </tr>
     <tr>
       <td align="center">
         <code>shuffle</code><br/><br/>
-        <img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Ferror-pages.goatcounter.com%2Fcounter%2F%2Fuse-template%2Fshuffle.json&query=%24.count&label=used%20times" alt="used times">
+        <picture>
+          <img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Ferror-pages.goatcounter.com%2Fcounter%2F%2Fuse-template%2Fshuffle.json&query=%24.count&label=used%20times" alt="used times">
+        </picture>
       </td>
       <td>
-        <picture>
-          <source media="(prefers-color-scheme: dark)" srcset="https://github.com/tarampampam/error-pages/assets/7326800/7504b7c3-b0cb-4991-9ac2-759cd6c50fc0">
-          <img align="center" src="https://github.com/tarampampam/error-pages/assets/7326800/d2a73fc8-cf5f-4f42-bff8-cce33d8ae47e">
-        </picture>
+        <a href="https://tarampampam.github.io/error-pages/shuffle/404.html">
+          <picture>
+            <source media="(prefers-color-scheme: dark)" srcset="https://github.com/tarampampam/error-pages/assets/7326800/7504b7c3-b0cb-4991-9ac2-759cd6c50fc0">
+            <img align="center" src="https://github.com/tarampampam/error-pages/assets/7326800/d2a73fc8-cf5f-4f42-bff8-cce33d8ae47e">
+          </picture>
+        </a>
       </td>
     </tr>
   </tbody>
