@@ -36,7 +36,7 @@ jobs:
           tag: ${{ github.ref }}
 
       - if: matrix.os == 'linux' && matrix.arch == 'amd64'
-        run: mkdir ./out && ./${{ steps.values.outputs.binary-name }} build --index --target-dir ./out
+        run: mkdir ./out && ./${{ steps.values.outputs.binary-name }} build --index --disable-minification --target-dir ./out
       - if: matrix.os == 'linux' && matrix.arch == 'amd64'
         uses: actions/upload-artifact@v4
         with:
