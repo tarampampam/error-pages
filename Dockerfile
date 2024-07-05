@@ -46,9 +46,10 @@ WORKDIR /tmp/rootfs
 
 # prepare rootfs for runtime
 RUN set -x \
-    && mkdir -p ./etc ./bin \
+    && mkdir -p ./etc/ssl/certs ./bin \
     && echo 'appuser:x:10001:10001::/nonexistent:/sbin/nologin' > ./etc/passwd \
-    && echo 'appuser:x:10001:' > ./etc/group
+    && echo 'appuser:x:10001:' > ./etc/group \
+    && cp /etc/ssl/certs/ca-certificates.crt ./etc/ssl/certs/
 
 # take the binary from the compile stage
 COPY --from=compile /tmp/error-pages ./bin/error-pages
