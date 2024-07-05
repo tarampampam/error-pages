@@ -216,3 +216,12 @@ func TestDisableL10nFlag(t *testing.T) {
 	assert.Equal(t, "disable-l10n", flag.Name)
 	assert.Contains(t, flag.Sources.String(), "DISABLE_L10N")
 }
+
+func TestDisableMinificationFlag(t *testing.T) {
+	t.Parallel()
+
+	var flag = shared.DisableMinificationFlag
+
+	assert.Equal(t, "disable-minification", flag.Name)
+	assert.Contains(t, flag.Sources.String(), "DISABLE_MINIFICATION")
+}

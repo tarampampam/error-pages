@@ -6,7 +6,6 @@ import (
 	"runtime"
 	"strings"
 
-	_ "github.com/urfave/cli-docs/v3" // required for `go generate` to work
 	"github.com/urfave/cli/v3"
 
 	"gh.tarampamp.am/error-pages/internal/appmeta"
@@ -17,7 +16,7 @@ import (
 	"gh.tarampamp.am/error-pages/internal/logger"
 )
 
-//go:generate go run update_readme.go
+//go:generate go run app_generate.go
 
 // NewApp creates a new console application.
 func NewApp(appName string) *cli.Command { //nolint:funlen

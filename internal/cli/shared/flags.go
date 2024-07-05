@@ -146,3 +146,11 @@ var DisableL10nFlag = cli.BoolFlag{
 	Category: CategoryOther,
 	OnlyOnce: true,
 }
+
+var DisableMinificationFlag = cli.BoolFlag{
+	Name:     "disable-minification",
+	Usage:    "Disable the minification of HTML pages, including CSS, SVG, and JS (may be useful for debugging)",
+	Sources:  cli.EnvVars("DISABLE_MINIFICATION"),
+	Category: CategoryOther,
+	OnlyOnce: true,
+}

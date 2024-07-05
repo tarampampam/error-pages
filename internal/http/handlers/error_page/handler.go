@@ -175,6 +175,14 @@ func New(cfg *config.Config, log *logger.Logger) (_ fasthttp.RequestHandler, clo
 							err.Error(),
 						))
 					} else {
+						if !cfg.DisableMinification {
+							if mini, minErr := template.MiniHTML(content); minErr != nil {
+								log.Warn("HTML minification failed", logger.Error(minErr))
+							} else {
+								content = mini
+							}
+						}
+
 						cache.Put(tpl, tplProps, []byte(content))
 
 						write(ctx, log, content)

@@ -39,11 +39,12 @@ func NewCommand(log *logger.Logger) *cli.Command { //nolint:funlen,gocognit
 		cmd command
 		cfg = config.New()
 
-		addTplFlag      = shared.AddTemplatesFlag
-		disableTplFlag  = shared.DisableTemplateNamesFlag
-		addCodeFlag     = shared.AddHTTPCodesFlag
-		disableL10nFlag = shared.DisableL10nFlag
-		createIndexFlag = cli.BoolFlag{
+		addTplFlag              = shared.AddTemplatesFlag
+		disableTplFlag          = shared.DisableTemplateNamesFlag
+		addCodeFlag             = shared.AddHTTPCodesFlag
+		disableL10nFlag         = shared.DisableL10nFlag
+		disableMinificationFlag = shared.DisableMinificationFlag
+		createIndexFlag         = cli.BoolFlag{
 			Name:     "index",
 			Aliases:  []string{"i"},
 			Usage:    "Generate index.html file with links to all error pages",
@@ -81,6 +82,7 @@ func NewCommand(log *logger.Logger) *cli.Command { //nolint:funlen,gocognit
 		Usage:   "Build the static error pages and put them into a specified directory",
 		Action: func(ctx context.Context, c *cli.Command) error {
 			cfg.L10n.Disable = c.Bool(disableL10nFlag.Name)
+			cfg.DisableMinification = c.Bool(disableMinificationFlag.Name)
 			cmd.opt.createIndex = c.Bool(createIndexFlag.Name)
 			cmd.opt.targetDirAbsPath, _ = filepath.Abs(c.String(targetDirFlag.Name)) // an error checked by [os.Stat] validator
 
@@ -140,13 +142,14 @@ func NewCommand(log *logger.Logger) *cli.Command { //nolint:funlen,gocognit
 			&disableL10nFlag,
 			&createIndexFlag,
 			&targetDirFlag,
+			&disableMinificationFlag,
 		},
 	}
 
 	return cmd.c
 }
 
-func (cmd *command) Run( //nolint:funlen
+func (cmd *command) Run( //nolint:funlen,gocognit
 	ctx context.Context,
 	log *logger.Logger,
 	cfg *config.Config,
@@ -172,13 +175,21 @@ func (cmd *command) Run( //nolint:funlen
 
 			var outFilePath = path.Join(cmd.opt.targetDirAbsPath, templateName, code+".html")
 
-			if content, renderErr := appTemplate.Render(templateContent, appTemplate.Props{
+			if content, renderErr := appTemplate.Render(templateContent, appTemplate.Props{ //nolint:nestif
 				Code:               uint16(codeAsUint),
 				Message:            codeDescription.Message,
 				Description:        codeDescription.Description,
 				L10nDisabled:       cfg.L10n.Disable,
 				ShowRequestDetails: false,
 			}); renderErr == nil {
+				if !cfg.DisableMinification {
+					if mini, minErr := appTemplate.MiniHTML(content); minErr != nil {
+						log.Warn("Cannot minify the content", logger.Error(minErr))
+					} else {
+						content = mini
+					}
+				}
+
 				if err := os.WriteFile(outFilePath, []byte(content), os.FileMode(0664)); err != nil { //nolint:mnd
 					return err
 				}

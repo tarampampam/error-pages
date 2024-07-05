@@ -56,6 +56,9 @@ type Config struct {
 	// ShowDetails determines whether to show additional details in the error response, extracted from the
 	// incoming request (if supported by the template).
 	ShowDetails bool
+
+	// DisableMinification determines whether to disable minification of the rendered content (e.g., HTML, CSS) or not.
+	DisableMinification bool
 }
 
 const defaultJSONFormat string = `{

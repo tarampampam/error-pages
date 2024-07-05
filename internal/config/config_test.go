@@ -24,6 +24,7 @@ func TestNew(t *testing.T) {
 		assert.NotEmpty(t, cfg.TemplateName)
 		assert.True(t, cfg.Templates.Has(cfg.TemplateName))
 		assert.Equal(t, uint16(http.StatusNotFound), cfg.DefaultCodeToRender)
+		assert.False(t, cfg.DisableMinification)
 	})
 
 	t.Run("changing cfg1 should not affect cfg2", func(t *testing.T) {

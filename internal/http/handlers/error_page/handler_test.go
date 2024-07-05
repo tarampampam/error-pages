@@ -48,7 +48,7 @@ func TestHandler(t *testing.T) {
 			wantStatusCode: http.StatusOK,
 			wantHeaders:    map[string]string{"Content-Type": "text/html; charset=utf-8"},
 			wantBodyIncludes: []string{
-				"<!DOCTYPE html>",
+				"<!doctype html>",
 				"<title>407: Proxy Authentication Required",
 				"Proxy Authentication Required",
 			},

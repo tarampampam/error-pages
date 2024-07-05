@@ -610,11 +610,11 @@ Test completed successfully. Here is the output:
 Running 15s test @ http://127.0.0.1:8080/
   12 threads and 400 connections
   Thread Stats   Avg      Stdev     Max   +/- Stdev
-    Latency     3.54ms    4.90ms  74.57ms   86.55%
-    Req/Sec    16.47k     2.89k   38.11k    69.46%
-  2967567 requests in 15.09s, 44.70GB read
-Requests/sec: 196596.49
-Transfer/sec:      2.96GB
+    Latency     4.52ms    6.43ms  94.34ms   85.44%
+    Req/Sec    15.76k     2.83k   29.64k    69.20%
+  2839632 requests in 15.09s, 32.90GB read
+Requests/sec: 188185.61
+Transfer/sec:      2.18GB
 
 Starting the test to bomb DIFFERENT PAGES (codes). Please, be patient...
 Test completed successfully. Here is the output:
@@ -622,11 +622,11 @@ Test completed successfully. Here is the output:
 Running 15s test @ http://127.0.0.1:8080/
   12 threads and 400 connections
   Thread Stats   Avg      Stdev     Max   +/- Stdev
-    Latency     4.25ms    6.03ms  74.23ms   86.97%
-    Req/Sec    14.29k     2.75k   32.16k    69.63%
-  2563245 requests in 15.07s, 38.47GB read
-Requests/sec: 170062.69
-Transfer/sec:      2.55GB
+    Latency     6.75ms   13.71ms 252.66ms   91.94%
+    Req/Sec    14.06k     3.25k   26.39k    71.98%
+  2534473 requests in 15.10s, 29.22GB read
+Requests/sec: 167899.78
+Transfer/sec:      1.94GB
 ```
 
 </details>
@@ -678,6 +678,7 @@ The following flags are supported:
 | `--proxy-headers="…"`        | HTTP headers listed here will be proxied from the original request to the error page response (comma-separated list)                                                                                                                                                                                                      | `X-Request-Id,X-Trace-Id,X-Amzn-Trace-Id` |    `PROXY_HTTP_HEADERS`     |
 | `--rotation-mode="…"`        | Templates automatic rotation mode (disabled/random-on-startup/random-on-each-request/random-hourly/random-daily)                                                                                                                                                                                                          |                `disabled`                 |  `TEMPLATES_ROTATION_MODE`  |
 | `--read-buffer-size="…"`     | Per-connection buffer size in bytes for reading requests, this also limits the maximum header size (increase this buffer if your clients send multi-KB Request URIs and/or multi-KB headers (e.g., large cookies), note that increasing this value will increase memory consumption)                                      |                  `5120`                   |     `READ_BUFFER_SIZE`      |
+| `--disable-minification`     | Disable the minification of HTML pages, including CSS, SVG, and JS (may be useful for debugging)                                                                                                                                                                                                                          |                  `false`                  |   `DISABLE_MINIFICATION`    |
 
 ### `build` command (aliases: `b`)
 
@@ -691,14 +692,15 @@ $ error-pages [GLOBAL FLAGS] build [COMMAND FLAGS] [ARGUMENTS...]
 
 The following flags are supported:
 
-| Name                                        | Description                                                                                                                                                                                                                                                                                                               | Default value | Environment variables |
-|---------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:-------------:|:---------------------:|
-| `--add-template="…"`                        | To add a new template, provide the path to the file using this flag (the filename without the extension will be used as the template name)                                                                                                                                                                                |     `[]`      |        *none*         |
-| `--disable-template="…"`                    | Disable the specified template by its name (useful to disable the built-in templates and use only custom ones)                                                                                                                                                                                                            |     `[]`      |        *none*         |
-| `--add-code="…"`                            | To add a new HTTP status code, provide the code and its message/description using this flag (the format should be '%code%=%message%/%description%'; the code may contain a wildcard '*' to cover multiple codes at once, for example, '4**' will cover all 4xx codes unless a more specific code is described previously) |    `map[]`    |        *none*         |
-| `--disable-l10n`                            | Disable localization of error pages (if the template supports localization)                                                                                                                                                                                                                                               |    `false`    |    `DISABLE_L10N`     |
-| `--index` (`-i`)                            | Generate index.html file with links to all error pages                                                                                                                                                                                                                                                                    |    `false`    |        *none*         |
-| `--target-dir="…"` (`--out`, `--dir`, `-o`) | Directory to put the built error pages into                                                                                                                                                                                                                                                                               |      `.`      |        *none*         |
+| Name                                        | Description                                                                                                                                                                                                                                                                                                               | Default value |  Environment variables |
+|---------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:-------------:|:----------------------:|
+| `--add-template="…"`                        | To add a new template, provide the path to the file using this flag (the filename without the extension will be used as the template name)                                                                                                                                                                                |     `[]`      |         *none*         |
+| `--disable-template="…"`                    | Disable the specified template by its name (useful to disable the built-in templates and use only custom ones)                                                                                                                                                                                                            |     `[]`      |         *none*         |
+| `--add-code="…"`                            | To add a new HTTP status code, provide the code and its message/description using this flag (the format should be '%code%=%message%/%description%'; the code may contain a wildcard '*' to cover multiple codes at once, for example, '4**' will cover all 4xx codes unless a more specific code is described previously) |    `map[]`    |         *none*         |
+| `--disable-l10n`                            | Disable localization of error pages (if the template supports localization)                                                                                                                                                                                                                                               |    `false`    |     `DISABLE_L10N`     |
+| `--index` (`-i`)                            | Generate index.html file with links to all error pages                                                                                                                                                                                                                                                                    |    `false`    |         *none*         |
+| `--target-dir="…"` (`--out`, `--dir`, `-o`) | Directory to put the built error pages into                                                                                                                                                                                                                                                                               |      `.`      |         *none*         |
+| `--disable-minification`                    | Disable the minification of HTML pages, including CSS, SVG, and JS (may be useful for debugging)                                                                                                                                                                                                                          |    `false`    | `DISABLE_MINIFICATION` |
 
 ### `healthcheck` command (aliases: `chk`, `health`, `check`)
 
