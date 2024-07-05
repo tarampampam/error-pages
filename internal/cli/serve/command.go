@@ -38,13 +38,14 @@ func NewCommand(log *logger.Logger) *cli.Command { //nolint:funlen,gocognit,gocy
 	)
 
 	var (
-		addrFlag        = shared.ListenAddrFlag
-		portFlag        = shared.ListenPortFlag
-		addTplFlag      = shared.AddTemplatesFlag
-		disableTplFlag  = shared.DisableTemplateNamesFlag
-		addCodeFlag     = shared.AddHTTPCodesFlag
-		disableL10nFlag = shared.DisableL10nFlag
-		jsonFormatFlag  = cli.StringFlag{
+		addrFlag                = shared.ListenAddrFlag
+		portFlag                = shared.ListenPortFlag
+		addTplFlag              = shared.AddTemplatesFlag
+		disableTplFlag          = shared.DisableTemplateNamesFlag
+		addCodeFlag             = shared.AddHTTPCodesFlag
+		disableL10nFlag         = shared.DisableL10nFlag
+		disableMinificationFlag = shared.DisableMinificationFlag
+		jsonFormatFlag          = cli.StringFlag{
 			Name: "json-format",
 			Usage: "Override the default error page response in JSON format (Go templates are supported; the error " +
 				"page will use this template if the client requests JSON content type)",
@@ -182,6 +183,7 @@ func NewCommand(log *logger.Logger) *cli.Command { //nolint:funlen,gocognit,gocy
 			cfg.RespondWithSameHTTPCode = c.Bool(sendSameHTTPCodeFlag.Name)
 			cfg.RotationMode, _ = config.ParseRotationMode(c.String(rotationModeFlag.Name))
 			cfg.ShowDetails = c.Bool(showDetailsFlag.Name)
+			cfg.DisableMinification = c.Bool(disableMinificationFlag.Name)
 
 			{ // override default JSON, XML, and PlainText formats
 				if c.IsSet(jsonFormatFlag.Name) {
@@ -303,6 +305,7 @@ func NewCommand(log *logger.Logger) *cli.Command { //nolint:funlen,gocognit,gocy
 			&proxyHeadersListFlag,
 			&rotationModeFlag,
 			&readBufferSizeFlag,
+			&disableMinificationFlag,
 		},
 	}
 

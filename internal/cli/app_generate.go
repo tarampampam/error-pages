@@ -1,5 +1,4 @@
-//go:build ignore
-// +build ignore
+//go:build generate
 
 package main
 
@@ -17,8 +16,10 @@ func main() {
 	if stat, err := os.Stat(readmePath); err == nil && stat.Mode().IsRegular() {
 		if err = cliDocs.ToTabularToFileBetweenTags(cli.NewApp(""), "error-pages", readmePath); err != nil {
 			panic(err)
+		} else {
+			println("✔ cli docs updated successfully")
 		}
 	} else if err != nil {
-		println("readme file not found, cli docs not updated:", err.Error())
+		println("⚠ readme file not found, cli docs not updated:", err.Error())
 	}
 }

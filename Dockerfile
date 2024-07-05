@@ -32,7 +32,10 @@ FROM develop AS compile
 # can be passed with any prefix (like `v1.2.3@GITHASH`), e.g.: `docker build --build-arg "APP_VERSION=v1.2.3" .`
 ARG APP_VERSION="undefined@docker"
 
-RUN --mount=type=bind,source=.,target=/src set -x \
+# copy the source code
+COPY . /src
+
+RUN set -x \
     && go generate ./... \
     && CGO_ENABLED=0 LDFLAGS="-s -w -X gh.tarampamp.am/error-pages/internal/appmeta.version=${APP_VERSION}" \
       go build -trimpath -ldflags "${LDFLAGS}" -o /tmp/error-pages ./cmd/error-pages/ \
