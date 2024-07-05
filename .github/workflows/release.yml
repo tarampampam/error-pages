@@ -93,7 +93,7 @@ jobs:
           push: true
           platforms: linux/amd64,linux/arm/v7,linux/arm64/v8
           build-args: "APP_VERSION=${{ steps.slug.outputs.version }}"
-          tags:
+          tags: |
             tarampampam/error-pages:latest
             tarampampam/error-pages:${{ steps.slug.outputs.version }}
             tarampampam/error-pages:${{ steps.slug.outputs.version-major }}.${{ steps.slug.outputs.version-minor }}
