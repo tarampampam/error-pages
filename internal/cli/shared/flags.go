@@ -67,6 +67,7 @@ var AddTemplatesFlag = cli.StringSliceFlag{
 	Usage: "To add a new template, provide the path to the file using this flag (the filename without the extension " +
 		"will be used as the template name)",
 	Config:   cli.StringConfig{TrimSpace: true},
+	Sources:  cli.EnvVars("ADD_TEMPLATE"),
 	Category: CategoryTemplates,
 	Validator: func(paths []string) error {
 		for _, path := range paths {

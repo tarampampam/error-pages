@@ -91,13 +91,12 @@ WORKDIR /opt
 # to find out which environment variables and CLI arguments are supported by the application, run the app
 # with the `--help` flag or refer to the documentation at https://github.com/tarampampam/error-pages#readme
 
-ENV LOG_LEVEL="warn"
+ENV LOG_LEVEL="warn" \
+    LOG_FORMAT="json"
 
 # docs: https://docs.docker.com/reference/dockerfile/#healthcheck
-HEALTHCHECK --interval=10s --start-interval=1s --start-period=5s --timeout=2s CMD [\
-  "/bin/error-pages", "--log-format", "json", "healthcheck" \
-]
+HEALTHCHECK --interval=10s --start-interval=1s --start-period=5s --timeout=2s CMD ["/bin/error-pages", "healthcheck"]
 
 ENTRYPOINT ["/bin/error-pages"]
 
-CMD ["--log-format", "json", "serve"]
+CMD ["serve"]

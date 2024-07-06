@@ -91,6 +91,7 @@ func TestAddTemplatesFlag(t *testing.T) {
 	var flag = shared.AddTemplatesFlag
 
 	assert.Equal(t, "add-template", flag.Name)
+	assert.Contains(t, flag.Sources.String(), "ADD_TEMPLATE")
 
 	for wantErrMsg, giveValue := range map[string][]string{
 		"missing template path":     {""},
