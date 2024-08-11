@@ -16,7 +16,7 @@ Object.defineProperty(window, 'l10n', {
      *
      * @link https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes language codes list (column `Set 1` or `ISO 639-1:2002`)
      *
-     * @type {Map<string, Map<'fr'|'ru'|'uk'|'pt'|'nl'|'de'|'es'|'zh'|'id'|'pl', string>>}
+     * @type {Map<string, Map<'fr'|'ru'|'uk'|'pt'|'nl'|'de'|'es'|'zh'|'id'|'pl'|'ko', string>>}
      */
     const data = Object.freeze(new Map([
       [tkn('Error'), new Map([
