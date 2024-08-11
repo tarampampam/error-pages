@@ -147,7 +147,7 @@ Object.defineProperty(window, 'l10n', {
         ['zh', '站点从未存在'],
         ['id', 'Itu Tidak pernah di sini'],
         ['pl', 'Nigdy jej nie było'],
-        ['ko', '여기에 있던적이 없어요'],
+        ['ko', '여기에 있던 적이 없어요'],
       ])],
       [tkn('Bad Request'), new Map([
         ['fr', 'Mauvaise requête'],
