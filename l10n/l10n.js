@@ -16,7 +16,7 @@ Object.defineProperty(window, 'l10n', {
      *
      * @link https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes language codes list (column `Set 1` or `ISO 639-1:2002`)
      *
-     * @type {Map<string, Map<'fr'|'ru'|'uk'|'pt'|'nl'|'de'|'es'|'zh'|'id'|'pl', string>>}
+     * @type {Map<string, Map<'fr'|'ru'|'uk'|'pt'|'nl'|'de'|'es'|'zh'|'id'|'pl'|'ko', string>>}
      */
     const data = Object.freeze(new Map([
       [tkn('Error'), new Map([
@@ -30,6 +30,7 @@ Object.defineProperty(window, 'l10n', {
         ['zh', '错误'],
         ['id', 'Kesalahan'],
         ['pl', 'Błąd'],
+        ['ko', '오류'],
       ])],
       [tkn('Good luck'), new Map([
         ['fr', 'Bonne chance'],
@@ -42,6 +43,7 @@ Object.defineProperty(window, 'l10n', {
         ['zh', '祝好运'],
         ['id', 'Semoga berhasil!'],
         ['pl', 'Powodzenia'],
+        ['ko', '행운을 빌어요'],
       ])],
       [tkn('UH OH'), new Map([
         ['fr', 'Oups'],
@@ -54,6 +56,7 @@ Object.defineProperty(window, 'l10n', {
         ['zh', '哎呀'],
         ['id', 'Ups'],
         ['pl', 'Ojej'],
+        ['ko', '헉'],
       ])],
       [tkn('Request details'), new Map([
         ['fr', 'Détails de la requête'],
@@ -66,6 +69,7 @@ Object.defineProperty(window, 'l10n', {
         ['zh', '请求详情'],
         ['id', 'Rincian permintaan'],
         ['pl', 'Poproś o szczegóły'],
+        ['ko', '요청 세부사항'],
       ])],
       [tkn('Double-check the URL'), new Map([
         ['fr', 'Vérifiez l’URL'],
@@ -78,6 +82,7 @@ Object.defineProperty(window, 'l10n', {
         ['zh', '请再次检查地址'],
         ['id', 'Periksa URL'],
         ['pl', 'Sprawdź adres URL'],
+        ['ko', 'URL을 다시 확인하세요'],
       ])],
       [tkn('Alternatively, go back'), new Map([
         ['fr', 'Essayer de revenir en arrière'],
@@ -90,6 +95,7 @@ Object.defineProperty(window, 'l10n', {
         ['zh', '或返回上一页'],
         ['id', 'Atau, kembali'],
         ['pl', 'Alternatywnie wróć'],
+        ['ko', '혹은, 돌아가기'],
       ])],
       [tkn("Here's what might have happened"), new Map([
         ['fr', 'Voici ce qui aurait pu se passer'],
@@ -102,6 +108,7 @@ Object.defineProperty(window, 'l10n', {
         ['zh', '可能原因有'],
         ['id', 'Inilah yang bisa saja terjadi'],
         ['pl', 'Oto, co mogło się wydarzyć'],
+        ['ko', '다음이 발생했을 수 있어요'],
       ])],
       [tkn('You may have mistyped the URL'), new Map([
         ['fr', 'Vous avez peut-être mal tapé l’URL'],
@@ -114,6 +121,7 @@ Object.defineProperty(window, 'l10n', {
         ['zh', '您可能输入了错误的地址'],
         ['id', 'Anda mungkin tersalah memasukkan URL'],
         ['pl', 'Być może błędnie wpisałeś adres URL'],
+        ['ko', 'URL을 잘못 입력하셨을 수 있어요'],
       ])],
       [tkn('The site was moved'), new Map([
         ['fr', 'Le site a été déplacé'],
@@ -126,6 +134,7 @@ Object.defineProperty(window, 'l10n', {
         ['zh', '站点已被转移'],
         ['id', 'Halaman dipindahkan'],
         ['pl', 'Witryna została przeniesiona'],
+        ['ko', '사이트가 이동했어요'],
       ])],
       [tkn('It was never here'), new Map([
         ['fr', 'Il n’a jamais été ici'],
@@ -138,6 +147,7 @@ Object.defineProperty(window, 'l10n', {
         ['zh', '站点从未存在'],
         ['id', 'Itu Tidak pernah di sini'],
         ['pl', 'Nigdy jej nie było'],
+        ['ko', '여기에 있던 적이 없어요'],
       ])],
       [tkn('Bad Request'), new Map([
         ['fr', 'Mauvaise requête'],
@@ -150,6 +160,7 @@ Object.defineProperty(window, 'l10n', {
         ['zh', '错误请求'],
         ['id', 'Permintaan yang salah'],
         ['pl', 'Nieprawidłowe żądanie'],
+        ['ko', '잘못된 요청'],
       ])],
       [tkn('The server did not understand the request'), new Map([
         ['fr', 'Le serveur ne comprend pas la requête'],
@@ -162,6 +173,7 @@ Object.defineProperty(window, 'l10n', {
         ['zh', '服务器不理解该请求'],
         ['id', 'Server tidak memahami permintaan'],
         ['pl', 'Serwer nie zrozumiał żądania'],
+        ['ko', '서버가 요청을 이해하지 못했어요'],
       ])],
       [tkn('Unauthorized'), new Map([
         ['fr', 'Non autorisé'],
@@ -174,6 +186,7 @@ Object.defineProperty(window, 'l10n', {
         ['zh', '未经授权'],
         ['id', 'Tidak diotorisasi'],
         ['pl', 'Nieautoryzowany'],
+        ['ko', '권한 없음'],
       ])],
       [tkn('The requested page needs a username and a password'), new Map([
         ['fr', 'La page demandée nécessite un nom d’utilisateur et un mot de passe'],
@@ -186,6 +199,7 @@ Object.defineProperty(window, 'l10n', {
         ['zh', '请求的页面需要用户名和密码'],
         ['id', 'Halaman yang diminta membutuhkan nama pengguna dan kata sandi'],
         ['pl', 'Żądana strona wymaga podania nazwy użytkownika i hasła'],
+        ['ko', '요청하신 페이지에는 사용자 이름과 비밀번호가 필요해요'],
       ])],
       [tkn('Forbidden'), new Map([
         ['fr', 'Interdit'],
@@ -198,6 +212,7 @@ Object.defineProperty(window, 'l10n', {
         ['zh', '禁止访问'],
         ['id', 'Dilarang'],
         ['pl', 'Zabroniony'],
+        ['ko', '금지됨'],
       ])],
       [tkn('Access is forbidden to the requested page'), new Map([
         ['fr', 'Accès interdit à la page demandée'],
@@ -210,6 +225,7 @@ Object.defineProperty(window, 'l10n', {
         ['zh', '禁止访问请求的页面'],
         ['id', 'Akses dilarang ke halaman yang diminta'],
         ['pl', 'Dostęp do żądanej strony jest zabroniony'],
+        ['ko', '요청하신 페이지에 대한 접근이 금지되어 있어요'],
       ])],
       [tkn('Not Found'), new Map([
         ['fr', 'Introuvable'],
@@ -222,6 +238,7 @@ Object.defineProperty(window, 'l10n', {
         ['zh', '未找到'],
         ['id', 'Tidak ditemukan'],
         ['pl', 'Nie znaleziono'],
+        ['ko', '찾을 수 없음'],
       ])],
       [tkn('The server can not find the requested page'), new Map([
         ['fr', 'Le serveur ne peut trouver la page demandée'],
@@ -234,6 +251,7 @@ Object.defineProperty(window, 'l10n', {
         ['zh', '服务器找不到请求的页面'],
         ['id', 'Server tidak dapat menemukan halaman yang diminta'],
         ['pl', 'Serwer nie może znaleźć żądanej strony'],
+        ['ko', '서버가 요청한 페이지를 찾을 수 없어요'],
       ])],
       [tkn('Method Not Allowed'), new Map([
         ['fr', 'Méthode Non Autorisée'],
@@ -246,6 +264,7 @@ Object.defineProperty(window, 'l10n', {
         ['zh', '方法不被允许'],
         ['id', 'Metode tidak diizinkan'],
         ['pl', 'Niedozwolona metoda'],
+        ['ko', '허용되지 않은 메소드'],
       ])],
       [tkn('The method specified in the request is not allowed'), new Map([
         ['fr', 'La méthode spécifiée dans la requête n’est pas autorisée'],
@@ -258,6 +277,7 @@ Object.defineProperty(window, 'l10n', {
         ['zh', '请求指定的方法不被允许'],
         ['id', 'Metode dalam permintaan tidak diizinkan'],
         ['pl', 'Metoda określona w żądaniu jest niedozwolona'],
+        ['ko', '요청에 사용한 메소드는 허용되지 않아요'],
       ])],
       [tkn('Proxy Authentication Required'), new Map([
         ['fr', 'Authentification proxy requise'],
@@ -270,6 +290,7 @@ Object.defineProperty(window, 'l10n', {
         ['zh', '需要代理服务器身份验证'],
         ['id', 'Diperlukan otentikasi proxy'],
         ['pl', 'Wymagane uwierzytelnianie proxy'],
+        ['ko', '프록시 인증 필요'],
       ])],
       [tkn('You must authenticate with a proxy server before this request can be served'), new Map([
         ['fr', 'Vous devez vous authentifier avec un serveur proxy avant que cette requête puisse être servie'],
@@ -282,6 +303,7 @@ Object.defineProperty(window, 'l10n', {
         ['zh', '您必须对代理服务器进行身份验证，然后才能让请求得到处理'],
         ['id', 'Anda harus mengautentikasi dengan server proxy sebelum permintaan ini dapat dilayani'],
         ['pl', 'Musisz uwierzytelnić się na serwerze proxy, zanim to żądanie będzie mogło zostać obsłużone'],
+        ['ko', '이 요청을 처리하려면 프록시 서버로 인증해야 해요'],
       ])],
       [tkn('Request Timeout'), new Map([
         ['fr', 'Requête expiré'],
@@ -294,6 +316,7 @@ Object.defineProperty(window, 'l10n', {
         ['zh', '请求超时'],
         ['id', 'Meminta batas waktu'],
         ['pl', 'Przekroczenie limitu czasu żądania'],
+        ['ko', '요청 시간초과'],
       ])],
       [tkn('The request took longer than the server was prepared to wait'), new Map([
         ['fr', 'La requête prend plus de temps que prévu'],
@@ -306,6 +329,7 @@ Object.defineProperty(window, 'l10n', {
         ['zh', '请求用时超过了服务器设置的最长等待时间'],
         ['id', 'Permintaan memakan waktu lebih lama dari yang bisa ditunggu oleh server'],
         ['pl', 'Żądanie trwało dłużej niż serwer był gotowy czekać'],
+        ['ko', '요청이 서버가 기다릴 수 있는 시간보다 오래 걸렸어요'],
       ])],
       [tkn('Conflict'), new Map([
         ['fr', 'Conflit'],
@@ -318,6 +342,7 @@ Object.defineProperty(window, 'l10n', {
         ['zh', '冲突'],
         ['id', 'Konflik'],
         ['pl', 'Konflikt'],
+        ['ko', '상충'],
       ])],
       [tkn('The request could not be completed because of a conflict'), new Map([
         ['fr', 'La requête n’a pas pu être complétée à cause d’un conflit'],
@@ -330,6 +355,7 @@ Object.defineProperty(window, 'l10n', {
         ['zh', '由于冲突，请求无法完成'],
         ['id', 'Permintaan tidak dapat diselesaikan karena adanya konflik'],
         ['pl', 'Żądanie nie mogło zostać wykonane z powodu konfliktu'],
+        ['ko', '상충으로 인해 요청을 완료할 수 없었어요'],
       ])],
       [tkn('Gone'), new Map([
         ['fr', 'Supprimé'],
@@ -342,6 +368,7 @@ Object.defineProperty(window, 'l10n', {
         ['zh', '已移除'],
         ['id', 'Menghilang'],
         ['pl', 'Usunięto'],
+        ['ko', '사라짐'],
       ])],
       [tkn('The requested page is no longer available'), new Map([
         ['fr', 'La page demandée n’est plus disponible'],
@@ -354,6 +381,7 @@ Object.defineProperty(window, 'l10n', {
         ['zh', '请求的页面不再可用'],
         ['id', 'Halaman yang diminta tidak lagi tersedia'],
         ['pl', 'Żądana strona nie jest już dostępna'],
+        ['ko', '요청하신 페이지는 더 이상 사용할 수 없어요'],
       ])],
       [tkn('Length Required'), new Map([
         ['fr', 'Longueur requise'],
@@ -366,6 +394,7 @@ Object.defineProperty(window, 'l10n', {
         ['zh', '需要长度'],
         ['id', 'Panjang yang diperlukan'],
         ['pl', 'Wymagana długość'],
+        ['ko', '길이 필요'],
       ])],
       [tkn('The "Content-Length" is not defined. The server will not accept the request without it'), new Map([
         ['fr', 'Le "Content-Length" n’est pas défini. Le serveur ne prendra pas en compte la requête'],
@@ -378,6 +407,7 @@ Object.defineProperty(window, 'l10n', {
         ['zh', '未指定Content-Length(内容长度)。服务器将不接受不包含此头信息的请求'],
         ['id', '"Content-Length" tidak ditentukan. Server tidak akan menerima permintaan tanpa itu'],
         ['pl', 'Wartość "Content-Length" nie jest zdefiniowana. Serwer nie zaakceptuje żądania bez tego parametru'],
+        ['ko', '"Content-Length"가 정의되지 않았습니다. 이 값이 없으면 서버는 요청을 수락하지 않아요'],
       ])],
       [tkn('Precondition Failed'), new Map([
         ['fr', 'Échec de la condition préalable'],
@@ -390,6 +420,7 @@ Object.defineProperty(window, 'l10n', {
         ['zh', '前置条件判定失败'],
         ['id', 'Prasyarat gagal'],
         ['pl', 'Niespełnienie warunku wstępnego'],
+        ['ko', '선결 조건 실패'],
       ])],
       [tkn('The pre condition given in the request evaluated to false by the server'), new Map([
         ['fr', 'La précondition donnée dans la requête a été évaluée comme étant fausse par le serveur'],
@@ -402,6 +433,7 @@ Object.defineProperty(window, 'l10n', {
         ['zh', '服务器评估请求中给出的前置条件的结果为false(假)'],
         ['id', 'Prakondisi gagal'],
         ['pl', 'Warunek wstępny podany w żądaniu został oceniony przez serwer jako nieprawidłowy'],
+        ['ko', '요청에 제공된 선결 조건을 서버는 거짓으로 평가했어요'],
       ])],
       [tkn('Payload Too Large'), new Map([
         ['fr', 'Charge trop volumineuse'],
@@ -414,6 +446,7 @@ Object.defineProperty(window, 'l10n', {
         ['zh', '请求体过大'],
         ['id', 'Muatan terlalu besar'],
         ['pl', 'Żądanie jest zbyt duże'],
+        ['ko', '콘텐츠가 너무 큼'],
       ])],
       [tkn('The server will not accept the request, because the request entity is too large'), new Map([
         ['fr', 'Le serveur ne prendra pas en compte la requête, car l’entité de la requête est trop volumineuse'],
@@ -426,6 +459,7 @@ Object.defineProperty(window, 'l10n', {
         ['zh', '请求体过大，服务器将不接受该请求'],
         ['id', 'Server tidak akan menerima permintaan, karena entitas permintaan terlalu besar'],
         ['pl', 'Serwer nie zaakceptuje żądania, ponieważ żądanie jest zbyt duże'],
+        ['ko', '요청 엔터티가 너무 크기 때문에 서버가 요청을 수락하지 않았어요'],
       ])],
       [tkn('Requested Range Not Satisfiable'), new Map([
         ['fr', 'Requête non satisfaisante'],
@@ -438,6 +472,7 @@ Object.defineProperty(window, 'l10n', {
         ['zh', '不满足请求范围'],
         ['id', 'Rentang yang diminta tidak dapat dipenuhi'],
         ['pl', 'Żądany zakres nie jest satysfakcjonujący'],
+        ['ko', '처리할 수 없는 요청 범위'],
       ])],
       [tkn('The requested byte range is not available and is out of bounds'), new Map([
         ['fr', 'Le byte range demandé n’est pas disponible et est hors des limites'],
@@ -450,6 +485,7 @@ Object.defineProperty(window, 'l10n', {
         ['zh', '请求的字节范围不可用，超出边界'],
         ['id', 'Rentang byte yang diminta tidak tersedia dan di luar batas'],
         ['pl', 'Żądany zakres bajtów nie jest dostępny i znajduje się poza zakresem'],
+        ['ko', '요청한 범위를 사용할 수 없고, 범위를 벗어났어요'],
       ])],
       [tkn("I'm a teapot"), new Map([
         ['fr', 'Je suis une théière'],
@@ -462,6 +498,7 @@ Object.defineProperty(window, 'l10n', {
         ['zh', '我是一只茶壶'],
         ['id', 'Saya adalah teko'],
         ['pl', 'Jestem czajniczkiem'],
+        ['ko', '저는 찻주전자에요'],
       ])],
       [tkn('Attempt to brew coffee with a teapot is not supported'), new Map([
         ['fr', 'Tenter de préparer du café avec une théière n’est pas pris en charge'],
@@ -474,6 +511,7 @@ Object.defineProperty(window, 'l10n', {
         ['zh', '用茶壶泡咖啡不受支持'],
         ['id', 'Upaya menyeduh kopi dengan teko tidak didukung'],
         ['pl', 'Próba zaparzenia kawy za pomocą czajniczka nie jest obsługiwana'],
+        ['ko', '찻주전자로 커피를 내리는 시도는 지원되지 않아요'],
       ])],
       [tkn('Too Many Requests'), new Map([
         ['fr', 'Trop de requêtes'],
@@ -486,6 +524,7 @@ Object.defineProperty(window, 'l10n', {
         ['zh', '请求过多'],
         ['id', 'Terlalu banyak permintaan'],
         ['pl', 'Zbyt wiele żądań'],
+        ['ko', '요청이 너무 많음'],
       ])],
       [tkn('Too many requests in a given amount of time'), new Map([
         ['fr', 'Trop de requêtes dans un délai donné'],
@@ -498,6 +537,7 @@ Object.defineProperty(window, 'l10n', {
         ['zh', '在给定的时间内发送了过多请求'],
         ['id', 'Terlalu banyak permintaan dalam waktu tertentu'],
         ['pl', 'Zbyt wiele żądań w określonym czasie'],
+        ['ko', '지정된 시간 내에 요청이 너무 많아요'],
       ])],
       [tkn('Internal Server Error'), new Map([
         ['fr', 'Erreur interne du serveur'],
@@ -510,6 +550,7 @@ Object.defineProperty(window, 'l10n', {
         ['zh', '内部服务器错误'],
         ['id', 'Kesalahan server internal'],
         ['pl', 'Wewnętrzny błąd serwera'],
+        ['ko', '내부 서버 오류'],
       ])],
       [tkn('The server met an unexpected condition'), new Map([
         ['fr', 'Le serveur a rencontré une condition inattendue'],
@@ -522,6 +563,7 @@ Object.defineProperty(window, 'l10n', {
         ['zh', '服务器遇到了意外情况'],
         ['id', 'Server mengalami kondisi yang tidak terduga'],
         ['pl', 'Serwer napotkał nieoczekiwany stan'],
+        ['ko', '서버가 예상치 못한 조건이에요'],
       ])],
       [tkn('Bad Gateway'), new Map([
         ['fr', 'Mauvaise passerelle'],
@@ -534,6 +576,7 @@ Object.defineProperty(window, 'l10n', {
         ['zh', '无效网关'],
         ['id', 'Gateway yang buruk'],
         ['pl', 'Błąd bramki'],
+        ['ko', '게이트웨이 불량'],
       ])],
       [tkn('The server received an invalid response from the upstream server'), new Map([
         ['fr', 'Le serveur a reçu une réponse invalide du serveur distant'],
@@ -546,6 +589,7 @@ Object.defineProperty(window, 'l10n', {
         ['zh', '服务器从上游服务器收到了无效的响应'],
         ['id', 'Server menerima respons yang tidak valid dari server induk'],
         ['pl', 'Serwer otrzymał nieprawidłową odpowiedź od serwera nadrzędnego'],
+        ['ko', '게이트웨이가 업스트림 서버로부터 잘못된 응답을 받았어요'],
       ])],
       [tkn('Service Unavailable'), new Map([
         ['fr', 'Service indisponible'],
@@ -558,6 +602,7 @@ Object.defineProperty(window, 'l10n', {
         ['zh', '服务不可用'],
         ['id', 'Layanan tidak tersedia'],
         ['pl', 'Serwis niedostępny'],
+        ['ko', '서비스 불가능'],
       ])],
       [tkn('The server is temporarily overloading or down'), new Map([
         ['fr', 'Le serveur est temporairement en surcharge ou indisponible'],
@@ -570,6 +615,7 @@ Object.defineProperty(window, 'l10n', {
         ['zh', '服务器暂时过载或不可用'],
         ['id', 'Server untuk sementara kelebihan beban atau tidak tersedia'],
         ['pl', 'Serwer jest tymczasowo przeciążony lub wyłączony'],
+        ['ko', '서버가 일시적으로 과부하 상태이거나 다운되었어요'],
       ])],
       [tkn('Gateway Timeout'), new Map([
         ['fr', 'Expiration Passerelle'],
@@ -582,6 +628,7 @@ Object.defineProperty(window, 'l10n', {
         ['zh', '网关超时'],
         ['id', 'Batas waktu gateway'],
         ['pl', 'Przekroczenie limitu czasu bramki'],
+        ['ko', '게이트웨이 시간초과'],
       ])],
       [tkn('The gateway has timed out'), new Map([
         ['fr', 'Le temps d’attente de la passerelle est dépassé'],
@@ -594,6 +641,7 @@ Object.defineProperty(window, 'l10n', {
         ['zh', '网关响应已经超时'],
         ['id', 'Sambungan ke server induk telah kedaluwarsa'],
         ['pl', 'Bramka przekroczyła limit czasu'],
+        ['ko', '게이트웨이 시간이 초과되었어요'],
       ])],
       [tkn('HTTP Version Not Supported'), new Map([
         ['fr', 'Version HTTP non prise en charge'],
@@ -606,6 +654,7 @@ Object.defineProperty(window, 'l10n', {
         ['zh', 'HTTP版本不受支持'],
         ['id', 'Versi HTTP tidak didukung'],
         ['pl', 'Wersja HTTP nie jest obsługiwana'],
+        ['ko', '지원하지 않는 HTTP 버전'],
       ])],
       [tkn('The server does not support the "http protocol" version'), new Map([
         ['fr', 'Le serveur ne supporte pas la version du protocole HTTP'],
@@ -618,6 +667,7 @@ Object.defineProperty(window, 'l10n', {
         ['zh', '服务器不支持该HTTP协议版本'],
         ['id', 'Server tidak mendukung versi HTTP ini'],
         ['pl', 'Serwer nie obsługuje wersji "protokołu http"'],
+        ['ko', '서버가 해당 "HTTP 프로토콜"을 지원하지 않아요'],
       ])],
       [tkn('Host'), new Map([
         ['fr', 'Hôte'],
@@ -630,6 +680,7 @@ Object.defineProperty(window, 'l10n', {
         ['zh', '主机'],
         ['id', 'Host'],
         ['pl', 'Host'],
+        ['ko', '호스트'],
       ])],
       [tkn('Original URI'), new Map([
         ['fr', 'URI d’origine'],
@@ -642,6 +693,7 @@ Object.defineProperty(window, 'l10n', {
         ['zh', '原始URI'],
         ['id', 'URL asli'],
         ['pl', 'Oryginalny URI'],
+        ['ko', '원시 URI'],
       ])],
       [tkn('Forwarded for'), new Map([
         ['fr', 'Transmis pour'],
@@ -654,6 +706,7 @@ Object.defineProperty(window, 'l10n', {
         ['zh', '转发自'],
         ['id', 'Diteruskan untuk'],
         ['pl', 'Przekazane do'],
+        ['ko', '전달받은 대상'],
       ])],
       [tkn('Namespace'), new Map([
         ['fr', 'Espace de noms'],
@@ -666,6 +719,7 @@ Object.defineProperty(window, 'l10n', {
         ['zh', '命名空间'],
         ['id', 'Ruang nama'],
         ['pl', 'Przestrzeń nazw'],
+        ['ko', '네임스페이스'],
       ])],
       [tkn('Ingress name'), new Map([
         ['fr', 'Nom ingress'],
@@ -678,6 +732,7 @@ Object.defineProperty(window, 'l10n', {
         ['zh', '入口名'],
         ['id', 'Nama ingress'],
         ['pl', 'Nazwa wejścia'],
+        ['ko', '인그레스 이름'],
       ])],
       [tkn('Service name'), new Map([
         ['fr', 'Nom du service'],
@@ -690,6 +745,7 @@ Object.defineProperty(window, 'l10n', {
         ['zh', '服务名'],
         ['id', 'Nama layanan'],
         ['pl', 'Nazwa usługi'],
+        ['ko', '서비스 이름'],
       ])],
       [tkn('Service port'), new Map([
         ['fr', 'Port du service'],
@@ -702,6 +758,7 @@ Object.defineProperty(window, 'l10n', {
         ['zh', '服务端口'],
         ['id', 'Port layanan'],
         ['pl', 'Port usługi'],
+        ['ko', '서비스 포트'],
       ])],
       [tkn('Request ID'), new Map([
         ['fr', 'Identifiant de la requête'],
@@ -714,6 +771,7 @@ Object.defineProperty(window, 'l10n', {
         ['zh', '请求ID'],
         ['id', 'ID permintaan'],
         ['pl', 'Identyfikator żądania'],
+        ['ko', '요청 ID'],
       ])],
       [tkn('Timestamp'), new Map([
         ['fr', 'Horodatage'],
@@ -726,6 +784,7 @@ Object.defineProperty(window, 'l10n', {
         ['zh', '时间戳'],
         ['id', 'Cap waktu'],
         ['pl', 'Sygnatura czasowa'],
+        ['ko', '시간 기록'],
       ])],
       [tkn('client-side error'), new Map([
         ['fr', 'Erreur Client'],
@@ -738,6 +797,7 @@ Object.defineProperty(window, 'l10n', {
         ['zh', '客户端错误'],
         ['id', 'Kesalahan sisi klien'],
         ['pl', 'błąd po stronie klienta'],
+        ['ko', '클라이언트 측 오류'],
       ])],
       [tkn('server-side error'), new Map([
         ['fr', 'Erreur Serveur'],
@@ -750,6 +810,7 @@ Object.defineProperty(window, 'l10n', {
         ['zh', '服务端错误'],
         ['id', 'Kesalahan sisi server'],
         ['pl', 'błąd po stronie serwera'],
+        ['ko', '서버 측 오류'],
       ])],
       [tkn('Your Client'), new Map([
         ['fr', 'Votre Client'],
@@ -762,6 +823,7 @@ Object.defineProperty(window, 'l10n', {
         ['zh', '您的客户端'],
         ['id', 'Klien Anda'],
         ['pl', 'Klient'],
+        ['ko', '내 클라이언트'],
       ])],
       [tkn('Network'), new Map([
         ['fr', 'Réseau'],
@@ -774,6 +836,7 @@ Object.defineProperty(window, 'l10n', {
         ['zh', '网络'],
         ['id', 'Jaringan'],
         ['pl', 'Sieć'],
+        ['ko', '네트워크'],
       ])],
       [tkn('Web Server'), new Map([
         ['fr', 'Serveur Web'],
@@ -786,6 +849,7 @@ Object.defineProperty(window, 'l10n', {
         ['zh', 'Web服务器'],
         ['id', 'Server web'],
         ['pl', 'Serwer WWW'],
+        ['ko', '웹 서버'],
       ])],
       [tkn('What happened?'), new Map([
         ['fr', 'Que s’est-il passé ?'],
@@ -798,6 +862,7 @@ Object.defineProperty(window, 'l10n', {
         ['zh', '发生了什么？'],
         ['id', 'Apa yang terjadi?'],
         ['pl', 'Co się stało?'],
+        ['ko', '어떤 일이 일어났나요?'],
       ])],
       [tkn('What can I do?'), new Map([
         ['fr', 'Que puis-je faire ?'],
@@ -810,6 +875,7 @@ Object.defineProperty(window, 'l10n', {
         ['zh', '我能做什么？'],
         ['id', 'Apa yang bisa saya lakukan?'],
         ['pl', 'Co mogę zrobić?'],
+        ['ko', '어떤 것을 할 수 있나요?'],
       ])],
       [tkn('Please try again in a few minutes'), new Map([
         ['fr', 'Veuillez réessayer dans quelques minutes'],
@@ -822,6 +888,7 @@ Object.defineProperty(window, 'l10n', {
         ['zh', '请在几分钟后重试'],
         ['id', 'Silakan coba lagi dalam beberapa menit'],
         ['pl', 'Spróbuj ponownie za kilka minut'],
+        ['ko', '몇 분 후에 다시 시도해 주세요'],
       ])],
       [tkn('Working'), new Map([
         ['fr', 'Opérationnel'],
@@ -834,6 +901,7 @@ Object.defineProperty(window, 'l10n', {
         ['zh', '正常运行'],
         ['id', 'Fungsi'],
         ['pl', 'Działa'],
+        ['ko', '작동 중'],
       ])],
       [tkn('Unknown'), new Map([
         ['fr', 'Inconnu'],
@@ -846,6 +914,7 @@ Object.defineProperty(window, 'l10n', {
         ['zh', '未知'],
         ['id', 'Tidak diketahui'],
         ['pl', 'Nieznany'],
+        ['ko', '알 수 없음'],
       ])],
       [tkn('Please try to change the request method, headers, payload, or URL'), new Map([
         ['fr', 'Veuillez essayer de changer la méthode de requête, les en-têtes, le contenu ou l’URL'],
@@ -858,6 +927,7 @@ Object.defineProperty(window, 'l10n', {
         ['zh', '请尝试更改请求方法、标头、有效负载或URL'],
         ['id', 'Coba lagi dengan metode, header, muatan, atau URL yang berbeda'],
         ['pl', 'Spróbuj zmienić metodę żądania, nagłówki, żądanie lub adres URL'],
+        ['ko', '요청 방법, 헤더, 콘텐츠 또는 URL을 변경해 보세요'],
       ])],
       [tkn('Please check your authorization data'), new Map([
         ['fr', 'Veuillez vérifier vos données d’autorisation'],
@@ -870,6 +940,7 @@ Object.defineProperty(window, 'l10n', {
         ['zh', '请检查您的授权数据'],
         ['id', 'Memeriksa detail autentikasi'],
         ['pl', 'Sprawdź swoje dane autoryzacyjne'],
+        ['ko', '인증 데이터를 확인해주세요'],
       ])],
       [tkn('Please double-check the URL and try again'), new Map([
         ['fr', 'Veuillez vérifier l’URL et réessayer'],
@@ -882,6 +953,7 @@ Object.defineProperty(window, 'l10n', {
         ['zh', '请再次检查URL并重试'],
         ['id', 'Periksa URL dan coba lagi'],
         ['pl', 'Sprawdź adres URL i spróbuj ponownie'],
+        ['ko', 'URL을 다시 한번 확인해 주세요'],
       ])],
     ]));
 
