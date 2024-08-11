@@ -28,3 +28,4 @@ different locales, please follow these steps:
 - 🇨🇳 Chinese by [@CDN18](https://github.com/CDN18)
 - 🇮🇩 Indonesian by [@getwisp](https://github.com/getwisp)
 - 🇵🇱 Polish by [@wielorzeczownik](https://github.com/wielorzeczownik)
+- 🇰🇷 Korean by [@NavyStack](https://github.com/NavyStack)
