@@ -150,7 +150,7 @@ func NewCommand(log *logger.Logger) *cli.Command { //nolint:funlen,gocognit
 }
 
 func (cmd *command) Run( //nolint:funlen,gocognit
-	ctx context.Context,
+	_ context.Context,
 	log *logger.Logger,
 	cfg *config.Config,
 ) error {
@@ -176,7 +176,7 @@ func (cmd *command) Run( //nolint:funlen,gocognit
 			var outFilePath = path.Join(cmd.opt.targetDirAbsPath, templateName, code+".html")
 
 			if content, renderErr := appTemplate.Render(templateContent, appTemplate.Props{ //nolint:nestif
-				Code:               uint16(codeAsUint),
+				Code:               uint16(codeAsUint), //nolint:gosec
 				Message:            codeDescription.Message,
 				Description:        codeDescription.Description,
 				L10nDisabled:       cfg.L10n.Disable,
