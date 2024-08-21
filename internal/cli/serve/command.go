@@ -176,10 +176,10 @@ func NewCommand(log *logger.Logger) *cli.Command { //nolint:funlen,gocognit,gocy
 		Suggest: true,
 		Action: func(ctx context.Context, c *cli.Command) error {
 			cmd.opt.http.addr = c.String(addrFlag.Name)
-			cmd.opt.http.port = uint16(c.Uint(portFlag.Name))
+			cmd.opt.http.port = uint16(c.Uint(portFlag.Name)) //nolint:gosec
 			cmd.opt.http.readBufferSize = uint(c.Uint(readBufferSizeFlag.Name))
 			cfg.L10n.Disable = c.Bool(disableL10nFlag.Name)
-			cfg.DefaultCodeToRender = uint16(c.Uint(defaultCodeToRenderFlag.Name))
+			cfg.DefaultCodeToRender = uint16(c.Uint(defaultCodeToRenderFlag.Name)) //nolint:gosec
 			cfg.RespondWithSameHTTPCode = c.Bool(sendSameHTTPCodeFlag.Name)
 			cfg.RotationMode, _ = config.ParseRotationMode(c.String(rotationModeFlag.Name))
 			cfg.ShowDetails = c.Bool(showDetailsFlag.Name)

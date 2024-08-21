@@ -392,5 +392,5 @@ func getFreeTcpPort(t *testing.T) uint16 {
 		<-time.After(5 * time.Millisecond)
 	}
 
-	return uint16(port)
+	return uint16(port) //nolint:gosec
 }

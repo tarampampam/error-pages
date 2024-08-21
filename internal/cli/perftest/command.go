@@ -108,10 +108,10 @@ func NewCommand() *cli.Command { //nolint:funlen
 			var runTest = func(scriptContent string) error {
 				if stdOut, stdErr, err := wrkRunTest(ctx,
 					wrkBinPath,
-					uint16(c.Uint(threadsFlag.Name)),
-					uint16(c.Uint(connectionsFlag.Name)),
+					uint16(c.Uint(threadsFlag.Name)),     //nolint:gosec
+					uint16(c.Uint(connectionsFlag.Name)), //nolint:gosec
 					c.Duration(durationFlag.Name),
-					uint16(c.Uint(portFlag.Name)),
+					uint16(c.Uint(portFlag.Name)), //nolint:gosec
 					scriptContent,
 				); err != nil {
 					var errData, _ = io.ReadAll(stdErr)

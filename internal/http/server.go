@@ -40,7 +40,7 @@ func NewServer(log *logger.Logger, readBufferSize uint) Server {
 		server: &fasthttp.Server{
 			ReadTimeout:                  readTimeout,
 			WriteTimeout:                 writeTimeout,
-			ReadBufferSize:               int(readBufferSize),
+			ReadBufferSize:               int(readBufferSize), //nolint:gosec
 			DisablePreParseMultipartForm: true,
 			NoDefaultServerHeader:        true,
 			CloseOnShutdown:              true,
