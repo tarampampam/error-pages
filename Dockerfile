@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # -✂- this stage is used to develop and build the application locally -------------------------------------------------
-FROM docker.io/library/golang:1.22-bookworm AS develop
+FROM docker.io/library/golang:1.23-bookworm AS develop
 
 # use the /var/tmp/go as the GOPATH to reuse the modules cache
 ENV GOPATH="/var/tmp/go"
