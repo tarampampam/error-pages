@@ -4,7 +4,7 @@ go 1.22
 
 require (
 	github.com/stretchr/testify v1.9.0
-	github.com/tdewolff/minify/v2 v2.20.35
+	github.com/tdewolff/minify/v2 v2.20.37
 	github.com/urfave/cli-docs/v3 v3.0.0-alpha5
 	github.com/urfave/cli/v3 v3.0.0-alpha9
 	github.com/valyala/fasthttp v1.55.0
