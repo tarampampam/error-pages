@@ -28,7 +28,7 @@ func extractCodeFromURL(url string) (uint16, bool) {
 	}
 
 	if code, err := strconv.ParseUint(fileName, 10, 16); err == nil && code > 0 && code < 999 {
-		return uint16(code), true //nolint:gosec
+		return uint16(code), true
 	}
 
 	return 0, false
@@ -47,7 +47,7 @@ func extractCodeFromHeaders(headers *fasthttp.RequestHeader) (uint16, bool) {
 	// HTTP status code returned by the request
 	if value := headers.Peek("X-Code"); len(value) > 0 && len(value) <= 3 {
 		if code, err := strconv.ParseUint(string(value), 10, 16); err == nil && code > 0 && code < 999 {
-			return uint16(code), true //nolint:gosec
+			return uint16(code), true
 		}
 	}
 
