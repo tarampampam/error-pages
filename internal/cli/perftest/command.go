@@ -81,7 +81,7 @@ func NewCommand() *cli.Command { //nolint:funlen
 			Name:    "connections",
 			Aliases: []string{"c"},
 			Usage:   "Number of connections to keep open",
-			Value:   max(16, uint64(runtime.NumCPU()*25)), //nolint:mnd
+			Value:   max(16, uint64(runtime.NumCPU()*25)), //nolint:gosec,mnd
 			Validator: func(u uint64) error {
 				if u == 0 {
 					return errors.New("threads number can't be zero")

@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/devcontainers/spec/main/schemas/devContainer.base.schema.json",
   "name": "default",
-  "image": "golang:1.22-bookworm",
+  "image": "golang:1.23-bookworm",
   "features": {
     "ghcr.io/guiyomh/features/golangci-lint:0": {},
     "ghcr.io/devcontainers/features/github-cli:1": {},
