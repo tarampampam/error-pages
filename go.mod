@@ -7,8 +7,8 @@ require (
 	github.com/tdewolff/minify/v2 v2.20.37
 	github.com/urfave/cli-docs/v3 v3.0.0-alpha5
 	github.com/urfave/cli/v3 v3.0.0-alpha9
-	github.com/valyala/fasthttp v1.55.0
-	go.uber.org/automaxprocs v1.5.3
+	github.com/valyala/fasthttp v1.56.0
+	go.uber.org/automaxprocs v1.6.0
 )
 
 require (
