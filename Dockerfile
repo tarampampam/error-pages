@@ -43,7 +43,7 @@ RUN set -x \
     && /tmp/error-pages -h
 
 # -✂- this stage is used to prepare the runtime fs --------------------------------------------------------------------
-FROM docker.io/library/alpine:3.20 AS rootfs
+FROM docker.io/library/alpine:3.21 AS rootfs
 
 WORKDIR /tmp/rootfs
 
