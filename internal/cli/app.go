@@ -60,7 +60,7 @@ func NewApp(appName string) *cli.Command { //nolint:funlen
 	return &cli.Command{
 		Usage:   appName,
 		Suggest: true,
-		Before: func(ctx context.Context, c *cli.Command) error {
+		Before: func(ctx context.Context, c *cli.Command) (context.Context, error) {
 			var (
 				logLevel, _  = logger.ParseLevel(c.String(logLevelFlag.Name))   // error ignored because the flag validates itself
 				logFormat, _ = logger.ParseFormat(c.String(logFormatFlag.Name)) // --//--
@@ -68,12 +68,12 @@ func NewApp(appName string) *cli.Command { //nolint:funlen
 
 			configured, err := logger.New(logLevel, logFormat) // create a new logger instance
 			if err != nil {
-				return err
+				return ctx, err
 			}
 
 			*log = *configured // swap the "default" logger with customized
 
-			return nil
+			return ctx, nil
 		},
 		Commands: []*cli.Command{
 			serve.NewCommand(log),

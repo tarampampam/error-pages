@@ -6,7 +6,7 @@ require (
 	github.com/stretchr/testify v1.10.0
 	github.com/tdewolff/minify/v2 v2.21.2
 	github.com/urfave/cli-docs/v3 v3.0.0-alpha6
-	github.com/urfave/cli/v3 v3.0.0-alpha9.2
+	github.com/urfave/cli/v3 v3.0.0-beta1
 	github.com/valyala/fasthttp v1.57.0
 	go.uber.org/automaxprocs v1.6.0
 )
