@@ -22,7 +22,7 @@ const (
 // detectPreferredFormatForClient detects the preferred format for the client based on the headers.
 // It supports the following headers: Content-Type, Accept, X-Format.
 // If the headers are not set or the format is not recognized, it returns unknownFormat.
-func detectPreferredFormatForClient(headers *fasthttp.RequestHeader) preferredFormat { //nolint:funlen,gocognit
+func detectPreferredFormatForClient(headers *fasthttp.RequestHeader) preferredFormat { //nolint:gocognit
 	var contentType, accept string
 
 	if contentTypeHeader := strings.TrimSpace(string(headers.Peek("Content-Type"))); contentTypeHeader != "" { //nolint:nestif,lll

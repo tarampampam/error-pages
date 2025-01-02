@@ -51,7 +51,7 @@ func NewServer(log *logger.Logger, readBufferSize uint) Server {
 }
 
 // Register server handlers, middlewares, etc.
-func (s *Server) Register(cfg *config.Config) error { //nolint:funlen
+func (s *Server) Register(cfg *config.Config) error {
 	var (
 		liveHandler    = live.New()
 		versionHandler = version.New(appmeta.Version())
