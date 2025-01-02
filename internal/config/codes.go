@@ -27,7 +27,7 @@ type (
 
 // Find searches the closest match for the given HTTP code, written in a non-strict manner. Read [Codes] for more
 // information.
-func (c Codes) Find(httpCode uint16) (CodeDescription, bool) { //nolint:funlen,gocyclo
+func (c Codes) Find(httpCode uint16) (CodeDescription, bool) { //nolint:gocyclo
 	if len(c) == 0 { // empty map, fast return
 		return CodeDescription{}, false
 	}

@@ -313,7 +313,7 @@ func NewCommand(log *logger.Logger) *cli.Command { //nolint:funlen,gocognit,gocy
 }
 
 // Run current command.
-func (cmd *command) Run(ctx context.Context, log *logger.Logger, cfg *config.Config) error { //nolint:funlen
+func (cmd *command) Run(ctx context.Context, log *logger.Logger, cfg *config.Config) error {
 	var srv = appHttp.NewServer(log, cmd.opt.http.readBufferSize)
 
 	if err := srv.Register(cfg); err != nil {
