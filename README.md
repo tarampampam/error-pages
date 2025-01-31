@@ -301,6 +301,8 @@ are detailed in the readme file below.
 To proxy HTTP headers from requests to responses, utilize the `--proxy-headers` flag or environment variable
 (comma-separated list of headers).
 
+### 🔌 Integrations with Traefik, Nginx, Kubernetes (and more)
+
 <details>
   <summary><strong>🚀 Start the HTTP server with my custom template (theme)</strong></summary>
 
@@ -580,6 +582,179 @@ defaultBackend:
   - name: SHOW_DETAILS # Optional: enables the output of additional information on error pages
     value: 'true'
 ```
+
+</details>
+
+<details>
+  <summary><strong>🚀 Kubernetes (K8s) & Ingress Traefik</strong></summary>
+
+There are various ways to set up "error pages" in Kubernetes with Traefik. One of the most common scenarios is when
+you already have Traefik installed as an Ingress Controller with all the necessary CRDs. In this case, you still
+need to install the "error pages" as a separate service, register a middleware that will use it, and apply this
+middleware to all relevant routers.
+
+> To install Traefik using Helm, you may add the following lines to your `Chart.yaml` file:
+>
+> ```yaml
+> dependencies:
+> - name: traefik
+>   version: 34.1.0 # change to the latest version
+>   repository: https://helm.traefik.io/traefik
+> ```
+
+I prefer to install each component in a separate namespace and use Helm to manage the installation process. So
+before we begin, let's define the following settings in the `values.yaml` file:
+
+```yaml
+errorPages:
+  enabled: true
+  appName: error-pages
+  namespace: error-pages
+  version: 3.3.1 # https://github.com/tarampampam/error-pages/releases
+  themeName: shuffle
+```
+
+Next, create the following Helm chart templates:
+
+```yaml
+# file: error-pages/namespace.yaml
+
+{{ with .Values.errorPages }}
+{{- if .enabled }}
+apiVersion: v1
+kind: Namespace
+
+metadata: {name: "{{ .namespace }}"}
+{{- end }}
+{{- end }}
+```
+
+```yaml
+# file: error-pages/deployment.yaml
+
+{{ with .Values.errorPages }}
+{{- if .enabled }}
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: "{{ .appName }}"
+  namespace: {{ .namespace }}
+  labels: {app: "{{ .appName }}"}
+
+spec:
+  replicas: 1
+  selector: {matchLabels: {app: "{{ .appName }}"}}
+  template:
+    metadata: {labels: {app: "{{ .appName }}"}}
+    spec:
+      automountServiceAccountToken: false
+      containers:
+        - name: "{{ .appName }}"
+          image: "ghcr.io/tarampampam/error-pages:{{ .version | default "latest" }}"
+          env:
+            - {name: TEMPLATE_NAME, value: "{{ .themeName | default "app-down" }}"}
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 10001
+            runAsGroup: 10001
+            readOnlyRootFilesystem: true
+          ports:
+            - {name: http, containerPort: 8080, protocol: TCP}
+          livenessProbe:
+            httpGet: {port: http, path: /healthz}
+            periodSeconds: 10
+          readinessProbe:
+            httpGet: {port: http, path: /healthz}
+            periodSeconds: 10
+          resources:
+            limits: {memory: 64Mi, cpu: 200m} # change if needed
+            requests: {memory: 16Mi, cpu: 20m}
+{{- end }}
+{{- end }}
+```
+
+```yaml
+# file: error-pages/service.yaml
+
+{{ with .Values.errorPages }}
+{{- if .enabled }}
+apiVersion: v1
+kind: Service
+
+metadata:
+  name: {{ .appName }}-service
+  namespace: {{ .namespace }}
+  labels: {app: "{{ .appName }}"}
+
+spec:
+  type: ClusterIP
+  selector: {app: "{{ .appName }}"}
+  ports: [{name: http, protocol: TCP, port: 8080, targetPort: 8080}]
+{{- end }}
+{{- end }}
+```
+
+```yaml
+# file: error-pages/middleware.yaml
+
+{{ with .Values.errorPages }}
+{{- if .enabled }}
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+
+metadata:
+  name: {{ .appName }}
+  namespace: {{ .namespace }}
+
+spec: # https://doc.traefik.io/traefik/routing/providers/kubernetes-crd/#kind-middleware
+  errors:
+    status: ["401", "403", "404", "500-599"]
+    service: {name: "{{ .appName }}-service", port: 8080}
+    query: "/{status}.html"
+{{- end }}
+{{- end }}
+```
+
+If everything was configured correctly, you should see the new middleware in your Traefik dashboard after applying
+updated Helm chart:
+
+![traefik-dashboard-middleware](https://habrastorage.org/webt/dj/to/qy/djtoqy20fpi2_qqabzeyltwlenw.png)
+
+Since our middleware is in a separate namespace, and in Traefik >=2.5 cross-namespace references for resources
+like middlewares are restricted by default, we need to enable this feature. To do so, add the following lines to
+your Traefik Helm chart values:
+
+```diff
+ traefik:
+   # ...
+-  globalArguments: []
++  globalArguments: ["--providers.kubernetescrd.allowCrossNamespace=true"]
+   # ...
+```
+
+Now, you can apply the middleware to the necessary ingress routes:
+
+```diff
+ apiVersion: traefik.io/v1alpha1
+ kind: IngressRoute
+
+ metadata:
+   name: some-app-http
+   namespace: some-app
+
+ spec: # https://doc.traefik.io/traefik/routing/providers/kubernetes-crd/#kind-ingressroute
+   entryPoints: [websecure]
+   routes:
+     - match: Host(`my.awesome-site.com`) && PathPrefix(`/`)
+       services: [{name: "some-app-service", namespace: some-app, port: 8080}]
++      {{- with $.Values.errorPages }}{{ if .enabled }}
++      middlewares: [{name: "{{ .appName }}", namespace: "{{ .namespace }}"}]
++      {{- end }}{{ end }}
+```
+
+Although this approach is quite verbose, it allows for full control over the configuration. If you have a
+better alternative, feel free to submit a PR!
 
 </details>
 
