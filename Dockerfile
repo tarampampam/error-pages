@@ -8,7 +8,7 @@ ENV GOPATH="/var/tmp/go"
 
 RUN set -x \
     # renovate: source=github-releases name=golangci/golangci-lint
-    && GOLANGCI_LINT_VERSION="1.64.5" \
+    && GOLANGCI_LINT_VERSION="2.0.2" \
     && wget -O- -nv "https://cdn.jsdelivr.net/gh/golangci/golangci-lint@v${GOLANGCI_LINT_VERSION}/install.sh" \
       | sh -s -- -b /bin "v${GOLANGCI_LINT_VERSION}"
 
