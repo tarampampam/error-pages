@@ -94,10 +94,10 @@ func (s *Server) Register(cfg *config.Config) error {
 
 		// wrong requests handling
 		default:
-			switch {
-			case method == fasthttp.MethodHead:
+			switch method {
+			case fasthttp.MethodHead:
 				ctx.Error(notAllowed, fasthttp.StatusNotFound)
-			case method == fasthttp.MethodGet:
+			case fasthttp.MethodGet:
 				ctx.Error(notFound, fasthttp.StatusNotFound)
 			default:
 				ctx.Error(notAllowed, fasthttp.StatusMethodNotAllowed)
