@@ -66,8 +66,8 @@ func NewCommand() *cli.Command { //nolint:funlen
 			Name:    "threads",
 			Aliases: []string{"t"},
 			Usage:   "Number of threads to use",
-			Value:   max(2, uint64(math.Round(float64(runtime.NumCPU())/1.3))), //nolint:mnd
-			Validator: func(u uint64) error {
+			Value:   max(2, uint(math.Round(float64(runtime.NumCPU())/1.3))), //nolint:mnd
+			Validator: func(u uint) error {
 				if u == 0 {
 					return errors.New("threads number can't be zero")
 				} else if u > math.MaxUint16 {
@@ -81,8 +81,8 @@ func NewCommand() *cli.Command { //nolint:funlen
 			Name:    "connections",
 			Aliases: []string{"c"},
 			Usage:   "Number of connections to keep open",
-			Value:   max(16, uint64(runtime.NumCPU()*25)), //nolint:gosec,mnd
-			Validator: func(u uint64) error {
+			Value:   max(16, uint(runtime.NumCPU()*25)), //nolint:gosec,mnd
+			Validator: func(u uint) error {
 				if u == 0 {
 					return errors.New("threads number can't be zero")
 				} else if u > math.MaxUint16 {

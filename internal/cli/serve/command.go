@@ -86,10 +86,10 @@ func NewCommand(log *logger.Logger) *cli.Command { //nolint:funlen,gocognit,gocy
 		defaultCodeToRenderFlag = cli.UintFlag{
 			Name:     "default-error-page",
 			Usage:    "The code of the default (index page, when a code is not specified) error page to render",
-			Value:    uint64(cfg.DefaultCodeToRender),
+			Value:    uint(cfg.DefaultCodeToRender),
 			Sources:  env("DEFAULT_ERROR_PAGE"),
 			Category: shared.CategoryCodes,
-			Validator: func(code uint64) error {
+			Validator: func(code uint) error {
 				if code > 999 { //nolint:mnd
 					return fmt.Errorf("wrong HTTP code [%d] for the default error page", code)
 				}
@@ -177,7 +177,7 @@ func NewCommand(log *logger.Logger) *cli.Command { //nolint:funlen,gocognit,gocy
 		Action: func(ctx context.Context, c *cli.Command) error {
 			cmd.opt.http.addr = c.String(addrFlag.Name)
 			cmd.opt.http.port = uint16(c.Uint(portFlag.Name)) //nolint:gosec
-			cmd.opt.http.readBufferSize = uint(c.Uint(readBufferSizeFlag.Name))
+			cmd.opt.http.readBufferSize = c.Uint(readBufferSizeFlag.Name)
 			cfg.L10n.Disable = c.Bool(disableL10nFlag.Name)
 			cfg.DefaultCodeToRender = uint16(c.Uint(defaultCodeToRenderFlag.Name)) //nolint:gosec
 			cfg.RespondWithSameHTTPCode = c.Bool(sendSameHTTPCodeFlag.Name)

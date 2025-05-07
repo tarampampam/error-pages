@@ -66,7 +66,7 @@ func TestListenPortFlag(t *testing.T) {
 	assert.Equal(t, uint64(8080), flag.Value)
 	assert.Contains(t, flag.Sources.String(), "LISTEN_PORT")
 
-	for giveValue, wantErrMsg := range map[uint64]string{
+	for giveValue, wantErrMsg := range map[uint]string{
 		flag.Value: "", // default value
 		1:          "",
 		8080:       "",

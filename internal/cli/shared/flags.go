@@ -53,7 +53,7 @@ var ListenPortFlag = cli.UintFlag{
 	Sources:  cli.EnvVars("LISTEN_PORT"),
 	Category: CategoryHTTP,
 	OnlyOnce: true,
-	Validator: func(port uint64) error {
+	Validator: func(port uint) error {
 		if port == 0 || port > 65535 {
 			return fmt.Errorf("wrong TCP port number [%d]", port)
 		}
