@@ -43,8 +43,13 @@ func New(
 						respHeaders = make(map[string]string)
 					)
 
-					ctx.Request.Header.VisitAll(func(key, value []byte) { reqHeaders[string(key)] = string(value) })
-					ctx.Response.Header.VisitAll(func(key, value []byte) { respHeaders[string(key)] = string(value) })
+					for key, value := range ctx.Request.Header.All() {
+						reqHeaders[string(key)] = string(value)
+					}
+
+					for key, value := range ctx.Response.Header.All() {
+						respHeaders[string(key)] = string(value)
+					}
 
 					fields = append(fields,
 						logger.Any("request headers", reqHeaders),

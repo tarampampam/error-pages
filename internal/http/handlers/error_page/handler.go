@@ -29,6 +29,7 @@ func New(cfg *config.Config, log *logger.Logger) (_ fasthttp.RequestHandler, clo
 	// or call the closeCache
 	go func() {
 		var timer = time.NewTimer(cacheTtl)
+
 		defer func() { timer.Stop(); cache.Clear() }()
 
 		for {

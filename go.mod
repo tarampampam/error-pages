@@ -6,13 +6,13 @@ require (
 	github.com/stretchr/testify v1.10.0
 	github.com/tdewolff/minify/v2 v2.23.8
 	github.com/urfave/cli-docs/v3 v3.0.0-alpha6
-	github.com/urfave/cli/v3 v3.3.3
-	github.com/valyala/fasthttp v1.62.0
+	github.com/urfave/cli/v3 v3.3.8
+	github.com/valyala/fasthttp v1.63.0
 	go.uber.org/automaxprocs v1.6.0
 )
 
 require (
-	github.com/andybalholm/brotli v1.1.1 // indirect
+	github.com/andybalholm/brotli v1.2.0 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.4 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/klauspost/compress v1.18.0 // indirect

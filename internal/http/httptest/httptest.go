@@ -25,6 +25,7 @@ func HandleFastRequest(
 
 	// create in-memory listener
 	var ln = fasthttputil.NewInmemoryListener()
+
 	defer func() { require.NoError(t, ln.Close()) }()
 
 	// start fasthttp server
