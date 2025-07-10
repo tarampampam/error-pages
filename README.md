@@ -733,6 +733,17 @@ your Traefik Helm chart values:
    # ...
 ```
 
+Or if you use the [Traefik Helm chart](https://helm.traefik.io/traefik) >= 36.*:
+
+```diff
+ traefik:
+   # ...
++  providers:
++    kubernetesCRD:
++      allowCrossNamespace: true
+   # ...
+```
+
 Now, you can apply the middleware to the necessary ingress routes:
 
 ```diff
