@@ -414,9 +414,6 @@
    */
   const updateClock = () => {
     const now = new Date();
-    const hours = String(now.getHours()).padStart(2, '0');
-    const minutes = String(now.getMinutes()).padStart(2, '0');
-    const ampm = Number(hours) >= 12 ? 'PM' : 'AM';
     const hours24 = now.getHours();
     const minutes = String(now.getMinutes()).padStart(2, '0');
     const ampm = hours24 >= 12 ? 'PM' : 'AM';
