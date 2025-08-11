@@ -81,200 +81,55 @@ Download the latest binary file for your OS/architecture from the [releases page
 
 The following templates are built-in and available for use without any additional setup:
 
+| Template name     | Preview (light)                                | Preview (dark)                                |
+|-------------------|------------------------------------------------|-----------------------------------------------|
+| `app-down`        | [![][app-down-light]][app-down-link]           | [![][app-down-dark]][app-down-link]           |
+| `cats`            | [![][cats-light]][cats-link]                   | [![][cats-dark]][cats-link]                   |
+| `connection`      | [![][connection-light]][connection-link]       | [![][connection-dark]][connection-link]       |
+| `ghost`           | [![][ghost-light]][ghost-link]                 | [![][ghost-dark]][ghost-link]                 |
+| `hacker-terminal` | [![][hacker-terminal]][hacker-terminal-link]   | [![][hacker-terminal]][hacker-terminal-link]  |
+| `l7`              | [![][l7-light]][l7-link]                       | [![][l7-dark]][l7-link]                       |
+| `lost-in-space`   | [![][lost-in-space-light]][lost-in-space-link] | [![][lost-in-space-dark]][lost-in-space-link] |
+| `noise`           | [![][noise]][noise-link]                       | [![][noise]][noise-link]                      |
+| `orient`          | [![][orient-light]][orient-link]               | [![][orient-dark]][orient-link]               |
+| `shuffle`         | [![][shuffle-light]][shuffle-link]             | [![][shuffle-dark]][shuffle-link]             |
+| `win98`           | [![][win98-light]][win98-link]                 | [![][win98-dark]][win98-link]                 |
+
 > [!NOTE]
 > The `cats` template is the only one of those that fetches resources (the actual cat pictures) from external
 > servers - all other templates are self-contained.
 
-<table>
-  <thead>
-    <tr>
-      <th>Template</th>
-      <th>Preview</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td align="center">
-        <code>app-down</code><br/><br/>
-        <picture>
-          <img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Ferror-pages.goatcounter.com%2Fcounter%2F%2Fuse-template%2Fapp-down.json&query=%24.count&label=used%20times" alt="used times">
-        </picture>
-      </td>
-      <td>
-        <a href="https://tarampampam.github.io/error-pages/app-down/404.html">
-          <picture>
-            <source media="(prefers-color-scheme: dark)" srcset="https://github.com/tarampampam/error-pages/assets/7326800/4e668a56-a4c4-47cd-ac4d-b6b45db54ab8">
-            <img align="center" src="https://github.com/tarampampam/error-pages/assets/7326800/ad4b4fd7-7c7b-4bdc-a6b6-44f9ba7f77ca">
-          </picture>
-        </a>
-      </td>
-    </tr>
-    <tr>
-      <td align="center">
-        <code>cats</code><br/><br/>
-        <picture>
-          <img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Ferror-pages.goatcounter.com%2Fcounter%2F%2Fuse-template%2Fcats.json&query=%24.count&label=used%20times" alt="used times">
-        </picture>
-      </td>
-      <td>
-        <a href="https://tarampampam.github.io/error-pages/cats/404.html">
-          <picture>
-            <source media="(prefers-color-scheme: dark)" srcset="https://github.com/tarampampam/error-pages/assets/7326800/5689880b-f770-406c-81dd-2d28629e6f2e">
-            <img align="center" src="https://github.com/tarampampam/error-pages/assets/7326800/056cd00e-bc9a-4120-8325-310d7b0ebd1b">
-          </picture>
-        </a>
-      </td>
-    </tr>
-    <tr>
-      <td align="center">
-        <code>connection</code><br/><br/>
-        <picture>
-          <img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Ferror-pages.goatcounter.com%2Fcounter%2F%2Fuse-template%2Fconnection.json&query=%24.count&label=used%20times" alt="used times">
-        </picture>
-      </td>
-      <td>
-        <a href="https://tarampampam.github.io/error-pages/connection/404.html">
-          <picture>
-            <source media="(prefers-color-scheme: dark)" srcset="https://github.com/tarampampam/error-pages/assets/7326800/3f03dc1b-c1ee-4a91-b3d7-e3b93c79020e">
-            <img align="center" src="https://github.com/tarampampam/error-pages/assets/7326800/099ecc2d-e724-4d9c-b5ed-66ddabd71139">
-          </picture>
-        </a>
-      </td>
-    </tr>
-    <tr>
-      <td align="center">
-        <code>ghost</code><br/><br/>
-        <picture>
-          <img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Ferror-pages.goatcounter.com%2Fcounter%2F%2Fuse-template%2Fghost.json&query=%24.count&label=used%20times" alt="used times">
-        </picture>
-      </td>
-      <td>
-        <a href="https://tarampampam.github.io/error-pages/ghost/404.html">
-          <picture>
-            <source media="(prefers-color-scheme: dark)" srcset="https://github.com/tarampampam/error-pages/assets/7326800/714482ab-f8c1-4455-8ae8-b2ae78f7a2c6">
-            <img align="center" src="https://github.com/tarampampam/error-pages/assets/7326800/f253dfe7-96a0-4e96-915b-d4c544d4a237">
-          </picture>
-        </a>
-      </td>
-    </tr>
-    <tr>
-      <td align="center">
-        <code>hacker-terminal</code><br/><br/>
-        <picture>
-          <img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Ferror-pages.goatcounter.com%2Fcounter%2F%2Fuse-template%2Fhacker-terminal.json&query=%24.count&label=used%20times" alt="used times">
-        </picture>
-      </td>
-      <td>
-        <a href="https://tarampampam.github.io/error-pages/hacker-terminal/404.html">
-          <picture>
-            <img align="center" src="https://github.com/tarampampam/error-pages/assets/7326800/c197fc35-0844-43d0-9830-82440cee4559">
-          </picture>
-        </a>
-      </td>
-    </tr>
-    <tr>
-      <td align="center">
-        <code>l7</code><br/><br/>
-        <picture>
-          <img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Ferror-pages.goatcounter.com%2Fcounter%2F%2Fuse-template%2Fl7.json&query=%24.count&label=used%20times" alt="used times">
-        </picture>
-      </td>
-      <td>
-        <a href="https://tarampampam.github.io/error-pages/l7/404.html">
-          <picture>
-            <source media="(prefers-color-scheme: dark)" srcset="https://github.com/tarampampam/error-pages/assets/7326800/18e43ea3-6389-4459-be41-0fc6566a073f">
-            <img align="center" src="https://github.com/tarampampam/error-pages/assets/7326800/05f26669-94ec-40ce-8d67-a199cde54202">
-          </picture>
-        </a>
-      </td>
-    </tr>
-    <tr>
-      <td align="center">
-        <code>lost-in-space</code><br/><br/>
-        <picture>
-          <img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Ferror-pages.goatcounter.com%2Fcounter%2F%2Fuse-template%2Flost-in-space.json&query=%24.count&label=used%20times" alt="used times">
-        </picture>
-      </td>
-      <td>
-        <a href="https://tarampampam.github.io/error-pages/lost-in-space/404.html">
-          <picture>
-            <source media="(prefers-color-scheme: dark)" srcset="https://github.com/tarampampam/error-pages/assets/7326800/debf87c0-6f27-41a8-b141-ee3464cbd6cc">
-            <img align="center" src="https://github.com/tarampampam/error-pages/assets/7326800/c347e63d-13a7-46d4-81b9-b25266819a1d">
-          </picture>
-        </a>
-      </td>
-    </tr>
-    <tr>
-      <td align="center">
-        <code>noise</code><br/><br/>
-        <picture>
-          <img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Ferror-pages.goatcounter.com%2Fcounter%2F%2Fuse-template%2Fnoise.json&query=%24.count&label=used%20times" alt="used times">
-        </picture>
-      </td>
-      <td>
-        <a href="https://tarampampam.github.io/error-pages/noise/404.html">
-          <picture>
-            <img align="center" src="https://github.com/tarampampam/error-pages/assets/7326800/4cc5c3bd-6ebb-4e96-bee8-02d4ad4e7266">
-          </picture>
-        </a>
-      </td>
-    </tr>
-    <tr>
-      <td align="center">
-        <code>orient</code><br/><br/>
-        <picture>
-          <img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Ferror-pages.goatcounter.com%2Fcounter%2F%2Fuse-template%2Forient.json&query=%24.count&label=used%20times" alt="used times">
-        </picture>
-      </td>
-      <td>
-        <a href="https://tarampampam.github.io/error-pages/orient/404.html">
-          <picture>
-            <source media="(prefers-color-scheme: dark)" srcset="https://github.com/tarampampam/error-pages/assets/7326800/bc2b0dad-c32c-4628-98f6-e3eab61dd1f2">
-            <img align="center" src="https://github.com/tarampampam/error-pages/assets/7326800/8fc0a7ea-694d-49ce-bb50-3ea032d52d1e">
-          </picture>
-        </a>
-      </td>
-    </tr>
-    <tr>
-      <td align="center">
-        <code>shuffle</code><br/><br/>
-        <picture>
-          <img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Ferror-pages.goatcounter.com%2Fcounter%2F%2Fuse-template%2Fshuffle.json&query=%24.count&label=used%20times" alt="used times">
-        </picture>
-      </td>
-      <td>
-        <a href="https://tarampampam.github.io/error-pages/shuffle/404.html">
-          <picture>
-            <source media="(prefers-color-scheme: dark)" srcset="https://github.com/tarampampam/error-pages/assets/7326800/7504b7c3-b0cb-4991-9ac2-759cd6c50fc0">
-            <img align="center" src="https://github.com/tarampampam/error-pages/assets/7326800/d2a73fc8-cf5f-4f42-bff8-cce33d8ae47e">
-          </picture>
-        </a>
-      </td>
-    </tr>
-    <tr>
-      <td align="center">
-        <code>win98</code><br/><br/>
-        <picture>
-          <img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Ferror-pages.goatcounter.com%2Fcounter%2F%2Fuse-template%2Fwin98.json&query=%24.count&label=used%20times" alt="used times">
-        </picture>
-      </td>
-      <td>
-        <a href="https://tarampampam.github.io/error-pages/win98/404.html">
-          <picture>
-            <source media="(prefers-color-scheme: dark)" srcset="https://github.com/user-attachments/assets/bdebb475-0524-43ac-8cc6-4b194228e6e1">
-            <img align="center" src="https://github.com/user-attachments/assets/dc503e2d-dde1-4606-994c-3b448e2acd94">
-          </picture>
-        </a>
-      </td>
-    </tr>
-  </tbody>
-</table>
-
-> [!NOTE]
-> The "used times" counter increments when someone start the server with the specified template. Stats service does
-> not collect any information about location, IP addresses, and so on. Moreover, the stats are open and available for
-> everyone at [error-pages.goatcounter.com](https://error-pages.goatcounter.com/). This is simply a counter to display
-> how often a particular template is used, nothing more.
+[app-down-link]:https://tarampampam.github.io/error-pages/app-down/404.html
+[app-down-light]:https://github.com/tarampampam/error-pages/assets/7326800/ad4b4fd7-7c7b-4bdc-a6b6-44f9ba7f77ca
+[app-down-dark]:https://github.com/tarampampam/error-pages/assets/7326800/4e668a56-a4c4-47cd-ac4d-b6b45db54ab8
+[cats-link]:https://tarampampam.github.io/error-pages/cats/404.html
+[cats-light]:https://github.com/tarampampam/error-pages/assets/7326800/056cd00e-bc9a-4120-8325-310d7b0ebd1b
+[cats-dark]:https://github.com/tarampampam/error-pages/assets/7326800/5689880b-f770-406c-81dd-2d28629e6f2e
+[connection-link]:https://tarampampam.github.io/error-pages/connection/404.html
+[connection-light]:https://github.com/tarampampam/error-pages/assets/7326800/099ecc2d-e724-4d9c-b5ed-66ddabd71139
+[connection-dark]:https://github.com/tarampampam/error-pages/assets/7326800/3f03dc1b-c1ee-4a91-b3d7-e3b93c79020e
+[ghost-link]:https://tarampampam.github.io/error-pages/ghost/404.html
+[ghost-dark]:https://github.com/tarampampam/error-pages/assets/7326800/714482ab-f8c1-4455-8ae8-b2ae78f7a2c6
+[ghost-light]:https://github.com/tarampampam/error-pages/assets/7326800/f253dfe7-96a0-4e96-915b-d4c544d4a237
+[hacker-terminal-link]:https://tarampampam.github.io/error-pages/hacker-terminal/404.html
+[hacker-terminal]:https://github.com/tarampampam/error-pages/assets/7326800/c197fc35-0844-43d0-9830-82440cee4559
+[l7-link]:https://tarampampam.github.io/error-pages/l7/404.html
+[l7-dark]:https://github.com/tarampampam/error-pages/assets/7326800/18e43ea3-6389-4459-be41-0fc6566a073f
+[l7-light]:https://github.com/tarampampam/error-pages/assets/7326800/05f26669-94ec-40ce-8d67-a199cde54202
+[lost-in-space-link]:https://tarampampam.github.io/error-pages/lost-in-space/404.html
+[lost-in-space-dark]:https://github.com/tarampampam/error-pages/assets/7326800/debf87c0-6f27-41a8-b141-ee3464cbd6cc
+[lost-in-space-light]:https://github.com/tarampampam/error-pages/assets/7326800/c347e63d-13a7-46d4-81b9-b25266819a1d
+[noise-link]:https://tarampampam.github.io/error-pages/noise/404.html
+[noise]:https://github.com/tarampampam/error-pages/assets/7326800/4cc5c3bd-6ebb-4e96-bee8-02d4ad4e7266
+[orient-link]:https://tarampampam.github.io/error-pages/orient/404.html
+[orient-dark]:https://github.com/tarampampam/error-pages/assets/7326800/bc2b0dad-c32c-4628-98f6-e3eab61dd1f2
+[orient-light]:https://github.com/tarampampam/error-pages/assets/7326800/8fc0a7ea-694d-49ce-bb50-3ea032d52d1e
+[shuffle-link]:https://tarampampam.github.io/error-pages/shuffle/404.html
+[shuffle-dark]:https://github.com/tarampampam/error-pages/assets/7326800/7504b7c3-b0cb-4991-9ac2-759cd6c50fc0
+[shuffle-light]:https://github.com/tarampampam/error-pages/assets/7326800/d2a73fc8-cf5f-4f42-bff8-cce33d8ae47e
+[win98-link]:https://tarampampam.github.io/error-pages/win98/404.html
+[win98-dark]:https://github.com/user-attachments/assets/bdebb475-0524-43ac-8cc6-4b194228e6e1
+[win98-light]:https://github.com/user-attachments/assets/dc503e2d-dde1-4606-994c-3b448e2acd94
 
 ## 🛠 Usage scenarios
 
@@ -863,25 +718,25 @@ $ error-pages [GLOBAL FLAGS] serve [COMMAND FLAGS] [ARGUMENTS...]
 
 The following flags are supported:
 
-| Name                         | Description                                                                                                                                                                                                                                                                                                               |               Default value               |    Environment variables    |
-|------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:-----------------------------------------:|:---------------------------:|
-| `--listen="…"` (`-l`)        | The HTTP server will listen on this IP (v4 or v6) address (set 127.0.0.1/::1 for localhost, 0.0.0.0 to listen on all interfaces, or specify a custom IP)                                                                                                                                                                  |                 `0.0.0.0`                 |        `LISTEN_ADDR`        |
-| `--port="…"` (`-p`)          | The TCP port number for the HTTP server to listen on (0-65535)                                                                                                                                                                                                                                                            |                  `8080`                   |        `LISTEN_PORT`        |
-| `--add-template="…"`         | To add a new template, provide the path to the file using this flag (the filename without the extension will be used as the template name)                                                                                                                                                                                |                   `[]`                    |       `ADD_TEMPLATE`        |
-| `--disable-template="…"`     | Disable the specified template by its name (useful to disable the built-in templates and use only custom ones)                                                                                                                                                                                                            |                   `[]`                    |           *none*            |
-| `--add-code="…"`             | To add a new HTTP status code, provide the code and its message/description using this flag (the format should be '%code%=%message%/%description%'; the code may contain a wildcard '*' to cover multiple codes at once, for example, '4**' will cover all 4xx codes unless a more specific code is described previously) |                  `map[]`                  |           *none*            |
-| `--json-format="…"`          | Override the default error page response in JSON format (Go templates are supported; the error page will use this template if the client requests JSON content type)                                                                                                                                                      |                                           |   `RESPONSE_JSON_FORMAT`    |
-| `--xml-format="…"`           | Override the default error page response in XML format (Go templates are supported; the error page will use this template if the client requests XML content type)                                                                                                                                                        |                                           |    `RESPONSE_XML_FORMAT`    |
-| `--plaintext-format="…"`     | Override the default error page response in plain text format (Go templates are supported; the error page will use this template if the client requests plain text content type or does not specify any)                                                                                                                  |                                           | `RESPONSE_PLAINTEXT_FORMAT` |
-| `--template-name="…"` (`-t`) | Name of the template to use for rendering error pages (built-in templates: app-down, cats, connection, ghost, hacker-terminal, l7, lost-in-space, noise, orient, shuffle, win98)                                                                                                                                          |                `app-down`                 |       `TEMPLATE_NAME`       |
-| `--disable-l10n`             | Disable localization of error pages (if the template supports localization)                                                                                                                                                                                                                                               |                  `false`                  |       `DISABLE_L10N`        |
-| `--default-error-page="…"`   | The code of the default (index page, when a code is not specified) error page to render                                                                                                                                                                                                                                   |                   `404`                   |    `DEFAULT_ERROR_PAGE`     |
-| `--send-same-http-code`      | The HTTP response should have the same status code as the requested error page (by default, every response with an error page will have a status code of 200)                                                                                                                                                             |                  `false`                  |    `SEND_SAME_HTTP_CODE`    |
-| `--show-details`             | Show request details in the error page response (if supported by the template)                                                                                                                                                                                                                                            |                  `false`                  |       `SHOW_DETAILS`        |
-| `--proxy-headers="…"`        | HTTP headers listed here will be proxied from the original request to the error page response (comma-separated list)                                                                                                                                                                                                      | `X-Request-Id,X-Trace-Id,X-Amzn-Trace-Id` |    `PROXY_HTTP_HEADERS`     |
-| `--rotation-mode="…"`        | Templates automatic rotation mode (disabled/random-on-startup/random-on-each-request/random-hourly/random-daily)                                                                                                                                                                                                          |                `disabled`                 |  `TEMPLATES_ROTATION_MODE`  |
-| `--read-buffer-size="…"`     | Per-connection buffer size in bytes for reading requests, this also limits the maximum header size (increase this buffer if your clients send multi-KB Request URIs and/or multi-KB headers (e.g., large cookies), note that increasing this value will increase memory consumption)                                      |                  `5120`                   |     `READ_BUFFER_SIZE`      |
-| `--disable-minification`     | Disable the minification of HTML pages, including CSS, SVG, and JS (may be useful for debugging)                                                                                                                                                                                                                          |                  `false`                  |   `DISABLE_MINIFICATION`    |
+| Name                                                  | Description                                                                                                                                                                                                                                                                                                               |               Default value               |    Environment variables    |
+|-------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:-----------------------------------------:|:---------------------------:|
+| `--listen="…"` (`-l`)                                 | The HTTP server will listen on this IP (v4 or v6) address (set 127.0.0.1/::1 for localhost, 0.0.0.0 to listen on all interfaces, or specify a custom IP)                                                                                                                                                                  |                 `0.0.0.0`                 |        `LISTEN_ADDR`        |
+| `--port="…"` (`-p`)                                   | The TCP port number for the HTTP server to listen on (0-65535)                                                                                                                                                                                                                                                            |                  `8080`                   |        `LISTEN_PORT`        |
+| `--add-template="…"`                                  | To add a new template, provide the path to the file using this flag (the filename without the extension will be used as the template name)                                                                                                                                                                                |                   `[]`                    |       `ADD_TEMPLATE`        |
+| `--disable-template="…"`                              | Disable the specified template by its name (useful to disable the built-in templates and use only custom ones)                                                                                                                                                                                                            |                   `[]`                    |           *none*            |
+| `--add-code="…"`                                      | To add a new HTTP status code, provide the code and its message/description using this flag (the format should be '%code%=%message%/%description%'; the code may contain a wildcard '*' to cover multiple codes at once, for example, '4**' will cover all 4xx codes unless a more specific code is described previously) |                  `map[]`                  |           *none*            |
+| `--json-format="…"`                                   | Override the default error page response in JSON format (Go templates are supported; the error page will use this template if the client requests JSON content type)                                                                                                                                                      |                                           |   `RESPONSE_JSON_FORMAT`    |
+| `--xml-format="…"`                                    | Override the default error page response in XML format (Go templates are supported; the error page will use this template if the client requests XML content type)                                                                                                                                                        |                                           |    `RESPONSE_XML_FORMAT`    |
+| `--plaintext-format="…"`                              | Override the default error page response in plain text format (Go templates are supported; the error page will use this template if the client requests plain text content type or does not specify any)                                                                                                                  |                                           | `RESPONSE_PLAINTEXT_FORMAT` |
+| `--template-name="…"` (`-t`, `--template`, `--theme`) | Name of the template to use for rendering error pages (built-in templates: app-down, cats, connection, ghost, hacker-terminal, l7, lost-in-space, noise, orient, shuffle, win98)                                                                                                                                          |                `app-down`                 |       `TEMPLATE_NAME`       |
+| `--disable-l10n`                                      | Disable localization of error pages (if the template supports localization)                                                                                                                                                                                                                                               |                  `false`                  |       `DISABLE_L10N`        |
+| `--default-error-page="…"`                            | The code of the default (index page, when a code is not specified) error page to render                                                                                                                                                                                                                                   |                   `404`                   |    `DEFAULT_ERROR_PAGE`     |
+| `--send-same-http-code`                               | The HTTP response should have the same status code as the requested error page (by default, every response with an error page will have a status code of 200)                                                                                                                                                             |                  `false`                  |    `SEND_SAME_HTTP_CODE`    |
+| `--show-details`                                      | Show request details in the error page response (if supported by the template)                                                                                                                                                                                                                                            |                  `false`                  |       `SHOW_DETAILS`        |
+| `--proxy-headers="…"`                                 | HTTP headers listed here will be proxied from the original request to the error page response (comma-separated list)                                                                                                                                                                                                      | `X-Request-Id,X-Trace-Id,X-Amzn-Trace-Id` |    `PROXY_HTTP_HEADERS`     |
+| `--rotation-mode="…"`                                 | Templates automatic rotation mode (disabled/random-on-startup/random-on-each-request/random-hourly/random-daily)                                                                                                                                                                                                          |                `disabled`                 |  `TEMPLATES_ROTATION_MODE`  |
+| `--read-buffer-size="…"`                              | Per-connection buffer size in bytes for reading requests, this also limits the maximum header size (increase this buffer if your clients send multi-KB Request URIs and/or multi-KB headers (e.g., large cookies), note that increasing this value will increase memory consumption)                                      |                  `5120`                   |     `READ_BUFFER_SIZE`      |
+| `--disable-minification`                              | Disable the minification of HTML pages, including CSS, SVG, and JS (may be useful for debugging)                                                                                                                                                                                                                          |                  `false`                  |   `DISABLE_MINIFICATION`    |
 
 ### `build` command (aliases: `b`)
 
