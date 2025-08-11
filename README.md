@@ -128,8 +128,8 @@ The following templates are built-in and available for use without any additiona
 [shuffle-dark]:https://github.com/tarampampam/error-pages/assets/7326800/7504b7c3-b0cb-4991-9ac2-759cd6c50fc0
 [shuffle-light]:https://github.com/tarampampam/error-pages/assets/7326800/d2a73fc8-cf5f-4f42-bff8-cce33d8ae47e
 [win98-link]:https://tarampampam.github.io/error-pages/win98/404.html
-[win98-dark]:https://github.com/user-attachments/assets/bdebb475-0524-43ac-8cc6-4b194228e6e1
-[win98-light]:https://github.com/user-attachments/assets/dc503e2d-dde1-4606-994c-3b448e2acd94
+[win98-dark]:https://habrastorage.org/webt/bu/zt/5w/buzt5wsr-wixk0y8xjbxvepj0a8.png
+[win98-light]:https://habrastorage.org/webt/pg/e8/f1/pge8f1ahyspmgu9vyh0jigvq_es.png
 
 ## 🛠 Usage scenarios
 
