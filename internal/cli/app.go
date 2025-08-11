@@ -16,7 +16,7 @@ import (
 	"gh.tarampamp.am/error-pages/internal/logger"
 )
 
-//go:generate go run app_generate.go
+//go:generate go run update_readme.go
 
 // NewApp creates a new console application.
 func NewApp(appName string) *cli.Command {

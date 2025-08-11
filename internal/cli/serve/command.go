@@ -220,7 +220,7 @@ func NewCommand(log *logger.Logger) *cli.Command { //nolint:funlen,gocognit,gocy
 					m[http.CanonicalHeaderKey(strings.TrimSpace(header))] = struct{}{}
 				}
 
-				clear(cfg.ProxyHeaders) // clear the list before adding new headers
+				cfg.ProxyHeaders = make([]string, 0, len(m)) // clear the list before adding new headers
 
 				for header := range m {
 					cfg.ProxyHeaders = append(cfg.ProxyHeaders, header)
