@@ -417,7 +417,10 @@
     const hours = String(now.getHours()).padStart(2, '0');
     const minutes = String(now.getMinutes()).padStart(2, '0');
     const ampm = Number(hours) >= 12 ? 'PM' : 'AM';
-    const formattedTime = `${hours % 12 || 12}:${minutes} ${ampm}`;
+    const hours24 = now.getHours();
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const ampm = hours24 >= 12 ? 'PM' : 'AM';
+    const formattedTime = `${(hours24 % 12) || 12}:${minutes} ${ampm}`;
 
     document.querySelectorAll('.clock').forEach($el => $el.textContent = formattedTime);
   };
