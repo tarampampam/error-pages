@@ -1,0 +1,1591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="robots" content="nofollow,noarchive,noindex">
+  <title>503: Service Unavailable</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <!--  -->
+  <meta http-equiv="refresh" content="30">
+  <!--  -->
+  <meta name="title" content="503: Service Unavailable">
+  <meta name="description" content="The server is temporarily overloading or down">
+  <meta property="og:title" content="503: Service Unavailable">
+  <meta property="og:description" content="The server is temporarily overloading or down">
+  <meta property="twitter:title" content="503: Service Unavailable">
+  <meta property="twitter:description" content="The server is temporarily overloading or down">
+  <style>
+    :root {
+      --color-desktop: #008080;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --color-desktop: #1a1a1a;
+      }
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      min-height: 100%;
+      height: 100%;
+      width: 100%;
+      font-family: sans-serif;
+      font-size: 16px;
+    }
+
+    @media screen and (min-width: 2000px) {
+      html, body {
+        font-size: 18px;
+      }
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    main {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      height: 100%;
+    }
+
+    .desktop {
+      background-color: var(--color-desktop);
+      flex: 1;
+      display: grid;
+      grid-auto-flow: column;
+      grid-auto-columns: max-content;
+      grid-template-rows: repeat(auto-fill, 100px);
+      box-sizing: border-box;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .desktop .desktop-icon {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      user-select: none;
+      padding: 10px 10px 0 20px;
+    }
+
+    .desktop .desktop-icon svg {
+      width: 48px;
+      height: 48px;
+    }
+
+    .desktop .desktop-icon p {
+      margin: 0;
+      font-size: 0.85em;
+      padding-top: 0.5em;
+    }
+
+    dialog {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      margin: 0;
+      border: none;
+      box-shadow:
+        inset 1px 1px 0 #dfdfdf,
+        inset -1px -1px 0 #808080;
+      padding: 3px;
+      background-color: #c0c0c0;
+      max-width: 95%;
+    }
+
+    dialog.blink header {
+      background: linear-gradient(90deg, #000080, #1084d0);
+      animation: blink 350ms infinite;
+    }
+
+    @keyframes blink {
+      0% { background: linear-gradient(90deg, #808080, #b5b5b5); }
+      49.99% { background: linear-gradient(90deg, #808080, #b5b5b5); }
+      50% { background: linear-gradient(90deg, #000080, #1084d0); }
+      100% { background: linear-gradient(90deg, #000080, #1084d0); }
+    }
+
+    dialog header {
+      display: flex;
+      flex-direction: row;
+      height: 20px;
+      align-items: center;
+      justify-content: space-between;
+      background: linear-gradient(90deg, #000080, #1084d0);
+    }
+
+    dialog header p {
+      margin: 0 5px 0 2px;
+      color: #fff;
+      font-size: 0.8em;
+      font-weight: bold;
+      user-select: none;
+      white-space: nowrap;
+    }
+
+    dialog header .controls {
+      display: flex;
+      padding-right: 2px;
+    }
+
+    dialog header .controls .button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #c0c0c0;
+      padding: 4px;
+      box-shadow:
+        inset 1px 1px 0 #fff,
+        inset -1px -1px 0 #000,
+        inset 2px 2px 0 #dfdfdf,
+        inset -2px -2px 0 #808080;
+    }
+
+    dialog section {
+      display: flex;
+      flex-direction: row;
+    }
+
+    dialog section .icon {
+      padding: 12px;
+    }
+
+    dialog section .content {
+      padding: 18px 0;
+      margin-right: 10px;
+    }
+
+    dialog section .content p {
+      margin: 0;
+    }
+
+    dialog section .content .details {
+      font-size: 0.8em;
+      padding-top: 1em;
+      color: #252525;
+    }
+
+    dialog .actions {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      padding: 0 0 8px 0;
+    }
+
+    dialog .actions button {
+      background-color: #c0c0c0;
+      padding: 4px 8px;
+      margin: 4px;
+      box-shadow:
+        inset 1px 1px 0 #fff,
+        inset -1px -1px 0 #000,
+        inset 2px 2px 0 #dfdfdf,
+        inset -2px -2px 0 #808080;
+      color: #868080;
+      text-shadow: 1px 1px 0 #fff;
+      border: 1px solid #000;
+      min-width: 80px;
+      border-radius: 0;
+      user-select: none;
+    }
+
+    dialog .actions button:focus {
+      outline: none;
+    }
+
+    .taskbar {
+      background-color: #c0c0c0;
+      box-sizing: border-box;
+      height: 30px;
+      width: 100%;
+      position: absolute;
+      bottom: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: inset 0 1px 0 #dfdfdf, inset 0 2px 0 #fff;
+      padding: 4px 2px 2px 2px;
+      cursor: default;
+      z-index: 1000;
+      user-select: none;
+    }
+
+    .taskbar .group {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+    }
+
+    .taskbar .start {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      height: 100%;
+      background-color: #c0c0c0;
+      color: #000;
+      padding: 0 6px;
+      box-shadow:
+        inset 1px 1px 0 #fff,
+        inset -1px -1px 0 #000,
+        inset 2px 2px 0 #dfdfdf,
+        inset -2px -2px 0 #808080;
+      font-family: 'Tahoma', sans-serif;
+    }
+
+    .taskbar .start svg {
+      margin-right: 1px;
+    }
+
+    .taskbar .spacer {
+      width: 2px;
+      height: 100%;
+      box-shadow: inset 1px 0 0 #808080, inset -1px 0 0 #fff;
+      margin-left: 2px;
+    }
+
+    .taskbar .tray {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-left: 2px;
+      padding: 0 4px;
+      height: 100%;
+      background-color: #c0c0c0;
+      box-shadow:
+        inset 1px 1px 0 #808080,
+        inset -1px -1px 0 #fff;
+    }
+
+    .taskbar .tray svg {
+      margin-right: 4px;
+    }
+
+    .taskbar .tray .clock {
+      font-size: 0.75em;
+      white-space: nowrap;
+    }
+  </style>
+</head>
+<body>
+<main>
+  <div class="desktop">
+    <div class="desktop-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 8.467 8.467">
+        <path d="M1.852 1.852v2.646h2.117 1.852V1.852H3.969z" fill="#00f"/>
+        <path d="M6.879.265v.265h.265V.265zm0 .265h-.265v.265h.265zm-.265.265H1.323v.265h5.292zm-5.292.265h-.265v4.233h.265zm4.762.265v3.44H1.588v.265h4.498.265V1.323zM2.91 2.646v.265.529h.529V2.91h.794v-.265zm.794.529v.794h1.323v-.794zm-3.44 2.91v.265 1.588h.265V6.35h6.615v-.265z" fill="#fff"/>
+        <path d="M1.852.265v.265h-.265v.265h5.027V.529h.265V.265zm-.529.794v.265 3.704.265H6.35h.265V1.323v-.265H1.588zm.265.265H6.35v3.704H1.588zm6.085 3.969v.265h.265v-.265zm0 .265h-.265v.265h.265zm-.265.265h-.265v.265h.265zM.529 6.35v1.588h6.615V6.35z" fill="silver"/>
+        <path d="M1.852 0v.265h5.292v.265h-.265v.265h-.265v4.498H1.058V1.058H.794v4.498h.265 5.821v-.265h.265v-.265h.265V.529 0h-.265zm5.556 5.027v.265h-.265v.265h-.265v.265H.265v.265h6.879v-.265h.265v-.265h.265v-.265h.265v.265h-.265v.265h-.265v.265h-.265v1.852H.265V6.085H0v2.117h.265 7.144v-.265h.265v-.265h.265v-.265h.265V5.556v-.529h-.265zm-6.35-3.969h.265V.794h-.265zm.265-.265h.265V.529h-.265zm.265-.265h.265V.265h-.265zm0 .794v.265h4.498v-.265zm1.058 1.323v.794h.265v-.794zm.794.529v.794h.265v-.794zm.529 3.44v.265h2.646v-.265zm1.588.529v.265h.265v-.265z" fill="gray"/>
+        <path d="M7.408.265v4.762h.265V.265h-.265zm0 4.762h-.265v.265h.265v-.265zm-.265.265h-.265v.265h.265v-.265zm-.265.265H.794v.265h6.085v-.265zM1.588 1.588v2.91h.265V1.852h3.969v-.265H1.852h-.265zm1.058.794v.265h1.588v.265h.265v-.265-.265H2.646zm2.381.529v1.058H3.44v.265h1.588.265V2.91h-.265zm-2.381.529v.265h.794V3.44h-.794zm5.556 1.852v2.117h.265V5.292h-.265zm0 2.117h-.265v.265h.265v-.265zm-.265.265h-.265v.265h.265v-.265zm-.265.265h-.265v.265h.265v-.265zm-.265.265H.265v.265h7.144v-.265zm-3.44-1.323v.265h2.646v-.265H3.969z" fill="#000"/>
+        <path d="M1.058 7.144v.265h.265.265v-.265h-.265z" fill="green"/>
+        <path d="M1.058 6.879v.265h.265.265v-.265h-.265z" fill="#0f0"/>
+        <path d="M2.117 2.117v.265.265h.265v-.265-.265z" fill="#0ff"/>
+        <path d="M5.821 1.588v2.91H1.588v.265h4.233.265V1.588h-.265zM3.44 2.91v.265h1.588V2.91H3.44z" fill="navy"/>
+      </svg>
+      <p data-l10n>My Computer</p>
+    </div>
+    <div class="desktop-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 8.467 8.467">
+        <path d="M4.233.265v.265h-.265v.265h-.265v.265H3.44v.265h-.265-1.852v.265h-.265v.265H.794V3.44H.265v.265H0v1.323h.265v1.058h.265v1.058h.265v.794h.265v.265h6.615v-.265h.265v-2.91-.265h.265v-.265h.265v-.265h-.265v-.265h-.265v-.265-1.058h-.265v-.265h-.265v-.265H6.35h-.265v-.265h-.265v-.265h-.265v-.265h-.265v-.265h-.265V.794h-.265V.529h-.265V.265h-.265z" fill="#330"/>
+        <path d="M7.673 5.027v.265h-.265V6.35h.265v1.588h.265v-2.91zm0 2.91H1.058v.265h6.615z"/>
+        <path d="M2.381 1.852v.265h.265v-.265zm0 .265h-.265v.265h.265zm-.265.265h-.265v.265h.265zm-.265.265h-.265v.265h.265zm-.265.265h-.265v.265h.265zM.265 3.44v.265h6.35V3.44zm6.35.265v.265h.265v-.265zm.265.265v.794h.265v-.794zm.265.794v.794h.265v-.794zM.265 3.704H0v1.323h.265zm0 1.323v1.058h.265V5.027zm.265 1.058v1.058h.265V6.085zm.265 1.058v.794h.265 6.615v-.265V6.35h-.265v1.323h-6.35v-.529z" fill="#990"/>
+        <path d="M2.646 1.588v.265h.265v-.265zm-1.058.265v.265h-.265v.794h.265v-.265h.265v-.265h.265v-.265h.265v-.265h-.265-.265zm5.027.529v.265h.265v.265h.265v.265h.265V2.91v-.265h-.265v-.265zm0 1.588v.265h.265v-.265zm.265.794v.265h.265v-.265zm.265.794v.265h.265v-.265z" fill="#cc6"/>
+        <path d="M1.323 1.588v.265h-.265v.265V3.44h.265V2.117h.265v-.265h1.058v-.265H1.323zM.529 3.969v1.058h.265v1.058h.265v1.323h5.556.265.265V5.027h-.265v-.794h-.265v-.265H1.058.794.529z" fill="#ff9"/>
+        <path d="M2.91 3.969v.265h.265v-.265zm.794 0v.265h.265v-.265zm.529 0v.265h.265v-.265zm.529 0v.265h.265v-.265zm1.058 0v.265h.265v-.265zm0 .265h-.265v.265h.265zm.529 0v.265h.265v-.265zm0 .265h-.265v.265h.265zm0 .265v.265h.265v-.265zm-5.027-.265v.265h.265v-.265zm1.058 0v.265h.265v-.265zm.265.265v.265h.265v-.265zm0 .265h-.265v.265h.265zm.529-.529v.265h.265v-.265zm.265.265v.265h.265v-.265zm1.058-.265v.265h.265v-.265zm.529 0v.265h.265v-.265zm-1.058.265v.265h.265v-.265zm-2.117.265v.265h.265v-.265zm3.175 0v.265h-.265v.265h.265.265v-.529zm.265.529v.265h.265v-.265zm.265 0h.265v-.529h-.265zm.265 0v.529h.265v-.529zm.265 0h.265v-.265h-.265zm.265 0v.529h.265v-.529zm.265 0h.265v.529h.265v.265h-.265v-.265h-.265v.265H6.35v.265h.265v.265h.265v-.265h.265v.265h-.265v.265h-.265v.265H6.35v-.265h.265v-.265H6.35v-.265h-.265v.265h-.265v.265h.265v.265h-.265v-.265h-.265v.265h-.265v-.265h-.265v.265h-.529v-.265h-.529v.265h-.265v-.265h-.529v.265h-.529v-.265h-.265v.265h-.529v-.265h-.265v.265h-.529v.265h6.35v-.265-1.587h-.265v-.794h-.265v.265h-.265zM1.588 7.144v-.265h-.265v.265zm-.265-.265v-.265h-.265v.265zm.529.265h.265v-.265h-.265zm.265-.265h.265v-.265h-.265zm.529.265h.529v-.265h-.529zm.529-.265h.265v-.265h-.265zm.265-.265h.265V6.35H3.44zm0-.265v-.265h-.265v.265zm-.265-.265v-.265H2.91v.265zm.265 0h.265v-.265H3.44zm.265 0v.265h.265v-.265zm0 .529v.529h.265v-.265h.265v-.265h-.265zm.529 0h.529V6.35h-.529zm.529-.265h.265v-.265h-.265zm0-.265v-.529h-.265v.265h-.265v.265h.265zm-.529-.265v-.265h-.265v.265zm0-.265h.265v-.265h-.265zm.794.529h.265v-.265h-.265zm.265 0v.265h.529v-.265zm.529.265v.265h.265V6.35zm.265 0h.265v-.265h-.265zm-.265.265h-.265-.265v.529h.265v-.265h.265zm-.529 0V6.35h-.265v.265zm-.265 0h-.265v.265h-.265v.265h.529v-.265zM1.058 5.292v.265h.265v-.265zm1.852 0v.265h.265v-.265zm.529 0v.265h.265v-.265zm-1.587.265v.265h.265v-.265zm0 .265h-.265v.265h.265zm0 .265v.265h.265v-.265zm-.265 0h-.265v.265h.265zm.794-.529v.265h.265v-.265zm0 .529v.265h.265v-.265zm.265.265v.265h.265V6.35z" fill="#fc9"/>
+        <path d="M1.323 1.323v.265h1.852v-.265zm0 .265h-.265v.265h.265zm-.265.265H.794V3.44h.265zm5.292.265v.265h.794v.265h.265v-.265-.265zm1.058.529v.794h.265v-.794z" fill="olive"/>
+        <path d="M4.233.265v.265h.265V.265zm0 .265h-.265v.265h.265zm-.265.265h-.265v.265h.265zm-.265.265H3.44v.265h.265zm-.265.265h-.265v.265h.265zm-.265.265H2.91v.265h.265zm-.265.265h-.265v.265h.265zm-.265.265h-.265v.265h.265zm-.265.265h-.265v.265h.265zm-.265.265h-.265v.265h.265zm-.265.265h-.265v.265h.265zm-.265.265h-.265v.265h.265z" fill="#868686"/>
+        <path d="M6.615 2.646v.265h.265v-.265zm1.058 1.058v.265h.265v-.265zm.265.265v.265h.265v-.265zm.265.265v.265h.265v-.265zm0 .265h-.265v.265h.265zm-.265.265h-.265v.265h.265zm-.265.265h-.265v.265h.265z" fill="#000"/>
+        <path d="M4.498.529v.265h.265V.529zm.265.265v.265h.265V.794zm.265.265v.265h.265v-.265zm.265.265v.265h.265v-.265zm.265.265v.265h.265v-.265zm.265.265v.265h.265v-.265zm.265.265v.265h.265v-.265zm.265.265v.265h.265v-.265zm.529.529v.265h.265V2.91zm.265.265v.265h.265v-.265zm.265.265v.265h.265V3.44z" fill="#555"/>
+        <path d="M3.969 1.852v.265h.265v-.265zm0 .265h-.265v.265h.265zm-.265.265H3.44v.265h.265zm-.265.265h-.265v.265h.265zm-.265.265H2.91v.265h.265zm-.265.265h-.265v.265h.265zm1.323-.794v.265h.265v-.265zm0 .265h-.265v.265h.265zm-.265.265h-.265v.265h.265zm-.265.265H3.44v.265h.265zm1.058-.529v.265h.265v-.265zm0 .265h-.265v.265h.265zm-.265.265h-.265v.265h.265zm.794-.265v.265h.265V2.91zm0 .265h-.265v.265h.265z" fill="#039"/>
+        <path d="M4.498.794v.265h.265V.794zm.265.265v.265h.265v-.265zm.265.265v.265h.265v-.265zm.265.265v.265h.265v-.265zm.265.265v.265h.265v-.265zm.265.265v.265h.265v-.265zm.529.529v.265h.265v-.265zm.265.265v.265h.265V2.91zm.265.265v.265h.265v-.265zm.265.265v.265h.265V3.44zm.265.265v.265h.265v-.265zm.265.265v.265h.265v-.265zm.265.265v.265h.265v-.265zm0 .265h-.265v.265h.265zm-.265.265h-.265v.265h.265zm-.265 0v-.794h-.265v.794zm-.265-.794v-.265h-.265v.265zm-.265-.265V3.44h-.265v.265zm-.265-.265v-.265H5.556v.265zm-5.027-.265v.265h1.058v-.265zm1.588 0v.265h.265v-.265zm.794 0v.265h.265v-.265zm.794 0v.265h.265v-.265z" fill="silver"/>
+        <path d="M4.233.529v.265h.265V.529zm1.852 1.852v.265h.265v-.265z" fill="#ada990"/>
+        <path d="M7.408 2.381v.265h.265v-.265zm.265.265v1.058h.265V2.646z" fill="#033"/>
+        <path d="M3.969.794v.265h-.265v.265H3.44v.265h-.265v.265H2.91v.265h-.265v.265h-.265v.265h-.265v.265h1.058v-.265h.265v-.265h.265v-.265h.265v-.265h.265v.265.265h.265v.265.265h.265v-.265h.265v.265H6.35v-.265h-.265v-.265h-.265v-.265h-.265v-.265h-.265v-.265h-.265v-.265h-.265v-.265h-.265V.794z" fill="#fffbf0"/>
+        <path d="M3.969 2.381v.265h.265v-.265h-.265zm0 .265h-.265v.265h.265v-.265zm-.265.265H3.44v.265h.265V2.91zm-1.852 0v.265H2.91V2.91H1.852zm2.381 0v.265h.265V2.91h-.265zm.794 0v.265h.265V2.91h-.265zm.529 0v.265h1.058V2.91H5.556zm1.058.265v.265h.265v-.265h-.265zm.265.265v.265h.265V3.44h-.265zm.265.265v.265h.265v-.265h-.265zm.265.265v.794h.265v-.265h.265v-.265h-.265v-.265h-.265z" fill="#e7e7d6"/>
+        <path d="M3.969 2.117v.265h.265v-.265h-.265zm0 .265h-.265v.265h.265v-.265zm-.265.265H3.44v.265h.265v-.265zm-.265.265h-.265v.265h.265V2.91zm-.265.265H2.91v.265h.265v-.265zm1.058-.529v.265h.265v-.265h-.265zm0 .265h-.265v.265h.265V2.91zm-.265.265h-.265v.265h.265v-.265zm.794-.265v.265h.265V2.91h-.265zm0 .265h-.265v.265h.265v-.265zm.529 0v.265h.265v-.265h-.265z" fill="#a0a0a4"/>
+        <path d="M.265 3.704v.265 1.058h.265V3.969h6.085v-.265H.265zm.265 1.323v1.058h.265V5.027H.529zm.265 1.058v1.058h.265V6.085H.794z" fill="#fffbf0"/>
+      </svg>
+      <p data-l10n>My Documents</p>
+    </div>
+
+    <dialog open>
+      <header>
+        <p>503: <span data-l10n>Service Unavailable</span></p>
+        <div class="controls">
+          <div class="button">
+            <svg xmlns="http://www.w3.org/2000/svg" width="9" height="8" viewBox="0 0 2.381 2.117">
+              <path d="M.265.265v.265h.265v.265h.265v.265h.265v.265H.794v.265H.529v.265H.265v.265h.529v-.265h.265v-.265h.529v.265h.265v.265h.529v-.265h-.265v-.265h-.265v-.265h-.265v-.265h.265V.794h.265V.529h.265V.265h-.529v.265h-.265v.265h-.529V.529H.794V.265z" fill="#fff"/>
+              <path d="M0 0v.265h.265v.265h.265v.265h.265v.265H.529v.265H.265v.265H0v.265h.529v-.265h.265v-.265h.529v.265h.265v.265h.529v-.265h-.265v-.265h-.265v-.265h-.265V.794h.265V.529h.265V.265h.265V0h-.529v.265h-.265v.265H.794V.265H.529V0z" fill="gray"/>
+            </svg>
+          </div>
+        </div>
+      </header>
+      <section>
+        <div class="icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 8.467 8.467">
+            <path d="M1.587 1.587v5.821h.265v.265h.529v.265h.265v.265h.794v.265h2.117v-.265h.794v-.265h.265v-.265h.529v-.265h.265v-.265h.265v-.529h.265V6.35h.265v-.794h.265V3.44h-.265v-.794h-.265v-.265h-.265v-.529h-.265v-.265z" fill="gray"/>
+            <path d="M2.91 0v.265h-.794v.265h-.265v.265h-.529v.265h-.265v.265H.794v.529H.529v.265H.265v.794H0v2.117h.265v.794h.265v.265h.265v.529h.265v.265h.265v.265h.529v.265h.265v.265h.794v.265h2.117v-.265h.794v-.265h.265v-.265h.529v-.265h.265v-.265h.265v-.529h.265v-.265h.265v-.794h.265V2.91h-.265v-.794h-.265v-.265h-.265v-.529h-.265v-.265h-.265V.794h-.529V.529h-.265V.265h-.794V0z" fill="red"/>
+            <path d="M2.91 0v.265h2.117V0zm2.117.265v.265h.794V.265zm.794.265v.265h.265V.529zm.265.265v.265h.529V.794zm.529.265v.265h.265v-.265zm.265.265v.529h.265v-.529zm.265.529v.265h.265v-.265zm.265.265v.794h.265v-.794zm.265.794v2.117h.265V2.91zm0 2.117h-.265v.794h.265zm-.265.794h-.265v.265h.265zm-.265.265h-.265v.529h.265zm-.265.529h-.265v.265h.265zm-.265.265h-.529v.265h.529zm-.529.265h-.265v.265h.265zm-.265.265h-.794v.265h.794zm-.794.265H2.91v.265h2.117zm-2.117 0v-.265h-.794v.265zm-.794-.265v-.265h-.265v.265zm-.265-.265v-.265h-.529v.265zm-.529-.265v-.265h-.265v.265zm-.265-.265v-.529H.794v.529zm-.265-.529v-.265H.529v.265zm-.265-.265v-.794H.265v.794zm-.265-.794V2.91H0v2.117zm0-2.117h.265v-.794H.265zm.265-.794h.265v-.265H.529zm.265-.265h.265v-.529H.794zm.265-.529h.265v-.265h-.265zm.265-.265h.529V.794h-.529zm.529-.265h.265V.529h-.265zm.265-.265h.794V.265h-.794z" fill="maroon"/>
+            <path d="M2.381 1.852v.265h-.265v.265h-.265v.265h.265v.265h.265v.265h.265v.265h.265v.265h.265v.529H2.91v.265h-.265v.265h-.265v.265h-.265v.265h-.265v.265h.265v.265h.265v.265h.265v-.265h.265v-.265h.265v-.265h.265v-.265h.265v-.265h.529v.265h.265v.265h.265v.265h.265v.265h.265v.265h.265v-.265h.265v-.265h.265v-.265h-.265v-.265h-.265v-.265h-.265v-.265h-.265v-.265h-.265v-.529h.265V3.44h.265v-.265h.265V2.91h.265v-.265h.265v-.265h-.265v-.265h-.265v-.265h-.265v.265h-.265v.265h-.265v.265h-.265v.265h-.265v.265h-.529V2.91H3.44v-.265h-.265v-.265H2.91v-.265h-.265v-.265z" fill="#fff"/>
+          </svg>
+        </div>
+        <div class="content">
+          <p>The server is temporarily overloading or down<!----></p>
+          <!---->
+        </div>
+      </section>
+      <div class="actions">
+        <button disabled>OK</button>
+      </div>
+    </dialog>
+  </div>
+  <div class="taskbar">
+    <div class="group">
+      <div class="start">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="14" viewBox="0 0 21.167 18.521">
+          <path d="M11.906 0v1.323H9.26v1.323H7.938v1.323H5.292v1.323H3.969V3.969H2.646v2.646h1.323 1.323 2.646v7.938 1.323H5.292v1.115.208H3.969v-1.323H2.646v1.323 1.323H9.26v-1.323h2.646v-.208-1.115h2.646 2.646v1.323h2.646v1.323h1.323V2.646h-1.323V1.323h-2.646V0h-5.292zM0 2.646v2.646h1.323V2.646H0zm0 11.906v2.646h1.323v-2.646H0z"/>
+          <path d="M11.906 2.646v1.323h-1.323v3.969h1.323V6.615h1.323V2.646zM0 6.615V9.26h1.323V6.615zm2.646 1.323v2.646h1.323 1.323 2.646V7.938H5.292V9.26H3.969V7.938z" fill="red"/>
+          <path d="M15.875 2.646v3.969h1.323v1.323h1.323V3.969h-1.323V2.646z" fill="#0f0"/>
+          <path d="M11.906 9.26v1.323h-1.323v3.969h1.323v-1.323h1.323V9.26zM0 10.583v2.646h1.323v-2.646zm2.646 1.323v2.646h1.323 1.323 2.646v-2.646H5.292v1.323H3.969v-1.323z" fill="#00f"/>
+          <path d="M15.875 9.26v3.969h1.323v1.323h1.323v-3.969h-1.323V9.26z" fill="#ff0"/>
+        </svg>
+        <strong data-l10n>Start</strong>
+      </div>
+      <div class="spacer"></div>
+    </div>
+    <div class="group"></div>
+    <div class="group">
+      <div class="spacer"></div>
+      <div class="tray">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 4.233 4.233">
+          <path d="M.265.265h3.44v3.44H.265z" fill="#fff"/>
+          <path d="M0 0v.265 1.323h.265V.265h.529V0zm1.058 0v.265h1.058V0zm1.058.265v.265h1.852V.265zm0 .794v.265H3.44v.529h.265v-.529-.265zm-1.852.794v1.323.265h1.587v-.265H.529V1.852zm2.117.529v.265h.265v-.265zm1.058 0v.265h.265v-.265zm-1.058.529v.265h.265V2.91zm0 .529v.265h.265V3.44zm.529 0v.265h.265V3.44zm.529 0v.265h.265V3.44z" fill="#85898d"/>
+          <path d="M1.588.265v1.323h.265V.265zm1.058.529v.265h.265V.794zm.529 0v.265h.265V.794zM.529 1.852v1.323h.265V1.852z" fill="#c2c6ca"/>
+          <path d="M.265.529v.265h.265V.529zm1.058 0v.265h.265V.529zm-1.058.529v.265h.265v-.265zm1.058 0v.265h.265v-.265z" fill="#100dfb"/>
+          <path d="M2.117.529v.265.265h.529V.794h1.058V.529zm.794 2.117v.529h.265.265V2.91h-.265v-.265z" fill="#0706a7"/>
+          <path d="M.794.265v1.323h.265V.265zm.265 1.323v.265h1.058v-.265V.265h-.265v1.323zm-.265 0H0v.265h.794zM3.704.529v.265H3.44v.265h.265v1.323h.265V.529zm.265 1.852v1.323h.265V2.381zm0 1.323h-.265v.265h.265zm-.265.265H2.381v.265h1.323zM2.91.794v.265h.265V.794zM.265 3.44v.265h1.587V3.44z" fill="#000"/>
+          <path d="M2.381 1.852v.265h-.265v.265h-.265v.265 1.058h.265v.265h.265.265v-.265h-.265V3.44h-.265v-.794h.265v-.265h.265v-.265h.794v.265h.265v-.529H3.44zm1.323.529v.265h.265v-.265zm0 1.058v.265h.265V3.44zm0 .265H3.44v.265h.265z" fill="#a90055"/>
+          <path d="M2.646 2.117v.265h.794v-.265zm-.529.529v.794h.265v-.794zm1.588 0v.794h.265v-.794zM2.646 3.704v.265h.794v-.265z" fill="#fd0016"/>
+        </svg>
+        <div class="clock">00:00 AM</div>
+      </div>
+    </div>
+  </div>
+</main>
+<script>
+  'use strict';
+
+  /**
+   * Set the clock to the current time in HH:MM AM/PM format.
+   *
+   * @return {void}
+   */
+  const updateClock = () => {
+    const now = new Date();
+    const hours24 = now.getHours();
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const ampm = hours24 >= 12 ? 'PM' : 'AM';
+    const formattedTime = `${(hours24 % 12) || 12}:${minutes} ${ampm}`;
+
+    document.querySelectorAll('.clock').forEach($el => $el.textContent = formattedTime);
+  };
+
+  const $dialog = document.querySelector('dialog');
+
+  /**
+   * Triggers a blinking effect on the dialog.
+   *
+   * @return {void}
+   */
+  const blinkDialog = () => {
+    if ($dialog.classList.contains('blink') || !$dialog.open) {
+      return; // prevent multiple triggers
+    }
+
+    $dialog.classList.add('blink');
+    window.setTimeout(() => $dialog.classList.remove('blink'), 350 * 4 - 50);
+  };
+
+  /** Centers the dialog in the viewport. */
+  const centerDialog = () => {
+    $dialog.style.transform = 'none';
+
+    let [prevTop, prevLeft] = ['', ''];
+
+    // dirty hack to ensure the dialog is centered
+    while (true) {
+      $dialog.style.top = `calc(50% - ${$dialog.offsetHeight / 2}px)`;
+      $dialog.style.left = `calc(50% - ${$dialog.offsetWidth / 2}px)`;
+
+      if (prevTop !== $dialog.style.top || prevLeft !== $dialog.style.left) {
+        prevTop = $dialog.style.top;
+        prevLeft = $dialog.style.left;
+      } else {
+        break; // exit loop when the position is stable
+      }
+    }
+  };
+
+  { // add event listeners
+    // blink the dialog when clicking on outside the dialog
+    [document.querySelector('.desktop'), document.querySelector('.taskbar')].forEach(($el) => {
+      $el.addEventListener('click', blinkDialog);
+    });
+
+    // prevent event propagation from the dialog to the desktop and taskbar
+    $dialog.addEventListener('click', (e) => e.stopPropagation());
+
+    /**
+     * Get the client coordinates of the event, handling both mouse and touch events.
+     *
+     * @param {MouseEvent|TouchEvent} e
+     * @return { {x: number, y: number} }
+     */
+    const getClientCoords = (e) => {
+      if (e.touches && e.touches.length > 0) {
+        return { x: e.touches[0].clientX, y: e.touches[0].clientY };
+      } else {
+        return { x: e.clientX, y: e.clientY };
+      }
+    };
+
+    const onStart = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      const { x: startX, y: startY } = getClientCoords(e);
+      const dialogStyle = window.getComputedStyle($dialog);
+      const offsetX = startX - parseInt(dialogStyle.left, 10);
+      const offsetY = startY - parseInt(dialogStyle.top, 10);
+
+      const onMove = (e) => {
+        const { x: clientX, y: clientY } = getClientCoords(e);
+
+        let top = Math.max(clientY - offsetY, 0);
+        let left = Math.max(clientX - offsetX, 0);
+
+        // prevent overflow
+        if (left + $dialog.clientWidth > window.innerWidth) {
+          left = window.innerWidth - $dialog.clientWidth;
+        }
+
+        if (top + $dialog.clientHeight > window.innerHeight) {
+          top = window.innerHeight - $dialog.clientHeight;
+        }
+
+        $dialog.style.top = top + 'px';
+        $dialog.style.left = left + 'px';
+
+        e.preventDefault();
+      };
+
+      const onEnd = () => {
+        ['mousemove', 'touchmove'].forEach(eventType => document.removeEventListener(eventType, onMove));
+        ['mouseup', 'touchend'].forEach(eventType => document.removeEventListener(eventType, onEnd));
+      };
+
+      ['mousemove', 'touchmove'].forEach(eventType => document.addEventListener(eventType, onMove, { passive: false }));
+      ['mouseup', 'touchend'].forEach(eventType => document.addEventListener(eventType, onEnd));
+    };
+
+    ['mousedown', 'touchstart'].forEach(eventType => {
+      $dialog.querySelector('header').addEventListener(eventType, onStart, { passive: false });
+    });
+
+    window.addEventListener('resize', centerDialog);
+    window.setInterval(updateClock, 1000);
+  }
+
+  updateClock();
+  centerDialog();
+</script>
+
+<!---->
+<script>// // the very first line should be kept as a comment to avoid unexpected commenting when embedding the script into the HTML
+Object.defineProperty(window, 'l10n', {
+  value: new function () {
+    const tokenSerializationRe = /[^a-z0-9]/g;
+
+    /**
+     * @param {string} token
+     * @return {string}
+     */
+    const tkn = function (token) {
+      return token.toLowerCase().replaceAll(tokenSerializationRe, '');
+    };
+
+    /**
+     * Each **key** should be in English (this is the default/main locale).
+     *
+     * @link https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes language codes list (column `Set 1` or `ISO 639-1:2002`)
+     *
+     * @type {Map<string, Map<'fr'|'ru'|'uk'|'pt'|'nl'|'de'|'es'|'zh'|'id'|'pl'|'ko', string>>}
+     */
+    const data = Object.freeze(new Map([
+      [tkn('Error'), new Map([
+        ['fr', 'Erreur'],
+        ['ru', 'Ошибка'],
+        ['uk', 'Помилка'],
+        ['pt', 'Erro'],
+        ['nl', 'Fout'],
+        ['de', 'Fehler'],
+        ['es', 'Error'],
+        ['zh', '错误'],
+        ['id', 'Kesalahan'],
+        ['pl', 'Błąd'],
+        ['ko', '오류'],
+      ])],
+      [tkn('Good luck'), new Map([
+        ['fr', 'Bonne chance'],
+        ['ru', 'Удачи'],
+        ['uk', 'Успіхів'],
+        ['pt', 'Boa sorte'],
+        ['nl', 'Veel succes'],
+        ['de', 'Viel Glück'],
+        ['es', 'Buena Suerte'],
+        ['zh', '祝好运'],
+        ['id', 'Semoga berhasil!'],
+        ['pl', 'Powodzenia'],
+        ['ko', '행운을 빌어요'],
+      ])],
+      [tkn('UH OH'), new Map([
+        ['fr', 'Oups'],
+        ['ru', 'Ох'],
+        ['uk', 'Упс'],
+        ['pt', 'Ops'],
+        ['nl', 'Oeps'],
+        ['de', 'Hoppla'],
+        ['es', 'Uy'],
+        ['zh', '哎呀'],
+        ['id', 'Ups'],
+        ['pl', 'Ojej'],
+        ['ko', '헉'],
+      ])],
+      [tkn('Request details'), new Map([
+        ['fr', 'Détails de la requête'],
+        ['ru', 'Детали запроса'],
+        ['uk', 'Деталі запиту'],
+        ['pt', 'Detalhes da solicitação'],
+        ['nl', 'Details van verzoek'],
+        ['de', 'Details der Anfrage'],
+        ['es', 'Detalles de la petición'],
+        ['zh', '请求详情'],
+        ['id', 'Rincian permintaan'],
+        ['pl', 'Poproś o szczegóły'],
+        ['ko', '요청 세부사항'],
+      ])],
+      [tkn('Double-check the URL'), new Map([
+        ['fr', 'Vérifiez l’URL'],
+        ['ru', 'Дважды проверьте URL'],
+        ['uk', 'Двічі перевіряйте URL-адресу'],
+        ['pt', 'Verifique novamente a URL'],
+        ['nl', 'Controleer de URL'],
+        ['de', 'Überprüfen Sie die URL'],
+        ['es', 'Verifique la url'],
+        ['zh', '请再次检查地址'],
+        ['id', 'Periksa URL'],
+        ['pl', 'Sprawdź adres URL'],
+        ['ko', 'URL을 다시 확인하세요'],
+      ])],
+      [tkn('Alternatively, go back'), new Map([
+        ['fr', 'Essayez de revenir en arrière'],
+        ['ru', 'Или можете вернуться назад'],
+        ['uk', 'Або можете повернутися назад'],
+        ['pt', "Como alternativa, tente voltar"],
+        ['nl', 'Of ga terug'],
+        ['de', 'Alternativ gehen Sie zurück'],
+        ['es', 'Como alternativa, vuelva atrás'],
+        ['zh', '或返回上一页'],
+        ['id', 'Atau, kembali'],
+        ['pl', 'Alternatywnie wróć'],
+        ['ko', '혹은, 돌아가기'],
+      ])],
+      [tkn("Here's what might have happened"), new Map([
+        ['fr', 'Voici ce qui aurait pu se passer'],
+        ['ru', 'Из-за чего это могло случиться'],
+        ['uk', 'Ось що могло трапитися'],
+        ['pt', 'Aqui está o que pode ter acontecido'],
+        ['nl', 'Wat er gebeurd kan zijn'],
+        ['de', 'Folgendes könnte passiert sein'],
+        ['es', 'Esto es lo que ha podido pasar'],
+        ['zh', '可能原因有'],
+        ['id', 'Inilah yang bisa saja terjadi'],
+        ['pl', 'Oto, co mogło się wydarzyć'],
+        ['ko', '다음이 발생했을 수 있어요'],
+      ])],
+      [tkn('You may have mistyped the URL'), new Map([
+        ['fr', 'Vous avez peut-être mal tapé l’URL'],
+        ['ru', 'Вы могли ошибиться в URL'],
+        ['uk', 'Ви могли помилитися в URL-адресі'],
+        ['pt', 'Você pode ter digitado incorretamente a URL'],
+        ['nl', 'De URL bevat een typefout'],
+        ['de', 'Möglicherweise haben Sie die URL falsch eingegeben'],
+        ['es', 'Quizá ha escrito mal la URL'],
+        ['zh', '您可能输入了错误的地址'],
+        ['id', 'Anda mungkin tersalah memasukkan URL'],
+        ['pl', 'Być może błędnie wpisałeś adres URL'],
+        ['ko', 'URL을 잘못 입력하셨을 수 있어요'],
+      ])],
+      [tkn('The site was moved'), new Map([
+        ['fr', 'Le site a été déplacé'],
+        ['ru', 'Сайт был перемещён'],
+        ['uk', 'Сайт був переміщений'],
+        ['pt', 'O site foi movido'],
+        ['nl', 'De site is verplaatst'],
+        ['de', 'Die Seite wurde verschoben'],
+        ['es', 'El sitio se ha trasladado'],
+        ['zh', '站点已被转移'],
+        ['id', 'Halaman dipindahkan'],
+        ['pl', 'Witryna została przeniesiona'],
+        ['ko', '사이트가 이동했어요'],
+      ])],
+      [tkn('It was never here'), new Map([
+        ['fr', 'Il n’a jamais été ici'],
+        ['ru', 'Он никогда не был здесь'],
+        ['uk', 'Він ніколи не був тут'],
+        ['pt', 'Nunca esteve aqui'],
+        ['nl', 'Het was hier nooit'],
+        ['de', 'Es war nie hier'],
+        ['es', 'Nunca ha estado aquí'],
+        ['zh', '站点从未存在'],
+        ['id', 'Itu Tidak pernah di sini'],
+        ['pl', 'Nigdy jej nie było'],
+        ['ko', '여기에 있던 적이 없어요'],
+      ])],
+      [tkn('Bad Request'), new Map([
+        ['fr', 'Mauvaise requête'],
+        ['ru', 'Некорректный запрос'],
+        ['uk', 'Хибний запит'],
+        ['pt', 'Requisição inválida'],
+        ['nl', 'Foutieve anvraag'],
+        ['de', 'Fehlerhafte Anfrage'],
+        ['es', 'Petición inválida'],
+        ['zh', '错误请求'],
+        ['id', 'Permintaan yang salah'],
+        ['pl', 'Nieprawidłowe żądanie'],
+        ['ko', '잘못된 요청'],
+      ])],
+      [tkn('The server did not understand the request'), new Map([
+        ['fr', 'Le serveur ne comprend pas la requête'],
+        ['ru', 'Сервер не смог обработать запрос из-за ошибки в нём'],
+        ['uk', 'Сервер не зміг обробити запит через помилку в ньому'],
+        ['pt', 'O servidor não entendeu a solicitação'],
+        ['nl', 'De server begreep het verzoek niet'],
+        ['de', 'Der Server hat die Anfrage nicht verstanden'],
+        ['es', 'El servidor no entendió la petición'],
+        ['zh', '服务器不理解该请求'],
+        ['id', 'Server tidak memahami permintaan'],
+        ['pl', 'Serwer nie zrozumiał żądania'],
+        ['ko', '서버가 요청을 이해하지 못했어요'],
+      ])],
+      [tkn('Unauthorized'), new Map([
+        ['fr', 'Non autorisé'],
+        ['ru', 'Запрос не авторизован'],
+        ['uk', 'Несанкціонований доступ'],
+        ['pt', 'Não autorizado'],
+        ['nl', 'Niet geautoriseerd'],
+        ['de', 'Nicht autorisiert'],
+        ['es', 'No autorizado'],
+        ['zh', '未经授权'],
+        ['id', 'Tidak diotorisasi'],
+        ['pl', 'Nieautoryzowany'],
+        ['ko', '권한 없음'],
+      ])],
+      [tkn('The requested page needs a username and a password'), new Map([
+        ['fr', 'La page demandée nécessite un nom d’utilisateur et un mot de passe'],
+        ['ru', 'Для доступа к странице требуется логин и пароль'],
+        ['uk', 'Щоб отримати доступ до сторінки, потрібний логін та пароль'],
+        ['pt', 'A página solicitada precisa de um nome de usuário e uma senha'],
+        ['nl', 'De pagina heeft een gebruikersnaam en wachtwoord nodig'],
+        ['de', 'Die angeforderte Seite benötigt einen Benutzernamen und ein Passwort'],
+        ['es', 'La página solicitada necesita un usuario y una contraseña'],
+        ['zh', '请求的页面需要用户名和密码'],
+        ['id', 'Halaman yang diminta membutuhkan nama pengguna dan kata sandi'],
+        ['pl', 'Żądana strona wymaga podania nazwy użytkownika i hasła'],
+        ['ko', '요청하신 페이지에는 사용자 이름과 비밀번호가 필요해요'],
+      ])],
+      [tkn('Forbidden'), new Map([
+        ['fr', 'Interdit'],
+        ['ru', 'Запрещено'],
+        ['uk', 'Заборонено'],
+        ['pt', 'Proibido'],
+        ['nl', 'Verboden'],
+        ['de', 'Verboten'],
+        ['es', 'Prohibido'],
+        ['zh', '禁止访问'],
+        ['id', 'Dilarang'],
+        ['pl', 'Zabroniony'],
+        ['ko', '금지됨'],
+      ])],
+      [tkn('Access is forbidden to the requested page'), new Map([
+        ['fr', 'Accès interdit à la page demandée'],
+        ['ru', 'Доступ к странице запрещён'],
+        ['uk', 'Доступ до сторінки заборонено'],
+        ['pt', 'É proibido o acesso à página solicitada'],
+        ['nl', 'Toegang tot de pagina is verboden'],
+        ['de', 'Der Zugriff auf die angeforderte Seite ist verboten'],
+        ['es', 'El acceso está prohibido para la página solicitada'],
+        ['zh', '禁止访问请求的页面'],
+        ['id', 'Akses dilarang ke halaman yang diminta'],
+        ['pl', 'Dostęp do żądanej strony jest zabroniony'],
+        ['ko', '요청하신 페이지에 대한 접근이 금지되어 있어요'],
+      ])],
+      [tkn('Not Found'), new Map([
+        ['fr', 'Introuvable'],
+        ['ru', 'Страница не найдена'],
+        ['uk', 'Сторінку не знайдено'],
+        ['pt', 'Não encontrado'],
+        ['nl', 'Niet gevonden'],
+        ['de', 'Nicht gefunden'],
+        ['es', 'No encontrado'],
+        ['zh', '未找到'],
+        ['id', 'Tidak ditemukan'],
+        ['pl', 'Nie znaleziono'],
+        ['ko', '찾을 수 없음'],
+      ])],
+      [tkn('The server can not find the requested page'), new Map([
+        ['fr', 'Le serveur ne peut trouver la page demandée'],
+        ['ru', 'Сервер не смог найти запрашиваемую страницу'],
+        ['uk', 'Сервер не зміг знайти запитану сторінку'],
+        ['pt', 'O servidor não consegue encontrar a página solicitada'],
+        ['nl', 'De server kan de pagina niet vinden'],
+        ['de', 'Der Server kann die angeforderte Seite nicht finden'],
+        ['es', 'El servidor no puede encontrar la página solicitada'],
+        ['zh', '服务器找不到请求的页面'],
+        ['id', 'Server tidak dapat menemukan halaman yang diminta'],
+        ['pl', 'Serwer nie może znaleźć żądanej strony'],
+        ['ko', '서버가 요청한 페이지를 찾을 수 없어요'],
+      ])],
+      [tkn('Method Not Allowed'), new Map([
+        ['fr', 'Méthode Non Autorisée'],
+        ['ru', 'Метод не поддерживается'],
+        ['uk', 'Неприпустимий метод'],
+        ['pt', 'Método não permitido'],
+        ['nl', 'Methode niet toegestaan'],
+        ['de', 'Methode nicht erlaubt'],
+        ['es', 'Método no permitido'],
+        ['zh', '方法不被允许'],
+        ['id', 'Metode tidak diizinkan'],
+        ['pl', 'Niedozwolona metoda'],
+        ['ko', '허용되지 않은 메소드'],
+      ])],
+      [tkn('The method specified in the request is not allowed'), new Map([
+        ['fr', 'La méthode spécifiée dans la requête n’est pas autorisée'],
+        ['ru', 'Указанный в запросе метод не поддерживается'],
+        ['uk', 'Метод, зазначений у запиті, не підтримується'],
+        ['pt', 'O método especificado na solicitação não é permitido'],
+        ['nl', 'De methode in het verzoek is niet toegestaan'],
+        ['de', 'Die in der Anfrage angegebene Methode ist nicht zulässig'],
+        ['es', 'El método especificado en la petición no está permitido'],
+        ['zh', '请求指定的方法不被允许'],
+        ['id', 'Metode dalam permintaan tidak diizinkan'],
+        ['pl', 'Metoda określona w żądaniu jest niedozwolona'],
+        ['ko', '요청에 사용한 메소드는 허용되지 않아요'],
+      ])],
+      [tkn('Proxy Authentication Required'), new Map([
+        ['fr', 'Authentification proxy requise'],
+        ['ru', 'Нужна аутентификация прокси'],
+        ['uk', 'Потрібна ідентифікація проксі'],
+        ['pt', 'Autenticação de proxy necessária'],
+        ['nl', 'Authenticatie op de proxyserver verplicht'],
+        ['de', 'Proxy-Authentifizierung benötigt'],
+        ['es', 'Autenticación de proxy requerida'],
+        ['zh', '需要代理服务器身份验证'],
+        ['id', 'Diperlukan otentikasi proxy'],
+        ['pl', 'Wymagane uwierzytelnianie proxy'],
+        ['ko', '프록시 인증 필요'],
+      ])],
+      [tkn('You must authenticate with a proxy server before this request can be served'), new Map([
+        ['fr', 'Vous devez vous authentifier avec un serveur proxy avant que cette requête puisse être servie'],
+        ['ru', 'Вы должны быть авторизованы на прокси сервере для обработки этого запроса'],
+        ['uk', 'Ви повинні увійти до проксі-сервера для обробки цього запиту'],
+        ['pt', 'Você deve se autenticar com um servidor proxy antes que esta solicitação possa ser atendida'],
+        ['nl', 'Je moet authenticeren bij een proxyserver voordat dit verzoek uitgevoerd kan worden'],
+        ['de', 'Sie müssen sich bei einem Proxy-Server authentifizieren, bevor diese Anfrage bedient werden kann'],
+        ['es', 'Debes autentificarte con un servidor proxy antes de que esta petición pueda ser atendida'],
+        ['zh', '您必须对代理服务器进行身份验证，然后才能让请求得到处理'],
+        ['id', 'Anda harus mengautentikasi dengan server proxy sebelum permintaan ini dapat dilayani'],
+        ['pl', 'Musisz uwierzytelnić się na serwerze proxy, zanim to żądanie będzie mogło zostać obsłużone'],
+        ['ko', '이 요청을 처리하려면 프록시 서버로 인증해야 해요'],
+      ])],
+      [tkn('Request Timeout'), new Map([
+        ['fr', 'Requête expirée'],
+        ['ru', 'Истекло время ожидания'],
+        ['uk', 'Вичерпано час очікування'],
+        ['pt', 'Tempo limite de solicitação excedido'],
+        ['nl', 'Aanvraagtijd verstreken'],
+        ['de', 'Zeitüberschreitung der Anforderung'],
+        ['es', 'Tiempo límite de la petición excedido'],
+        ['zh', '请求超时'],
+        ['id', 'Meminta batas waktu'],
+        ['pl', 'Przekroczenie limitu czasu żądania'],
+        ['ko', '요청 시간초과'],
+      ])],
+      [tkn('The request took longer than the server was prepared to wait'), new Map([
+        ['fr', 'La requête prend plus de temps que prévu'],
+        ['ru', 'Отправка запроса заняла слишком много времени'],
+        ['uk', 'Надсилання запиту зайняло надто багато часу'],
+        ['pt', 'A solicitação demorou mais do que o servidor estava preparado para esperar'],
+        ['nl', 'Het verzoek duurde langer dan de server wilde wachten'],
+        ['de', 'Die Anfrage hat länger gedauert, als der Server bereit war zu warten'],
+        ['es', 'La petición esta tardando más de lo que el servidor estaba preparado para esperar'],
+        ['zh', '请求用时超过了服务器设置的最长等待时间'],
+        ['id', 'Permintaan memakan waktu lebih lama dari yang bisa ditunggu oleh server'],
+        ['pl', 'Żądanie trwało dłużej niż serwer był gotowy czekać'],
+        ['ko', '요청이 서버가 기다릴 수 있는 시간보다 오래 걸렸어요'],
+      ])],
+      [tkn('Conflict'), new Map([
+        ['fr', 'Conflit'],
+        ['ru', 'Конфликт'],
+        ['uk', 'Конфлікт'],
+        ['pt', 'Conflito'],
+        ['nl', 'Conflict'],
+        ['de', 'Konflikt'],
+        ['es', 'Conflicto'],
+        ['zh', '冲突'],
+        ['id', 'Konflik'],
+        ['pl', 'Konflikt'],
+        ['ko', '상충'],
+      ])],
+      [tkn('The request could not be completed because of a conflict'), new Map([
+        ['fr', 'La requête n’a pas pu être complétée à cause d’un conflit'],
+        ['ru', 'Запрос не может быть обработан из-за конфликта'],
+        ['uk', 'Запит не може бути оброблений через конфлікт'],
+        ['pt', 'A solicitação não pôde ser concluída devido a um conflito'],
+        ['nl', 'Het verzoek kon niet worden verwerkt vanwege een conflict'],
+        ['de', 'Die Anfrage konnte aufgrund eines Konflikts nicht abgeschlossen werden'],
+        ['es', 'La petición no ha podido ser completada por un conflicto'],
+        ['zh', '由于冲突，请求无法完成'],
+        ['id', 'Permintaan tidak dapat diselesaikan karena adanya konflik'],
+        ['pl', 'Żądanie nie mogło zostać wykonane z powodu konfliktu'],
+        ['ko', '상충으로 인해 요청을 완료할 수 없었어요'],
+      ])],
+      [tkn('Gone'), new Map([
+        ['fr', 'Supprimé'],
+        ['ru', 'Удалено'],
+        ['uk', 'Вилучений'],
+        ['pt', 'Removido'],
+        ['nl', 'Verdwenen'],
+        ['de', 'Verschwunden'],
+        ['es', 'Eliminado'],
+        ['zh', '已移除'],
+        ['id', 'Menghilang'],
+        ['pl', 'Usunięto'],
+        ['ko', '사라짐'],
+      ])],
+      [tkn('The requested page is no longer available'), new Map([
+        ['fr', 'La page demandée n’est plus disponible'],
+        ['ru', 'Запрошенная страница была удалена'],
+        ['uk', 'Запитувана сторінка більше не доступна'],
+        ['pt', 'A página solicitada não está mais disponível'],
+        ['nl', 'De pagina is niet langer beschikbaar'],
+        ['de', 'Die angeforderte Seite ist nicht mehr verfügbar'],
+        ['es', 'La página solicitada no está ya disponible'],
+        ['zh', '请求的页面不再可用'],
+        ['id', 'Halaman yang diminta tidak lagi tersedia'],
+        ['pl', 'Żądana strona nie jest już dostępna'],
+        ['ko', '요청하신 페이지는 더 이상 사용할 수 없어요'],
+      ])],
+      [tkn('Length Required'), new Map([
+        ['fr', 'Longueur requise'],
+        ['ru', 'Необходима длина'],
+        ['uk', 'Потрібно вказати довжину'],
+        ['pt', 'Content-Length necessário'],
+        ['nl', 'Lengte benodigd'],
+        ['de', 'Länge benötigt'],
+        ['es', 'Longitud requerida'],
+        ['zh', '需要长度'],
+        ['id', 'Panjang yang diperlukan'],
+        ['pl', 'Wymagana długość'],
+        ['ko', '길이 필요'],
+      ])],
+      [tkn('The "Content-Length" is not defined. The server will not accept the request without it'), new Map([
+        ['fr', 'Le "Content-Length" n’est pas défini. Le serveur ne prendra pas en compte la requête'],
+        ['ru', 'Заголовок "Content-Length" не был передан. Сервер не может обработать запрос без него'],
+        ['uk', 'Заголовок "Content-Length" не був переданий. Сервер не може обробити запит без нього'],
+        ['pt', 'O "Content-Length" não está definido. O servidor não aceitará a solicitação sem ele'],
+        ['nl', 'De "Content-Length" is niet gespecificeerd. De server accepteert het verzoek niet zonder'],
+        ['de', 'Die "Content-Length" ist nicht definiert. Ohne sie akzeptiert der Server die Anfrage nicht'],
+        ['es', 'El "Content-Legth" no eta definido. Este servidor no aceptará la petición sin él'],
+        ['zh', '未指定Content-Length(内容长度)。服务器将不接受不包含此头信息的请求'],
+        ['id', '"Content-Length" tidak ditentukan. Server tidak akan menerima permintaan tanpa itu'],
+        ['pl', 'Wartość "Content-Length" nie jest zdefiniowana. Serwer nie zaakceptuje żądania bez tego parametru'],
+        ['ko', '"Content-Length"가 정의되지 않았습니다. 이 값이 없으면 서버는 요청을 수락하지 않아요'],
+      ])],
+      [tkn('Precondition Failed'), new Map([
+        ['fr', 'Échec de la condition préalable'],
+        ['ru', 'Условие ложно'],
+        ['uk', 'Збій під час обробки попередньої умови'],
+        ['pt', 'Falha na pré-condição'],
+        ['nl', 'Niet voldaan aan vooraf gestelde voorwaarde'],
+        ['de', 'Vorbedingung fehlgeschlagen'],
+        ['es', 'Precondición fallida'],
+        ['zh', '前置条件判定失败'],
+        ['id', 'Prasyarat gagal'],
+        ['pl', 'Niespełnienie warunku wstępnego'],
+        ['ko', '선결 조건 실패'],
+      ])],
+      [tkn('The pre condition given in the request evaluated to false by the server'), new Map([
+        ['fr', 'La précondition donnée dans la requête a été évaluée comme étant fausse par le serveur'],
+        ['ru', 'Ни одно из условных полей заголовка запроса не было выполнено'],
+        ['uk', 'Жодна з передумов запиту не була виконана'],
+        ['pt', 'A pré-condição dada na solicitação avaliada como falsa pelo servidor'],
+        ['nl', 'De vooraf gestelde voorwaarde is afgewezen door de server'],
+        ['de', 'Die in der Anfrage angegebene Vorbedingung wird vom Server als falsch bewertet'],
+        ['es', 'La precondición ha sido evaluada como negativa para esta petición por el servidor'],
+        ['zh', '服务器评估请求中给出的前置条件的结果为false(假)'],
+        ['id', 'Prakondisi gagal'],
+        ['pl', 'Warunek wstępny podany w żądaniu został oceniony przez serwer jako nieprawidłowy'],
+        ['ko', '요청에 제공된 선결 조건을 서버는 거짓으로 평가했어요'],
+      ])],
+      [tkn('Payload Too Large'), new Map([
+        ['fr', 'Charge trop volumineuse'],
+        ['ru', 'Слишком большой запрос'],
+        ['uk', 'Занадто великий запит'],
+        ['pt', 'Payload muito grande'],
+        ['nl', 'Aanvraag te grood'],
+        ['de', 'Anfrage zu groß'],
+        ['es', 'Carga demasiado grande'],
+        ['zh', '请求体过大'],
+        ['id', 'Muatan terlalu besar'],
+        ['pl', 'Żądanie jest zbyt duże'],
+        ['ko', '콘텐츠가 너무 큼'],
+      ])],
+      [tkn('The server will not accept the request, because the request entity is too large'), new Map([
+        ['fr', 'Le serveur ne prendra pas en compte la requête, car l’entité de la requête est trop volumineuse'],
+        ['ru', 'Сервер не может обработать запрос, так как он слишком большой'],
+        ['uk', 'Сервер не може обробити запит, оскільки він занадто великий'],
+        ['pt', 'O servidor não aceitará a solicitação porque a entidade da solicitação é muito grande'],
+        ['nl', 'De server accepteert het verzoek niet omdat de aanvraag te groot is'],
+        ['de', 'Der Server akzeptiert die Anfrage nicht, da die Datenmenge zu groß ist'],
+        ['es', 'El servidor no aceptará esta petición, porque la carga es demasiado grande'],
+        ['zh', '请求体过大，服务器将不接受该请求'],
+        ['id', 'Server tidak akan menerima permintaan, karena entitas permintaan terlalu besar'],
+        ['pl', 'Serwer nie zaakceptuje żądania, ponieważ żądanie jest zbyt duże'],
+        ['ko', '요청 엔터티가 너무 크기 때문에 서버가 요청을 수락하지 않았어요'],
+      ])],
+      [tkn('Requested Range Not Satisfiable'), new Map([
+        ['fr', 'Plage requêtée non satisfaisable'],
+        ['ru', 'Диапазон не достижим'],
+        ['uk', 'Запитуваний діапазон недосяжний'],
+        ['pt', 'Intervalo Solicitado Não Satisfatório'],
+        ['nl', 'Aangevraagd gedeelte niet opvraagbaar'],
+        ['de', 'Anfrage-Bereich nicht erfüllbar'],
+        ['es', 'Intervalo solicitado no satisfactorio'],
+        ['zh', '不满足请求范围'],
+        ['id', 'Rentang yang diminta tidak dapat dipenuhi'],
+        ['pl', 'Żądany zakres nie jest satysfakcjonujący'],
+        ['ko', '처리할 수 없는 요청 범위'],
+      ])],
+      [tkn('The requested byte range is not available and is out of bounds'), new Map([
+        ['fr', 'Le byte range demandé n’est pas disponible et est hors des limites'],
+        ['ru', 'Запрошенный диапазон данных недоступен или вне допустимых пределов'],
+        ['uk', 'Описаний діапазон даних недоступний або поза допустимими межами'],
+        ['pt', 'O intervalo de bytes solicitado não está disponível e está fora dos limites'],
+        ['nl', 'De aangevraagde bytes zijn buiten het limiet'],
+        ['de', 'Der angefragte Teilbereich der Ressource existiert nicht oder ist ungültig'],
+        ['es', 'El intervalo de bytes requerido no está disponible o se encuentra fuera de los límites'],
+        ['zh', '请求的字节范围不可用，超出边界'],
+        ['id', 'Rentang byte yang diminta tidak tersedia dan di luar batas'],
+        ['pl', 'Żądany zakres bajtów nie jest dostępny i znajduje się poza zakresem'],
+        ['ko', '요청한 범위를 사용할 수 없고, 범위를 벗어났어요'],
+      ])],
+      [tkn("I'm a teapot"), new Map([
+        ['fr', 'Je suis une théière'],
+        ['ru', 'Я чайник'],
+        ['uk', 'Я чайник'],
+        ['pt', 'Eu sou um bule'],
+        ['nl', 'Ik ben een theepot'],
+        ['de', 'Ich bin eine Teekanne'],
+        ['es', 'Soy una tetera'],
+        ['zh', '我是一只茶壶'],
+        ['id', 'Saya adalah teko'],
+        ['pl', 'Jestem czajniczkiem'],
+        ['ko', '저는 찻주전자에요'],
+      ])],
+      [tkn('Attempt to brew coffee with a teapot is not supported'), new Map([
+        ['fr', 'Tenter de préparer du café avec une théière n’est pas pris en charge'],
+        ['ru', 'Попытка заварить кофе в чайнике обречена на фиаско'],
+        ['uk', 'Спроба заварити каву в чайнику приречена на фіаско'],
+        ['pt', 'A tentativa de preparar café com um bule não é suportada'],
+        ['nl', 'Koffie maken met een theepot is niet ondersteund'],
+        ['de', 'Der Versuch, Kaffee mit einer Teekanne zuzubereiten, wird nicht unterstützt'],
+        ['es', 'Intentar hacer un café en una tetera no está soportado'],
+        ['zh', '用茶壶泡咖啡不受支持'],
+        ['id', 'Upaya menyeduh kopi dengan teko tidak didukung'],
+        ['pl', 'Próba zaparzenia kawy za pomocą czajniczka nie jest obsługiwana'],
+        ['ko', '찻주전자로 커피를 내리는 시도는 지원되지 않아요'],
+      ])],
+      [tkn('Too Many Requests'), new Map([
+        ['fr', 'Trop de requêtes'],
+        ['ru', 'Слишком много запросов'],
+        ['uk', 'Занадто багато запитів'],
+        ['pt', 'Excesso de solicitações'],
+        ['nl', 'Te veel requests'],
+        ['de', 'Zu viele Anfragen'],
+        ['es', 'Demasiadas peticiones'],
+        ['zh', '请求过多'],
+        ['id', 'Terlalu banyak permintaan'],
+        ['pl', 'Zbyt wiele żądań'],
+        ['ko', '요청이 너무 많음'],
+      ])],
+      [tkn('Too many requests in a given amount of time'), new Map([
+        ['fr', 'Trop de requêtes dans un délai donné'],
+        ['ru', 'Отправлено слишком много запросов за короткое время'],
+        ['uk', 'Надіслано занадто багато запитів за короткий проміжок час'],
+        ['pt', 'Excesso de solicitações em um determinado período de tempo'],
+        ['nl', 'Te veel verzoeken binnen een bepaalde tijd'],
+        ['de', 'Der Client hat zu viele Anfragen in einem bestimmten Zeitraum gesendet'],
+        ['es', 'Demasiadas peticiones en un determinado periodo de tiempo'],
+        ['zh', '在给定的时间内发送了过多请求'],
+        ['id', 'Terlalu banyak permintaan dalam waktu tertentu'],
+        ['pl', 'Zbyt wiele żądań w określonym czasie'],
+        ['ko', '지정된 시간 내에 요청이 너무 많아요'],
+      ])],
+      [tkn('Internal Server Error'), new Map([
+        ['fr', 'Erreur interne du serveur'],
+        ['ru', 'Внутренняя ошибка сервера'],
+        ['uk', 'Внутрішня помилка сервера'],
+        ['pt', 'Erro do Servidor Interno'],
+        ['nl', 'Interne serverfout'],
+        ['de', 'Interner Server-Fehler'],
+        ['es', 'Error Interno'],
+        ['zh', '内部服务器错误'],
+        ['id', 'Kesalahan server internal'],
+        ['pl', 'Wewnętrzny błąd serwera'],
+        ['ko', '내부 서버 오류'],
+      ])],
+      [tkn('The server met an unexpected condition'), new Map([
+        ['fr', 'Le serveur a rencontré une condition inattendue'],
+        ['ru', 'Произошло что-то неожиданное на сервере'],
+        ['uk', 'На сервері відбулось щось неочікуване'],
+        ['pt', 'O servidor encontrou uma condição inesperada'],
+        ['nl', 'De server ondervond een onverwachte conditie'],
+        ['de', 'Der Server hat einen internen Fehler festgestellt'],
+        ['es', 'El servidor ha encontrado una condición no esperada'],
+        ['zh', '服务器遇到了意外情况'],
+        ['id', 'Server mengalami kondisi yang tidak terduga'],
+        ['pl', 'Serwer napotkał nieoczekiwany stan'],
+        ['ko', '서버가 예상치 못한 조건이에요'],
+      ])],
+      [tkn('Bad Gateway'), new Map([
+        ['fr', 'Mauvaise passerelle'],
+        ['ru', 'Ошибка шлюза'],
+        ['uk', 'Помилка шлюзу'],
+        ['pt', 'Gateway inválido'],
+        ['nl', 'Ongeldige Gateway'],
+        ['de', 'Fehlerhaftes Gateway'],
+        ['es', 'Puerta de enlace no valida'],
+        ['zh', '无效网关'],
+        ['id', 'Gateway yang buruk'],
+        ['pl', 'Błąd bramki'],
+        ['ko', '게이트웨이 불량'],
+      ])],
+      [tkn('The server received an invalid response from the upstream server'), new Map([
+        ['fr', 'Le serveur a reçu une réponse invalide du serveur distant'],
+        ['ru', 'Сервер получил некорректный ответ от вышестоящего сервера'],
+        ['uk', 'Сервер отримав невірну відповідь від попереднього сервера'],
+        ['pt', 'O servidor recebeu uma resposta inválida do servidor upstream'],
+        ['nl', 'De server ontving een ongeldig antwoord van een bovenliggende server'],
+        ['de', 'Der Server hat eine ungültige Antwort vom Upstream-Server erhalten'],
+        ['es', 'El servidor ha recibido una respuesta no válida del servidor de origen'],
+        ['zh', '服务器从上游服务器收到了无效的响应'],
+        ['id', 'Server menerima respons yang tidak valid dari server induk'],
+        ['pl', 'Serwer otrzymał nieprawidłową odpowiedź od serwera nadrzędnego'],
+        ['ko', '게이트웨이가 업스트림 서버로부터 잘못된 응답을 받았어요'],
+      ])],
+      [tkn('Service Unavailable'), new Map([
+        ['fr', 'Service indisponible'],
+        ['ru', 'Сервис недоступен'],
+        ['uk', 'Сервіс недоступний'],
+        ['pt', 'Serviço não disponível'],
+        ['nl', 'Dienst niet beschikbaar'],
+        ['de', 'Dienst nicht verfügbar'],
+        ['es', 'Servicio no disponible'],
+        ['zh', '服务不可用'],
+        ['id', 'Layanan tidak tersedia'],
+        ['pl', 'Serwis niedostępny'],
+        ['ko', '서비스 불가능'],
+      ])],
+      [tkn('The server is temporarily overloading or down'), new Map([
+        ['fr', 'Le serveur est temporairement en surcharge ou indisponible'],
+        ['ru', 'Сервер временно не может обрабатывать запросы по техническим причинам'],
+        ['uk', 'Сервер тимчасово не може обробляти запити з технічних причин'],
+        ['pt', 'O servidor está temporariamente sobrecarregado ou inativo'],
+        ['nl', 'De server is tijdelijk overbelast of niet bereikbaar'],
+        ['de', 'Der Server ist vorübergehend überlastet oder ausgefallen'],
+        ['es', 'El servidor está temporalmente sobrecargado o inactivo'],
+        ['zh', '服务器暂时过载或不可用'],
+        ['id', 'Server untuk sementara kelebihan beban atau tidak tersedia'],
+        ['pl', 'Serwer jest tymczasowo przeciążony lub wyłączony'],
+        ['ko', '서버가 일시적으로 과부하 상태이거나 다운되었어요'],
+      ])],
+      [tkn('Gateway Timeout'), new Map([
+        ['fr', 'Expiration Passerelle'],
+        ['ru', 'Шлюз не отвечает'],
+        ['uk', 'Шлюз не відповідає'],
+        ['pt', 'Tempo limite do gateway excedido'],
+        ['nl', 'Gateway Verlopen'],
+        ['de', 'Gateway Zeitüberschreitung'],
+        ['es', 'Tiempo límite de puerta de enlace excedido'],
+        ['zh', '网关超时'],
+        ['id', 'Batas waktu gateway'],
+        ['pl', 'Przekroczenie limitu czasu bramki'],
+        ['ko', '게이트웨이 시간초과'],
+      ])],
+      [tkn('The gateway has timed out'), new Map([
+        ['fr', 'Le temps d’attente de la passerelle est dépassé'],
+        ['ru', 'Сервер не дождался ответа от вышестоящего сервера'],
+        ['uk', 'У шлюзу закінчився час очікування'],
+        ['pt', 'O gateway esgotou o tempo limite'],
+        ['nl', 'De verbinding naar de bovenliggende server is verlopen'],
+        ['de', 'Das Zeitlimit für den Verbindungsaufbau mit dem Upstream-Server ist abgelaufen'],
+        ['es', 'La puerta de enlace ha sobrepasado el tiempo límite'],
+        ['zh', '网关响应已经超时'],
+        ['id', 'Sambungan ke server induk telah kedaluwarsa'],
+        ['pl', 'Bramka przekroczyła limit czasu'],
+        ['ko', '게이트웨이 시간이 초과되었어요'],
+      ])],
+      [tkn('HTTP Version Not Supported'), new Map([
+        ['fr', 'Version HTTP non prise en charge'],
+        ['ru', 'Версия HTTP не поддерживается'],
+        ['uk', 'Версія НТТР не підтримується'],
+        ['pt', 'Versão HTTP não suportada'],
+        ['nl', 'HTTP-versie wordt niet ondersteunt'],
+        ['de', 'HTTP-Version wird nicht unterstützt'],
+        ['es', 'Versión de HTTP no soportada'],
+        ['zh', 'HTTP版本不受支持'],
+        ['id', 'Versi HTTP tidak didukung'],
+        ['pl', 'Wersja HTTP nie jest obsługiwana'],
+        ['ko', '지원하지 않는 HTTP 버전'],
+      ])],
+      [tkn('The server does not support the "http protocol" version'), new Map([
+        ['fr', 'Le serveur ne supporte pas la version du protocole HTTP'],
+        ['ru', 'Сервер не поддерживает запрошенную версию HTTP протокола'],
+        ['uk', 'Сервер не підтримує запитану версію HTTP-протоколу'],
+        ['pt', 'O servidor não suporta a versão do protocolo HTTP'],
+        ['nl', 'De server ondersteunt deze HTTP-versie niet'],
+        ['de', 'Der Server unterstützt die HTTP-Protokoll-Version nicht'],
+        ['es', 'El servidor no soporta la versión del protocolo HTTP'],
+        ['zh', '服务器不支持该HTTP协议版本'],
+        ['id', 'Server tidak mendukung versi HTTP ini'],
+        ['pl', 'Serwer nie obsługuje wersji "protokołu http"'],
+        ['ko', '서버가 해당 "HTTP 프로토콜"을 지원하지 않아요'],
+      ])],
+      [tkn('Host'), new Map([
+        ['fr', 'Hôte'],
+        ['ru', 'Хост'],
+        ['uk', 'Хост'],
+        ['pt', 'Hospedeiro'],
+        ['nl', 'Host'],
+        ['de', 'Host'],
+        ['es', 'Host'],
+        ['zh', '主机'],
+        ['id', 'Host'],
+        ['pl', 'Host'],
+        ['ko', '호스트'],
+      ])],
+      [tkn('Original URI'), new Map([
+        ['fr', 'URI d’origine'],
+        ['ru', 'Исходный URI'],
+        ['uk', 'Вихідний URI'],
+        ['pt', 'URI original'],
+        ['nl', 'Originele URI'],
+        ['de', 'Originale URI'],
+        ['es', 'URI original'],
+        ['zh', '原始URI'],
+        ['id', 'URL asli'],
+        ['pl', 'Oryginalny URI'],
+        ['ko', '원시 URI'],
+      ])],
+      [tkn('Forwarded for'), new Map([
+        ['fr', 'Transmis pour'],
+        ['ru', 'Перенаправлен'],
+        ['uk', 'Перенаправлений'],
+        ['pt', 'Encaminhado para'],
+        ['nl', 'Doorgestuurd voor'],
+        ['de', 'Weitergeleitet für'],
+        ['es', 'Remitido para'],
+        ['zh', '转发自'],
+        ['id', 'Diteruskan untuk'],
+        ['pl', 'Przekazane do'],
+        ['ko', '전달받은 대상'],
+      ])],
+      [tkn('Namespace'), new Map([
+        ['fr', 'Espace de noms'],
+        ['ru', 'Пространство имён'],
+        ['uk', 'Простір імен'],
+        ['pt', 'Namespace'],
+        ['nl', 'Elementnaam'],
+        ['de', 'Namensraum'],
+        ['es', 'Namespace'],
+        ['zh', '命名空间'],
+        ['id', 'Ruang nama'],
+        ['pl', 'Przestrzeń nazw'],
+        ['ko', '네임스페이스'],
+      ])],
+      [tkn('Ingress name'), new Map([
+        ['fr', 'Nom ingress'],
+        ['ru', 'Имя Ingress'],
+        ['uk', "Ім'я входу"],
+        ['pt', 'Nome Ingress'],
+        ['nl', 'Ingress naam'],
+        ['de', 'Ingress Name'],
+        ['es', 'Nombre Ingress'],
+        ['zh', '入口名'],
+        ['id', 'Nama ingress'],
+        ['pl', 'Nazwa wejścia'],
+        ['ko', '인그레스 이름'],
+      ])],
+      [tkn('Service name'), new Map([
+        ['fr', 'Nom du service'],
+        ['ru', 'Имя сервиса'],
+        ['uk', "Ім'я сервісу"],
+        ['pt', 'Nome do Serviço'],
+        ['nl', 'Service naam'],
+        ['de', 'Service Name'],
+        ['es', 'Nombre del servicio'],
+        ['zh', '服务名'],
+        ['id', 'Nama layanan'],
+        ['pl', 'Nazwa usługi'],
+        ['ko', '서비스 이름'],
+      ])],
+      [tkn('Service port'), new Map([
+        ['fr', 'Port du service'],
+        ['ru', 'Порт сервиса'],
+        ['uk', 'Порт сервісу'],
+        ['pt', 'Porta do serviço'],
+        ['nl', 'Service poort'],
+        ['de', 'Service Port'],
+        ['es', 'Puerto del servicio'],
+        ['zh', '服务端口'],
+        ['id', 'Port layanan'],
+        ['pl', 'Port usługi'],
+        ['ko', '서비스 포트'],
+      ])],
+      [tkn('Request ID'), new Map([
+        ['fr', 'Identifiant de la requête'],
+        ['ru', 'ID запроса'],
+        ['uk', 'ID запиту'],
+        ['pt', 'ID da solicitação'],
+        ['nl', 'ID van het verzoek'],
+        ['de', 'Anfrage ID'],
+        ['es', 'ID de la petición'],
+        ['zh', '请求ID'],
+        ['id', 'ID permintaan'],
+        ['pl', 'Identyfikator żądania'],
+        ['ko', '요청 ID'],
+      ])],
+      [tkn('Timestamp'), new Map([
+        ['fr', 'Horodatage'],
+        ['ru', 'Временная метка'],
+        ['uk', 'Мітка часу'],
+        ['pt', 'Timestamp'],
+        ['nl', 'Tijdstempel'],
+        ['de', 'Zeitstempel'],
+        ['es', 'Timestamp'],
+        ['zh', '时间戳'],
+        ['id', 'Cap waktu'],
+        ['pl', 'Sygnatura czasowa'],
+        ['ko', '시간 기록'],
+      ])],
+      [tkn('client-side error'), new Map([
+        ['fr', 'Erreur Client'],
+        ['ru', 'ошибка на стороне клиента'],
+        ['uk', 'помилка на стороні клієнта'],
+        ['pt', 'erro do lado do cliente'],
+        ['nl', 'fout aan de gebruikerskant'],
+        ['de', 'Clientseitiger Fehler'],
+        ['es', 'Error del lado del cliente'],
+        ['zh', '客户端错误'],
+        ['id', 'Kesalahan sisi klien'],
+        ['pl', 'błąd po stronie klienta'],
+        ['ko', '클라이언트 측 오류'],
+      ])],
+      [tkn('server-side error'), new Map([
+        ['fr', 'Erreur Serveur'],
+        ['ru', 'ошибка на стороне сервера'],
+        ['uk', 'помилка на стороні сервера'],
+        ['pt', 'erro do lado do servidor'],
+        ['nl', 'fout aan de serverkant'],
+        ['de', 'Serverseitiger Fehler'],
+        ['es', 'Error del lado del servidor'],
+        ['zh', '服务端错误'],
+        ['id', 'Kesalahan sisi server'],
+        ['pl', 'błąd po stronie serwera'],
+        ['ko', '서버 측 오류'],
+      ])],
+      [tkn('Your Client'), new Map([
+        ['fr', 'Votre Client'],
+        ['ru', 'Ваш Браузер'],
+        ['uk', 'Ваш Браузер'],
+        ['pt', 'Seu Cliente'],
+        ['nl', 'Jouw Client'],
+        ['de', 'Ihr Client'],
+        ['es', 'Tu Cliente'],
+        ['zh', '您的客户端'],
+        ['id', 'Klien Anda'],
+        ['pl', 'Klient'],
+        ['ko', '내 클라이언트'],
+      ])],
+      [tkn('Network'), new Map([
+        ['fr', 'Réseau'],
+        ['ru', 'Сеть'],
+        ['uk', 'Мережа'],
+        ['pt', 'Rede'],
+        ['nl', 'Netwerk'],
+        ['de', 'Netzwerk'],
+        ['es', 'Red'],
+        ['zh', '网络'],
+        ['id', 'Jaringan'],
+        ['pl', 'Sieć'],
+        ['ko', '네트워크'],
+      ])],
+      [tkn('Web Server'), new Map([
+        ['fr', 'Serveur Web'],
+        ['ru', 'Web Сервер'],
+        ['uk', 'Web-сервер'],
+        ['pt', 'Servidor web'],
+        ['nl', 'Web Server'],
+        ['de', 'Webserver'],
+        ['es', 'Servidor Web'],
+        ['zh', 'Web服务器'],
+        ['id', 'Server web'],
+        ['pl', 'Serwer WWW'],
+        ['ko', '웹 서버'],
+      ])],
+      [tkn('What happened?'), new Map([
+        ['fr', 'Que s’est-il passé ?'],
+        ['ru', 'Что произошло?'],
+        ['uk', 'Що сталося?'],
+        ['pt', 'O que aconteceu?'],
+        ['nl', 'Wat is er gebeurd?'],
+        ['de', 'Was ist passiert?'],
+        ['es', '¿Que ha pasado?'],
+        ['zh', '发生了什么？'],
+        ['id', 'Apa yang terjadi?'],
+        ['pl', 'Co się stało?'],
+        ['ko', '어떤 일이 일어났나요?'],
+      ])],
+      [tkn('What can I do?'), new Map([
+        ['fr', 'Que puis-je faire ?'],
+        ['ru', 'Что можно сделать?'],
+        ['uk', 'Що можна зробити?'],
+        ['pt', 'O que eu posso fazer?'],
+        ['nl', 'Wat kan ik doen?'],
+        ['de', 'Was kann ich machen?'],
+        ['es', '¿Que puedo hacer?'],
+        ['zh', '我能做什么？'],
+        ['id', 'Apa yang bisa saya lakukan?'],
+        ['pl', 'Co mogę zrobić?'],
+        ['ko', '어떤 것을 할 수 있나요?'],
+      ])],
+      [tkn('Please try again in a few minutes'), new Map([
+        ['fr', 'Veuillez réessayer dans quelques minutes'],
+        ['ru', 'Пожалуйста, попробуйте повторить запрос ещё раз чуть позже'],
+        ['uk', 'Будь ласка, спробуйте повторити запит ще раз трохи пізніше'],
+        ['pt', 'Por favor, tente novamente em alguns minutos'],
+        ['nl', 'Probeer het alstublieft opnieuw over een paar minuten'],
+        ['de', 'Bitte versuchen Sie es in ein paar Minuten erneut'],
+        ['es', 'Por favor, intente nuevamente en unos minutos'],
+        ['zh', '请在几分钟后重试'],
+        ['id', 'Silakan coba lagi dalam beberapa menit'],
+        ['pl', 'Spróbuj ponownie za kilka minut'],
+        ['ko', '몇 분 후에 다시 시도해 주세요'],
+      ])],
+      [tkn('Working'), new Map([
+        ['fr', 'Opérationnel'],
+        ['ru', 'Работает'],
+        ['uk', 'Працює'],
+        ['pt', 'Funcionando'],
+        ['nl', 'Functioneel'],
+        ['de', 'Funktioniert'],
+        ['es', 'Funcionando'],
+        ['zh', '正常运行'],
+        ['id', 'Fungsi'],
+        ['pl', 'Działa'],
+        ['ko', '작동 중'],
+      ])],
+      [tkn('Unknown'), new Map([
+        ['fr', 'Inconnu'],
+        ['ru', 'Неизвестно'],
+        ['uk', 'Невідомо'],
+        ['pt', 'Desconhecido'],
+        ['nl', 'Onbekend'],
+        ['de', 'Unbekannt'],
+        ['es', 'Desconocido'],
+        ['zh', '未知'],
+        ['id', 'Tidak diketahui'],
+        ['pl', 'Nieznany'],
+        ['ko', '알 수 없음'],
+      ])],
+      [tkn('Please try to change the request method, headers, payload, or URL'), new Map([
+        ['fr', 'Veuillez essayer de changer la méthode de requête, les en-têtes, le contenu ou l’URL'],
+        ['ru', 'Пожалуйста, попробуйте изменить метод запроса, заголовки, его содержимое или URL'],
+        ['uk', 'Будь ласка, спробуйте змінити метод запиту, заголовки, його вміст або URL-адресу'],
+        ['pt', 'Tente alterar o método de solicitação, cabeçalhos, payload ou URL'],
+        ['nl', 'Probeer het opnieuw met een andere methode, headers, payload of URL'],
+        ['de', 'Bitte versuchen Sie, die Anfragemethode, Header, Payload oder URL zu ändern'],
+        ['es', 'Por favor intente cambiar el método de la petición, cabeceras, carga o URL'],
+        ['zh', '请尝试更改请求方法、标头、有效负载或URL'],
+        ['id', 'Coba lagi dengan metode, header, muatan, atau URL yang berbeda'],
+        ['pl', 'Spróbuj zmienić metodę żądania, nagłówki, żądanie lub adres URL'],
+        ['ko', '요청 방법, 헤더, 콘텐츠 또는 URL을 변경해 보세요'],
+      ])],
+      [tkn('Please check your authorization data'), new Map([
+        ['fr', 'Veuillez vérifier vos données d’autorisation'],
+        ['ru', 'Пожалуйста, проверьте данные авторизации'],
+        ['uk', 'Будь ласка, перевірте дані авторизації'],
+        ['pt', 'Verifique seus dados de autorização'],
+        ['nl', 'Controleer de authenticatiegegevens'],
+        ['de', 'Bitte überprüfen Sie Ihre Zugangsdaten'],
+        ['es', 'Verifique sus datos de autorización'],
+        ['zh', '请检查您的授权数据'],
+        ['id', 'Memeriksa detail autentikasi'],
+        ['pl', 'Sprawdź swoje dane autoryzacyjne'],
+        ['ko', '인증 데이터를 확인해주세요'],
+      ])],
+      [tkn('Please double-check the URL and try again'), new Map([
+        ['fr', 'Veuillez vérifier l’URL et réessayer'],
+        ['ru', 'Пожалуйста, дважды проверьте URL и попробуйте снова'],
+        ['uk', 'Будь ласка, двічі перевірте URL-адресу і спробуйте знову'],
+        ['pt', 'Verifique novamente o URL e tente novamente'],
+        ['nl', 'Controleer de URL en probeer het opnieuw'],
+        ['de', 'Bitte überprüfen Sie die URL und versuchen Sie es erneut'],
+        ['es', 'Verifique de nuevo la URL y vuelva a probar'],
+        ['zh', '请再次检查URL并重试'],
+        ['id', 'Periksa URL dan coba lagi'],
+        ['pl', 'Sprawdź adres URL i spróbuj ponownie'],
+        ['ko', 'URL을 다시 한번 확인해 주세요'],
+      ])],
+      [tkn('My Computer'), new Map([
+        ['fr', 'Poste de travail'],
+        ['ru', 'Мой компьютер'],
+        ['uk', 'Мій комп’ютер'],
+        ['pt', 'Meu computador'],
+        ['nl', 'Deze computer'],
+        ['de', 'Arbeitsplatz'],
+        ['es', 'Mi PC'],
+        ['zh', '我的电脑'],
+        ['id', 'Komputer Saya'],
+        ['pl', 'Mój komputer'],
+        ['ko', '내 컴퓨터'],
+      ])],
+      [tkn('My Documents'), new Map([
+        ['fr', 'Mes documents'],
+        ['ru', 'Мои документы'],
+        ['uk', 'Мої документи'],
+        ['pt', 'Meus documentos'],
+        ['nl', 'Mijn documenten'],
+        ['de', 'Eigene Dateien'],
+        ['es', 'Mis documentos'],
+        ['zh', '我的文档'],
+        ['id', 'Dokumen Saya'],
+        ['pl', 'Moje dokumenty'],
+        ['ko', '내 문서'],
+      ])],
+      [tkn('Start'), new Map([
+        ['fr', 'Démarrer'],
+        ['ru', 'Пуск'],
+        ['uk', 'Пуск'],
+        ['pt', 'Iniciar'],
+        ['nl', 'Start'],
+        ['de', 'Start'],
+        ['es', 'Inicio'],
+        ['zh', '开始'],
+        ['id', 'Mulai'],
+        ['pl', 'Start'],
+        ['ko', '시작'],
+      ])],
+    ]));
+
+    // detect browser locale (take only 2 first symbols)
+    let activeLocale = navigator.language.substring(0, 2).toLowerCase();
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @param {string} locale
+     * @return {void}
+     */
+    this.setLocale = function (locale) {
+      activeLocale = locale.toLowerCase();
+    }
+
+    /**
+     * @param {string} token
+     * @param {string?} def
+     * @return {string|undefined}
+     */
+    this.translate = function (token, def) {
+      const t = tkn(token);
+
+      if (activeLocale === 'en' && Object.prototype.hasOwnProperty.call(data, t)) {
+        return token;
+      }
+
+      if (data.has(t) && data.get(t).has(activeLocale)) {
+        return data.get(t).get(activeLocale);
+      }
+
+      return def;
+    };
+
+    /**
+     * Localize all elements with the HTML attribute `data-l10n`.
+     * The attribute value is used as a token to translate.
+     *
+     * @return {void}
+     */
+    this.localizeDocument = function () {
+      if (activeLocale === 'en') {
+        return; // no need to translate
+      }
+
+      const l10nAttr = 'data-l10n'; // using this attribute we understand that this element should be localized
+      const l10nOriginalTextAttr = 'data-l10n-original'; // to keep the original text
+
+      // loop through all elements with the `data-l10n` attribute
+      Array.prototype.forEach.call(document.querySelectorAll('[' + l10nAttr + ']'), ($el) => {
+        if (!$el.hasAttribute(l10nAttr)) {
+          return; // skip elements without the `data-l10n` attribute
+        }
+
+        // store the original text if not already stored
+        if (!$el.hasAttribute(l10nOriginalTextAttr)) {
+          $el.setAttribute(l10nOriginalTextAttr, $el.innerText);
+        } else {
+          $el.innerText = $el.getAttribute(l10nOriginalTextAttr); // restore the original text
+        }
+
+        const attr = $el.getAttribute(l10nAttr).trim(); // get the `data-l10n` attribute value
+        const token = attr ? attr : $el.innerText.trim(); // use the attribute value as a token, or the element text
+        const localized = this.translate(token); // translate the token
+
+        if (localized) {
+          $el.innerText = localized; // set the translated text
+        } else {
+          console.debug(`Unsupported l10n token detected: "${token}" (locale "${activeLocale}")`, $el);
+        }
+      });
+    };
+  },
+  writable: false,
+  enumerable: false,
+});
+
+window.l10n.localizeDocument();
+</script>
+<!---->
+</body>
+</html>
