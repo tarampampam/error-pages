@@ -27,7 +27,7 @@ jobs:
     name: Run golangci-lint
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - {uses: actions/setup-go@v5, with: {go-version-file: go.mod}}
       - uses: golangci/golangci-lint-action@v8
 
@@ -35,7 +35,7 @@ jobs:
     name: Unit tests
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - {uses: actions/setup-go@v5, with: {go-version-file: go.mod}}
       - run: go test -race ./...
 
@@ -49,7 +49,7 @@ jobs:
         arch: [amd64, arm64] # 386
     needs: [golangci-lint, go-test]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - {uses: actions/setup-go@v5, with: {go-version-file: go.mod}}
       - {uses: gacts/github-slug@v1, id: slug}
       - env:
@@ -81,7 +81,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [golangci-lint, go-test]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - {uses: gacts/github-slug@v1, id: slug}
       - uses: docker/build-push-action@v6
         with:
