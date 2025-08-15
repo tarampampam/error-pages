@@ -195,7 +195,7 @@ Object.defineProperty(window, 'l10n', {
      *
      * @link https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes language codes list (column `Set 1` or `ISO 639-1:2002`)
      *
-     * @type {Map<string, Map<'fr'|'ru'|'uk'|'pt'|'nl'|'de'|'es'|'zh'|'id'|'pl'|'ko', string>>}
+     * @type {Map<string, Map<'fr'|'ru'|'uk'|'pt'|'nl'|'de'|'es'|'zh'|'id'|'pl'|'ko'|'hu', string>>}
      */
     const data = Object.freeze(new Map([
       [tkn('Error'), new Map([
@@ -210,6 +210,7 @@ Object.defineProperty(window, 'l10n', {
         ['id', 'Kesalahan'],
         ['pl', 'Błąd'],
         ['ko', '오류'],
+        ['hu', 'Hiba'],
       ])],
       [tkn('Good luck'), new Map([
         ['fr', 'Bonne chance'],
@@ -223,6 +224,7 @@ Object.defineProperty(window, 'l10n', {
         ['id', 'Semoga berhasil!'],
         ['pl', 'Powodzenia'],
         ['ko', '행운을 빌어요'],
+        ['hu', 'Sok szerencsét'],
       ])],
       [tkn('UH OH'), new Map([
         ['fr', 'Oups'],
@@ -236,6 +238,7 @@ Object.defineProperty(window, 'l10n', {
         ['id', 'Ups'],
         ['pl', 'Ojej'],
         ['ko', '헉'],
+        ['hu', 'Jaj ne'],
       ])],
       [tkn('Request details'), new Map([
         ['fr', 'Détails de la requête'],
@@ -249,6 +252,7 @@ Object.defineProperty(window, 'l10n', {
         ['id', 'Rincian permintaan'],
         ['pl', 'Poproś o szczegóły'],
         ['ko', '요청 세부사항'],
+        ['hu', 'Kérelem adatai'],
       ])],
       [tkn('Double-check the URL'), new Map([
         ['fr', 'Vérifiez l’URL'],
@@ -262,6 +266,7 @@ Object.defineProperty(window, 'l10n', {
         ['id', 'Periksa URL'],
         ['pl', 'Sprawdź adres URL'],
         ['ko', 'URL을 다시 확인하세요'],
+        ['hu', 'Ellenőrizze le az URL-t'],
       ])],
       [tkn('Alternatively, go back'), new Map([
         ['fr', 'Essayez de revenir en arrière'],
@@ -275,6 +280,7 @@ Object.defineProperty(window, 'l10n', {
         ['id', 'Atau, kembali'],
         ['pl', 'Alternatywnie wróć'],
         ['ko', '혹은, 돌아가기'],
+        ['hu', 'Alternatív megoldásként térjen vissza'],
       ])],
       [tkn("Here's what might have happened"), new Map([
         ['fr', 'Voici ce qui aurait pu se passer'],
@@ -288,6 +294,7 @@ Object.defineProperty(window, 'l10n', {
         ['id', 'Inilah yang bisa saja terjadi'],
         ['pl', 'Oto, co mogło się wydarzyć'],
         ['ko', '다음이 발생했을 수 있어요'],
+        ['hu', 'Ez történhetett'],
       ])],
       [tkn('You may have mistyped the URL'), new Map([
         ['fr', 'Vous avez peut-être mal tapé l’URL'],
@@ -301,6 +308,7 @@ Object.defineProperty(window, 'l10n', {
         ['id', 'Anda mungkin tersalah memasukkan URL'],
         ['pl', 'Być może błędnie wpisałeś adres URL'],
         ['ko', 'URL을 잘못 입력하셨을 수 있어요'],
+        ['hu', 'Valószínűleg elgépelte az URL-t'],
       ])],
       [tkn('The site was moved'), new Map([
         ['fr', 'Le site a été déplacé'],
@@ -314,6 +322,7 @@ Object.defineProperty(window, 'l10n', {
         ['id', 'Halaman dipindahkan'],
         ['pl', 'Witryna została przeniesiona'],
         ['ko', '사이트가 이동했어요'],
+        ['hu', 'Az oldal átköltözött'],
       ])],
       [tkn('It was never here'), new Map([
         ['fr', 'Il n’a jamais été ici'],
@@ -327,6 +336,7 @@ Object.defineProperty(window, 'l10n', {
         ['id', 'Itu Tidak pernah di sini'],
         ['pl', 'Nigdy jej nie było'],
         ['ko', '여기에 있던 적이 없어요'],
+        ['hu', 'Soha nem is volt itt'],
       ])],
       [tkn('Bad Request'), new Map([
         ['fr', 'Mauvaise requête'],
@@ -340,6 +350,7 @@ Object.defineProperty(window, 'l10n', {
         ['id', 'Permintaan yang salah'],
         ['pl', 'Nieprawidłowe żądanie'],
         ['ko', '잘못된 요청'],
+        ['hu', 'Hibás kérés'],
       ])],
       [tkn('The server did not understand the request'), new Map([
         ['fr', 'Le serveur ne comprend pas la requête'],
@@ -353,6 +364,7 @@ Object.defineProperty(window, 'l10n', {
         ['id', 'Server tidak memahami permintaan'],
         ['pl', 'Serwer nie zrozumiał żądania'],
         ['ko', '서버가 요청을 이해하지 못했어요'],
+        ['hu', 'A szerver nem értette a kérést'],
       ])],
       [tkn('Unauthorized'), new Map([
         ['fr', 'Non autorisé'],
@@ -366,6 +378,7 @@ Object.defineProperty(window, 'l10n', {
         ['id', 'Tidak diotorisasi'],
         ['pl', 'Nieautoryzowany'],
         ['ko', '권한 없음'],
+        ['hu', 'Nincs felhatalmazás'],
       ])],
       [tkn('The requested page needs a username and a password'), new Map([
         ['fr', 'La page demandée nécessite un nom d’utilisateur et un mot de passe'],
@@ -379,6 +392,7 @@ Object.defineProperty(window, 'l10n', {
         ['id', 'Halaman yang diminta membutuhkan nama pengguna dan kata sandi'],
         ['pl', 'Żądana strona wymaga podania nazwy użytkownika i hasła'],
         ['ko', '요청하신 페이지에는 사용자 이름과 비밀번호가 필요해요'],
+        ['hu', 'A kért oldalhoz felhasználónév és jelszó szükséges'],
       ])],
       [tkn('Forbidden'), new Map([
         ['fr', 'Interdit'],
@@ -392,6 +406,7 @@ Object.defineProperty(window, 'l10n', {
         ['id', 'Dilarang'],
         ['pl', 'Zabroniony'],
         ['ko', '금지됨'],
+        ['hu', 'Tiltott'],
       ])],
       [tkn('Access is forbidden to the requested page'), new Map([
         ['fr', 'Accès interdit à la page demandée'],
@@ -405,6 +420,7 @@ Object.defineProperty(window, 'l10n', {
         ['id', 'Akses dilarang ke halaman yang diminta'],
         ['pl', 'Dostęp do żądanej strony jest zabroniony'],
         ['ko', '요청하신 페이지에 대한 접근이 금지되어 있어요'],
+        ['hu', 'A kért oldalhoz a hozzáférés tilos'],
       ])],
       [tkn('Not Found'), new Map([
         ['fr', 'Introuvable'],
@@ -418,6 +434,7 @@ Object.defineProperty(window, 'l10n', {
         ['id', 'Tidak ditemukan'],
         ['pl', 'Nie znaleziono'],
         ['ko', '찾을 수 없음'],
+        ['hu', 'Nem található'],
       ])],
       [tkn('The server can not find the requested page'), new Map([
         ['fr', 'Le serveur ne peut trouver la page demandée'],
@@ -431,6 +448,7 @@ Object.defineProperty(window, 'l10n', {
         ['id', 'Server tidak dapat menemukan halaman yang diminta'],
         ['pl', 'Serwer nie może znaleźć żądanej strony'],
         ['ko', '서버가 요청한 페이지를 찾을 수 없어요'],
+        ['hu', 'A szerver nem találja a kért oldalt'],
       ])],
       [tkn('Method Not Allowed'), new Map([
         ['fr', 'Méthode Non Autorisée'],
@@ -444,6 +462,7 @@ Object.defineProperty(window, 'l10n', {
         ['id', 'Metode tidak diizinkan'],
         ['pl', 'Niedozwolona metoda'],
         ['ko', '허용되지 않은 메소드'],
+        ['hu', 'Tiltott metódus'],
       ])],
       [tkn('The method specified in the request is not allowed'), new Map([
         ['fr', 'La méthode spécifiée dans la requête n’est pas autorisée'],
@@ -457,6 +476,7 @@ Object.defineProperty(window, 'l10n', {
         ['id', 'Metode dalam permintaan tidak diizinkan'],
         ['pl', 'Metoda określona w żądaniu jest niedozwolona'],
         ['ko', '요청에 사용한 메소드는 허용되지 않아요'],
+        ['hu', 'A kérésben megadott metódus nem engedélyezett'],
       ])],
       [tkn('Proxy Authentication Required'), new Map([
         ['fr', 'Authentification proxy requise'],
@@ -470,6 +490,7 @@ Object.defineProperty(window, 'l10n', {
         ['id', 'Diperlukan otentikasi proxy'],
         ['pl', 'Wymagane uwierzytelnianie proxy'],
         ['ko', '프록시 인증 필요'],
+        ['hu', 'Proxy hitelesítés szükséges'],
       ])],
       [tkn('You must authenticate with a proxy server before this request can be served'), new Map([
         ['fr', 'Vous devez vous authentifier avec un serveur proxy avant que cette requête puisse être servie'],
@@ -483,6 +504,7 @@ Object.defineProperty(window, 'l10n', {
         ['id', 'Anda harus mengautentikasi dengan server proxy sebelum permintaan ini dapat dilayani'],
         ['pl', 'Musisz uwierzytelnić się na serwerze proxy, zanim to żądanie będzie mogło zostać obsłużone'],
         ['ko', '이 요청을 처리하려면 프록시 서버로 인증해야 해요'],
+        ['hu', 'Hitelesítenie kell magát egy proxy szerverrel, mielőtt ez a kérés kiszolgálható lenne'],
       ])],
       [tkn('Request Timeout'), new Map([
         ['fr', 'Requête expirée'],
@@ -496,6 +518,7 @@ Object.defineProperty(window, 'l10n', {
         ['id', 'Meminta batas waktu'],
         ['pl', 'Przekroczenie limitu czasu żądania'],
         ['ko', '요청 시간초과'],
+        ['hu', 'Kérés időtúllépés'],
       ])],
       [tkn('The request took longer than the server was prepared to wait'), new Map([
         ['fr', 'La requête prend plus de temps que prévu'],
@@ -509,6 +532,7 @@ Object.defineProperty(window, 'l10n', {
         ['id', 'Permintaan memakan waktu lebih lama dari yang bisa ditunggu oleh server'],
         ['pl', 'Żądanie trwało dłużej niż serwer był gotowy czekać'],
         ['ko', '요청이 서버가 기다릴 수 있는 시간보다 오래 걸렸어요'],
+        ['hu', 'A kérés tovább tartott, mint amennyit a szerver hajlandó volt várni'],
       ])],
       [tkn('Conflict'), new Map([
         ['fr', 'Conflit'],
@@ -522,6 +546,7 @@ Object.defineProperty(window, 'l10n', {
         ['id', 'Konflik'],
         ['pl', 'Konflikt'],
         ['ko', '상충'],
+        ['hu', 'Ütközés'],
       ])],
       [tkn('The request could not be completed because of a conflict'), new Map([
         ['fr', 'La requête n’a pas pu être complétée à cause d’un conflit'],
@@ -535,6 +560,7 @@ Object.defineProperty(window, 'l10n', {
         ['id', 'Permintaan tidak dapat diselesaikan karena adanya konflik'],
         ['pl', 'Żądanie nie mogło zostać wykonane z powodu konfliktu'],
         ['ko', '상충으로 인해 요청을 완료할 수 없었어요'],
+        ['hu', 'A kérés nem fejezhető be ütközés miatt'],
       ])],
       [tkn('Gone'), new Map([
         ['fr', 'Supprimé'],
@@ -548,6 +574,7 @@ Object.defineProperty(window, 'l10n', {
         ['id', 'Menghilang'],
         ['pl', 'Usunięto'],
         ['ko', '사라짐'],
+        ['hu', 'Vége/Elveszett'],
       ])],
       [tkn('The requested page is no longer available'), new Map([
         ['fr', 'La page demandée n’est plus disponible'],
@@ -561,6 +588,7 @@ Object.defineProperty(window, 'l10n', {
         ['id', 'Halaman yang diminta tidak lagi tersedia'],
         ['pl', 'Żądana strona nie jest już dostępna'],
         ['ko', '요청하신 페이지는 더 이상 사용할 수 없어요'],
+        ['hu', 'A kért oldal már nem érhető el'],
       ])],
       [tkn('Length Required'), new Map([
         ['fr', 'Longueur requise'],
@@ -574,6 +602,7 @@ Object.defineProperty(window, 'l10n', {
         ['id', 'Panjang yang diperlukan'],
         ['pl', 'Wymagana długość'],
         ['ko', '길이 필요'],
+        ['hu', 'Hossz megadása kötelező'],
       ])],
       [tkn('The "Content-Length" is not defined. The server will not accept the request without it'), new Map([
         ['fr', 'Le "Content-Length" n’est pas défini. Le serveur ne prendra pas en compte la requête'],
@@ -587,6 +616,7 @@ Object.defineProperty(window, 'l10n', {
         ['id', '"Content-Length" tidak ditentukan. Server tidak akan menerima permintaan tanpa itu'],
         ['pl', 'Wartość "Content-Length" nie jest zdefiniowana. Serwer nie zaakceptuje żądania bez tego parametru'],
         ['ko', '"Content-Length"가 정의되지 않았습니다. 이 값이 없으면 서버는 요청을 수락하지 않아요'],
+        ['hu', 'A "Content-Length" nincs meghatározva. A szerver nem fogadja el a kérést nélküle'],
       ])],
       [tkn('Precondition Failed'), new Map([
         ['fr', 'Échec de la condition préalable'],
@@ -600,6 +630,7 @@ Object.defineProperty(window, 'l10n', {
         ['id', 'Prasyarat gagal'],
         ['pl', 'Niespełnienie warunku wstępnego'],
         ['ko', '선결 조건 실패'],
+        ['hu', 'Előfeltétel sikertelen'],
       ])],
       [tkn('The pre condition given in the request evaluated to false by the server'), new Map([
         ['fr', 'La précondition donnée dans la requête a été évaluée comme étant fausse par le serveur'],
@@ -613,6 +644,7 @@ Object.defineProperty(window, 'l10n', {
         ['id', 'Prakondisi gagal'],
         ['pl', 'Warunek wstępny podany w żądaniu został oceniony przez serwer jako nieprawidłowy'],
         ['ko', '요청에 제공된 선결 조건을 서버는 거짓으로 평가했어요'],
+        ['hu', 'A kérésben megadott előfeltétel a szerver által hamisnak minősült'],
       ])],
       [tkn('Payload Too Large'), new Map([
         ['fr', 'Charge trop volumineuse'],
@@ -626,6 +658,7 @@ Object.defineProperty(window, 'l10n', {
         ['id', 'Muatan terlalu besar'],
         ['pl', 'Żądanie jest zbyt duże'],
         ['ko', '콘텐츠가 너무 큼'],
+        ['hu', 'Túl nagy adatmennyiség'],
       ])],
       [tkn('The server will not accept the request, because the request entity is too large'), new Map([
         ['fr', 'Le serveur ne prendra pas en compte la requête, car l’entité de la requête est trop volumineuse'],
@@ -639,6 +672,7 @@ Object.defineProperty(window, 'l10n', {
         ['id', 'Server tidak akan menerima permintaan, karena entitas permintaan terlalu besar'],
         ['pl', 'Serwer nie zaakceptuje żądania, ponieważ żądanie jest zbyt duże'],
         ['ko', '요청 엔터티가 너무 크기 때문에 서버가 요청을 수락하지 않았어요'],
+        ['hu', 'A szerver nem fogadja el a kérést, mert a kérés entitása túl nagy'],
       ])],
       [tkn('Requested Range Not Satisfiable'), new Map([
         ['fr', 'Plage requêtée non satisfaisable'],
@@ -652,6 +686,7 @@ Object.defineProperty(window, 'l10n', {
         ['id', 'Rentang yang diminta tidak dapat dipenuhi'],
         ['pl', 'Żądany zakres nie jest satysfakcjonujący'],
         ['ko', '처리할 수 없는 요청 범위'],
+        ['hu', 'Kért tartomány nem teljesíthető'],
       ])],
       [tkn('The requested byte range is not available and is out of bounds'), new Map([
         ['fr', 'Le byte range demandé n’est pas disponible et est hors des limites'],
@@ -665,6 +700,7 @@ Object.defineProperty(window, 'l10n', {
         ['id', 'Rentang byte yang diminta tidak tersedia dan di luar batas'],
         ['pl', 'Żądany zakres bajtów nie jest dostępny i znajduje się poza zakresem'],
         ['ko', '요청한 범위를 사용할 수 없고, 범위를 벗어났어요'],
+        ['hu', 'A kért bájt tartomány nem érhető el, és kívül esik a határokon'],
       ])],
       [tkn("I'm a teapot"), new Map([
         ['fr', 'Je suis une théière'],
@@ -678,6 +714,7 @@ Object.defineProperty(window, 'l10n', {
         ['id', 'Saya adalah teko'],
         ['pl', 'Jestem czajniczkiem'],
         ['ko', '저는 찻주전자에요'],
+        ['hu', 'Én egy teáskanna vagyok'],
       ])],
       [tkn('Attempt to brew coffee with a teapot is not supported'), new Map([
         ['fr', 'Tenter de préparer du café avec une théière n’est pas pris en charge'],
@@ -691,6 +728,7 @@ Object.defineProperty(window, 'l10n', {
         ['id', 'Upaya menyeduh kopi dengan teko tidak didukung'],
         ['pl', 'Próba zaparzenia kawy za pomocą czajniczka nie jest obsługiwana'],
         ['ko', '찻주전자로 커피를 내리는 시도는 지원되지 않아요'],
+        ['hu', 'Teáskannával kávét főzni nem támogatott'],
       ])],
       [tkn('Too Many Requests'), new Map([
         ['fr', 'Trop de requêtes'],
@@ -704,6 +742,7 @@ Object.defineProperty(window, 'l10n', {
         ['id', 'Terlalu banyak permintaan'],
         ['pl', 'Zbyt wiele żądań'],
         ['ko', '요청이 너무 많음'],
+        ['hu', 'Túl sok kérés'],
       ])],
       [tkn('Too many requests in a given amount of time'), new Map([
         ['fr', 'Trop de requêtes dans un délai donné'],
@@ -717,6 +756,7 @@ Object.defineProperty(window, 'l10n', {
         ['id', 'Terlalu banyak permintaan dalam waktu tertentu'],
         ['pl', 'Zbyt wiele żądań w określonym czasie'],
         ['ko', '지정된 시간 내에 요청이 너무 많아요'],
+        ['hu', 'Túl sok kérés egy adott időn belül'],
       ])],
       [tkn('Internal Server Error'), new Map([
         ['fr', 'Erreur interne du serveur'],
@@ -730,6 +770,7 @@ Object.defineProperty(window, 'l10n', {
         ['id', 'Kesalahan server internal'],
         ['pl', 'Wewnętrzny błąd serwera'],
         ['ko', '내부 서버 오류'],
+        ['hu', 'Belső szerverhiba'],
       ])],
       [tkn('The server met an unexpected condition'), new Map([
         ['fr', 'Le serveur a rencontré une condition inattendue'],
@@ -743,6 +784,7 @@ Object.defineProperty(window, 'l10n', {
         ['id', 'Server mengalami kondisi yang tidak terduga'],
         ['pl', 'Serwer napotkał nieoczekiwany stan'],
         ['ko', '서버가 예상치 못한 조건이에요'],
+        ['hu', 'A szerver váratlan hibát észlelt'],
       ])],
       [tkn('Bad Gateway'), new Map([
         ['fr', 'Mauvaise passerelle'],
@@ -756,6 +798,7 @@ Object.defineProperty(window, 'l10n', {
         ['id', 'Gateway yang buruk'],
         ['pl', 'Błąd bramki'],
         ['ko', '게이트웨이 불량'],
+        ['hu', 'Hibás átjáró'],
       ])],
       [tkn('The server received an invalid response from the upstream server'), new Map([
         ['fr', 'Le serveur a reçu une réponse invalide du serveur distant'],
@@ -769,6 +812,7 @@ Object.defineProperty(window, 'l10n', {
         ['id', 'Server menerima respons yang tidak valid dari server induk'],
         ['pl', 'Serwer otrzymał nieprawidłową odpowiedź od serwera nadrzędnego'],
         ['ko', '게이트웨이가 업스트림 서버로부터 잘못된 응답을 받았어요'],
+        ['hu', 'A szerver érvénytelen választ kapott a felsőbb szintű szervertől'],
       ])],
       [tkn('Service Unavailable'), new Map([
         ['fr', 'Service indisponible'],
@@ -782,6 +826,7 @@ Object.defineProperty(window, 'l10n', {
         ['id', 'Layanan tidak tersedia'],
         ['pl', 'Serwis niedostępny'],
         ['ko', '서비스 불가능'],
+        ['hu', 'Szolgáltatás nem elérhető'],
       ])],
       [tkn('The server is temporarily overloading or down'), new Map([
         ['fr', 'Le serveur est temporairement en surcharge ou indisponible'],
@@ -795,6 +840,7 @@ Object.defineProperty(window, 'l10n', {
         ['id', 'Server untuk sementara kelebihan beban atau tidak tersedia'],
         ['pl', 'Serwer jest tymczasowo przeciążony lub wyłączony'],
         ['ko', '서버가 일시적으로 과부하 상태이거나 다운되었어요'],
+        ['hu', 'A szerver ideiglenesen túlterhelt vagy nem működik'],
       ])],
       [tkn('Gateway Timeout'), new Map([
         ['fr', 'Expiration Passerelle'],
@@ -808,6 +854,7 @@ Object.defineProperty(window, 'l10n', {
         ['id', 'Batas waktu gateway'],
         ['pl', 'Przekroczenie limitu czasu bramki'],
         ['ko', '게이트웨이 시간초과'],
+        ['hu', 'Átjáró időtúllépés'],
       ])],
       [tkn('The gateway has timed out'), new Map([
         ['fr', 'Le temps d’attente de la passerelle est dépassé'],
@@ -821,6 +868,7 @@ Object.defineProperty(window, 'l10n', {
         ['id', 'Sambungan ke server induk telah kedaluwarsa'],
         ['pl', 'Bramka przekroczyła limit czasu'],
         ['ko', '게이트웨이 시간이 초과되었어요'],
+        ['hu', 'Az átjáró időtúllépésbe ütközött'],
       ])],
       [tkn('HTTP Version Not Supported'), new Map([
         ['fr', 'Version HTTP non prise en charge'],
@@ -834,6 +882,7 @@ Object.defineProperty(window, 'l10n', {
         ['id', 'Versi HTTP tidak didukung'],
         ['pl', 'Wersja HTTP nie jest obsługiwana'],
         ['ko', '지원하지 않는 HTTP 버전'],
+        ['hu', 'Nem támogatott HTTP verzió'],
       ])],
       [tkn('The server does not support the "http protocol" version'), new Map([
         ['fr', 'Le serveur ne supporte pas la version du protocole HTTP'],
@@ -847,6 +896,7 @@ Object.defineProperty(window, 'l10n', {
         ['id', 'Server tidak mendukung versi HTTP ini'],
         ['pl', 'Serwer nie obsługuje wersji "protokołu http"'],
         ['ko', '서버가 해당 "HTTP 프로토콜"을 지원하지 않아요'],
+        ['hu', 'A szerver nem támogatja a megadott "http protokoll" verziót'],
       ])],
       [tkn('Host'), new Map([
         ['fr', 'Hôte'],
@@ -860,6 +910,7 @@ Object.defineProperty(window, 'l10n', {
         ['id', 'Host'],
         ['pl', 'Host'],
         ['ko', '호스트'],
+        ['hu', 'Gazdagép'],
       ])],
       [tkn('Original URI'), new Map([
         ['fr', 'URI d’origine'],
@@ -873,6 +924,7 @@ Object.defineProperty(window, 'l10n', {
         ['id', 'URL asli'],
         ['pl', 'Oryginalny URI'],
         ['ko', '원시 URI'],
+        ['hu', 'Eredeti URI'],
       ])],
       [tkn('Forwarded for'), new Map([
         ['fr', 'Transmis pour'],
@@ -886,6 +938,7 @@ Object.defineProperty(window, 'l10n', {
         ['id', 'Diteruskan untuk'],
         ['pl', 'Przekazane do'],
         ['ko', '전달받은 대상'],
+        ['hu', 'Továbbítva részére'],
       ])],
       [tkn('Namespace'), new Map([
         ['fr', 'Espace de noms'],
@@ -899,6 +952,7 @@ Object.defineProperty(window, 'l10n', {
         ['id', 'Ruang nama'],
         ['pl', 'Przestrzeń nazw'],
         ['ko', '네임스페이스'],
+        ['hu', 'Névtér'],
       ])],
       [tkn('Ingress name'), new Map([
         ['fr', 'Nom ingress'],
@@ -912,6 +966,7 @@ Object.defineProperty(window, 'l10n', {
         ['id', 'Nama ingress'],
         ['pl', 'Nazwa wejścia'],
         ['ko', '인그레스 이름'],
+        ['hu', 'Bejövő név'],
       ])],
       [tkn('Service name'), new Map([
         ['fr', 'Nom du service'],
@@ -925,6 +980,7 @@ Object.defineProperty(window, 'l10n', {
         ['id', 'Nama layanan'],
         ['pl', 'Nazwa usługi'],
         ['ko', '서비스 이름'],
+        ['hu', 'Szolgáltatás neve'],
       ])],
       [tkn('Service port'), new Map([
         ['fr', 'Port du service'],
@@ -938,6 +994,7 @@ Object.defineProperty(window, 'l10n', {
         ['id', 'Port layanan'],
         ['pl', 'Port usługi'],
         ['ko', '서비스 포트'],
+        ['hu', 'Szolgáltatás portja'],
       ])],
       [tkn('Request ID'), new Map([
         ['fr', 'Identifiant de la requête'],
@@ -951,6 +1008,7 @@ Object.defineProperty(window, 'l10n', {
         ['id', 'ID permintaan'],
         ['pl', 'Identyfikator żądania'],
         ['ko', '요청 ID'],
+        ['hu', 'Kérés azonosító'],
       ])],
       [tkn('Timestamp'), new Map([
         ['fr', 'Horodatage'],
@@ -964,6 +1022,7 @@ Object.defineProperty(window, 'l10n', {
         ['id', 'Cap waktu'],
         ['pl', 'Sygnatura czasowa'],
         ['ko', '시간 기록'],
+        ['hu', 'Időbélyeg'],
       ])],
       [tkn('client-side error'), new Map([
         ['fr', 'Erreur Client'],
@@ -977,6 +1036,7 @@ Object.defineProperty(window, 'l10n', {
         ['id', 'Kesalahan sisi klien'],
         ['pl', 'błąd po stronie klienta'],
         ['ko', '클라이언트 측 오류'],
+        ['hu', 'kliens oldali hiba'],
       ])],
       [tkn('server-side error'), new Map([
         ['fr', 'Erreur Serveur'],
@@ -990,6 +1050,7 @@ Object.defineProperty(window, 'l10n', {
         ['id', 'Kesalahan sisi server'],
         ['pl', 'błąd po stronie serwera'],
         ['ko', '서버 측 오류'],
+        ['hu', 'szerver oldali hiba'],
       ])],
       [tkn('Your Client'), new Map([
         ['fr', 'Votre Client'],
@@ -1003,6 +1064,7 @@ Object.defineProperty(window, 'l10n', {
         ['id', 'Klien Anda'],
         ['pl', 'Klient'],
         ['ko', '내 클라이언트'],
+        ['hu', 'Az Ön kliense'],
       ])],
       [tkn('Network'), new Map([
         ['fr', 'Réseau'],
@@ -1016,6 +1078,7 @@ Object.defineProperty(window, 'l10n', {
         ['id', 'Jaringan'],
         ['pl', 'Sieć'],
         ['ko', '네트워크'],
+        ['hu', 'Hálózat'],
       ])],
       [tkn('Web Server'), new Map([
         ['fr', 'Serveur Web'],
@@ -1029,6 +1092,7 @@ Object.defineProperty(window, 'l10n', {
         ['id', 'Server web'],
         ['pl', 'Serwer WWW'],
         ['ko', '웹 서버'],
+        ['hu', 'Webszerver'],
       ])],
       [tkn('What happened?'), new Map([
         ['fr', 'Que s’est-il passé ?'],
@@ -1042,6 +1106,7 @@ Object.defineProperty(window, 'l10n', {
         ['id', 'Apa yang terjadi?'],
         ['pl', 'Co się stało?'],
         ['ko', '어떤 일이 일어났나요?'],
+        ['hu', 'Mi történt?'],
       ])],
       [tkn('What can I do?'), new Map([
         ['fr', 'Que puis-je faire ?'],
@@ -1055,6 +1120,7 @@ Object.defineProperty(window, 'l10n', {
         ['id', 'Apa yang bisa saya lakukan?'],
         ['pl', 'Co mogę zrobić?'],
         ['ko', '어떤 것을 할 수 있나요?'],
+        ['hu', 'Mit tehetek?'],
       ])],
       [tkn('Please try again in a few minutes'), new Map([
         ['fr', 'Veuillez réessayer dans quelques minutes'],
@@ -1068,6 +1134,7 @@ Object.defineProperty(window, 'l10n', {
         ['id', 'Silakan coba lagi dalam beberapa menit'],
         ['pl', 'Spróbuj ponownie za kilka minut'],
         ['ko', '몇 분 후에 다시 시도해 주세요'],
+        ['hu', 'Kérjük, próbálja meg újra néhány perc múlva'],
       ])],
       [tkn('Working'), new Map([
         ['fr', 'Opérationnel'],
@@ -1081,6 +1148,7 @@ Object.defineProperty(window, 'l10n', {
         ['id', 'Fungsi'],
         ['pl', 'Działa'],
         ['ko', '작동 중'],
+        ['hu', 'Működik'],
       ])],
       [tkn('Unknown'), new Map([
         ['fr', 'Inconnu'],
@@ -1094,6 +1162,7 @@ Object.defineProperty(window, 'l10n', {
         ['id', 'Tidak diketahui'],
         ['pl', 'Nieznany'],
         ['ko', '알 수 없음'],
+        ['hu', 'Ismeretlen'],
       ])],
       [tkn('Please try to change the request method, headers, payload, or URL'), new Map([
         ['fr', 'Veuillez essayer de changer la méthode de requête, les en-têtes, le contenu ou l’URL'],
@@ -1107,6 +1176,7 @@ Object.defineProperty(window, 'l10n', {
         ['id', 'Coba lagi dengan metode, header, muatan, atau URL yang berbeda'],
         ['pl', 'Spróbuj zmienić metodę żądania, nagłówki, żądanie lub adres URL'],
         ['ko', '요청 방법, 헤더, 콘텐츠 또는 URL을 변경해 보세요'],
+        ['hu', 'Kérjük, próbálja meg módosítani a kérés metódusát, fejléceit, tartalmát vagy URL-jét'],
       ])],
       [tkn('Please check your authorization data'), new Map([
         ['fr', 'Veuillez vérifier vos données d’autorisation'],
@@ -1120,6 +1190,7 @@ Object.defineProperty(window, 'l10n', {
         ['id', 'Memeriksa detail autentikasi'],
         ['pl', 'Sprawdź swoje dane autoryzacyjne'],
         ['ko', '인증 데이터를 확인해주세요'],
+        ['hu', 'Kérjük, ellenőrizze hitelesítési adatait'],
       ])],
       [tkn('Please double-check the URL and try again'), new Map([
         ['fr', 'Veuillez vérifier l’URL et réessayer'],
@@ -1133,6 +1204,7 @@ Object.defineProperty(window, 'l10n', {
         ['id', 'Periksa URL dan coba lagi'],
         ['pl', 'Sprawdź adres URL i spróbuj ponownie'],
         ['ko', 'URL을 다시 한번 확인해 주세요'],
+        ['hu', 'Kérjük, ellenőrizze le még egyszer az URL-t és próbálja újra'],
       ])],
       [tkn('My Computer'), new Map([
         ['fr', 'Poste de travail'],
@@ -1146,6 +1218,7 @@ Object.defineProperty(window, 'l10n', {
         ['id', 'Komputer Saya'],
         ['pl', 'Mój komputer'],
         ['ko', '내 컴퓨터'],
+        ['hu', 'Sajátgép'],
       ])],
       [tkn('My Documents'), new Map([
         ['fr', 'Mes documents'],
@@ -1159,6 +1232,7 @@ Object.defineProperty(window, 'l10n', {
         ['id', 'Dokumen Saya'],
         ['pl', 'Moje dokumenty'],
         ['ko', '내 문서'],
+        ['hu', 'Saját dokumentumok'],
       ])],
       [tkn('Start'), new Map([
         ['fr', 'Démarrer'],
@@ -1172,6 +1246,7 @@ Object.defineProperty(window, 'l10n', {
         ['id', 'Mulai'],
         ['pl', 'Start'],
         ['ko', '시작'],
+        ['hu', 'Start'],
       ])],
     ]));
 
