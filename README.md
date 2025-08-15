@@ -48,7 +48,7 @@ original and attractive. That's why this repository was created :) It contains:
 - Error pages can be embedded into your own Docker image with `nginx` in a few simple steps
 - Fully configurable
 - Distributed as a Docker image and compiled binary files
-- Localized HTML error pages (🇺🇸, 🇫🇷, 🇺🇦, 🇷🇺, 🇵🇹, 🇳🇱, 🇩🇪, 🇪🇸, 🇨🇳, 🇮🇩, 🇵🇱, 🇰🇷) - translation process
+- Localized HTML error pages (🇺🇸, 🇫🇷, 🇺🇦, 🇷🇺, 🇵🇹, 🇳🇱, 🇩🇪, 🇪🇸, 🇨🇳, 🇮🇩, 🇵🇱, 🇰🇷, 🇭🇺) - translation process
   [described here][l10n-dir] - other translations are welcome!
 
 [fasthttp]:https://github.com/valyala/fasthttp
