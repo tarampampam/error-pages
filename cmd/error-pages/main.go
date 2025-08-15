@@ -9,13 +9,8 @@ import (
 	"runtime"
 	"syscall"
 
-	"go.uber.org/automaxprocs/maxprocs"
-
 	"gh.tarampamp.am/error-pages/internal/cli"
 )
-
-// set GOMAXPROCS to match Linux container CPU quota.
-var _, _ = maxprocs.Set(maxprocs.Min(1), maxprocs.Logger(func(string, ...any) {}))
 
 // main CLI application entrypoint.
 func main() {

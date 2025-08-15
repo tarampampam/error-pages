@@ -8,7 +8,6 @@ require (
 	github.com/urfave/cli-docs/v3 v3.0.0-alpha6
 	github.com/urfave/cli/v3 v3.4.1
 	github.com/valyala/fasthttp v1.65.0
-	go.uber.org/automaxprocs v1.6.0
 )
 
 require (
