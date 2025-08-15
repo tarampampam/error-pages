@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # -✂- this stage is used to compile the application -------------------------------------------------------------------
-FROM docker.io/library/golang:1.24-alpine AS compile
+FROM docker.io/library/golang:1.25-alpine AS compile
 
 # can be passed with any prefix (like `v1.2.3@GITHASH`), e.g.: `docker build --build-arg "APP_VERSION=v1.2.3" .`
 ARG APP_VERSION="undefined@docker"
