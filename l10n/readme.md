@@ -30,3 +30,4 @@ different locales, please follow these steps:
 - 🇵🇱 Polish by [@wielorzeczownik](https://github.com/wielorzeczownik)
 - 🇰🇷 Korean by [@NavyStack](https://github.com/NavyStack)
 - 🇭🇺 Hungarian by [@oszto90](https://github.com/oszto90)
+- 🇳🇴 Norwegian by [@EliasTors](https://github.com/EliasTors)
