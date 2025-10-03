@@ -1009,7 +1009,7 @@ Object.defineProperty(window, 'l10n', {
         ['ko', '내 클라이언트'],
         ['hu', 'Az Ön kliense'],
         ['no', 'Din klient'],
-        ['ro', 'Clientul Dvs.'],
+        ['ro', 'Clientul Dvs'],
       ])],
       [tkn('Network'), new Map([
         ['fr', 'Réseau'],
