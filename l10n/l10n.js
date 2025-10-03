@@ -353,7 +353,7 @@ Object.defineProperty(window, 'l10n', {
         ['ko', '프록시 인증 필요'],
         ['hu', 'Proxy hitelesítés szükséges'],
         ['no', 'Proxy-autentisering kreves'],
-        ['ro', 'Autentificare proxy Necesară'],
+        ['ro', 'Autentificare Proxy Necesară'],
       ])],
       [tkn('You must authenticate with a proxy server before this request can be served'), new Map([
         ['fr', 'Vous devez vous authentifier avec un serveur proxy avant que cette requête puisse être servie'],
