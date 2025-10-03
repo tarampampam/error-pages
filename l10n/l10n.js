@@ -497,7 +497,7 @@ Object.defineProperty(window, 'l10n', {
         ['ko', '"Content-Length"가 정의되지 않았습니다. 이 값이 없으면 서버는 요청을 수락하지 않아요'],
         ['hu', 'A "Content-Length" nincs meghatározva. A szerver nem fogadja el a kérést nélküle'],
         ['no', '"Content-Length" er ikke definert. Serveren vil ikke godta forespørselen uten den'],
-        ['ro', '„Lungimea conținutului” nu este definită. Serverul nu va accepta solicitarea fără aceasta'],
+        ['ro', '"Lungimea conținutului" nu este definită. Serverul nu va accepta solicitarea fără aceasta'],
       ])],
       [tkn('Precondition Failed'), new Map([
         ['fr', 'Échec de la condition préalable'],
