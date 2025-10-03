@@ -817,7 +817,7 @@ Object.defineProperty(window, 'l10n', {
         ['ko', '서버가 해당 "HTTP 프로토콜"을 지원하지 않아요'],
         ['hu', 'A szerver nem támogatja a megadott "http protokoll" verziót'],
         ['no', 'Serveren støtter ikke "http-protokoll" versjonen'],
-        ['ro', 'Serverul nu acceptă versiunea „protocolului http”'],
+        ['ro', 'Serverul nu acceptă versiunea "protocolului http"'],
       ])],
       [tkn('Host'), new Map([
         ['fr', 'Hôte'],
