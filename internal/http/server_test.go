@@ -348,7 +348,7 @@ func startServer(t *testing.T, srv *appHttp.Server) (_ string, stop func()) {
 
 	var (
 		port     = getFreeTcpPort(t)
-		hostPort = fmt.Sprintf("%s:%d", "127.0.0.1", port)
+		hostPort = fmt.Sprintf("%s:%d", "127.0.0.1", port) //nolint:govet
 	)
 
 	go func() {
