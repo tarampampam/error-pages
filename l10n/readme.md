@@ -32,3 +32,4 @@ different locales, please follow these steps:
 - 🇭🇺 Hungarian by [@oszto90](https://github.com/oszto90)
 - 🇳🇴 Norwegian by [@EliasTors](https://github.com/EliasTors)
 - 🇷🇴 Romanian by [@pasarenicu](https://github.com/pasarenicu)
+- 🇮🇹 Italian by [@Vigno04](https://github.com/Vigno04)
