@@ -28,7 +28,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - {uses: actions/setup-go@v5, with: {go-version-file: go.mod}}
+      - {uses: actions/setup-go@v6, with: {go-version-file: go.mod}}
       - uses: golangci/golangci-lint-action@v9
 
   go-test:
@@ -36,7 +36,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - {uses: actions/setup-go@v5, with: {go-version-file: go.mod}}
+      - {uses: actions/setup-go@v6, with: {go-version-file: go.mod}}
       - run: go test -race ./...
 
   build:
@@ -50,7 +50,7 @@ jobs:
     needs: [golangci-lint, go-test]
     steps:
       - uses: actions/checkout@v6
-      - {uses: actions/setup-go@v5, with: {go-version-file: go.mod}}
+      - {uses: actions/setup-go@v6, with: {go-version-file: go.mod}}
       - {uses: gacts/github-slug@v1, id: slug}
       - env:
           GOOS: ${{ matrix.os }}

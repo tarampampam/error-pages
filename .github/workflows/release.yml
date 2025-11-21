@@ -18,7 +18,7 @@ jobs:
         arch: [amd64, arm64] # 386
     steps:
       - uses: actions/checkout@v6
-      - {uses: actions/setup-go@v5, with: {go-version-file: go.mod}}
+      - {uses: actions/setup-go@v6, with: {go-version-file: go.mod}}
       - {uses: gacts/github-slug@v1, id: slug}
       - id: values
         run: echo "binary-name=error-pages-${{ matrix.os }}-${{ matrix.arch }}`[ ${{ matrix.os }} = 'windows' ] && echo '.exe'`" >> $GITHUB_OUTPUT
