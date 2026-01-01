@@ -4,7 +4,7 @@ go 1.25
 
 require (
 	github.com/stretchr/testify v1.11.1
-	github.com/tdewolff/minify/v2 v2.24.7
+	github.com/tdewolff/minify/v2 v2.24.8
 	github.com/urfave/cli-docs/v3 v3.1.0
 	github.com/urfave/cli/v3 v3.6.1
 	github.com/valyala/fasthttp v1.68.0
