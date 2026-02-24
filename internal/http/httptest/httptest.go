@@ -36,7 +36,7 @@ func HandleFastRequest(
 		Transport: &http.Transport{
 			DialContext: func(ctx context.Context, network, addr string) (net.Conn, error) { return ln.Dial() },
 		},
-	}).Do(req)
+	}).Do(req) //nolint:gosec
 	require.NoError(t, respErr)
 
 	// close response body after the test
