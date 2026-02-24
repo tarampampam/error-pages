@@ -1,23 +1,26 @@
 # yaml-language-server: $schema=https://json.schemastore.org/dependabot-2.0.json
-# docs: https://docs.github.com/en/free-pro-team@latest/github/administering-a-repository/customizing-dependency-updates
+# docs: https://docs.github.com/en/code-security/reference/supply-chain-security/dependabot-options-reference
 
 version: 2
 
 updates:
   - package-ecosystem: gomod
     directory: /
+    schedule: {interval: monthly, time: '02:00', timezone: 'Etc/UTC'}
+    cooldown: {default-days: 2, semver-major-days: 10, semver-minor-days: 4, semver-patch-days: 2}
     groups: {gomod: {patterns: ['*']}}
-    schedule: {interval: monthly}
     assignees: [tarampampam]
 
   - package-ecosystem: github-actions
     directory: /
+    schedule: {interval: monthly, time: '02:00', timezone: 'Etc/UTC'}
+    cooldown: {default-days: 2}
     groups: {github-actions: {patterns: ['*']}}
-    schedule: {interval: monthly}
     assignees: [tarampampam]
 
   - package-ecosystem: docker
     directory: /
+    schedule: {interval: monthly, time: '02:00', timezone: 'Etc/UTC'}
+    cooldown: {default-days: 2}
     groups: {docker: {patterns: ['*']}}
-    schedule: {interval: monthly}
     assignees: [tarampampam]
