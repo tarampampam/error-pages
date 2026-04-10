@@ -20,7 +20,8 @@ jobs:
     name: Check for GitLeaks
     runs-on: ubuntu-latest
     steps:
-      - {uses: actions/checkout@v4, with: {fetch-depth: 0}}
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
       - uses: gacts/gitleaks@v1
 
   golangci-lint:
@@ -28,7 +29,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - {uses: actions/setup-go@v6, with: {go-version-file: go.mod}}
+      - uses: actions/setup-go@v6
+        with: {go-version-file: go.mod}
       - uses: golangci/golangci-lint-action@v9
 
   go-test:
@@ -36,7 +38,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - {uses: actions/setup-go@v6, with: {go-version-file: go.mod}}
+      - uses: actions/setup-go@v6
+        with: {go-version-file: go.mod}
       - run: go test -race ./...
 
   build:
@@ -50,8 +53,10 @@ jobs:
     needs: [golangci-lint, go-test]
     steps:
       - uses: actions/checkout@v6
-      - {uses: actions/setup-go@v6, with: {go-version-file: go.mod}}
-      - {uses: gacts/github-slug@v1, id: slug}
+      - uses: actions/setup-go@v6
+        with: {go-version-file: go.mod}
+      - uses: gacts/github-slug@v1
+        id: slug
       - env:
           GOOS: ${{ matrix.os }}
           GOARCH: ${{ matrix.arch }}
@@ -82,7 +87,8 @@ jobs:
     needs: [golangci-lint, go-test]
     steps:
       - uses: actions/checkout@v6
-      - {uses: gacts/github-slug@v1, id: slug}
+      - uses: gacts/github-slug@v1
+        id: slug
       - uses: docker/build-push-action@v6
         with:
           context: .
