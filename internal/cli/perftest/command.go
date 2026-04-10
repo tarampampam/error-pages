@@ -166,7 +166,7 @@ func wrkRunTest(
 
 	defer func() {
 		_ = tmpFile.Close()
-		_ = os.Remove(tmpFile.Name()) //nolint:gosec
+		_ = os.Remove(tmpFile.Name())
 	}()
 
 	if _, err := tmpFile.WriteString(scriptContent); err != nil {
