@@ -4,6 +4,26 @@
 > https://tarampampam.github.io/.github/ai/AGENTS.md (mirror -
 > <https://raw.githubusercontent.com/tarampampam/.github/refs/heads/master/ai/AGENTS.md>).
 
+`error-pages` is a Go HTTP server and static page generator that replaces default HTTP error responses (4xx/5xx) with
+themed HTML pages.
+
+Primary deployment targets:
+
+- Kubernetes + ingress-nginx - runs as defaultBackend; ingress forwards error responses via `X-Code` header and
+  custom-http-errors config
+- Traefik - wired as errors middleware; Traefik rewrites error responses to `/{status}.html` on this service
+- Static nginx image - build command pre-generates `{template}/{code}.html` files, copied into a custom nginx Docker
+  image via COPY `--from=ghcr.io/tarampampam/error-pages`
+
+How it works: the server accepts requests at `/{code}`, `/{code}.html`, or any path with `X-Code` header. It detects
+the desired response format from `Content-Type` / `X-Format` / Accept headers and responds with HTML, JSON, XML,
+or plain text. By default, all responses return HTTP 200 regardless of error code (configurable via
+`--send-same-http-code`).
+
+Key capabilities: built-in HTML themes (selectable via TEMPLATE_NAME), custom template support (Go text/template),
+wildcard HTTP code mapping (4**), template rotation modes, client-side JS l10n (16 locales), in-memory render
+cache, ~180k RPS, ~60 MiB RAM.
+
 ## Instruction Priority
 
 1. This file (`AGENTS.md` in this repository)
