@@ -156,6 +156,9 @@
   <h1><span data-l10n>Error</span> <span class="error_code">{{ code }}</span></h1>
   <p class="output" data-l10n>{{ description }}.</p>
   <p class="output"><span data-l10n>Good luck</span>.</p>
+  <!-- {{- if homepage_url -}} -->
+  <p class="output"><a href="{{ homepage_url }}" data-l10n>Go to homepage</a></p>
+  <!-- {{- end -}} -->
   <!-- {{- if show_details -}} -->
   <div class="details">
     <!-- {{- if host -}} -->

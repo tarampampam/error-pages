@@ -107,6 +107,7 @@ func New(cfg *config.Config, log *logger.Logger) (_ fasthttp.RequestHandler, clo
 			Code:               code,             // http status code
 			ShowRequestDetails: cfg.ShowDetails,  // status message
 			L10nDisabled:       cfg.L10n.Disable, // status description
+			HomepageURL:        cfg.HomepageURL,
 		}
 
 		//nolint:lll

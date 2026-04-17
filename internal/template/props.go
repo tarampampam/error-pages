@@ -15,6 +15,7 @@ type Props struct {
 	RequestID          string `token:"request_id"`    // (ingress-nginx) unique ID that identifies the request - same as for backend service
 	ForwardedFor       string `token:"forwarded_for"` // the value of the `X-Forwarded-For` header
 	Host               string `token:"host"`          // the value of the `Host` header
+	HomepageURL        string `token:"homepage_url"`  // (config) URL of the homepage
 	ShowRequestDetails bool   `token:"show_details"`  // (config) show request details?
 	L10nDisabled       bool   `token:"l10n_disabled"` // (config) disable localization feature?
 }

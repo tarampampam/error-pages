@@ -155,3 +155,13 @@ var DisableMinificationFlag = cli.BoolFlag{
 	Category: CategoryOther,
 	OnlyOnce: true,
 }
+
+var HomepageURLFlag = cli.StringFlag{
+	Name:     "homepage-url",
+	Usage:    "URL to link as the homepage in error pages (set to empty to disable the link)",
+	Value:    "/",
+	Sources:  cli.EnvVars("HOMEPAGE_URL"),
+	Category: CategoryOther,
+	OnlyOnce: true,
+	Config:   cli.StringConfig{TrimSpace: true},
+}
