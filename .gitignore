@@ -5,6 +5,9 @@
 ## Binaries
 /error-pages
 
+## AI shit
+/.claude
+
 ## Temp dirs & trash
 /temp
 /tmp
