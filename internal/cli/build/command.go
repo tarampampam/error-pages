@@ -44,6 +44,7 @@ func NewCommand(log *logger.Logger) *cli.Command { //nolint:funlen,gocognit
 		addCodeFlag             = shared.AddHTTPCodesFlag
 		disableL10nFlag         = shared.DisableL10nFlag
 		disableMinificationFlag = shared.DisableMinificationFlag
+		homepageURLFlag         = shared.HomepageURLFlag
 		createIndexFlag         = cli.BoolFlag{
 			Name:     "index",
 			Aliases:  []string{"i"},
@@ -83,6 +84,7 @@ func NewCommand(log *logger.Logger) *cli.Command { //nolint:funlen,gocognit
 		Action: func(ctx context.Context, c *cli.Command) error {
 			cfg.L10n.Disable = c.Bool(disableL10nFlag.Name)
 			cfg.DisableMinification = c.Bool(disableMinificationFlag.Name)
+			cfg.HomepageURL = c.String(homepageURLFlag.Name)
 			cmd.opt.createIndex = c.Bool(createIndexFlag.Name)
 			cmd.opt.targetDirAbsPath, _ = filepath.Abs(c.String(targetDirFlag.Name)) // an error checked by [os.Stat] validator
 
@@ -143,6 +145,7 @@ func NewCommand(log *logger.Logger) *cli.Command { //nolint:funlen,gocognit
 			&createIndexFlag,
 			&targetDirFlag,
 			&disableMinificationFlag,
+			&homepageURLFlag,
 		},
 	}
 
@@ -181,6 +184,7 @@ func (cmd *command) Run( //nolint:funlen,gocognit
 				Description:        codeDescription.Description,
 				L10nDisabled:       cfg.L10n.Disable,
 				ShowRequestDetails: false,
+				HomepageURL:        cfg.HomepageURL,
 			}); renderErr == nil {
 				if !cfg.DisableMinification {
 					if mini, minErr := appTemplate.MiniHTML(content); minErr != nil {

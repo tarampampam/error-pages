@@ -98,6 +98,11 @@
       font-weight: bold;
     }
 
+    a {
+      color: var(--color-text-primary);
+      text-decoration: underline;
+    }
+
     /* {{ if show_details }} */
     .details {
       list-style: none;
@@ -423,6 +428,9 @@
     <h1>{{code}}</h1>
     <h2><span data-l10n>UH OH</span>! <span data-l10n>{{ message }}</span></h2>
     <p data-l10n>{{ description }}</p>
+    <!-- {{- if homepage_url -}} -->
+    <p><a href="{{ homepage_url }}" data-l10n>Go to homepage</a></p>
+    <!-- {{- end -}} -->
 
     <!-- {{- if show_details -}} -->
     <ul class="details">

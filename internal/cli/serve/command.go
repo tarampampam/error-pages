@@ -44,6 +44,7 @@ func NewCommand(log *logger.Logger) *cli.Command { //nolint:funlen,gocognit,gocy
 		addCodeFlag             = shared.AddHTTPCodesFlag
 		disableL10nFlag         = shared.DisableL10nFlag
 		disableMinificationFlag = shared.DisableMinificationFlag
+		homepageURLFlag         = shared.HomepageURLFlag
 		jsonFormatFlag          = cli.StringFlag{
 			Name: "json-format",
 			Usage: "Override the default error page response in JSON format (Go templates are supported; the error " +
@@ -183,6 +184,7 @@ func NewCommand(log *logger.Logger) *cli.Command { //nolint:funlen,gocognit,gocy
 			cfg.RotationMode, _ = config.ParseRotationMode(c.String(rotationModeFlag.Name))
 			cfg.ShowDetails = c.Bool(showDetailsFlag.Name)
 			cfg.DisableMinification = c.Bool(disableMinificationFlag.Name)
+			cfg.HomepageURL = c.String(homepageURLFlag.Name)
 
 			{ // override default JSON, XML, and PlainText formats
 				if c.IsSet(jsonFormatFlag.Name) {
@@ -305,6 +307,7 @@ func NewCommand(log *logger.Logger) *cli.Command { //nolint:funlen,gocognit,gocy
 			&rotationModeFlag,
 			&readBufferSizeFlag,
 			&disableMinificationFlag,
+			&homepageURLFlag,
 		},
 	}
 

@@ -59,6 +59,9 @@ type Config struct {
 
 	// DisableMinification determines whether to disable minification of the rendered content (e.g., HTML, CSS) or not.
 	DisableMinification bool
+
+	// HomepageURL is the URL of the homepage to link to in error pages (e.g., "/", "https://example.com").
+	HomepageURL string
 }
 
 const defaultJSONFormat string = `{

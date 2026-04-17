@@ -319,7 +319,9 @@
     </div>
     <p class="if-maybe-wrong-uri">
       <span data-l10n>Double-check the URL</span>.
-      <a class="go-back hidden" data-l10n>Alternatively, go back</a>
+      <!-- {{- if homepage_url -}} -->
+      <a href="{{ homepage_url }}" class="go-back hidden" data-l10n>Go to homepage</a>
+      <!-- {{- end -}} -->
     </p>
     <!-- {{- if show_details -}} -->
     <div class="details">
@@ -480,23 +482,6 @@
 
   [...document.getElementsByClassName('if-maybe-wrong-uri')].forEach(($el) => {
     $el.style.display = ['401', '403', '404', '418', '505'].includes('{{ code }}') ? 'block' : 'none';
-  });
-
-  [...document.getElementsByClassName('go-back')].forEach(($el) => {
-    if (document.referrer || history.length) {
-      $el.setAttribute('href', '#back-to-the-future');
-
-      $el.addEventListener('click', event => {
-        history.back();
-        event.preventDefault();
-
-        return false;
-      }, false);
-
-      $el.style.display = 'inline-block';
-    } else {
-      $el.style.display = 'none';
-    }
   });
 </script>
 

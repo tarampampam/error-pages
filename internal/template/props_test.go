@@ -36,6 +36,7 @@ func TestProps_Values(t *testing.T) {
 		"request_id":    "i",
 		"forwarded_for": "j",
 		"host":          "", // empty because it's not set
+		"homepage_url":  "", // empty because it's not set
 		"l10n_disabled": true,
 		"show_details":  false,
 	})

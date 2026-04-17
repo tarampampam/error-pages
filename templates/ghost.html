@@ -101,6 +101,11 @@
       margin: 0.3em auto;
     }
 
+    article a {
+      color: var(--color-inverted);
+      text-decoration: underline;
+    }
+
     article .description {
       font-size: 0.9em;
       opacity: .9;
@@ -189,6 +194,9 @@
 
   <h3><span data-l10n>Error</span> {{ code }}</h3>
   <p class="description" data-l10n>{{ description }}</p>
+  <!-- {{- if homepage_url -}} -->
+  <p><a href="{{ homepage_url }}" data-l10n>Go to homepage</a></p>
+  <!-- {{- end -}} -->
 
   <!-- {{- if show_details -}} -->
   <table class="details">
