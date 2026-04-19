@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=https://golangci-lint.run/jsonschema/golangci.jsonschema.json
-# docs: https://golangci-lint.run/usage/configuration/
+# docs: https://golangci-lint.run/docs/configuration/file/
+
 version: "2"
 
 run:
@@ -12,147 +13,148 @@ output:
 linters:
   default: none
   enable:
-    - asasalint
-    - asciicheck
-    - bidichk
-    - bodyclose
-    - contextcheck
-    - copyloopvar
-    - decorder
-    - dogsled
-    - dupl
-    - dupword
-    - durationcheck
-    - errcheck
-    - errchkjson
-    - errname
-    - errorlint
-    - exhaustive
-    - forbidigo
-    - funlen
-    - gochecknoglobals
-    - gochecknoinits
-    - gocognit
-    - goconst
-    - gocritic
-    - gocyclo
-    - godot
-    - goprintffuncname
-    - gosec
-    - govet
-    - ineffassign
-    - lll
-    - misspell
-    - mnd
-    - nakedret
-    - nestif
-    - nlreturn
-    - nolintlint
-    - prealloc
-    - promlinter
-    - staticcheck
-    - unconvert
-    - unused
-    - whitespace
-    - wsl_v5
-  settings:
-    wsl_v5:
-      allow-first-in-block: true
-      allow-whole-block: false
-      branch-max-lines: 2
-    dupl:
-      threshold: 100
+    # correctness / potential bugs
+    - asasalint          # []any accidentally passed as a single any in variadic call
+    - bidichk            # dangerous Unicode bidi control characters (supply-chain attack vector)
+    - bodyclose          # HTTP response body must always be closed
+    - canonicalheader    # net/http.Header keys must use canonical form (e.g. "Content-Type")
+    - containedctx       # context.Context must not be stored in struct fields - pass it explicitly
+    - contextcheck       # function calls must not ignore an inherited context
+    - copyloopvar        # detect loop-variable copies that escape the loop (Go < 1.22 compat)
+    - durationcheck      # multiplying two time.Duration values is almost always a bug
+    - errcheck           # every returned error must be explicitly handled - never discard with _
+    - errchkjson         # json encoding errors must be checked
+    - errname            # error values: Err* prefix; error types: *Error suffix
+    - errorlint          # always use errors.Is/errors.As - never == on error values
+    - exptostd           # replace golang.org/x/exp functions with stdlib equivalents (Go ≥ 1.21)
+    - fatcontext         # context.WithValue inside loops bloats context chain - use variables
+    - forcetypeassert    # type assertions must use the two-value form: v, ok := x.(T)
+    - gocheckcompilerdirectives # //go:build, //go:generate etc. must be syntactically valid
+    - gochecksumtype     # exhaustiveness check for Go "sum types" (tagged-union patterns)
+    - govet              # go vet: shadow, nilness, unusedwrite, waitgroup, and defaults
+    - ineffassign        # assignments whose value is never read before being overwritten
+    - intrange           # use integer range in for-loops: for i := range n (Go ≥ 1.22)
+    - loggercheck        # slog / zap key-value pairs must be well-formed (odd arg count = bug)
+    - makezero           # slices must be initialised with length 0 (append-only pattern)
+    - mirror             # bytes/strings ops must use the correct package to avoid allocs
+    - nilerr             # don't return nil when the error variable is non-nil
+    - nilnesserr         # don't return a different nil-error value when err != nil
+    - nilnil             # never return (nil, nil) from a (value, error) function
+    - noctx              # HTTP requests and outbound calls must carry a context
+    - nosprintfhostport  # use net.JoinHostPort, not fmt.Sprintf("…:%d", port)
+    - reassign           # package-level variables must not be reassigned after declaration
+    - recvcheck          # all methods on a type must use the same receiver type (ptr vs value)
+    - staticcheck        # comprehensive static analysis: SA*, S*, ST*, QF* rule families
+    - unconvert          # remove unnecessary type conversions
+    - unparam            # function parameters that always receive the same value
+    - unused             # unused exported and unexported identifiers
+    - usestdlibvars      # use http.MethodGet, http.StatusOK, time.Monday etc. - not raw strings
+    - usetesting         # prefer t.Context(), t.TempDir() and similar testing helpers
+    - wastedassign       # assignments whose result is immediately overwritten
+
+    # style / maintainability
+    - asciicheck         # identifiers must be ASCII-only (no Unicode in names)
+    - dogsled            # too many blank identifiers in one assignment signals a design smell
+    - dupl               # duplicate code fragments should be extracted
+    - dupword            # duplicate words in comments and strings
+    - embeddedstructfieldcheck # embedded fields first, separated from regular fields by blank line
+    - exhaustive         # switch statements over enums must be exhaustive
+    - forbidigo          # forbid debug print statements (see settings below)
+    - funlen             # functions must not be too long
+    - gochecknoglobals   # no package-level var declarations - globals are mutable shared state
+    - gochecknoinits     # no init() functions - prefer explicit initialization
+    - gocognit           # cognitive complexity: measures how hard a function is to understand
+    - goconst            # repeated string literals should be extracted as named constants
+    - gocyclo            # cyclomatic complexity: number of linearly independent paths
+    - godoclint          # exported symbols require godoc comments starting with the symbol name
+    - godot              # every comment must end with a period
+    - godox              # flag BUG and HACK comments that must be resolved before merging
+    - goprintffuncname   # printf-like functions must end with an 'f' suffix
+    - gosec              # security: hardcoded secrets, SQL injection, path traversal, weak crypto …
+    - iface              # detect interface pollution: identical, opaque, and unused interfaces
+    - inamedparam        # interface method parameters should be named for readability
+    - interfacebloat     # interfaces must not have too many methods
+    - iotamixing         # do not mix iota and non-iota const values in the same block
+    - lll                # line length must not exceed 120 chars - matches RULES.md
+    - misspell           # fix common English misspellings in comments and strings
+    - mnd                # magic numbers must be replaced with named constants
+    - modernize          # upgrade to modern Go idioms (any, min/max, range over int, …)
+    - nakedret           # naked returns (return with no values) are forbidden in long functions
+    - nestif             # deeply nested if statements reduce readability
+    - nlreturn           # blank line required before return / branch statements
+    - nolintlint         # nolint directives must name the linter and provide a reason
+    - paralleltest       # every top-level test must call t.Parallel() - see RULES.md
+    - perfsprint         # replace fmt.Sprintf with faster alternatives where straightforward
+    - prealloc           # pre-allocate slices when the final size is known
+    - predeclared        # do not shadow Go predeclared identifiers (len, cap, close …)
+    - promlinter         # Prometheus metric names must follow naming conventions
+    - sloglint           # log/slog calls must follow a consistent style
+    - testifylint        # testify assertions must be used correctly (assert.NoError not assert.Nil)
+    - testpackage        # test files must use the external package name: "package foo_test"
+    - tparallel          # t.Run subtests must also call t.Parallel() - see RULES.md
+    - whitespace         # no spurious leading/trailing blank lines inside functions and blocks
+    - wsl_v5             # whitespace: blank lines around blocks and branch statements
+
+  settings: # https://golangci-lint.run/docs/linters/configuration/
+    errcheck: {check-type-assertions: true, check-blank: true}
+    errchkjson: {report-no-exported: false}
+    funlen: {lines: 100, statements: 60}
+    gocognit: {min-complexity: 40}
+    gocyclo: {min-complexity: 40}
+    nestif: {min-complexity: 10}
+    godoclint: {default: none, enable: [single-pkg-doc, require-doc, deprecated, require-stdlib-doclink]}
+    godot: {capital: false}
+    godox: {keywords: [BUG, HACK]}
+    copyloopvar: {check-alias: true}
+    dogsled: {max-blank-identifiers: 3}
+    exhaustive: {check: [switch, map]}
     forbidigo:
       forbid:
-        - pattern: ^(fmt\.Print(|f|ln)|print(|ln))(# it looks like a forgotten debugging printing call)?$
-    goconst:
-      min-len: 2
-      min-occurrences: 3
-    gocyclo:
-      min-complexity: 15
-    godot:
-      scope: declarations
-      capital: false
-    govet:
-      enable:
-        - shadow
-    lll:
-      line-length: 120
-    misspell:
-      locale: US
-      ignore-rules:
-        - cancelled
-    nakedret:
-      max-func-lines: 100
-    nolintlint:
-      require-specific: true
-    prealloc:
-      simple: true
-      range-loops: true
-      for-loops: true
+        - {pattern: ^(fmt\.Print(|f|ln)|print(|ln))$, msg: 'debug print statements must not be committed'}
+    goconst: {min-occurrences: 4}
+    gosec: {excludes: [G102, G104]}
+    govet: {enable: [defers, errorsas, slog, tests, shadow, nilness, unusedwrite, waitgroup]}
+    iface: {enable: [identical, opaque, unused, unexported]}
+    inamedparam: {skip-single-param: true}
+    lll: {line-length: 120}
+    misspell: {locale: US}
+    nilnil: {detect-opposite: true}
+    nolintlint: {require-specific: true, allow-unused: false}
+    paralleltest: {ignore-missing-subtests: true}
+    testifylint: {enable-all: true}
+
   exclusions:
-    generated: lax
-    presets:
-      - comments
-      - common-false-positives
-      - legacy
-      - std-error-handling
+    presets: [comments, common-false-positives, legacy, std-error-handling]
     rules:
-      - linters:
-          - dupl
-          - gochecknoglobals
-          - lll
-          - mnd
-        path: flags\.go
-      - linters:
-          - gosec
-          - lll
-        path: env\.go
-      - linters:
+      - path: _test\.go
+        linters:
           - dupl
           - dupword
           - funlen
           - gochecknoglobals
           - gocognit
           - goconst
+          - godoclint
           - lll
+          - mnd
           - nlreturn
           - noctx
           - nolintlint
-        path: _test\.go
-    paths:
-      - .github
-      - .git
+          - nonamedreturns
+    paths: &exclude_paths # globally disabled linters for these paths
+      - \.github
+      - \.git
+      - \.idea
+      - .*-old$
+      - old-.*$
       - tmp
       - temp
       - testdata
-      - third_party$
-      - builtin$
       - examples$
-formatters:
-  enable:
-    - gci
-    - gofmt
-    - goimports
+
+formatters: # https://golangci-lint.run/docs/formatters/configuration/
+  enable: [gci, gofmt, goimports]
   settings:
-    gci:
-      sections:
-        - standard
-        - default
-        - prefix(gh.tarampamp.am/error-pages)
-    gofmt:
-      simplify: false
-      rewrite-rules:
-        - pattern: interface{}
-          replacement: any
-  exclusions:
-    generated: lax
-    paths:
-      - .github
-      - .git
-      - tmp
-      - temp
-      - testdata
-      - third_party$
-      - builtin$
-      - examples$
+    gci: {sections: [standard, default, prefix(gh.tarampamp.am/error-pages)]}
+    gofmt: {simplify: false, rewrite-rules: [{pattern: 'interface{}', replacement: any}]}
+  exclusions: {generated: lax, paths: *exclude_paths}

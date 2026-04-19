@@ -1,9 +1,0 @@
-## Ignore everything
-*
-
-## Except the following files and directories
-!/cmd
-!/internal
-!/l10n
-!/templates
-!/go.*

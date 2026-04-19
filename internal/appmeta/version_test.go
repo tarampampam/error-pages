@@ -1,6 +1,11 @@
-package appmeta
+package appmeta_test
 
-import "testing"
+import (
+	"fmt"
+	"testing"
+
+	"gh.tarampamp.am/error-pages/v4/internal/appmeta"
+)
 
 func TestVersion(t *testing.T) {
 	t.Parallel()
@@ -29,10 +34,13 @@ func TestVersion(t *testing.T) {
 		" V1":     "1",
 		"v ":      "v",
 	} {
-		version = give
+		t.Run(fmt.Sprintf("%s -> %s", give, want), func(t *testing.T) {
+			t.Parallel()
+			t.Cleanup(appmeta.SetVersion(give))
 
-		if v := Version(); v != want {
-			t.Errorf("want: %s, got: %s", want, v)
-		}
+			if v := appmeta.Version(); v != want {
+				t.Errorf("want: %s, got: %s", want, v)
+			}
+		})
 	}
 }
