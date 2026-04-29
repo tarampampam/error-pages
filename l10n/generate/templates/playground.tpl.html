@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>L10n playground</title>
+  <style>
+    :root {
+      --color-bg-primary: #fff;
+      --color-text-primary: #0e0620;
+      --color-ui-bg-primary: #0e0620;
+      --color-ui-bg-inverted: #fff;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --color-bg-primary: #212121;
+        --color-text-primary: #fafafa;
+        --color-ui-bg-primary: #fafafa;
+        --color-ui-bg-inverted: #212121;
+      }
+    }
+
+    html, body {
+      margin: 0 auto;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      max-width: 1200px;
+      min-width: 400px;
+      background-color: var(--color-bg-primary);
+      color: var(--color-text-primary);
+    }
+
+    #lang-switch {
+      list-style-type: none;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      flex-grow: 4;
+      gap: 1em;
+      padding: 2em 0;
+
+      button {
+        background-color: var(--color-bg-primary);
+        color: var(--color-text-primary);
+        border: 1px solid var(--color-text-primary);
+        padding: 0.5em 1em;
+        cursor: pointer;
+        font-size: 1.2em;
+        font-weight: bold;
+        border-radius: 1em 0 1em 0;
+        transition: background-color 0.3s, color 0.3s;
+
+        &:hover {
+          background-color: var(--color-ui-bg-primary);
+          color: var(--color-ui-bg-inverted);
+        }
+
+        &.active {
+          background-color: var(--color-ui-bg-primary);
+          color: var(--color-ui-bg-inverted);
+        }
+      }
+    }
+
+    #tokens-list {
+      list-style-type: none;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1em;
+      padding: 0 1em;
+
+      li {
+        padding: 0.5em 1em;
+        font-size: 1.2em;
+
+        &::first-letter {
+          font-weight: bold;
+        }
+      }
+    }
+  </style>
+</head>
+<body>
+<ul id="lang-switch"></ul>
+<ul id="tokens-list"></ul>
+<script type="module">
+  const $tokensList = document.getElementById('tokens-list');
+
+  [
+    {{ range $i, $el := .Tokens }}{{ if $i }},
+    {{ end }}{{ $el | quote }}{{ end }}
+  ].forEach((token) => {
+    const $li = document.createElement('li');
+
+    $li.textContent = token;
+    $li.setAttribute('data-l10n', '');
+    $li.title = token;
+
+    $tokensList.appendChild($li);
+  });
+
+  const $langSwitch = document.getElementById('lang-switch');
+
+  [
+    {{ range $i, $el := .LangCodes }}{{ if $i }},
+    {{ end }}{{ $el | quote }}{{ end }}
+  ].forEach((lang) => {
+    const $li = document.createElement('li');
+    const $btn = document.createElement('button');
+
+    $btn.textContent = lang;
+    $btn.addEventListener('click', () => {
+      window.l10n.setLocale(lang);
+      window.l10n.localizeDocument();
+
+      $langSwitch.querySelectorAll('button').forEach((btn) => {
+        btn.classList.remove('active');
+      });
+
+      $btn.classList.add('active');
+    });
+
+    $li.appendChild($btn);
+    $langSwitch.appendChild($li);
+  });
+</script>
+<script>// {{ l10nScript }}</script>
+</body>
+</html>

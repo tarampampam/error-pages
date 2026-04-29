@@ -1,0 +1,22 @@
+{{- if .Values.service.enabled }}
+apiVersion: v1
+kind: Service
+
+metadata:
+  name: {{ include "error-pages.fullname" . }}
+  namespace: {{ template "error-pages.namespace" . }}
+  labels:
+    {{- include "error-pages.commonLabels" . | nindent 4 }}
+
+spec:
+  {{- with .Values.service }}
+  type: {{ .type }}
+  ports:
+    - name: http
+      port: {{ .port }}
+      targetPort: http
+      protocol: TCP
+  selector:
+    {{- include "error-pages.selectorLabels" $ | nindent 4 }}
+  {{- end }}
+{{- end }}

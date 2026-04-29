@@ -1,0 +1,24 @@
+# yaml-language-server: $schema=https://json.schemastore.org/chart.json
+
+apiVersion: v2
+name: error-pages
+description: Pretty server's error pages for Kubernetes
+
+type: application
+version: 0.0.0 # will be replaced by the release workflow
+appVersion: 0.0.0 # will be replaced by the release workflow
+icon: https://hsto.org/webt/rm/9y/ww/rm9ywwx3gjv9agwkcmllhsuyo7k.png
+home: https://github.com/tarampampam/error-pages
+sources: [https://github.com/tarampampam/error-pages]
+keywords: [error-pages, http, errors, ingress-nginx, traefik, kubernetes, nginx]
+
+annotations:
+  artifacthub.io/license: MIT
+  artifacthub.io/maintainers: |
+    - name: tarampampam
+      email: 7326800+tarampampam@users.noreply.github.com
+  artifacthub.io/links: |
+    - name: GitHub
+      url: https://github.com/tarampampam/error-pages
+    - name: Container Registry
+      url: https://ghcr.io/tarampampam/error-pages

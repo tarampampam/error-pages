@@ -1,0 +1,17 @@
+{
+  "error": true,
+  "code": {{ .StatusCode | toJson }},
+  "message": {{ .Message | toJson }},
+  "description": {{ .Description | toJson }}{{ if .Config.ShowRequestDetails }},
+  "details": {
+    "host": {{ .Host | toJson }},
+    "original_uri": {{ .OriginalURI | toJson }},
+    "forwarded_for": {{ .ForwardedFor | toJson }},
+    "namespace": {{ .Namespace | toJson }},
+    "ingress_name": {{ .IngressName | toJson }},
+    "service_name": {{ .ServiceName | toJson }},
+    "service_port": {{ .ServicePort | toJson }},
+    "request_id": {{ .RequestID | toJson }},
+    "timestamp": {{ now.Unix }}
+  }{{ end }}
+}

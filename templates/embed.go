@@ -1,39 +1,23 @@
+// Package templates contains the HTML/SJON/XML/etc templates for the app. The templates are embedded in the binary
+// using the go:embed directive. This file is also used to generate the embed_html.go file, which contains the
+// embedded HTML templates.
 package templates
 
-import (
-	"embed"
-	"io/fs"
-	"path/filepath"
-	"strings"
-)
+import _ "embed"
 
-//go:embed *.html
-var content embed.FS
+//go:generate go run ./generate/embed_html.go -src ./html -out ./embed_html.go
 
-// BuiltIn returns a map of built-in templates. The key is the template name and the value is the template content.
-func BuiltIn() map[string]string {
-	var (
-		list, _ = fs.ReadDir(content, ".") // error check is covered by unit tests
-		result  = make(map[string]string, len(list))
-	)
+// JSON holds the embedded JSON template for error responses.
+//
+//go:embed default.tpl.json
+var JSON string
 
-	for _, file := range list {
-		if data, err := fs.ReadFile(content, file.Name()); err == nil {
-			var (
-				fileName     = filepath.Base(file.Name())
-				ext          = filepath.Ext(fileName)
-				templateName string
-			)
+// XML holds the embedded XML template for error responses.
+//
+//go:embed default.tpl.xml
+var XML string
 
-			if ext != "" && fileName != ext {
-				templateName = strings.TrimSuffix(fileName, ext)
-			} else {
-				templateName = fileName
-			}
-
-			result[templateName] = string(data)
-		}
-	}
-
-	return result
-}
+// PlaintText holds the embedded plain text template for error responses.
+//
+//go:embed default.tpl.txt
+var PlaintText string

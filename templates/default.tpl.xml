@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<error>
+  <code>{{ .StatusCode }}</code>
+  <message>{{ .Message }}</message>
+  <description>{{ .Description }}</description>{{ if .Config.ShowRequestDetails }}
+  <details>
+    <host>{{ .Host }}</host>
+    <originalURI>{{ .OriginalURI }}</originalURI>
+    <forwardedFor>{{ .ForwardedFor }}</forwardedFor>
+    <namespace>{{ .Namespace }}</namespace>
+    <ingressName>{{ .IngressName }}</ingressName>
+    <serviceName>{{ .ServiceName }}</serviceName>
+    <servicePort>{{ .ServicePort }}</servicePort>
+    <requestID>{{ .RequestID }}</requestID>
+    <timestamp>{{ now.Unix }}</timestamp>
+  </details>{{ end }}
+</error>

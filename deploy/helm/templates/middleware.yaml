@@ -1,0 +1,23 @@
+{{- if .Values.traefikMiddleware.enabled }}
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+
+metadata:
+  name: {{ include "error-pages.fullname" . }}
+  namespace: {{ template "error-pages.namespace" . }}
+  labels:
+    {{- include "error-pages.commonLabels" . | nindent 4 }}
+
+spec:
+  errors:
+    status:
+      {{- toYaml .Values.traefikMiddleware.statusCodes | nindent 6 }}
+    service:
+      name: {{ include "error-pages.fullname" . }}
+      port: {{ .Values.service.port }}
+    query: {{ .Values.traefikMiddleware.query | quote }}
+    {{- with .Values.traefikMiddleware.statusRewrites }}
+    statusRewrites:
+      {{- tpl (toYaml .) $ | nindent 6 }}
+    {{- end }}
+{{- end }}

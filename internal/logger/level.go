@@ -2,20 +2,21 @@ package logger
 
 import (
 	"fmt"
+	"log/slog"
 	"strings"
 )
 
-// A Level is a logging level.
-type Level int8
+// Level is a logging priority. Higher values are more severe.
+type Level int
 
 const (
-	DebugLevel Level = iota - 1
-	InfoLevel        // default level (zero-value)
-	WarnLevel
-	ErrorLevel
+	DebugLevel = Level(slog.LevelDebug) // -4
+	InfoLevel  = Level(slog.LevelInfo)  // 0; the zero value of Level
+	WarnLevel  = Level(slog.LevelWarn)  // 4
+	ErrorLevel = Level(slog.LevelError) // 8
 )
 
-// String returns a lower-case ASCII representation of the log level.
+// String returns the level name in lowercase (e.g. "debug", "info").
 func (l Level) String() string {
 	switch l {
 	case DebugLevel:
@@ -31,46 +32,17 @@ func (l Level) String() string {
 	return fmt.Sprintf("level(%d)", l)
 }
 
-// Levels returns a slice of all logging levels.
-func Levels() []Level {
-	return []Level{DebugLevel, InfoLevel, WarnLevel, ErrorLevel}
-}
-
-// LevelStrings returns a slice of all logging levels as strings.
-func LevelStrings() []string {
-	var (
-		levels = Levels()
-		result = make([]string, len(levels))
-	)
-
-	for i := range levels {
-		result[i] = levels[i].String()
-	}
-
-	return result
-}
-
-// ParseLevel parses a level (case is ignored) based on the ASCII representation of the log level.
-// If the provided ASCII representation is invalid an error is returned.
-//
-// This is particularly useful when dealing with text input to configure log levels.
-func ParseLevel[T string | []byte](text T) (Level, error) {
-	var lvl string
-
-	if s, ok := any(text).(string); ok {
-		lvl = s
-	} else {
-		lvl = string(any(text).([]byte))
-	}
-
-	switch strings.ToLower(lvl) {
-	case "debug", "verbose", "trace":
+// ParseLevel converts a string name to a Level (case-insensitive).
+// Returns an error if the name is not recognized.
+func ParseLevel(text string) (Level, error) {
+	switch strings.ToLower(text) {
+	case "debug", "verbose", "trace": // verbose and trace are treated as aliases for debug
 		return DebugLevel, nil
 	case "info", "": // make the zero value useful
 		return InfoLevel, nil
-	case "warn":
+	case "warn", "warning":
 		return WarnLevel, nil
-	case "error":
+	case "error", "err":
 		return ErrorLevel, nil
 	}
 

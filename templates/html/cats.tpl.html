@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="robots" content="nofollow,noarchive,noindex">
+  <title>{{ .Message }}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- {{ if or (eq .StatusCode 408) (eq .StatusCode 425) (eq .StatusCode 429) (eq .StatusCode 500) (eq .StatusCode 502) (eq .StatusCode 503) (eq .StatusCode 504) }} -->
+  <meta http-equiv="refresh" content="30">
+  <!-- {{ end }} -->
+  <meta name="title" content="{{ .StatusCode }}: {{ .Message | escape }}">
+  <meta name="description" content="{{ .Description | escape }}">
+  <meta property="og:title" content="{{ .StatusCode }}: {{ .Message | escape }}">
+  <meta property="og:description" content="{{ .Description | escape }}">
+  <meta property="twitter:title" content="{{ .StatusCode }}: {{ .Message | escape }}">
+  <meta property="twitter:description" content="{{ .Description | escape }}">
+  <style>
+    :root {
+      --color-primary: #fff;
+      --color-inverted: #202020;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --color-primary: #000;
+        --color-inverted: #fff;
+      }
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      min-height: 100%;
+      height: 100%;
+      width: 100%;
+      background-color: var(--color-primary);
+      color: var(--color-inverted);
+      font-family: sans-serif;
+      font-size: 16px;
+      word-break: keep-all;
+    }
+
+    @media screen and (min-width: 2000px) {
+      html, body {
+        font-size: 22px;
+      }
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    article img {
+      width: 100%;
+      max-width: 750px;
+      box-shadow: 0 30px 0 -20px rgba(0, 0, 0, 0.2);
+    }
+
+    /* {{ if .Config.ShowRequestDetails }} */
+    table.details {
+      table-layout: fixed;
+      width: 100%;
+      opacity: .8;
+      padding-top: 1.5em;
+    }
+
+    table.details td {
+      white-space: nowrap;
+      font-size: 0.7em;
+    }
+
+    table.details .name,
+    table.details .value {
+      width: 50%;
+    }
+
+    table.details .name::first-letter,
+    table.details .value::first-letter {
+      font-weight: bold;
+    }
+
+    table.details .name {
+      text-align: right;
+      padding-right: .4em;
+      width: 50%;
+    }
+
+    table.details .value {
+      text-align: left;
+      padding-left: .4em;
+      font-family: monospace;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* {{ end }} */
+  </style>
+</head>
+<body>
+<article>
+  <img src="https://http.cat/{{ .StatusCode }}.jpg" alt="{{ .Message }}">
+</article>
+
+<!-- {{- if .Config.ShowRequestDetails -}} -->
+<table class="details">
+  <tbody>
+  <!-- {{- if .Host -}} -->
+  <tr>
+    <td class="name" data-l10n>Host</td>
+    <td class="value">{{ .Host }}</td>
+  </tr>
+  <!-- {{- end }}{{ if .OriginalURI -}} -->
+  <tr>
+    <td class="name" data-l10n>Original URI</td>
+    <td class="value">{{ .OriginalURI }}</td>
+  </tr>
+  <!-- {{- end }}{{ if .ForwardedFor -}} -->
+  <tr>
+    <td class="name" data-l10n>Forwarded for</td>
+    <td class="value">{{ .ForwardedFor }}</td>
+  </tr>
+  <!-- {{- end }}{{ if .Namespace -}} -->
+  <tr>
+    <td class="name" data-l10n>Namespace</td>
+    <td class="value">{{ .Namespace }}</td>
+  </tr>
+  <!-- {{- end }}{{ if .IngressName -}} -->
+  <tr>
+    <td class="name" data-l10n>Ingress name</td>
+    <td class="value">{{ .IngressName }}</td>
+  </tr>
+  <!-- {{- end }}{{ if .ServiceName -}} -->
+  <tr>
+    <td class="name" data-l10n>Service name</td>
+    <td class="value">{{ .ServiceName }}</td>
+  </tr>
+  <!-- {{- end }}{{ if .ServicePort -}} -->
+  <tr>
+    <td class="name" data-l10n>Service port</td>
+    <td class="value">{{ .ServicePort }}</td>
+  </tr>
+  <!-- {{- end }}{{ if .RequestID -}} -->
+  <tr>
+    <td class="name" data-l10n>Request ID</td>
+    <td class="value">{{ .RequestID }}</td>
+  </tr>
+  <!-- {{- end -}} -->
+  <tr>
+    <td class="name" data-l10n>Timestamp</td>
+    <td class="value">{{ now.Unix }}</td>
+  </tr>
+  </tbody>
+</table>
+<!-- {{- end -}} -->
+
+<!-- {{- if (not .Config.L10nDisabled) -}} -->
+<script>// {{ l10nScript }}</script>
+<!-- {{- end -}} -->
+</body>
+</html>

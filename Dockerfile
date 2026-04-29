@@ -12,41 +12,53 @@ COPY . /src
 WORKDIR /src
 
 RUN set -x \
+    && LDFLAGS="-s -w -X gh.tarampamp.am/error-pages/v4/internal/appmeta.version=${APP_VERSION}" \
     && go generate -skip readme ./... \
-    && CGO_ENABLED=0 go build \
-      -trimpath \
-      -ldflags "-s -w -X gh.tarampamp.am/error-pages/internal/appmeta.version=${APP_VERSION}" \
-      -o /tmp/error-pages \
-      ./cmd/error-pages/ \
+    && CGO_ENABLED=0 go build -trimpath -ldflags "${LDFLAGS}" -o /tmp/error-pages ./cmd/error-pages/ \
+    && CGO_ENABLED=0 go build -trimpath -ldflags "${LDFLAGS}" -o /tmp/builder ./cmd/builder/ \
     && /tmp/error-pages --version \
-    && /tmp/error-pages -h
+    && /tmp/error-pages -h \
+    && /tmp/builder --version \
+    && /tmp/builder -h
 
-WORKDIR /tmp/rootfs
-
-# prepare rootfs for runtime
+# prepare the common rootfs
+WORKDIR /tmp/rootfs-base
 RUN set -x \
-    && mkdir -p ./etc/ssl/certs ./bin \
+    && mkdir -p ./etc/ssl/certs ./bin ./tmp \
     && echo 'appuser:x:10001:10001::/nonexistent:/sbin/nologin' > ./etc/passwd \
     && echo 'appuser:x:10001:' > ./etc/group \
     && cp /etc/ssl/certs/ca-certificates.crt ./etc/ssl/certs/ \
-    && mv /tmp/error-pages ./bin/error-pages \
-    && chmod 755 ./bin/error-pages
+    && chmod 1777 ./tmp
 
-WORKDIR /tmp/rootfs/opt
-
-# generate static error pages (for use inside other Docker images, for example)
+# prepare separate rootfs for the server
+WORKDIR /tmp/rootfs/server
 RUN set -x \
-    && mkdir ./html \
-    && ./../bin/error-pages build --index --target-dir ./html \
-    && ls -l ./html
+    && cp -a /tmp/rootfs-base/. . \
+    && mv /tmp/error-pages ./bin/error-pages \
+    && chmod 555 ./bin/error-pages
 
-# -✂- and this is the final stage (an empty filesystem is used) -------------------------------------------------------
-FROM scratch AS runtime
+# add super-lightweight HTTP checking tool to use it in the healthcheck
+# docs: https://github.com/tarampampam/microcheck
+COPY --from=ghcr.io/tarampampam/microcheck:1 /bin/httpcheck /tmp/rootfs/server/bin/httpcheck
+
+# and prepare separate rootfs for the builder (plus generate static error pages)
+WORKDIR /tmp/rootfs/builder
+RUN set -x \
+    && cp -a /tmp/rootfs-base/. . \
+    && mv /tmp/builder ./bin/builder \
+    && chmod 555 ./bin/builder \
+    && mkdir -p ./opt/html \
+    && chmod 755 ./opt/html \
+    && ./bin/builder --target-dir ./opt/html \
+    && ls -l ./opt/html
+
+# -✂- this stage is used to prepare and reuse metadata for both final stages (server and builder) ---------------------
+FROM scratch AS runtime-base
 
 ARG APP_VERSION="undefined@docker"
 
+# docs: https://github.com/opencontainers/image-spec/blob/master/annotations.md
 LABEL \
-    # docs: https://github.com/opencontainers/image-spec/blob/master/annotations.md
     org.opencontainers.image.title="error-pages" \
     org.opencontainers.image.description="Pretty server's error pages" \
     org.opencontainers.image.url="https://github.com/tarampampam/error-pages" \
@@ -55,13 +67,24 @@ LABEL \
     org.opencontainers.version="$APP_VERSION" \
     org.opencontainers.image.licenses="MIT"
 
-# import from builder
-COPY --from=compile /tmp/rootfs /
-
-# use an unprivileged user
+# use an unprivileged user by dedault
 USER 10001:10001
 
-WORKDIR /opt
+# -✂- this is the final stage for the builder -------------------------------------------------------------------------
+# to build the builder image, use: `(podman|docker) build --target=builder ...`
+FROM runtime-base AS builder
+
+# import rootfs for the builder from the compile stage
+COPY --from=compile /tmp/rootfs/builder /
+
+ENTRYPOINT ["/bin/builder"]
+
+# -✂- and this is the final stage for the server ----------------------------------------------------------------------
+# to build the server image, use: `(podman|docker) build --target=server ...`
+FROM runtime-base AS server
+
+# import rootfs for the server from the compile stage
+COPY --from=compile /tmp/rootfs/server /
 
 # to find out which environment variables and CLI arguments are supported by the application, run the app
 # with the `--help` flag or refer to the documentation at https://github.com/tarampampam/error-pages#readme
@@ -70,8 +93,8 @@ ENV LOG_LEVEL="warn" \
     LOG_FORMAT="json"
 
 # docs: https://docs.docker.com/reference/dockerfile/#healthcheck
-HEALTHCHECK --interval=10s --start-interval=1s --start-period=2s --timeout=1s CMD ["/bin/error-pages", "healthcheck"]
+HEALTHCHECK --interval=10s --start-interval=1s --start-period=1s CMD [\
+  "/bin/httpcheck", "http://127.0.0.1:8080/healthz", "--port-env", "HTTP_PORT"\
+]
 
 ENTRYPOINT ["/bin/error-pages"]
-
-CMD ["serve"]

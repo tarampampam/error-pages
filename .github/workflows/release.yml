@@ -4,63 +4,152 @@
 name: 🚀 Release
 
 on:
-  release: # Docs: <https://git.io/JeBz1#release-event-release>
+  release:
     types: [published]
 
 jobs:
-  build:
-    name: Build for ${{ matrix.os }} (${{ matrix.arch }})
+  build-apps:
+    name: Build the apps
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        os: [linux, darwin, windows] # freebsd
-        arch: [amd64, arm64] # 386
+        os: [linux, darwin, windows]
+        arch: [amd64, arm64]
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-go@v6
         with: {go-version-file: go.mod}
       - uses: gacts/github-slug@v1
         id: slug
-      - id: values
-        run: echo "binary-name=error-pages-${{ matrix.os }}-${{ matrix.arch }}`[ ${{ matrix.os }} = 'windows' ] && echo '.exe'`" >> $GITHUB_OUTPUT
+      - run: go generate -skip readme ./...
       - env:
           GOOS: ${{ matrix.os }}
           GOARCH: ${{ matrix.arch }}
           CGO_ENABLED: 0
-          LDFLAGS: -s -w -X gh.tarampamp.am/error-pages/internal/version.version=${{ steps.slug.outputs.version }}
-        run: go build -trimpath -ldflags "$LDFLAGS" -o "./${{ steps.values.outputs.binary-name }}" ./cmd/error-pages/
+          LDFLAGS: -s -w -X gh.tarampamp.am/error-pages/v4/internal/appmeta.version=${{ steps.slug.outputs.version-semantic }}
+        run: |
+          go build -trimpath -ldflags "$LDFLAGS" -o ./error-pages${{ matrix.os == 'windows' && '.exe' || '' }} ./cmd/error-pages/
+          go build -trimpath -ldflags "$LDFLAGS" -o ./builder${{ matrix.os == 'windows' && '.exe' || '' }} ./cmd/builder/
+      - run: |
+          ext="${{ matrix.os == 'windows' && '.exe' || '' }}"
+          tar czf "error-pages-${{ matrix.os }}-${{ matrix.arch }}.tar.gz" "error-pages${ext}"
+          zip "error-pages-${{ matrix.os }}-${{ matrix.arch }}.zip" "error-pages${ext}"
+          tar czf "builder-${{ matrix.os }}-${{ matrix.arch }}.tar.gz" "builder${ext}"
+          zip "builder-${{ matrix.os }}-${{ matrix.arch }}.zip" "builder${ext}"
       - uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: ${{ steps.values.outputs.binary-name }}
-          asset_name: ${{ steps.values.outputs.binary-name }}
+          file: error-pages-${{ matrix.os }}-${{ matrix.arch }}.tar.gz
+          tag: ${{ github.ref }}
+      - uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: error-pages-${{ matrix.os }}-${{ matrix.arch }}.zip
+          tag: ${{ github.ref }}
+      - uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: builder-${{ matrix.os }}-${{ matrix.arch }}.tar.gz
+          tag: ${{ github.ref }}
+      - uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: builder-${{ matrix.os }}-${{ matrix.arch }}.zip
           tag: ${{ github.ref }}
 
-      - if: matrix.os == 'linux' && matrix.arch == 'amd64'
-        run: mkdir ./out && ./${{ steps.values.outputs.binary-name }} build --index --disable-minification --target-dir ./out
-      - if: matrix.os == 'linux' && matrix.arch == 'amd64'
-        uses: actions/upload-artifact@v7
+  build-static-pages:
+    name: Build the static pages
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-go@v6
+        with: {go-version-file: go.mod}
+      - uses: gacts/github-slug@v1
+        id: slug
+      - run: go generate -skip readme ./...
+      - env:
+          CGO_ENABLED: 0
+          LDFLAGS: -s -w -X gh.tarampamp.am/error-pages/v4/internal/appmeta.version=${{ steps.slug.outputs.version-semantic }}
+        run: go build -trimpath -ldflags "$LDFLAGS" -o ./builder ./cmd/builder/
+      - run: mkdir ./out && ./builder --index --target-dir ./out
+      - uses: actions/upload-artifact@v7
         with:
           name: error-pages-static
           path: out/
           if-no-files-found: error
           retention-days: 1
-      - if: matrix.os == 'linux' && matrix.arch == 'amd64'
-        working-directory: ./out
-        run: zip -r ./../templates.zip .
-      - if: matrix.os == 'linux' && matrix.arch == 'amd64'
-        uses: svenstaro/upload-release-action@v2
+      - working-directory: ./out
+        run: |
+          zip -r ./../error-pages-static.zip .
+          tar czf ./../error-pages-static.tar.gz .
+      - uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: templates.zip
-          asset_name: error-pages-static.zip
+          file: error-pages-static.zip
+          tag: ${{ github.ref }}
+      - uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: error-pages-static.tar.gz
+          tag: ${{ github.ref }}
+
+  build-helm-chart:
+    name: Build the Helm chart
+    runs-on: ubuntu-latest
+    defaults: {run: {working-directory: ./deploy/helm}}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: azure/setup-helm@v5
+      - uses: gacts/github-slug@v1
+        id: slug
+      - uses: losisin/helm-docs-github-action@v1
+        with:
+          chart-search-root: deploy/helm
+          template-files: README.tpl.md
+          output-file: README.md
+      - run: |
+          helm package \
+            --app-version "${{ steps.slug.outputs.version-semantic }}" \
+            --version "${{ steps.slug.outputs.version-semantic }}" .
+          mv error-pages-*.tgz helm-chart.tgz
+      - uses: actions/upload-artifact@v7
+        with:
+          name: helm-chart
+          path: deploy/helm/helm-chart.tgz
+          if-no-files-found: error
+          retention-days: 1
+      - uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: deploy/helm/helm-chart.tgz
+          asset_name: helm-chart.tgz
+          tag: ${{ github.ref }}
+
+  generate-checksums:
+    name: Generate checksums.txt
+    runs-on: ubuntu-latest
+    needs: [build-apps, build-static-pages, build-helm-chart]
+    steps:
+      - uses: robinraju/release-downloader@v1
+        with:
+          tag: ${{ github.ref_name }}
+          fileName: '*'
+          token: ${{ secrets.GITHUB_TOKEN }}
+          out-file-path: .artifact
+      - working-directory: .artifact
+        run: sha256sum $(ls | grep -v checksums.txt) > checksums.txt
+      - uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: .artifact/checksums.txt
+          asset_name: checksums.txt
           tag: ${{ github.ref }}
 
   demo:
     name: Update the demo (GitHub Pages)
     runs-on: ubuntu-latest
-    needs: [build]
+    needs: [build-static-pages]
     steps:
       - uses: actions/download-artifact@v8
         with:
@@ -69,11 +158,23 @@ jobs:
       - uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./.artifact
+          publish_dir: .artifact
 
-  docker-image:
+  build-docker-image:
     name: Build the docker image
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      id-token: write # required for keyless cosign signing via GitHub OIDC
+    outputs:
+      server-tags: ${{ steps.server-tags.outputs.list }}
+      builder-tags: ${{ steps.builder-tags.outputs.list }}
+    env:
+      HUB_IMAGE: tarampampam/error-pages
+      GHCR_IMAGE: ghcr.io/${{ github.repository }}
+      QUAY_IMAGE: quay.io/tarampampam/error-pages
+      TARGET_PLATFORMS: linux/amd64,linux/arm/v7,linux/arm64,linux/ppc64le,linux/s390x
     steps:
       - uses: actions/checkout@v6
       - uses: gacts/github-slug@v1
@@ -81,27 +182,156 @@ jobs:
       - uses: docker/setup-qemu-action@v4
       - uses: docker/setup-buildx-action@v4
       - uses: docker/login-action@v4
-        with:
-          username: ${{ secrets.DOCKER_LOGIN }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+        with: {username: tarampampam, password: '${{ secrets.DOCKER_PASSWORD }}'}
       - uses: docker/login-action@v4
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+        with: {registry: ghcr.io, username: '${{ github.actor }}', password: '${{ secrets.GITHUB_TOKEN }}'}
+      - uses: docker/login-action@v4
+        with: {registry: quay.io, username: '${{ secrets.QUAY_LOGIN }}', password: '${{ secrets.QUAY_PASSWORD }}'}
+      - id: server-tags
+        env:
+          EXACT: ${{ steps.slug.outputs.version-semantic }}
+          MINOR: ${{ steps.slug.outputs.version-major }}.${{ steps.slug.outputs.version-minor }}
+          MAJOR: ${{ steps.slug.outputs.version-major }}
+        # TODO: add following tags after merging the PR
+        # echo "$GHCR_IMAGE:latest" >> "$GITHUB_OUTPUT"
+        # echo "$GHCR_IMAGE:$MINOR" >> "$GITHUB_OUTPUT"
+        # echo "$GHCR_IMAGE:$MAJOR" >> "$GITHUB_OUTPUT"
+        # echo "$QUAY_IMAGE:latest" >> "$GITHUB_OUTPUT"
+        # echo "$QUAY_IMAGE:$MINOR" >> "$GITHUB_OUTPUT"
+        # echo "$QUAY_IMAGE:$MAJOR" >> "$GITHUB_OUTPUT"
+        # echo "$HUB_IMAGE:latest" >> "$GITHUB_OUTPUT"
+        # echo "$HUB_IMAGE:$MINOR" >> "$GITHUB_OUTPUT"
+        # echo "$HUB_IMAGE:$MAJOR" >> "$GITHUB_OUTPUT"
+        run: |
+          echo 'list<<EOF' >> "$GITHUB_OUTPUT"
+          echo "$GHCR_IMAGE:$EXACT" >> "$GITHUB_OUTPUT"
+          echo "$QUAY_IMAGE:$EXACT" >> "$GITHUB_OUTPUT"
+          echo "$HUB_IMAGE:$EXACT" >> "$GITHUB_OUTPUT"
+          echo 'EOF' >> "$GITHUB_OUTPUT"
+      - id: builder-tags
+        env:
+          EXACT: ${{ steps.slug.outputs.version-semantic }}
+          MINOR: ${{ steps.slug.outputs.version-major }}.${{ steps.slug.outputs.version-minor }}
+          MAJOR: ${{ steps.slug.outputs.version-major }}
+        # TODO: add following tags after merging the PR: latest, latest-builder
+        # echo "$GHCR_IMAGE:latest-builder" >> "$GITHUB_OUTPUT"
+        # echo "$GHCR_IMAGE:$MINOR-builder" >> "$GITHUB_OUTPUT"
+        # echo "$GHCR_IMAGE:$MAJOR-builder" >> "$GITHUB_OUTPUT"
+        # echo "$QUAY_IMAGE:latest-builder" >> "$GITHUB_OUTPUT"
+        # echo "$QUAY_IMAGE:$MINOR-builder" >> "$GITHUB_OUTPUT"
+        # echo "$QUAY_IMAGE:$MAJOR-builder" >> "$GITHUB_OUTPUT"
+        # echo "$HUB_IMAGE:latest-builder" >> "$GITHUB_OUTPUT"
+        # echo "$HUB_IMAGE:$MINOR-builder" >> "$GITHUB_OUTPUT"
+        # echo "$HUB_IMAGE:$MAJOR-builder" >> "$GITHUB_OUTPUT"
+        run: |
+          echo 'list<<EOF' >> "$GITHUB_OUTPUT"
+          echo "$GHCR_IMAGE:$EXACT-builder" >> "$GITHUB_OUTPUT"
+          echo "$QUAY_IMAGE:$EXACT-builder" >> "$GITHUB_OUTPUT"
+          echo "$HUB_IMAGE:$EXACT-builder" >> "$GITHUB_OUTPUT"
+          echo 'EOF' >> "$GITHUB_OUTPUT"
       - uses: docker/build-push-action@v7
+        id: push-server
         with:
           context: .
           file: Dockerfile
           push: true
-          platforms: linux/amd64,linux/arm/v7,linux/arm64/v8
-          build-args: "APP_VERSION=${{ steps.slug.outputs.version }}"
-          tags: |
-            tarampampam/error-pages:latest
-            tarampampam/error-pages:${{ steps.slug.outputs.version }}
-            tarampampam/error-pages:${{ steps.slug.outputs.version-major }}.${{ steps.slug.outputs.version-minor }}
-            tarampampam/error-pages:${{ steps.slug.outputs.version-major }}
-            ghcr.io/${{ github.actor }}/${{ github.event.repository.name }}:latest
-            ghcr.io/${{ github.actor }}/${{ github.event.repository.name }}:${{ steps.slug.outputs.version }}
-            ghcr.io/${{ github.actor }}/${{ github.event.repository.name }}:${{ steps.slug.outputs.version-major }}.${{ steps.slug.outputs.version-minor }}
-            ghcr.io/${{ github.actor }}/${{ github.event.repository.name }}:${{ steps.slug.outputs.version-major }}
+          platforms: ${{ env.TARGET_PLATFORMS }}
+          build-args: "APP_VERSION=${{ steps.slug.outputs.version-semantic }}"
+          target: server
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          tags: ${{ steps.server-tags.outputs.list }}
+      - uses: docker/build-push-action@v7
+        id: push-builder
+        with:
+          context: .
+          file: Dockerfile
+          push: true
+          platforms: ${{ env.TARGET_PLATFORMS }}
+          build-args: "APP_VERSION=${{ steps.slug.outputs.version-semantic }}"
+          target: builder
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          tags: ${{ steps.builder-tags.outputs.list }}
+      - uses: sigstore/cosign-installer@v4.1.1
+      - run: |
+          cosign sign --yes \
+            "${{ env.HUB_IMAGE }}@${{ steps.push-server.outputs.digest }}" \
+            "${{ env.GHCR_IMAGE }}@${{ steps.push-server.outputs.digest }}" \
+            "${{ env.QUAY_IMAGE }}@${{ steps.push-server.outputs.digest }}"
+          cosign sign --yes \
+            "${{ env.HUB_IMAGE }}@${{ steps.push-builder.outputs.digest }}" \
+            "${{ env.GHCR_IMAGE }}@${{ steps.push-builder.outputs.digest }}" \
+            "${{ env.QUAY_IMAGE }}@${{ steps.push-builder.outputs.digest }}"
+
+  publish-helm-chart:
+    name: Publish the Helm chart to OCI registry
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
+      id-token: write # required for keyless cosign signing via GitHub OIDC
+    defaults: {run: {working-directory: ./deploy/helm}}
+    needs: [build-helm-chart, build-docker-image]
+    steps:
+      - uses: actions/checkout@v6
+      - uses: azure/setup-helm@v5
+      - uses: gacts/github-slug@v1
+        id: slug
+      - uses: oras-project/setup-oras@v2
+      - uses: actions/download-artifact@v8
+        with:
+          name: helm-chart
+          path: deploy/helm
+      - id: push-chart
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | helm registry login ghcr.io \
+            --username "${{ github.actor }}" \
+            --password-stdin
+          echo "${{ secrets.GITHUB_TOKEN }}" | oras login ghcr.io \
+            --username "${{ github.actor }}" \
+            --password-stdin
+          helm push \
+            "helm-chart.tgz" \
+            oci://ghcr.io/tarampampam/error-pages/charts
+          DIGEST=$(oras resolve \
+            "ghcr.io/tarampampam/error-pages/charts/error-pages:${{ steps.slug.outputs.version-semantic }}")
+          echo "digest=${DIGEST}" >> "$GITHUB_OUTPUT"
+      - uses: sigstore/cosign-installer@v4.1.1
+      - run: |
+          cosign sign --yes \
+            "ghcr.io/tarampampam/error-pages/charts/error-pages@${{ steps.push-chart.outputs.digest }}"
+      - run: |
+          oras push \
+            --config /dev/null:application/vnd.cncf.artifacthub.repository-metadata.layer.v1.yaml \
+            ghcr.io/tarampampam/error-pages/charts/error-pages:artifacthub.io \
+            artifacthub-repo.yml:application/vnd.cncf.artifacthub.repository-metadata.layer.v1.yaml
+
+  update-release-note:
+    name: Update release note
+    runs-on: ubuntu-latest
+    needs: [build-docker-image, publish-helm-chart]
+    steps:
+      - uses: actions/checkout@v6
+      - uses: gacts/github-slug@v1
+        id: slug
+      - uses: gacts/add-to-release-notes@v1
+        with:
+          skip-if-contains: '## 🐋 Docker images'
+          append: |
+            ## 🐋 Docker images
+
+            ```cpp
+            // server
+            ${{ needs.build-docker-image.outputs.server-tags }}
+
+            // builder
+            ${{ needs.build-docker-image.outputs.builder-tags }}
+            ```
+
+            ## 📦 Helm chart
+
+            ```bash
+            helm install error-pages oci://ghcr.io/tarampampam/error-pages/charts/error-pages \
+              --version ${{ steps.slug.outputs.version-semantic }}
+            ```

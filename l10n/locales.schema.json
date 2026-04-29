@@ -1,0 +1,370 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "locales.schema.json",
+  "title": "Locales",
+  "description": "Client-side l10n translations for error pages. Keys are English source strings",
+  "type": "object",
+  "definitions": {
+    "localeMap": {
+      "type": "object",
+      "description": "Map of BCP47 locale codes to translated strings",
+      "propertyNames": {
+        "anyOf": [
+          {
+            "enum": [
+              "aa",
+              "ab",
+              "ae",
+              "af",
+              "ak",
+              "am",
+              "an",
+              "ar",
+              "as",
+              "av",
+              "ay",
+              "az",
+              "ba",
+              "be",
+              "bg",
+              "bi",
+              "bm",
+              "bn",
+              "bo",
+              "br",
+              "bs",
+              "ca",
+              "ce",
+              "ch",
+              "co",
+              "cr",
+              "cs",
+              "cu",
+              "cv",
+              "cy",
+              "da",
+              "de",
+              "dv",
+              "dz",
+              "ee",
+              "el",
+              "en",
+              "eo",
+              "es",
+              "et",
+              "eu",
+              "fa",
+              "ff",
+              "fi",
+              "fj",
+              "fo",
+              "fr",
+              "fy",
+              "ga",
+              "gd",
+              "gl",
+              "gn",
+              "gu",
+              "gv",
+              "ha",
+              "he",
+              "hi",
+              "ho",
+              "hr",
+              "ht",
+              "hu",
+              "hy",
+              "hz",
+              "ia",
+              "id",
+              "ie",
+              "ig",
+              "ii",
+              "ik",
+              "io",
+              "is",
+              "it",
+              "iu",
+              "ja",
+              "jv",
+              "ka",
+              "kg",
+              "ki",
+              "kj",
+              "kk",
+              "kl",
+              "km",
+              "kn",
+              "ko",
+              "kr",
+              "ks",
+              "ku",
+              "kv",
+              "kw",
+              "ky",
+              "la",
+              "lb",
+              "lg",
+              "li",
+              "ln",
+              "lo",
+              "lt",
+              "lu",
+              "lv",
+              "mg",
+              "mh",
+              "mi",
+              "mk",
+              "ml",
+              "mn",
+              "mr",
+              "ms",
+              "mt",
+              "my",
+              "na",
+              "nb",
+              "nd",
+              "ne",
+              "ng",
+              "nl",
+              "nn",
+              "no",
+              "nr",
+              "nv",
+              "ny",
+              "oc",
+              "oj",
+              "om",
+              "or",
+              "os",
+              "pa",
+              "pi",
+              "pl",
+              "ps",
+              "pt",
+              "qu",
+              "rm",
+              "rn",
+              "ro",
+              "ru",
+              "rw",
+              "sa",
+              "sc",
+              "sd",
+              "se",
+              "sg",
+              "si",
+              "sk",
+              "sl",
+              "sm",
+              "sn",
+              "so",
+              "sq",
+              "sr",
+              "ss",
+              "st",
+              "su",
+              "sv",
+              "sw",
+              "ta",
+              "te",
+              "tg",
+              "th",
+              "ti",
+              "tk",
+              "tl",
+              "tn",
+              "to",
+              "tr",
+              "ts",
+              "tt",
+              "tw",
+              "ty",
+              "ug",
+              "uk",
+              "ur",
+              "uz",
+              "ve",
+              "vi",
+              "vo",
+              "wa",
+              "wo",
+              "xh",
+              "yi",
+              "yo",
+              "za",
+              "zh",
+              "zu"
+            ]
+          },
+          {
+            "pattern": "^[a-z]{2,3}(-[A-Za-z0-9]{2,8})*$"
+          }
+        ]
+      },
+      "additionalProperties": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minProperties": 1
+    }
+  },
+  "patternProperties": {
+    "^\\$": {
+      "type": "string"
+    },
+    "^[^$]": {
+      "$ref": "#/definitions/localeMap"
+    }
+  },
+  "properties": {
+    "Bad Request": {
+      "$ref": "#/definitions/localeMap"
+    },
+    "The server did not understand the request": {
+      "$ref": "#/definitions/localeMap"
+    },
+    "Unauthorized": {
+      "$ref": "#/definitions/localeMap"
+    },
+    "The requested page needs a username and a password": {
+      "$ref": "#/definitions/localeMap"
+    },
+    "Forbidden": {
+      "$ref": "#/definitions/localeMap"
+    },
+    "Access is forbidden to the requested page": {
+      "$ref": "#/definitions/localeMap"
+    },
+    "Not Found": {
+      "$ref": "#/definitions/localeMap"
+    },
+    "The server can not find the requested page": {
+      "$ref": "#/definitions/localeMap"
+    },
+    "Method Not Allowed": {
+      "$ref": "#/definitions/localeMap"
+    },
+    "The method specified in the request is not allowed": {
+      "$ref": "#/definitions/localeMap"
+    },
+    "Proxy Authentication Required": {
+      "$ref": "#/definitions/localeMap"
+    },
+    "You must authenticate with a proxy server before this request can be served": {
+      "$ref": "#/definitions/localeMap"
+    },
+    "Request Timeout": {
+      "$ref": "#/definitions/localeMap"
+    },
+    "The request took longer than the server was prepared to wait": {
+      "$ref": "#/definitions/localeMap"
+    },
+    "Conflict": {
+      "$ref": "#/definitions/localeMap"
+    },
+    "The request could not be completed because of a conflict": {
+      "$ref": "#/definitions/localeMap"
+    },
+    "Gone": {
+      "$ref": "#/definitions/localeMap"
+    },
+    "The requested page is no longer available": {
+      "$ref": "#/definitions/localeMap"
+    },
+    "Length Required": {
+      "$ref": "#/definitions/localeMap"
+    },
+    "The \"Content-Length\" is not defined. The server will not accept the request without it": {
+      "$ref": "#/definitions/localeMap"
+    },
+    "Precondition Failed": {
+      "$ref": "#/definitions/localeMap"
+    },
+    "The pre condition given in the request evaluated to false by the server": {
+      "$ref": "#/definitions/localeMap"
+    },
+    "Payload Too Large": {
+      "$ref": "#/definitions/localeMap"
+    },
+    "The server will not accept the request, because the request entity is too large": {
+      "$ref": "#/definitions/localeMap"
+    },
+    "Requested Range Not Satisfiable": {
+      "$ref": "#/definitions/localeMap"
+    },
+    "The requested byte range is not available and is out of bounds": {
+      "$ref": "#/definitions/localeMap"
+    },
+    "I'm a teapot": {
+      "$ref": "#/definitions/localeMap"
+    },
+    "Attempt to brew coffee with a teapot is not supported": {
+      "$ref": "#/definitions/localeMap"
+    },
+    "Too Many Requests": {
+      "$ref": "#/definitions/localeMap"
+    },
+    "Too many requests in a given amount of time": {
+      "$ref": "#/definitions/localeMap"
+    },
+    "Internal Server Error": {
+      "$ref": "#/definitions/localeMap"
+    },
+    "The server met an unexpected condition": {
+      "$ref": "#/definitions/localeMap"
+    },
+    "Bad Gateway": {
+      "$ref": "#/definitions/localeMap"
+    },
+    "The server received an invalid response from the upstream server": {
+      "$ref": "#/definitions/localeMap"
+    },
+    "Service Unavailable": {
+      "$ref": "#/definitions/localeMap"
+    },
+    "The server is temporarily overloading or down": {
+      "$ref": "#/definitions/localeMap"
+    },
+    "Gateway Timeout": {
+      "$ref": "#/definitions/localeMap"
+    },
+    "The gateway has timed out": {
+      "$ref": "#/definitions/localeMap"
+    },
+    "HTTP Version Not Supported": {
+      "$ref": "#/definitions/localeMap"
+    },
+    "The server does not support the \"http protocol\" version": {
+      "$ref": "#/definitions/localeMap"
+    },
+    "Host": {
+      "$ref": "#/definitions/localeMap"
+    },
+    "Original URI": {
+      "$ref": "#/definitions/localeMap"
+    },
+    "Forwarded for": {
+      "$ref": "#/definitions/localeMap"
+    },
+    "Namespace": {
+      "$ref": "#/definitions/localeMap"
+    },
+    "Ingress name": {
+      "$ref": "#/definitions/localeMap"
+    },
+    "Service name": {
+      "$ref": "#/definitions/localeMap"
+    },
+    "Service port": {
+      "$ref": "#/definitions/localeMap"
+    },
+    "Request ID": {
+      "$ref": "#/definitions/localeMap"
+    },
+    "Timestamp": {
+      "$ref": "#/definitions/localeMap"
+    }
+  },
+  "additionalProperties": true
+}

@@ -1,228 +1,168 @@
 package shared_test
 
 import (
-	"fmt"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
-
-	"gh.tarampamp.am/error-pages/internal/cli/shared"
-	"gh.tarampamp.am/error-pages/internal/config"
+	"gh.tarampamp.am/error-pages/v4/internal/cli/shared"
+	"gh.tarampamp.am/error-pages/v4/internal/codes"
+	"gh.tarampamp.am/error-pages/v4/internal/testutil/assert"
 )
 
-func TestListenAddrFlag(t *testing.T) {
+func TestNewDisableBuiltInCodesFlag(t *testing.T) {
 	t.Parallel()
 
-	var flag = shared.ListenAddrFlag
+	f := shared.NewDisableBuiltInCodesFlag()
 
-	assert.Equal(t, "listen", flag.Name)
-	assert.Equal(t, "0.0.0.0", flag.Value)
-	assert.Contains(t, flag.Sources.String(), "LISTEN_ADDR")
-
-	for giveValue, wantErrMsg := range map[string]string{
-		flag.Value: "", // default value
-
-		// ipv4
-		"0.0.0.0":         "",
-		"127.0.0.1":       "",
-		"255.255.255.255": "",
-
-		// ipv6
-		"::":  "",
-		"::1": "",
-		"2001:0db8:85a3:0000:0000:8a2e:0370:7334": "",
-		"2001:db8:85a3:0:0:8a2e:370:7334":         "",
-		"2001:db8:85a3::8a2e:370:7334":            "",
-		"2001:db8::8a2e:370:7334":                 "",
-		"2001:db8::7334":                          "",
-		"2001:db8::":                              "",
-		"2001:db8:0:0:1::1":                       "",
-		"2001:db8:0:0:1::":                        "",
-
-		// invalid
-		"":                "missing IP address",
-		"255.255.255.256": "wrong IP address [255.255.255.256] for listening",
-		"example.com":     "wrong IP address [example.com] for listening",
-		"123.123.abc.123": "wrong IP address [123.123.abc.123] for listening",
-		"foo:123:321":     "wrong IP address [foo:123:321] for listening",
-		"2001:db8:0:0:1:": "wrong IP address [2001:db8:0:0:1:] for listening",
-	} {
-		t.Run(fmt.Sprintf("%s: %s", giveValue, wantErrMsg), func(t *testing.T) {
-			if err := flag.Validator(giveValue); wantErrMsg != "" {
-				assert.ErrorContains(t, err, wantErrMsg)
-			} else {
-				assert.NoError(t, err)
-			}
-		})
-	}
+	assert.Equal(t, 1, len(f.Names))
+	assert.Equal(t, "disable-built-in-codes", f.Names[0])
+	assert.Equal(t, 1, len(f.EnvVars))
+	assert.Equal(t, "DISABLE_BUILT_IN_CODES", f.EnvVars[0])
+	assert.Equal(t, false, f.Default)
 }
 
-func TestListenPortFlag(t *testing.T) {
+func TestNewAddHTTPCodesFlag(t *testing.T) {
 	t.Parallel()
 
-	var flag = shared.ListenPortFlag
+	f := shared.NewAddHTTPCodesFlag()
 
-	assert.Equal(t, "port", flag.Name)
-	assert.Equal(t, uint(8080), flag.Value)
-	assert.Contains(t, flag.Sources.String(), "LISTEN_PORT")
+	assert.Equal(t, 1, len(f.Names))
+	assert.Equal(t, "add-code", f.Names[0])
+	assert.Equal(t, 1, len(f.EnvVars))
+	assert.Equal(t, "ADD_CODE", f.EnvVars[0])
+	assert.True(t, f.Validator != nil)
 
-	for giveValue, wantErrMsg := range map[uint]string{
-		flag.Value: "", // default value
-		1:          "",
-		8080:       "",
-		65535:      "",
-
-		0:     "wrong TCP port number [0]",
-		65536: "wrong TCP port number [65536]",
-	} {
-		t.Run(fmt.Sprintf("%d: %s", giveValue, wantErrMsg), func(t *testing.T) {
-			if err := flag.Validator(giveValue); wantErrMsg != "" {
-				assert.ErrorContains(t, err, wantErrMsg)
-			} else {
-				assert.NoError(t, err)
-			}
-		})
-	}
+	assert.NoError(t, f.Validator(nil, "404=Not Found"))
+	assert.Error(t, f.Validator(nil, "bad-entry"))
 }
 
-func TestAddTemplatesFlag(t *testing.T) {
+func TestNewDisableL10nFlag(t *testing.T) {
 	t.Parallel()
 
-	var flag = shared.AddTemplatesFlag
+	f := shared.NewDisableL10nFlag()
 
-	assert.Equal(t, "add-template", flag.Name)
-	assert.Contains(t, flag.Sources.String(), "ADD_TEMPLATE")
-
-	for wantErrMsg, giveValue := range map[string][]string{
-		"missing template path":     {""},
-		"wrong template path [.]":   {".", "./"},
-		"wrong template path [..]":  {"..", "../"},
-		"wrong template path [foo]": {"foo"},
-		"":                          {"./flags.go"},
-	} {
-		t.Run(fmt.Sprintf("%s: %s", giveValue, wantErrMsg), func(t *testing.T) {
-			if err := flag.Validator(giveValue); wantErrMsg != "" {
-				assert.ErrorContains(t, err, wantErrMsg)
-			} else {
-				assert.NoError(t, err)
-			}
-		})
-	}
+	assert.Equal(t, 1, len(f.Names))
+	assert.Equal(t, "disable-l10n", f.Names[0])
+	assert.Equal(t, 1, len(f.EnvVars))
+	assert.Equal(t, "DISABLE_L10N", f.EnvVars[0])
+	assert.Equal(t, false, f.Default)
 }
 
-func TestDisableTemplateNamesFlag(t *testing.T) {
+func TestParseAddHTTPCodes(t *testing.T) {
 	t.Parallel()
-
-	var flag = shared.DisableTemplateNamesFlag
-
-	assert.Equal(t, "disable-template", flag.Name)
-}
-
-func TestAddHTTPCodesFlag(t *testing.T) {
-	t.Parallel()
-
-	var flag = shared.AddHTTPCodesFlag
-
-	assert.Equal(t, "add-code", flag.Name)
 
 	for name, tt := range map[string]struct {
-		giveValue  map[string]string
-		wantErrMsg string
+		give     string
+		want     map[string]codes.Description
+		checkErr func(*testing.T, error)
 	}{
-		"common": {
-			giveValue: map[string]string{
-				"200": "foo/bar",
-				"404": "foo",
-				"2**": "baz",
+		"empty string": {
+			give: "",
+			want: map[string]codes.Description{},
+		},
+		"single entry/message only": {
+			give: "404=Not Found",
+			want: map[string]codes.Description{"404": {Short: "Not Found"}},
+		},
+		"single entry/message and description": {
+			give: "500=Internal Server Error|Something went wrong on the server",
+			want: map[string]codes.Description{
+				"500": {Short: "Internal Server Error", Full: "Something went wrong on the server"},
 			},
 		},
-
-		"missing HTTP code": {
-			giveValue:  map[string]string{"": "foo/bar"},
-			wantErrMsg: "missing HTTP code",
+		"multiple entries/double pipe separator": {
+			give: "404=Not Found||500=Internal Server Error",
+			want: map[string]codes.Description{
+				"404": {Short: "Not Found"},
+				"500": {Short: "Internal Server Error"},
+			},
 		},
-		"wrong HTTP code [6]": {
-			giveValue:  map[string]string{"6": "foo"},
-			wantErrMsg: "wrong HTTP code [6]: it should be 3 characters long",
+		"multiple entries/newline separator": {
+			give: "404=Not Found\n500=Internal Server Error",
+			want: map[string]codes.Description{
+				"404": {Short: "Not Found"},
+				"500": {Short: "Internal Server Error"},
+			},
 		},
-		"wrong HTTP code [66]": {
-			giveValue:  map[string]string{"66": "foo"},
-			wantErrMsg: "wrong HTTP code [66]: it should be 3 characters long",
+		"multiple entries/tab separator": {
+			give: "404=Not Found\t500=Internal Server Error",
+			want: map[string]codes.Description{
+				"404": {Short: "Not Found"},
+				"500": {Short: "Internal Server Error"},
+			},
 		},
-		"wrong HTTP code [1000]": {
-			giveValue:  map[string]string{"1000": "foo"},
-			wantErrMsg: "wrong HTTP code [1000]: it should be 3 characters long",
+		"empty entries in the middle are skipped": {
+			give: "404=Not Found||||500=Internal Server Error",
+			want: map[string]codes.Description{
+				"404": {Short: "Not Found"},
+				"500": {Short: "Internal Server Error"},
+			},
 		},
-		"missing message and description": {
-			giveValue:  map[string]string{"200": "//"},
-			wantErrMsg: "wrong message/description format for HTTP code [200]: //",
+		"whitespace trimmed around code and message": {
+			give: "  404  =  Not Found  ",
+			want: map[string]codes.Description{"404": {Short: "Not Found"}},
 		},
-		"missing message": {
-			giveValue:  map[string]string{"200": "/bar"},
-			wantErrMsg: "missing message for HTTP code [200]",
+		"whitespace trimmed around description": {
+			give: "404=Not Found|  The page was not found  ",
+			want: map[string]codes.Description{"404": {Short: "Not Found", Full: "The page was not found"}},
+		},
+		"wildcard/star": {
+			give: "4**=Client Error",
+			want: map[string]codes.Description{"4**": {Short: "Client Error"}},
+		},
+		"wildcard/lowercase x": {
+			give: "4xx=Client Error",
+			want: map[string]codes.Description{"4xx": {Short: "Client Error"}},
+		},
+		"wildcard/uppercase X": {
+			give: "4XX=Client Error",
+			want: map[string]codes.Description{"4XX": {Short: "Client Error"}},
+		},
+		"override same code": {
+			give: "404=First||404=Second",
+			want: map[string]codes.Description{"404": {Short: "Second"}},
+		},
+		"missing equals sign": {
+			give:     "404NotFound",
+			checkErr: func(t *testing.T, err error) { assert.ErrorContains(t, err, "missing '='") },
+		},
+		"empty code": {
+			give:     "=Not Found",
+			checkErr: func(t *testing.T, err error) { assert.ErrorContains(t, err, "missing HTTP code") },
+		},
+		"code too short": {
+			give:     "40=Not Found",
+			checkErr: func(t *testing.T, err error) { assert.ErrorContains(t, err, "must be 3 characters long") },
+		},
+		"code too long": {
+			give:     "4044=Not Found",
+			checkErr: func(t *testing.T, err error) { assert.ErrorContains(t, err, "must be 3 characters long") },
+		},
+		"invalid character in code": {
+			give: "40a=Not Found",
+			checkErr: func(t *testing.T, err error) {
+				assert.ErrorContains(t, err, "allowed characters are digits and wildcards")
+			},
+		},
+		"empty message": {
+			give:     "404=",
+			checkErr: func(t *testing.T, err error) { assert.ErrorContains(t, err, "missing message") },
+		},
+		"whitespace-only message": {
+			give:     "404=   ",
+			checkErr: func(t *testing.T, err error) { assert.ErrorContains(t, err, "missing message") },
 		},
 	} {
 		t.Run(name, func(t *testing.T) {
-			if err := flag.Validator(tt.giveValue); tt.wantErrMsg != "" {
-				assert.ErrorContains(t, err, tt.wantErrMsg)
+			t.Parallel()
+
+			got, err := shared.ParseAddHTTPCodes(tt.give)
+
+			if tt.checkErr != nil {
+				tt.checkErr(t, err)
 			} else {
 				assert.NoError(t, err)
+				assert.DeepEqual(t, tt.want, got)
 			}
 		})
 	}
-}
-
-func TestParseHTTPCodes(t *testing.T) {
-	t.Parallel()
-
-	assert.Equal(t, shared.ParseHTTPCodes(nil), map[string]config.CodeDescription{})
-
-	assert.Equal(t,
-		shared.ParseHTTPCodes(map[string]string{"200": "msg"}),
-		map[string]config.CodeDescription{"200": {Message: "msg", Description: ""}},
-	)
-
-	assert.Equal(t,
-		shared.ParseHTTPCodes(map[string]string{"200": "/aaa"}),
-		map[string]config.CodeDescription{"200": {Message: "", Description: "aaa"}},
-	)
-
-	assert.Equal(t, // not sure here
-		shared.ParseHTTPCodes(map[string]string{"aa": "////aaa"}),
-		map[string]config.CodeDescription{"aa": {Message: "", Description: "///aaa"}},
-	)
-
-	assert.Equal(t,
-		shared.ParseHTTPCodes(map[string]string{"200": "msg/desc"}),
-		map[string]config.CodeDescription{"200": {Message: "msg", Description: "desc"}},
-	)
-
-	assert.Equal(t,
-		shared.ParseHTTPCodes(map[string]string{
-			"200": "msg/desc",
-			"foo": "Word word/Desc desc // adsadas",
-		}),
-		map[string]config.CodeDescription{
-			"200": {Message: "msg", Description: "desc"},
-			"foo": {Message: "Word word", Description: "Desc desc // adsadas"},
-		},
-	)
-}
-
-func TestDisableL10nFlag(t *testing.T) {
-	t.Parallel()
-
-	var flag = shared.DisableL10nFlag
-
-	assert.Equal(t, "disable-l10n", flag.Name)
-	assert.Contains(t, flag.Sources.String(), "DISABLE_L10N")
-}
-
-func TestDisableMinificationFlag(t *testing.T) {
-	t.Parallel()
-
-	var flag = shared.DisableMinificationFlag
-
-	assert.Equal(t, "disable-minification", flag.Name)
-	assert.Contains(t, flag.Sources.String(), "DISABLE_MINIFICATION")
 }

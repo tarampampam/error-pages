@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="robots" content="nofollow,noarchive,noindex">
+  <title>{{ .StatusCode }} - {{ .Message }}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- {{ if or (eq .StatusCode 408) (eq .StatusCode 425) (eq .StatusCode 429) (eq .StatusCode 500) (eq .StatusCode 502) (eq .StatusCode 503) (eq .StatusCode 504) }} -->
+  <meta http-equiv="refresh" content="30">
+  <!-- {{ end }} -->
+  <meta name="title" content="{{ .StatusCode }}: {{ .Message | escape }}">
+  <meta name="description" content="{{ .Description | escape }}">
+  <meta property="og:title" content="{{ .StatusCode }}: {{ .Message | escape }}">
+  <meta property="og:description" content="{{ .Description | escape }}">
+  <meta property="twitter:title" content="{{ .StatusCode }}: {{ .Message | escape }}">
+  <meta property="twitter:description" content="{{ .Description | escape }}">
+  <style>
+    :root {
+      --color-primary: #eee;
+      --color-inverted: #222;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --color-primary: #222;
+        --color-inverted: #aaa;
+      }
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      min-height: 100%;
+      height: 100%;
+      width: 100%;
+      background-color: var(--color-primary);
+      color: var(--color-inverted);
+      font-family: monospace;
+      font-size: 16px;
+      word-break: keep-all;
+    }
+
+    @media screen and (min-width: 2000px) {
+      html, body {
+        font-size: 20px;
+      }
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    main {
+      display: flex;
+    }
+
+    article {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
+
+    article #error_text h1 {
+      font-size: 2em;
+      font-weight: normal;
+      padding: 0;
+      margin: 0;
+    }
+
+    /* {{ if .Config.ShowRequestDetails }} */
+    #details {
+      table-layout: fixed;
+      width: 100%;
+      opacity: .75;
+      margin-top: 1em;
+    }
+
+    #details td {
+      white-space: nowrap;
+      font-size: 0.7em;
+      transition: opacity 1.4s, font-size .3s;
+    }
+
+    #details.hidden td {
+      opacity: 0;
+      font-size: 0;
+    }
+
+    #details .name,
+    #details .value {
+      width: 50%;
+    }
+
+    #details .name::first-letter,
+    #details .value::first-letter {
+      font-weight: bold;
+    }
+
+    #details .name {
+      text-align: right;
+      padding-right: .2em;
+      width: 50%;
+    }
+
+    #details .value {
+      text-align: left;
+      padding-left: .4em;
+      font-family: monospace;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    /* {{ end }} */
+  </style>
+</head>
+<body>
+<main>
+  <article>
+    <div id="error_text">
+      <h1 class="source">{{ .StatusCode }}: <span data-l10n>{{ .Message }}</span></h1>
+      <h1 class="target"></h1>
+    </div>
+
+    <!-- {{- if .Config.ShowRequestDetails -}} -->
+    <table id="details" class="hidden">
+      <!-- {{- if .Host -}} -->
+      <tr>
+        <td class="name"><span data-l10n>Host</span>:</td>
+        <td class="value">{{ .Host }}</td>
+      </tr>
+      <!-- {{- end }}{{ if .OriginalURI -}} -->
+      <tr>
+        <td class="name"><span data-l10n>Original URI</span>:</td>
+        <td class="value">{{ .OriginalURI }}</td>
+      </tr>
+      <!-- {{- end }}{{ if .ForwardedFor -}} -->
+      <tr>
+        <td class="name"><span data-l10n>Forwarded for</span>:</td>
+        <td class="value">{{ .ForwardedFor }}</td>
+      </tr>
+      <!-- {{- end }}{{ if .Namespace -}} -->
+      <tr>
+        <td class="name"><span data-l10n>Namespace</span>:</td>
+        <td class="value">{{ .Namespace }}</td>
+      </tr>
+      <!-- {{- end }}{{ if .IngressName -}} -->
+      <tr>
+        <td class="name"><span data-l10n>Ingress name</span>:</td>
+        <td class="value">{{ .IngressName }}</td>
+      </tr>
+      <!-- {{- end }}{{ if .ServiceName -}} -->
+      <tr>
+        <td class="name"><span data-l10n>Service name</span>:</td>
+        <td class="value">{{ .ServiceName }}</td>
+      </tr>
+      <!-- {{- end }}{{ if .ServicePort -}} -->
+      <tr>
+        <td class="name"><span data-l10n>Service port</span>:</td>
+        <td class="value">{{ .ServicePort }}</td>
+      </tr>
+      <!-- {{- end }}{{ if .RequestID -}} -->
+      <tr>
+        <td class="name"><span data-l10n>Request ID</span>:</td>
+        <td class="value">{{ .RequestID }}</td>
+      </tr>
+      <!-- {{- end -}} -->
+      <tr>
+        <td class="name"><span data-l10n>Timestamp</span>:</td>
+        <td class="value">{{ now.Unix }}</td>
+      </tr>
+    </table>
+    <!-- {{- end -}} -->
+  </article>
+</main>
+
+<script>
+  'use strict';
+
+  /**
+   * @param {HTMLElement} $el
+   */
+  const Shuffle = function ($el) {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890-=+<>,./?[{()}]!@#$%^&*~`\|'.split('');
+    const $source = $el.querySelector('.source');
+    const $target = $el.querySelector('.target');
+
+    let cursor = 0;
+    /** @type {Number|undefined} */
+    let scrambleInterval;
+    /** @type {Number|undefined} */
+    let cursorDelayInterval;
+    /** @type {Number|undefined} */
+    let cursorInterval;
+
+    /**
+     * @param {Number} len
+     * @return {string}
+     */
+    const getRandomizedString = function (len) {
+      let s = '';
+
+      for (let i = 0; i < len; i++) {
+        s += chars[Math.floor(Math.random() * chars.length)];
+      }
+
+      return s;
+    };
+
+    this.start = function () {
+      $source.style.display = 'none';
+      $target.style.display = 'block';
+
+      scrambleInterval = window.setInterval(() => {
+        if (cursor <= $source.innerText.length) {
+          $target.innerText = $source.innerText.substring(0, cursor) + getRandomizedString($source.innerText.length - cursor);
+        }
+      }, 450 / 30);
+
+      cursorDelayInterval = window.setTimeout(() => {
+        cursorInterval = window.setInterval(() => {
+          if (cursor > $source.innerText.length - 1) {
+            this.stop();
+          }
+
+          cursor++;
+        }, 70);
+      }, 350);
+    };
+
+    this.stop = function () {
+      $source.style.display = 'block';
+      $target.style.display = 'none';
+      $target.innerText = '';
+      cursor = 0;
+
+      if (scrambleInterval !== undefined) {
+        window.clearInterval(scrambleInterval);
+        scrambleInterval = undefined;
+      }
+
+      if (cursorInterval !== undefined) {
+        window.clearInterval(cursorInterval);
+        cursorInterval = undefined;
+      }
+
+      if (cursorDelayInterval !== undefined) {
+        window.clearInterval(cursorDelayInterval);
+        cursorDelayInterval = undefined;
+      }
+    };
+  };
+
+  (new Shuffle(document.getElementById('error_text'))).start();
+
+  // {{ if .Config.ShowRequestDetails }}
+  window.setTimeout(function () {
+    document.getElementById('details').classList.remove('hidden');
+  }, 550);
+  // {{ end }}
+</script>
+
+<!-- {{- if (not .Config.L10nDisabled) -}} -->
+<script>// {{ l10nScript }}</script>
+<!-- {{- end -}} -->
+</body>
+</html>

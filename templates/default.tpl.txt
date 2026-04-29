@@ -1,0 +1,12 @@
+Error {{ .StatusCode }}: {{ .Message }}{{ if .Description }}
+{{ .Description }}{{ end }}{{ if .Config.ShowRequestDetails }}
+
+Host: {{ .Host }}
+Original URI: {{ .OriginalURI }}
+Forwarded For: {{ .ForwardedFor }}
+Namespace: {{ .Namespace }}
+Ingress Name: {{ .IngressName }}
+Service Name: {{ .ServiceName }}
+Service Port: {{ .ServicePort }}
+Request ID: {{ .RequestID }}
+Timestamp: {{ now.Unix }}{{ end }}

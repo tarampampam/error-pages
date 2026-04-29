@@ -1,235 +1,226 @@
 package logger_test
 
 import (
-	"bytes"
-	"strconv"
+	"regexp"
+	"strings"
 	"testing"
 	"time"
 
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
-
-	"gh.tarampamp.am/error-pages/internal/logger"
+	"gh.tarampamp.am/error-pages/v4/internal/logger"
+	"gh.tarampamp.am/error-pages/v4/internal/testutil/assert"
 )
 
-func TestNewErrors(t *testing.T) {
-	log, err := logger.New(logger.Level(127), logger.ConsoleFormat)
-	require.Nil(t, log)
-	require.EqualError(t, err, "unsupported logging level")
+var (
+	rTimestamp = regexp.MustCompile(`^\d{2}:\d{2}:\d{2}\.\d{3} `)
+	rJSONTs    = regexp.MustCompile(`"ts":[0-9.]+,`)
+)
 
-	log, err = logger.New(logger.WarnLevel, logger.Format(255))
-	require.Nil(t, log)
-	require.EqualError(t, err, "unsupported logging format")
+// withoutJSONTs strips the dynamic "ts" field from a JSON log line.
+func withoutJSONTs(s string) string { return rJSONTs.ReplaceAllString(s, "") }
+
+func newLog(t *testing.T, buf interface{ Write([]byte) (int, error) }, level logger.Level, format logger.Format) *logger.Logger {
+	t.Helper()
+
+	l, err := logger.New(level, format, logger.WithWriter(buf))
+	assert.NoError(t, err)
+
+	return l
 }
 
-func TestLogger_ConsoleFormat(t *testing.T) {
-	var (
-		buf         bytes.Buffer
-		log, logErr = logger.New(logger.DebugLevel, logger.ConsoleFormat, &buf)
+func TestNew_Errors(t *testing.T) {
+	t.Parallel()
 
-		now = time.Now()
-	)
+	_, err := logger.New(logger.Level(127), logger.ConsoleFormat)
+	assert.ErrorEqual(t, err, "unsupported logging level")
 
-	require.NoError(t, logErr)
-	assert.Equal(t, logger.DebugLevel, log.Level())
-
-	log.Debug("debug message",
-		logger.String("String", "value"),
-		logger.Strings("Strings", "foo", "bar", ""),
-		logger.Int64("Int64", 0),
-		logger.Int("Int", 1),
-		logger.Uint64("Uint64", 2),
-		logger.Float64("Float64", 3.14),
-		logger.Bool("Bool", true),
-		logger.Time("Time", now),
-		logger.Duration("Duration", time.Millisecond),
-	)
-
-	var output = buf.String()
-
-	assert.Contains(t, output, `time=`+now.Format("15:04:")) // match without seconds
-	assert.Contains(t, output, `level=debug`)
-	assert.Contains(t, output, `msg="debug message"`)
-	assert.Contains(t, output, "String=value")
-	assert.Contains(t, output, `Strings="[foo bar ]"`)
-	assert.Contains(t, output, "Int64=0")
-	assert.Contains(t, output, "Int=1")
-	assert.Contains(t, output, "Uint64=2")
-	assert.Contains(t, output, "Float64=3.14")
-	assert.Contains(t, output, "Bool=true")
-	assert.Contains(t, output, "Time="+now.Format("2006-01-02T15:04:05.000Z07:00"))
-	assert.Contains(t, output, "Duration=1ms")
+	_, err = logger.New(logger.WarnLevel, logger.Format(255))
+	assert.ErrorEqual(t, err, "unsupported logging format")
 }
 
-func TestLogger_JSONFormat(t *testing.T) {
-	var (
-		buf         bytes.Buffer
-		log, logErr = logger.New(logger.DebugLevel, logger.JSONFormat, &buf)
+func TestConsoleFormat(t *testing.T) {
+	t.Parallel()
 
-		now = time.Now()
-	)
+	attrTime := time.Date(2024, 1, 15, 10, 30, 45, 123000000, time.UTC)
 
-	require.NoError(t, logErr)
-	assert.Equal(t, logger.DebugLevel, log.Level())
+	t.Run("format", func(t *testing.T) {
+		t.Parallel()
 
-	log.Debug("debug message",
-		logger.String("String", "value"),
-		logger.Strings("Strings", "foo", "bar", ""),
-		logger.Int64("Int64", 0),
-		logger.Int("Int", 1),
-		logger.Uint64("Uint64", 2),
-		logger.Float64("Float64", 3.14),
-		logger.Bool("Bool", true),
-		logger.Time("Time", now),
-		logger.Duration("Duration", time.Millisecond),
-	)
+		var buf strings.Builder
 
-	var output = buf.String()
+		newLog(t, &buf, logger.DebugLevel, logger.ConsoleFormat).Debug("message",
+			logger.String("str", "value"),
+			logger.Int("n", 42),
+			logger.Bool("ok", true),
+			logger.Time("when", attrTime),
+			logger.Duration("dur", 500*time.Millisecond),
+		)
 
-	assert.Contains(t, output, `"ts":`+strconv.Itoa(int(now.Unix()))+".") // match without nanoseconds
-	assert.Contains(t, output, `"level":"debug"`)
-	assert.Contains(t, output, `"msg":"debug message"`)
-	assert.Contains(t, output, `"String":"value"`)
-	assert.Contains(t, output, `"Strings":["foo","bar",""]`)
-	assert.Contains(t, output, `"Int64":0`)
-	assert.Contains(t, output, `"Int":1`)
-	assert.Contains(t, output, `"Uint64":2`)
-	assert.Contains(t, output, `"Float64":3.14`)
-	assert.Contains(t, output, `"Bool":true`)
-	assert.Contains(t, output, `"Time":"`+now.Format("2006-01-02T15:04:05.000")) // omit nano seconds
-	assert.Contains(t, output, `"Duration":1000000`)
+		want := "DEBUG  message  str=value n=42 ok=true when=2024-01-15T10:30:45.123Z dur=500ms\n"
+
+		assert.Equal(t, want, withoutTimestamps(t, buf.String()))
+	})
+
+	t.Run("string quoting", func(t *testing.T) {
+		t.Parallel()
+
+		var buf strings.Builder
+
+		newLog(t, &buf, logger.DebugLevel, logger.ConsoleFormat).Debug("msg",
+			logger.String("plain", "value"),
+			logger.String("spaced", "hello world"),
+			logger.String("empty", ""),
+		)
+
+		want := `DEBUG  msg  plain=value spaced="hello world" empty=""` + "\n"
+
+		assert.Equal(t, want, withoutTimestamps(t, buf.String()))
+	})
+
+	t.Run("level filtering", func(t *testing.T) {
+		t.Parallel()
+
+		for _, tt := range []struct {
+			level logger.Level
+			want  string
+		}{
+			{logger.DebugLevel, "DEBUG  d\nINFO   i\nWARN   w\nERROR  e\n"},
+			{logger.InfoLevel, "INFO   i\nWARN   w\nERROR  e\n"},
+			{logger.WarnLevel, "WARN   w\nERROR  e\n"},
+			{logger.ErrorLevel, "ERROR  e\n"},
+		} {
+			t.Run(tt.level.String(), func(t *testing.T) {
+				t.Parallel()
+
+				var buf strings.Builder
+
+				l := newLog(t, &buf, tt.level, logger.ConsoleFormat)
+				l.Debug("d")
+				l.Info("i")
+				l.Warn("w")
+				l.Error("e")
+
+				assert.Equal(t, tt.want, withoutTimestamps(t, buf.String()))
+			})
+		}
+	})
+
+	t.Run("named", func(t *testing.T) {
+		t.Parallel()
+
+		var buf strings.Builder
+
+		newLog(t, &buf, logger.DebugLevel, logger.ConsoleFormat).Named("svc").Debug("msg")
+
+		assert.Equal(t, "DEBUG  msg  logger=svc\n", withoutTimestamps(t, buf.String()))
+	})
+
+	t.Run("with pre-attached attrs", func(t *testing.T) {
+		t.Parallel()
+
+		var buf strings.Builder
+
+		newLog(t, &buf, logger.DebugLevel, logger.ConsoleFormat).
+			With(logger.String("env", "prod")).
+			Debug("msg", logger.Int("n", 1))
+
+		assert.Equal(t, "DEBUG  msg  env=prod n=1\n", withoutTimestamps(t, buf.String()))
+	})
 }
 
-func TestLogger_Debug(t *testing.T) {
-	var (
-		buf         bytes.Buffer
-		log, logErr = logger.New(logger.DebugLevel, logger.JSONFormat, &buf)
-	)
+func TestJSONFormat(t *testing.T) {
+	t.Parallel()
 
-	require.NoError(t, logErr)
-	assert.Equal(t, logger.DebugLevel, log.Level())
+	attrTime := time.Date(2024, 1, 15, 10, 30, 45, 123000000, time.UTC)
 
-	log.Debug("debug message")
-	log.Info("info message")
-	log.Warn("warn message")
-	log.Error("error message")
+	t.Run("format", func(t *testing.T) {
+		t.Parallel()
 
-	var output = buf.String()
+		var buf strings.Builder
 
-	assert.Contains(t, output, "debug message")
-	assert.Contains(t, output, "info message")
-	assert.Contains(t, output, "warn message")
-	assert.Contains(t, output, "error message")
+		newLog(t, &buf, logger.DebugLevel, logger.JSONFormat).Debug("message",
+			logger.String("str", "value"),
+			logger.Int("n", 42),
+			logger.Bool("ok", true),
+			logger.Time("when", attrTime),
+			logger.Duration("dur", 500*time.Millisecond),
+		)
+
+		want := `{"level":"debug","msg":"message","str":"value","n":42,"ok":true,"when":"2024-01-15T10:30:45.123Z","dur":500000000}` + "\n"
+
+		assert.Equal(t, want, withoutJSONTs(buf.String()))
+	})
+
+	t.Run("level filtering", func(t *testing.T) {
+		t.Parallel()
+
+		for _, tt := range []struct {
+			level logger.Level
+			want  string
+		}{
+			{logger.DebugLevel, `{"level":"debug","msg":"d"}` + "\n" + `{"level":"info","msg":"i"}` + "\n" + `{"level":"warn","msg":"w"}` + "\n" + `{"level":"error","msg":"e"}` + "\n"},
+			{logger.InfoLevel, `{"level":"info","msg":"i"}` + "\n" + `{"level":"warn","msg":"w"}` + "\n" + `{"level":"error","msg":"e"}` + "\n"},
+			{logger.WarnLevel, `{"level":"warn","msg":"w"}` + "\n" + `{"level":"error","msg":"e"}` + "\n"},
+			{logger.ErrorLevel, `{"level":"error","msg":"e"}` + "\n"},
+		} {
+			t.Run(tt.level.String(), func(t *testing.T) {
+				t.Parallel()
+
+				var buf strings.Builder
+
+				l := newLog(t, &buf, tt.level, logger.JSONFormat)
+				l.Debug("d")
+				l.Info("i")
+				l.Warn("w")
+				l.Error("e")
+
+				assert.Equal(t, tt.want, withoutJSONTs(buf.String()))
+			})
+		}
+	})
+
+	t.Run("named", func(t *testing.T) {
+		t.Parallel()
+
+		var buf strings.Builder
+
+		newLog(t, &buf, logger.DebugLevel, logger.JSONFormat).Named("svc").Debug("msg")
+
+		assert.Contains(t, buf.String(), `"logger":"svc"`)
+	})
 }
 
-func TestLogger_Info(t *testing.T) {
-	var (
-		buf         bytes.Buffer
-		log, logErr = logger.New(logger.InfoLevel, logger.JSONFormat, &buf)
-	)
+func TestNewNop(t *testing.T) {
+	t.Parallel()
 
-	require.NoError(t, logErr)
-	assert.Equal(t, logger.InfoLevel, log.Level())
-
-	log.Debug("debug message")
-	log.Info("info message")
-	log.Warn("warn message")
-	log.Error("error message")
-
-	var output = buf.String()
-
-	assert.NotContains(t, output, "debug message")
-	assert.Contains(t, output, "info message")
-	assert.Contains(t, output, "warn message")
-	assert.Contains(t, output, "error message")
+	l := logger.NewNop()
+	assert.NotNil(t, l)
+	l.Debug("d")
+	l.Info("i")
+	l.Warn("w")
+	l.Error("e")
+	_ = l.Named("x")
+	_ = l.With(logger.String("k", "v"))
 }
 
-func TestLogger_Warn(t *testing.T) {
-	var (
-		buf         bytes.Buffer
-		log, logErr = logger.New(logger.WarnLevel, logger.JSONFormat, &buf)
-	)
+// withoutTimestamps validates and strips the "HH:MM:SS.mmm " prefix from every log line in s.
+func withoutTimestamps(t *testing.T, s string) string {
+	t.Helper()
 
-	require.NoError(t, logErr)
-	assert.Equal(t, logger.WarnLevel, log.Level())
+	const n = len("00:00:00.000 ")
 
-	log.Debug("debug message")
-	log.Info("info message")
-	log.Warn("warn message")
-	log.Error("error message")
+	var b strings.Builder
 
-	var output = buf.String()
+	for _, line := range strings.SplitAfter(s, "\n") {
+		if line == "" {
+			continue
+		}
 
-	assert.NotContains(t, output, "debug message")
-	assert.NotContains(t, output, "info message")
-	assert.Contains(t, output, "warn message")
-	assert.Contains(t, output, "error message")
-}
+		if !rTimestamp.MatchString(line) {
+			t.Fatalf("missing HH:MM:SS.mmm timestamp prefix: %q", line)
+		}
 
-func TestLogger_Error(t *testing.T) {
-	var (
-		buf         bytes.Buffer
-		log, logErr = logger.New(logger.ErrorLevel, logger.JSONFormat, &buf)
-	)
+		b.WriteString(line[n:])
+	}
 
-	require.NoError(t, logErr)
-	assert.Equal(t, logger.ErrorLevel, log.Level())
-
-	log.Debug("debug message")
-	log.Info("info message")
-	log.Warn("warn message")
-	log.Error("error message")
-
-	var output = buf.String()
-
-	assert.NotContains(t, output, "debug message")
-	assert.NotContains(t, output, "info message")
-	assert.NotContains(t, output, "warn message")
-	assert.Contains(t, output, "error message")
-}
-
-func TestLogger_Named_JSONFormat(t *testing.T) {
-	var (
-		buf    bytes.Buffer
-		log, _ = logger.New(logger.DebugLevel, logger.JSONFormat, &buf)
-		named  = log.Named("test_name")
-	)
-
-	log.Debug("debug message")
-
-	var output = buf.String()
-
-	assert.Contains(t, output, `"msg":"debug message"`)
-	assert.NotContains(t, output, `"logger":"`)
-
-	buf.Reset()
-	named.Debug("named log message")
-
-	output = buf.String()
-
-	assert.Contains(t, output, `"msg":"named log message"`)
-	assert.Contains(t, output, `"logger":"test_name"`)
-}
-
-func TestLogger_Named_ConsoleFormat(t *testing.T) {
-	var (
-		buf    bytes.Buffer
-		log, _ = logger.New(logger.DebugLevel, logger.ConsoleFormat, &buf)
-		named  = log.Named("test_name")
-	)
-
-	log.Debug("debug message")
-
-	var output = buf.String()
-
-	assert.Contains(t, output, `msg="debug message"`)
-	assert.NotContains(t, output, `logger=`)
-
-	buf.Reset()
-	named.Debug("named log message")
-
-	output = buf.String()
-
-	assert.Contains(t, output, `msg="named log message"`)
-	assert.Contains(t, output, `logger=test_name`)
+	return b.String()
 }
