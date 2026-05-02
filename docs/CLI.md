@@ -36,6 +36,78 @@ Options:
 ```
 <!--/GENERATED:SERVER_CLI-->
 
+### Quick start
+
+```bash
+# run on default port 8080
+./error-pages
+
+# or with Docker
+docker run --rm -p '8080:8080/tcp' ghcr.io/tarampampam/error-pages:4
+```
+
+Test it with curl:
+
+```bash
+# plain text (default when no Accept header is set - curl-friendly)
+curl http://127.0.0.1:8080/404
+
+# request a specific error code via header (path becomes irrelevant)
+curl -H 'X-Code: 503' http://127.0.0.1:8080/
+
+# request JSON format via Accept header
+curl -H 'Accept: application/json' http://127.0.0.1:8080/503
+
+# request JSON format via path extension
+curl http://127.0.0.1:8080/503.json
+
+# HTML
+curl -H 'Accept: text/html' http://127.0.0.1:8080/404
+```
+
+### Custom templates
+
+The `--html-template`, `--json-template`, `--xml-template`, and `--plaintext-template` flags each accept one of:
+
+- **A file path** - template is read from disk at startup
+- **A URL** - template is fetched over HTTP(S) at startup
+- **Inline template text** - the value itself is used as the template
+
+```bash
+# from a local file
+error-pages --html-template /etc/error-pages/my.html
+
+# fetched from a URL at startup
+error-pages --html-template https://example.com/my-error-template.html
+
+# inline - useful in Kubernetes env vars or Docker Compose
+error-pages --html-template '<html><body><h1>{{ .StatusCode }}: {{ .Message }}</h1></body></html>'
+```
+
+When `--html-template` is set, `--template-name` and `--rotation-mode` are ignored.
+
+### Adding custom HTTP status codes
+
+Add or override HTTP status code descriptions. Format: `CODE=MESSAGE|DESCRIPTION`.
+
+```bash
+# single entry
+error-pages --add-code "418=I'm a teapot|Short and stout"
+
+# multiple entries separated by ||
+error-pages --add-code "418=I'm a teapot|Short and stout||499=Client Closed Request|The client closed the connection"
+
+# wildcards: covers all 4xx codes not explicitly defined
+error-pages --add-code "4**=Client Error|Something went wrong on your end"
+```
+
+Via environment variable (newline-separated):
+
+```bash
+ADD_CODE="418=I'm a teapot|Short and stout
+499=Client Closed Request|The client closed the connection"
+```
+
 ## Templates builder
 
 <!--GENERATED:BUILDER_CLI-->
@@ -60,3 +132,50 @@ Options:
    --version, -v                        Print the version
 ```
 <!--/GENERATED:BUILDER_CLI-->
+
+### Quick start
+
+```bash
+# generate all built-in templates into ./error-pages/
+mkdir ./error-pages
+builder --out ./error-pages
+
+# generate using a custom HTML template
+builder --template /path/to/my.html --out ./error-pages
+
+# generate using a custom HTML template from a URL
+builder --template https://example.com/my-error-template.html --out ./error-pages
+
+# also create an index.html with links to all generated pages
+builder --out ./error-pages --index
+```
+
+### Output structure
+
+**Without `--template`** - all built-in templates are rendered, each into its own subdirectory:
+
+```
+./error-pages/
+├── app-down/
+│   ├── 400.html
+│   ├── 401.html
+│   ├── 403.html
+│   ├── 404.html
+│   └── ...
+├── cats/
+│   └── ...
+├── ghost/
+│   └── ...
+└── ... (one subdirectory per built-in template)
+```
+
+**With `--template`** - only the specified template is rendered, files go into the root of `--out`:
+
+```
+./error-pages/
+├── 400.html
+├── 401.html
+├── 403.html
+├── 404.html
+└── ...
+```

@@ -89,12 +89,12 @@ COPY --from=compile /tmp/rootfs/server /
 # to find out which environment variables and CLI arguments are supported by the application, run the app
 # with the `--help` flag or refer to the documentation at https://github.com/tarampampam/error-pages#readme
 
-ENV LOG_LEVEL="warn" \
+ENV LOG_LEVEL="info" \
     LOG_FORMAT="json"
 
 # docs: https://docs.docker.com/reference/dockerfile/#healthcheck
 HEALTHCHECK --interval=10s --start-interval=1s --start-period=1s CMD [\
-  "/bin/httpcheck", "http://127.0.0.1:8080/healthz", "--port-env", "HTTP_PORT"\
+  "/bin/httpcheck", "--port-env", "HTTP_PORT", "http://127.0.0.1:8080/healthz"\
 ]
 
 ENTRYPOINT ["/bin/error-pages"]

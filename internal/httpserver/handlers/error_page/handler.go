@@ -100,13 +100,13 @@ func New(
 		}
 
 		//nolint:lll
-		if showDetails { // https://kubernetes.github.io/ingress-nginx/user-guide/custom-errors/
+		if showDetails { // ingress-nginx: https://kubernetes.github.io/ingress-nginx/user-guide/custom-errors/
 			tplData.OriginalURI = r.Header.Get("X-Original-Uri")   // (ingress-nginx) URI that caused the error
 			tplData.Namespace = r.Header.Get("X-Namespace")        // (ingress-nginx) namespace where the backend Service is located
 			tplData.IngressName = r.Header.Get("X-Ingress-Name")   // (ingress-nginx) name of the Ingress where the backend is defined
 			tplData.ServiceName = r.Header.Get("X-Service-Name")   // (ingress-nginx) name of the Service backing the backend
 			tplData.ServicePort = r.Header.Get("X-Service-Port")   // (ingress-nginx) port number of the Service backing the backend
-			tplData.RequestID = r.Header.Get("X-Request-Id")       // (ingress-nginx) unique ID that identifies the request - same as for backend service
+			tplData.RequestID = r.Header.Get("X-Request-Id")       // unique ID that identifies the request - same as for backend service
 			tplData.ForwardedFor = r.Header.Get("X-Forwarded-For") // the value of the `X-Forwarded-For` header
 			tplData.Host = r.Header.Get("Host")                    // the value of the `Host` header
 		}

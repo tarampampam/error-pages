@@ -27,8 +27,29 @@ func TestFunctions(t *testing.T) {
 		assert.NoError(t, os.Setenv("SECRET_ENV_VAR", "supersecret")) //nolint:usetesting
 		t.Cleanup(func() { assert.NoError(t, os.Unsetenv("SECRET_ENV_VAR")) })
 
+		// time-sensitive: tested separately to avoid a second-boundary race between
+		// map initialization and template rendering. string comparison is used to avoid
+		// timezone mismatch that time.Parse introduces when no zone is in the layout.
+		t.Run("now", func(t *testing.T) {
+			t.Parallel()
+
+			const layout = "2006-01-02 15:04:05"
+
+			before := time.Now().Format(layout)
+
+			tmpl, tplErr := tpl.New(`{{ now.Format "2006-01-02 15:04:05" }}`)
+			assert.NoError(t, tplErr)
+
+			result, renderErr := tmpl.Render(tpl.Data{})
+			assert.NoError(t, renderErr)
+
+			after := time.Now().Format(layout)
+
+			s := string(result)
+			assert.True(t, s == before || s == after)
+		})
+
 		for name, tt := range map[string]struct{ give, want string }{
-			"now":      {give: `{{ now.Format "2006-01-02 15:04:05" }}`, want: time.Now().Format("2006-01-02 15:04:05")},
 			"hostname": {give: "{{ hostname }}", want: hostname},
 
 			"toJson (string) pipe":      {give: `{{ "test" | toJson }}`, want: `"test"`},
@@ -175,9 +196,26 @@ func TestFunctions(t *testing.T) {
 	t.Run("deprecated functions are still available", func(t *testing.T) {
 		t.Parallel()
 
-		for name, tt := range map[string]struct{ give, want string }{
-			"now (unix)": {give: "{{ nowUnix }}", want: strconv.Itoa(int(time.Now().Unix()))},
+		// time-sensitive: tested separately to avoid a second-boundary race
+		t.Run("now (unix)", func(t *testing.T) {
+			t.Parallel()
 
+			before := time.Now().Unix()
+
+			tmpl, tplErr := tpl.New("{{ nowUnix }}")
+			assert.NoError(t, tplErr)
+
+			result, renderErr := tmpl.Render(tpl.Data{})
+			assert.NoError(t, renderErr)
+
+			after := time.Now().Unix()
+
+			got, convErr := strconv.ParseInt(string(result), 10, 64)
+			assert.NoError(t, convErr)
+			assert.True(t, got >= before && got <= after)
+		})
+
+		for name, tt := range map[string]struct{ give, want string }{
 			"strCount":            {give: `{{ strCount "test" "t" }}`, want: "2"},
 			"strContains (true)":  {give: `{{ strContains "test" "es" }}`, want: "true"},
 			"strContains (false)": {give: `{{ strContains "test" "ez" }}`, want: "false"},

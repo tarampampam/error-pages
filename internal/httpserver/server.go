@@ -110,17 +110,23 @@ func WithErrorLog(logger *log.Logger) Option {
 	}
 }
 
-// New creates a new [Server] instance with the provided options.
+// New creates a new [Server] instance with the provided options. The server accepts both HTTP/1.1 and unencrypted
+// HTTP/2 (h2c, prior-knowledge mode) connections on the same listener.
 func New(handler http.Handler, opts ...Option) *Server {
 	const (
 		defaultReadHeaderTimeout = 5 * time.Second
 		defaultShutdownTimeout   = 5 * time.Second
 	)
 
+	var proto http.Protocols
+	proto.SetHTTP1(true)
+	proto.SetUnencryptedHTTP2(true)
+
 	srv := &Server{
 		srv: &http.Server{
 			ReadHeaderTimeout: defaultReadHeaderTimeout,
 			Handler:           handler,
+			Protocols:         &proto,
 		},
 		shutdownTimeout: defaultShutdownTimeout,
 	}

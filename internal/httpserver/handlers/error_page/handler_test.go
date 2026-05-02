@@ -671,13 +671,13 @@ func TestNew(t *testing.T) {
 	t.Run("show details", func(t *testing.T) {
 		t.Parallel()
 
-		// template renders all ingress-nginx detail fields in a predictable order
+		// template renders all detail fields in a predictable order
 		const tplSrc = `{{.OriginalURI}},{{.Namespace}},{{.IngressName}},` +
 			`{{.ServiceName}},{{.ServicePort}},{{.RequestID}},{{.ForwardedFor}},{{.Host}}`
 
 		tmpl := mustTemplate(t, tplSrc)
 
-		t.Run("true populates ingress fields", func(t *testing.T) {
+		t.Run("true populates ingress-nginx fields", func(t *testing.T) {
 			t.Parallel()
 
 			h := error_page.New(
@@ -711,7 +711,7 @@ func TestNew(t *testing.T) {
 			)
 		})
 
-		t.Run("false leaves ingress fields empty", func(t *testing.T) {
+		t.Run("false leaves all detail fields empty", func(t *testing.T) {
 			t.Parallel()
 
 			h := error_page.New(

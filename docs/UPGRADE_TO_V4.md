@@ -18,10 +18,30 @@ If you're only here for the "what do I need to change" part (the upgrade guide),
 I dropped the third-party HTTP library in favor of Go's standard library. This simplified the code, improved
 compatibility, and got rid of some weird bugs along the way. FastHTTP is genuinely a really cool project - it
 runs about 3x faster than stdlib - but for this project that level of performance isn't critical, and simplicity
-and reliability matter more. On top of that, going back to stdlib brought HTTP/2 and HTTP/3 support out of the box
+and reliability matter more. On top of that, going back to stdlib brought HTTP/2 support out of the box
 and lowered memory usage. Here's a side-by-side comparison of performance between the old and new versions:
 
 ![perf_infographic](https://habrastorage.org/webt/4a/2f/76/4a2f76f9397d16310fa1c3538cf02a5e.png)
+
+The latency shown in the infographic above is the **average (avg)**, which can be misleading - a handful of slow
+outliers pull the mean up and hide how fast the typical request actually is. Percentiles give a much more honest
+picture - p50 is the median (half of all requests are faster), p90 and p99 show the tail behavior.
+
+Measured on loopback (`127.0.0.1`), single connection, no artificial load
+(`wrk -t1 -c1 -d5s --latency http://127.0.0.1:8080/...`, less is better):
+
+
+|      Format |    p50     |  p90   | p99  (very rare - only 1% of responses are slower) |
+|------------:|:----------:|:------:|:--------------------------------------------------:|
+|        HTML | **121 µs** | 262 µs |                       420 µs                       |
+|        JSON | **51 µs**  | 75 µs  |                       0.9 ms                       |
+|         XML | **48 µs**  | 73 µs  |                       1.1 ms                       |
+|  Plain text | **47 µs**  | 68 µs  |                       1.1 ms                       |
+| HTML + gzip | **2.4 ms** | 3.1 ms |                       3.9 ms                       |
+| JSON + gzip | **256 µs** | 510 µs |                       789 µs                       |
+
+HTML responses are large (full rendered template, ~65 KB), which is why gzip compression takes noticeably more
+time there. JSON/XML/text are compact structured responses, so they are fastest overall.
 
 ### New HTTP routes
 
@@ -31,6 +51,15 @@ I added the following routes that might come in handy for some use cases:
   a JSON response describing the 404 error). No more figuring out how to pass an `X-Format`/`Content-Type`/`Accept`
   header just to get the response format you want when you'd rather be explicit.
 - All endpoints support `HEAD` requests and correctly set `Content-Length` in the response.
+
+> [!WARNING]
+> Content negotiation priority is now:
+>
+> - Path extension: `.html`, `.htm`, `.json`, `.xml`, `.txt`
+> -`Content-Type` header
+> -`X-Format` header
+> -`Accept` header
+> -Fallback to plain text
 
 ### All external dependencies removed
 
@@ -255,7 +284,7 @@ RESPONSE_PLAINTEXT_FORMAT → TEXT_TEMPLATE
 
 > The old names are **not** aliased - they will be silently ignored.
 
-For the full list of new env vars, please refer to the [CLI documentation]([CLI.md](http://CLI.md)).
+For the full list of new env vars, please refer to the [CLI documentation](CLI.md).
 
 ### Renamed flags
 
@@ -326,12 +355,14 @@ Run through this in order:
    `--add-template` with one file → switch to `--html-template`)
 5. **Rewrite `--add-code` values**: replace `/` with `|`. If you have many entries, consider collapsing them into
    one value with `||`.
-6. **Custom templates**: if you used `--add-template` with one file → switch to `--html-template`.
+6. **Custom templates** - if you used `--add-template` with one file → switch to `--html-template`.
 7. **Update template syntax** in any custom templates you ship. The v3-shim currently makes them work, but it's
    deprecated.
-8. **Delete `--disable-minification` / `DISABLE_MINIFICATION`** from your config; it's a no-op now.
-9. **Delete `--read-buffer-size` / `READ_BUFFER_SIZE`** from your config.
-10. **Boot it up and test.** Hit `/404`, `/404.json`, `/404.xml`, `/404.txt` and confirm the right format comes back.
+8. **Update query path pattern** - remove `.html` from your error page URLs if you had it (e.g.,
+   `/{status}.html` → `/{status}`) if you don't want to force HTML responses.
+9. **Delete `--disable-minification` / `DISABLE_MINIFICATION`** from your config; it's a no-op now.
+10. **Delete `--read-buffer-size` / `READ_BUFFER_SIZE`** from your config.
+11. **Boot it up and test.** Hit `/404`, `/404.json`, `/404.xml`, `/404.txt` and confirm the right format comes back.
 
 **Test everything before you deploy to production.**
 

@@ -13,8 +13,8 @@ type Data struct {
 	IngressName  string // (ingress-nginx) name of the Ingress where the backend is defined
 	ServiceName  string // (ingress-nginx) name of the Service backing the backend
 	ServicePort  string // (ingress-nginx) port number of the Service backing the backend
-	RequestID    string // (ingress-nginx) unique ID that identifies the request - same as for backend service
-	ForwardedFor string // the value of the `X-Forwarded-For` header
+	RequestID    string // (ingress-nginx, Envoy Gateway) unique ID that identifies the request
+	ForwardedFor string // (ingress-nginx, Envoy Gateway) the value of the `X-Forwarded-For` header
 	Host         string // the value of the `Host` header
 	Config       Config // configuration values
 

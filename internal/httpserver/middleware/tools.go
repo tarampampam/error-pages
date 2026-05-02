@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"net/http"
+	"slices"
 )
 
 // Apply applies the provided middlewares to the given handler. The middlewares are applied in the order
@@ -14,12 +15,12 @@ func Apply(h http.Handler, mw ...func(http.Handler) http.Handler) http.Handler {
 		panic("nil handler")
 	}
 
-	for i := len(mw) - 1; i >= 0; i-- {
-		if mw[i] == nil {
+	for _, v := range slices.Backward(mw) {
+		if v == nil {
 			continue // skip nil middlewares
 		}
 
-		h = mw[i](h)
+		h = v(h)
 	}
 
 	return h

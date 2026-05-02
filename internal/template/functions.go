@@ -246,7 +246,7 @@ func toInt(value any) int { //nolint:funlen
 	case int64:
 		return int(v)
 	case uint:
-		return int(v) //nolint:gosec
+		return int(v)
 	case uint8:
 		return int(v)
 	case uint16:

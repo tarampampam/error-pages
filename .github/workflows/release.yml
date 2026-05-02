@@ -103,15 +103,16 @@ jobs:
       - uses: azure/setup-helm@v5
       - uses: gacts/github-slug@v1
         id: slug
+      - uses: mikefarah/yq@v4
+        with:
+          cmd: yq -i '(.version, .appVersion) = "${{ steps.slug.outputs.version-semantic }}"' ./deploy/helm/Chart.yaml
       - uses: losisin/helm-docs-github-action@v1
         with:
-          chart-search-root: deploy/helm
+          chart-search-root: ./deploy/helm
           template-files: README.tpl.md
           output-file: README.md
       - run: |
-          helm package \
-            --app-version "${{ steps.slug.outputs.version-semantic }}" \
-            --version "${{ steps.slug.outputs.version-semantic }}" .
+          helm package .
           mv error-pages-*.tgz helm-chart.tgz
       - uses: actions/upload-artifact@v7
         with:

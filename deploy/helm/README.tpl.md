@@ -47,7 +47,7 @@ and forward them to error-pages.
 traefikMiddleware:
   enabled: true # creates a Middleware CRD in the same namespace
   #statusCodes: ["400-599"]
-  #query: "/{status}.html"
+  #query: "/{status}"
 ```
 
 For more details, please, refer to the [project's documentation](https://github.com/tarampampam/error-pages#readme).
@@ -111,5 +111,10 @@ config:
     499=Client Closed Request|The client closed the connection before the server finished responding.
     4**=Client Error|Something went wrong on the client side.
 ```
+
+## 💊 Support
+
+If you need a chart option that doesn't exist yet, or something isn't working as expected, please
+[open an issue](https://github.com/tarampampam/error-pages/issues/new/choose) - I'll be happy to help.
 
 {{ template "chart.valuesSection" . }}

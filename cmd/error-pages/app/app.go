@@ -262,7 +262,7 @@ func (a *App) run(ctx context.Context, log *logger.Logger) error {
 
 	ln, lnErr := (&net.ListenConfig{}).Listen(ctx, "tcp", net.JoinHostPort(
 		a.opt.http.addr,
-		strconv.Itoa(int(a.opt.http.port)), //nolint:gosec // port is validated to be in range 1-65535
+		strconv.Itoa(int(a.opt.http.port)),
 	))
 	if lnErr != nil {
 		return fmt.Errorf("listen http: %w", lnErr)

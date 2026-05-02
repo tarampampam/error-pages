@@ -78,16 +78,14 @@ service:
 
 traefikMiddleware:
   # -- Create a Traefik Middleware CRD that routes error responses to this service (`middleware.yaml` is not rendered
-  # when disabled). Requires Traefik with the kubernetesCRD provider (`providers.kubernetesCRD.allowCrossNamespace: true`
-  # if the middleware is referenced from a different namespace). More information can be
-  # [found here](https://doc.traefik.io/traefik/middlewares/http/errorpages/)
+  # when disabled). More information can be [found here](https://doc.traefik.io/traefik/middlewares/http/errorpages/)
   enabled: false
   # -- HTTP status codes (or ranges) that Traefik will intercept and forward to error-pages.
   #    Each entry can be a single code ("404") or a range ("400-599").
   statusCodes: ["400-599"]
   # -- Query path pattern passed to Traefik's errors middleware. The {status} placeholder is replaced
   #    by Traefik with the actual HTTP status code before forwarding the request to this service.
-  query: "/{status}.html"
+  query: "/{status}"
   # -- (map/null) Optional map of status code rewrites to apply before Traefik forwards the request.
   #    Whatever is set here is placed into the manifest as-is (supports templating).
   #    Example:
@@ -99,7 +97,7 @@ traefikMiddleware:
 config:
   log:
     # -- (string/null) Logging level - `debug` / `info` / `warn` / `error`
-    # @default -- `warn` (defined in the Dockerfile)
+    # @default -- `info` (defined in the Dockerfile)
     level: info
     # -- (string/null) Logging format - `console` / `json`
     # @default -- `json` (defined in the Dockerfile)
@@ -116,8 +114,8 @@ config:
   # @default -- `404`
   defaultErrorPage: null
   # -- (bool/null) Reply with the same HTTP status code as the requested error page instead of always returning 200.
-  # **Should be enabled when used as ingress-nginx defaultBackend** - ingress-nginx proxies the backend's
-  # response status transparently to the client, so without this flag all error pages are served as HTTP 200.
+  # **Should be enabled when used as ingress-nginx defaultBackend and other controllers/gateways where the client
+  # relies on the actual HTTP status code to detect an error page**.
   # @default -- `false`
   sendSameHttpCode: null
   # -- (bool/null) Show request details (`X-Original-URI`, `X-Namespace`, etc.) on the error page (template-dependent)
