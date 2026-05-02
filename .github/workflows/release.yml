@@ -195,19 +195,19 @@ jobs:
           MAJOR: ${{ steps.slug.outputs.version-major }}
         # TODO: add following tags after merging the PR
         # echo "$GHCR_IMAGE:latest" >> "$GITHUB_OUTPUT"
-        # echo "$GHCR_IMAGE:$MINOR" >> "$GITHUB_OUTPUT"
-        # echo "$GHCR_IMAGE:$MAJOR" >> "$GITHUB_OUTPUT"
         # echo "$QUAY_IMAGE:latest" >> "$GITHUB_OUTPUT"
-        # echo "$QUAY_IMAGE:$MINOR" >> "$GITHUB_OUTPUT"
-        # echo "$QUAY_IMAGE:$MAJOR" >> "$GITHUB_OUTPUT"
         # echo "$HUB_IMAGE:latest" >> "$GITHUB_OUTPUT"
-        # echo "$HUB_IMAGE:$MINOR" >> "$GITHUB_OUTPUT"
-        # echo "$HUB_IMAGE:$MAJOR" >> "$GITHUB_OUTPUT"
         run: |
           echo 'list<<EOF' >> "$GITHUB_OUTPUT"
           echo "$GHCR_IMAGE:$EXACT" >> "$GITHUB_OUTPUT"
+          echo "$GHCR_IMAGE:$MINOR" >> "$GITHUB_OUTPUT"
+          echo "$GHCR_IMAGE:$MAJOR" >> "$GITHUB_OUTPUT"
           echo "$QUAY_IMAGE:$EXACT" >> "$GITHUB_OUTPUT"
+          echo "$QUAY_IMAGE:$MINOR" >> "$GITHUB_OUTPUT"
+          echo "$QUAY_IMAGE:$MAJOR" >> "$GITHUB_OUTPUT"
           echo "$HUB_IMAGE:$EXACT" >> "$GITHUB_OUTPUT"
+          echo "$HUB_IMAGE:$MINOR" >> "$GITHUB_OUTPUT"
+          echo "$HUB_IMAGE:$MAJOR" >> "$GITHUB_OUTPUT"
           echo 'EOF' >> "$GITHUB_OUTPUT"
       - id: builder-tags
         env:
@@ -216,19 +216,19 @@ jobs:
           MAJOR: ${{ steps.slug.outputs.version-major }}
         # TODO: add following tags after merging the PR: latest, latest-builder
         # echo "$GHCR_IMAGE:latest-builder" >> "$GITHUB_OUTPUT"
-        # echo "$GHCR_IMAGE:$MINOR-builder" >> "$GITHUB_OUTPUT"
-        # echo "$GHCR_IMAGE:$MAJOR-builder" >> "$GITHUB_OUTPUT"
         # echo "$QUAY_IMAGE:latest-builder" >> "$GITHUB_OUTPUT"
-        # echo "$QUAY_IMAGE:$MINOR-builder" >> "$GITHUB_OUTPUT"
-        # echo "$QUAY_IMAGE:$MAJOR-builder" >> "$GITHUB_OUTPUT"
         # echo "$HUB_IMAGE:latest-builder" >> "$GITHUB_OUTPUT"
-        # echo "$HUB_IMAGE:$MINOR-builder" >> "$GITHUB_OUTPUT"
-        # echo "$HUB_IMAGE:$MAJOR-builder" >> "$GITHUB_OUTPUT"
         run: |
           echo 'list<<EOF' >> "$GITHUB_OUTPUT"
           echo "$GHCR_IMAGE:$EXACT-builder" >> "$GITHUB_OUTPUT"
+          echo "$GHCR_IMAGE:$MINOR-builder" >> "$GITHUB_OUTPUT"
+          echo "$GHCR_IMAGE:$MAJOR-builder" >> "$GITHUB_OUTPUT"
           echo "$QUAY_IMAGE:$EXACT-builder" >> "$GITHUB_OUTPUT"
+          echo "$QUAY_IMAGE:$MINOR-builder" >> "$GITHUB_OUTPUT"
+          echo "$QUAY_IMAGE:$MAJOR-builder" >> "$GITHUB_OUTPUT"
           echo "$HUB_IMAGE:$EXACT-builder" >> "$GITHUB_OUTPUT"
+          echo "$HUB_IMAGE:$MINOR-builder" >> "$GITHUB_OUTPUT"
+          echo "$HUB_IMAGE:$MAJOR-builder" >> "$GITHUB_OUTPUT"
           echo 'EOF' >> "$GITHUB_OUTPUT"
       - uses: docker/build-push-action@v7
         id: push-server

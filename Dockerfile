@@ -3,7 +3,7 @@
 # -✂- this stage is used to compile the application -------------------------------------------------------------------
 FROM docker.io/library/golang:1.26-alpine AS compile
 
-# can be passed with any prefix (like `v1.2.3@GITHASH`), e.g.: `docker build --build-arg "APP_VERSION=v1.2.3" .`
+# can be passed with any prefix (like `v1.2.3@GITHASH`), e.g.: `(podman|docker) build --build-arg "APP_VERSION=v1.2.3" .`
 ARG APP_VERSION="undefined@docker"
 
 # copy the source code
