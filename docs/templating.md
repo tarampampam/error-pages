@@ -3,6 +3,11 @@
 Templates are parsed **once at startup**. The same template engine is used for all output formats. When a custom
 HTML template is set via `--html-template`, the `--template-name` and `--rotation-mode` flags are ignored.
 
+> [!WARNING]
+> `{{` and `}}` are reserved as Go template delimiters - any literal occurrence causes a parse error. This is
+> common in JSDoc type annotations (`/** @param {{ id: number }} ❌ */`), CSS, etc. To work around this, you can simply
+> add a single space between the braces: `/** @param { { id: number } } ✅ */`.
+
 ### Template data
 
 All templates receive a data object with the following fields:
