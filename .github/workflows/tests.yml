@@ -116,7 +116,7 @@ jobs:
       - uses: actions/checkout@v6
       - uses: gacts/github-slug@v1
         id: slug
-      - uses: docker/setup-buildx-action@v3
+      - uses: docker/setup-buildx-action@v4
       - uses: docker/build-push-action@v7
         with:
           context: .
@@ -127,7 +127,7 @@ jobs:
           target: ${{ matrix.target }}
           outputs: ${{ matrix.target == 'server' && format('type=docker,dest={0}/image.tar', runner.temp) || 'type=cacheonly' }}
       - if: matrix.target == 'server'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: docker-image-server
           path: ${{ runner.temp }}/image.tar
@@ -139,7 +139,7 @@ jobs:
     needs: [chart-lint, build-docker-image]
     steps:
       - uses: actions/checkout@v6
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           name: docker-image-server
           path: ${{ runner.temp }}
