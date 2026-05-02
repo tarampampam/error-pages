@@ -1,0 +1,169 @@
+# -- (string/null) The name of the Helm release
+fullnameOverride: null
+# -- (string/null) This is to override the chart name
+nameOverride: null
+# -- (string/null) Override the default Release Namespace for Helm
+namespaceOverride: null
+
+image:
+  # -- The image repository to pull from
+  repository: ghcr.io/tarampampam/error-pages
+  # -- Defines the image pull policy
+  pullPolicy: IfNotPresent
+  # -- (string/null) Overrides the image tag whose default is the chart appVersion
+  tag: null
+
+deployment:
+  # -- Enable deployment (`deployment.yaml` is not rendered when disabled)
+  enabled: true
+  # -- How many replicas to run
+  replicas: 1
+  # -- Additional pod annotations (e.g. for mesh injection or Prometheus scraping, supports templating). More
+  # information can be [found here](https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/)
+  podAnnotations: {}
+  # -- Additional deployment labels (e.g. for filtering deployment by custom labels; supports templating)
+  labels: {}
+  # -- This is for the secrets for pulling an image from a private repository (supports templating), more information
+  # can be [found here](https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/)
+  imagePullSecrets: []
+  # -- Security context for the pod, more information can be
+  # [found here](https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#security-context-1).
+  # @default -- *non-root, read-only fs, no privilege escalation*
+  securityContext:
+    runAsNonRoot: true # refuse to start if the image tries to run as root
+    runAsUser: 10001   # UID defined in the Dockerfile
+    runAsGroup: 10001  # GID defined in the Dockerfile
+    readOnlyRootFilesystem: true    # the app writes nothing to disk at runtime
+    allowPrivilegeEscalation: false # prevent setuid/setcap privilege escalation
+    capabilities: {drop: [ALL]}     # drop all Linux capabilities; the app needs none
+  probe:
+    # -- How often (in seconds) to perform the probe
+    interval: 10
+    # -- Number of seconds after the container has started before liveness probes are initiated
+    initialDelay: 2
+  # -- Resource limits and requests, more information can be
+  # [found here](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/)
+  # @default -- *memory: 32/64Mi*
+  resources:
+    requests: {memory: 32Mi, cpu: 10m}
+    limits: {memory: 64Mi} # feel free to adjust the limits based on your needs, e.g. define `cpu: 200m`
+  # -- Additional volumes to add to the pod, more information can be
+  # [found here](https://kubernetes.io/docs/concepts/storage/volumes/)
+  volumes: [] # supports templating
+  # -- Additional volumeMounts to add to the container (supports templating)
+  volumeMounts: []
+  # -- Node selector for pod assignment (supports templating), more information can be
+  # [found here](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/)
+  nodeSelector: {}
+  # -- Affinity for pod assignment (supports templating), more information can be
+  # [found here](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/)
+  affinity: {}
+  # -- Tolerations for pod assignment, more information can be
+  # [found here](https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/)
+  tolerations: [] # supports templating
+  # -- The list of additional environment variables to set in the container (supports templating)
+  env: []
+  # -- The list of additional arguments to pass to the container (supports templating)
+  args: []
+
+service:
+  # -- Enable service (`service.yaml` is not rendered when disabled)
+  enabled: true
+  # -- Sets the service type more information can be
+  # [found here](https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types)
+  type: ClusterIP
+  # -- Sets the port, more information can be
+  # [found here](https://kubernetes.io/docs/concepts/services-networking/service/#field-spec-ports)
+  port: 8080
+
+traefikMiddleware:
+  # -- Create a Traefik Middleware CRD that routes error responses to this service (`middleware.yaml` is not rendered
+  # when disabled). More information can be [found here](https://doc.traefik.io/traefik/middlewares/http/errorpages/)
+  enabled: false
+  # -- HTTP status codes (or ranges) that Traefik will intercept and forward to error-pages.
+  #    Each entry can be a single code ("404") or a range ("400-599").
+  statusCodes: ["400-599"]
+  # -- Query path pattern passed to Traefik's errors middleware. The {status} placeholder is replaced
+  #    by Traefik with the actual HTTP status code before forwarding the request to this service.
+  query: "/{status}"
+  # -- (map/null) Optional map of status code rewrites to apply before Traefik forwards the request.
+  #    Whatever is set here is placed into the manifest as-is (supports templating).
+  #    Example:
+  #      statusRewrites:
+  #        "400-499": 400
+  #        "500-599": 500
+  statusRewrites: null
+
+config:
+  log:
+    # -- (string/null) Logging level - `debug` / `info` / `warn` / `error`
+    # @default -- `info` (defined in the Dockerfile)
+    level: info
+    # -- (string/null) Logging format - `console` / `json`
+    # @default -- `json` (defined in the Dockerfile)
+    format: null
+
+  listen:
+    # -- (string/null) IP (v4 or v6) address to listen on (`0.0.0.0` to bind to all interfaces)
+    # @default -- `0.0.0.0`
+    address: null
+    # -- HTTP server port
+    port: 8080
+
+  # -- (integer/null) Default HTTP status code to render when the requested code is not found or the path is not a valid code
+  # @default -- `404`
+  defaultErrorPage: null
+  # -- (bool/null) Reply with the same HTTP status code as the requested error page instead of always returning 200.
+  # **Should be enabled when used as ingress-nginx defaultBackend and other controllers/gateways where the client
+  # relies on the actual HTTP status code to detect an error page**.
+  # @default -- `false`
+  sendSameHttpCode: null
+  # -- (bool/null) Show request details (`X-Original-URI`, `X-Namespace`, etc.) on the error page (template-dependent)
+  # @default -- `false`
+  showDetails: null
+  # -- ([]string/null) List of HTTP headers to proxy from the original request to the error page context (no spaces
+  # in names). Set to `null` to leave unset, or set to `[]` (empty list) to disable proxy headers entirely.
+  # @default -- `X-Request-Id`, `X-Trace-Id`, `X-Correlation-Id`, `X-Amzn-Trace-Id`
+  proxyHeaders: null
+  # -- (bool/null) Disable built-in HTTP status code descriptions
+  disableBuiltInCodes: null
+  # -- (string/null) Add or override HTTP status codes. Format: `CODE=MESSAGE[\|DESCRIPTION]` (`CODE` supports wildcards like `4**`).
+  # Separate multiple entries with newlines
+  # @default -- *all built-in codes*
+  addCode: null
+
+  htmlTemplate:
+    # -- (string/null) Built-in HTML template name (**ignored when `custom` is set**).
+    # Available: `app-down`, `cats`, `connection`, `ghost`, `hacker-terminal`, `l7`, `lost-in-space`, `noise`,
+    # `orient`, `shuffle`, `win98`. For full list of built-in templates and their appearance, see the
+    # [repository's README](https://github.com/tarampampam/error-pages#readme)
+    # @default -- `app-down`
+    name: null
+    # -- (string/null) Template rotation mode (**ignored when `custom` is set**).
+    # Available: `disabled`, `random-on-startup`, `random-on-each-request`, `random-hourly`, `random-daily`
+    # @default -- `disabled`
+    rotationMode: null
+    # -- (string/null) Custom HTML template (inline *Go template* text, *URL*, or *file path*).
+    # **When set, `name` and `rotationMode` are ignored by the application**.
+    custom: null
+
+  jsonTemplate:
+    # -- (string/null) Custom JSON template (inline *Go template* text, *URL*, or *file path*).
+    # Set to `null` to use the built-in JSON template.
+    custom: null
+
+  xmlTemplate:
+    # -- (string/null) Custom XML template (inline *Go template* text, *URL*, or *file path*).
+    # Set to `null` to use the built-in XML template.
+    custom: null
+
+  txtTemplate:
+    # -- (string/null) Custom plain-text template (inline *Go template* text, *URL*, or *file path*).
+    # Set to `null` to use the built-in plain-text template.
+    custom: null
+
+  # -- (string/null) Homepage URL to show as a link in error pages (e.g. https://app.example.com/home).
+  # When set, supported templates display a "Go to homepage" link pointing to this URL.
+  homepageUrl: null
+  # -- (bool/null) Disable client-side localization of error pages
+  disableL10n: null

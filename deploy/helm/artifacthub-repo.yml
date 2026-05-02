@@ -1,0 +1,7 @@
+# yaml-language-server: $schema=https://json.schemastore.org/artifacthub-repo.json
+# docs: https://github.com/artifacthub/hub/blob/master/docs/metadata/artifacthub-repo.yml
+
+repositoryID: 759fc4f6-147f-4f99-bfd5-5094a3be6c2f
+owners:
+  - name: tarampampam
+    email: 7326800+tarampampam@users.noreply.github.com

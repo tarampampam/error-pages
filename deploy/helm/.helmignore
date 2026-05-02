@@ -1,0 +1,4 @@
+/.helmignore
+/.gitignore
+/artifacthub-repo.yml
+/README.tpl.md

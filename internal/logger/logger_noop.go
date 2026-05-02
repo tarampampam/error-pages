@@ -1,21 +1,9 @@
 package logger
 
-import (
-	"context"
-	"log/slog"
-)
+import "log/slog"
 
-// NewNop returns a no-op Logger. It never writes out logs or internal errors. The common use case is to use it
-// in tests.
+// NewNop returns a no-op Logger that discards all records without any overhead.
+// The common use case is to use it in tests.
 func NewNop() *Logger {
-	return &Logger{ctx: context.Background(), slog: slog.New(&noopHandler{}), lvl: DebugLevel}
+	return &Logger{log: slog.New(slog.DiscardHandler), lvl: DebugLevel}
 }
-
-type noopHandler struct{}
-
-var _ slog.Handler = (*noopHandler)(nil) // verify interface implementation
-
-func (noopHandler) Enabled(context.Context, slog.Level) bool  { return true }
-func (noopHandler) Handle(context.Context, slog.Record) error { return nil }
-func (noopHandler) WithAttrs([]slog.Attr) slog.Handler        { return noopHandler{} }
-func (noopHandler) WithGroup(string) slog.Handler             { return noopHandler{} }

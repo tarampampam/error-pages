@@ -24,75 +24,143 @@ jobs:
         with: {fetch-depth: 0}
       - uses: gacts/gitleaks@v1
 
-  golangci-lint:
+  chart-lint:
+    name: Lint the chart
+    runs-on: ubuntu-latest
+    defaults: {run: {working-directory: ./deploy/helm}}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: azure/setup-helm@v5
+      - run: helm dependency update .
+      - run: helm template . > /dev/null
+      - run: helm lint --strict .
+
+  go-lint:
     name: Run golangci-lint
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-go@v6
         with: {go-version-file: go.mod}
+      - run: go generate ./...
       - uses: golangci/golangci-lint-action@v9
+        with:
+          # renovate: source=github-releases name=golangci/golangci-lint
+          version: v2.12.0
 
   go-test:
-    name: Unit tests
+    name: Run unit tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-go@v6
         with: {go-version-file: go.mod}
-      - run: go test -race ./...
+      - run: go generate -skip readme ./...
+      - run: go test -race -covermode=atomic ./...
 
-  build:
-    name: Build for ${{ matrix.os }} (${{ matrix.arch }})
+  go-build:
+    name: Compile the app
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        os: [linux, darwin, windows] # freebsd
-        arch: [amd64, arm64] # 386
-    needs: [golangci-lint, go-test]
+        os: [linux, darwin, windows]
+        arch: [amd64, arm64]
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-go@v6
         with: {go-version-file: go.mod}
       - uses: gacts/github-slug@v1
         id: slug
+      - run: go generate -skip readme ./...
       - env:
           GOOS: ${{ matrix.os }}
           GOARCH: ${{ matrix.arch }}
           CGO_ENABLED: 0
-          LDFLAGS: -s -w -X gh.tarampamp.am/error-pages/internal/appmeta.version=${{ steps.slug.outputs.commit-hash-short }}
-        run: go build -trimpath -ldflags "$LDFLAGS" -o ./error-pages ./cmd/error-pages/
-      - if: matrix.os == 'linux' && matrix.arch == 'amd64'
-        run: ./error-pages --version && ./error-pages -h
-      - if: matrix.os == 'linux' && matrix.arch == 'amd64'
-        run: mkdir ./out && ./error-pages --log-level=debug build --index --target-dir ./out
+          LDFLAGS: -s -w -X gh.tarampamp.am/error-pages/v4/internal/appmeta.version=${{ steps.slug.outputs.commit-hash-short }}
+        run: |
+          go build -trimpath -ldflags "$LDFLAGS" -o ./error-pages ./cmd/error-pages/
+          go build -trimpath -ldflags "$LDFLAGS" -o ./builder ./cmd/builder/
       - if: matrix.os == 'linux' && matrix.arch == 'amd64'
         run: |
-          test -f ./out/index.html
-          test -f ./out/ghost/404.html
-          test -f ./out/l7/404.html
-          test -f ./out/shuffle/404.html
-          test -f ./out/noise/404.html
-          test -f ./out/hacker-terminal/404.html
-          test -f ./out/cats/404.html
-          test -f ./out/lost-in-space/404.html
-          test -f ./out/app-down/404.html
-          test -f ./out/connection/404.html
-          test -f ./out/orient/404.html
+          ./error-pages --version
+          ./error-pages -h
 
-  docker-image:
+          ./builder --version
+          ./builder -h
+
+          mkdir ./out
+          ./builder --index --target-dir ./out
+
+          test -f ./out/index.html
+          test -f ./out/app-down/404.html
+          test -f ./out/cats/404.html
+          test -f ./out/connection/404.html
+          test -f ./out/ghost/404.html
+          test -f ./out/hacker-terminal/404.html
+          test -f ./out/l7/404.html
+          test -f ./out/lost-in-space/404.html
+          test -f ./out/noise/404.html
+          test -f ./out/orient/404.html
+          test -f ./out/shuffle/404.html
+          test -f ./out/win98/404.html
+
+  build-docker-image:
     name: Build the docker image
     runs-on: ubuntu-latest
-    needs: [golangci-lint, go-test]
+    strategy:
+      fail-fast: false
+      matrix: {target: [builder, server]}
+    needs: [go-lint, go-test]
     steps:
       - uses: actions/checkout@v6
       - uses: gacts/github-slug@v1
         id: slug
+      - uses: docker/setup-buildx-action@v3
       - uses: docker/build-push-action@v7
         with:
           context: .
           file: Dockerfile
           push: false
           build-args: "APP_VERSION=${{ steps.slug.outputs.commit-hash-short }}"
-          tags: app:ci
+          tags: app-${{ matrix.target }}:ci
+          target: ${{ matrix.target }}
+          outputs: ${{ matrix.target == 'server' && format('type=docker,dest={0}/image.tar', runner.temp) || 'type=cacheonly' }}
+      - if: matrix.target == 'server'
+        uses: actions/upload-artifact@v4
+        with:
+          name: docker-image-server
+          path: ${{ runner.temp }}/image.tar
+          retention-days: 1
+
+  chart-install:
+    name: Install the chart (kind)
+    runs-on: ubuntu-latest
+    needs: [chart-lint, build-docker-image]
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/download-artifact@v4
+        with:
+          name: docker-image-server
+          path: ${{ runner.temp }}
+      - run: docker load -i ${{ runner.temp }}/image.tar
+      - uses: helm/kind-action@v1
+      - run: kind load docker-image app-server:ci --name chart-testing
+      - uses: azure/setup-helm@v5
+      - name: Install the chart
+        run: |
+          helm install error-pages ./deploy/helm \
+            --set image.repository=app-server \
+            --set image.tag=ci \
+            --set config.sendSameHttpCode=true \
+            --wait --timeout 60s
+      - name: Smoke-test the deployment
+        run: |
+          kubectl run smoke-test \
+            --image=curlimages/curl:latest \
+            --restart=Never --rm -i \
+            -- sh -c '
+              curl -sf http://error-pages:8080/healthz &&
+              [ "$(curl -s -o /dev/null -w "%{http_code}" http://error-pages:8080/404)" = "404" ] &&
+              [ "$(curl -s -o /dev/null -w "%{http_code}" http://error-pages:8080/503)" = "503" ]
+            '

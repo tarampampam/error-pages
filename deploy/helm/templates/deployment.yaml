@@ -1,0 +1,159 @@
+{{- if .Values.deployment.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: {{ include "error-pages.fullname" . }}
+  namespace: {{ template "error-pages.namespace" . }}
+  labels:
+    {{- include "error-pages.commonLabels" . | nindent 4 }}
+
+spec:
+  {{- with .Values.deployment }}
+  replicas: {{ .replicas | default 1 }}
+  selector:
+    matchLabels:
+      {{- include "error-pages.selectorLabels" $ | nindent 6 }}
+  template:
+    metadata:
+      {{- with .podAnnotations }}
+      annotations:
+        {{- tpl (toYaml .) $ | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "error-pages.commonLabels" $ | nindent 8 }}
+        {{- with .labels }}
+        {{- tpl (toYaml .) $ | nindent 8 }}
+        {{- end }}
+    spec:
+      automountServiceAccountToken: false
+      {{- with .imagePullSecrets }}
+      imagePullSecrets:
+        {{- tpl (toYaml .) $ | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: {{ include "error-pages.fullname" $ }}
+
+          {{- with .securityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+
+          {{- with $.Values.image }}
+          image: "{{ .repository }}:{{ .tag | default $.Chart.AppVersion }}"
+          imagePullPolicy: {{ .pullPolicy | default "IfNotPresent" }}
+          {{- end }}
+          ports:
+            - name: http
+              containerPort: {{ $.Values.config.listen.port }}
+              protocol: TCP
+          env:
+          {{- with $.Values.config }}
+            {{- if .log.level }}
+            - {name: LOG_LEVEL, value: "{{ .log.level }}"}
+            {{- end }}
+            {{- if .log.format }}
+            - {name: LOG_FORMAT, value: "{{ .log.format }}"}
+            {{- end }}
+            {{- if .listen.address }}
+            - {name: HTTP_ADDR, value: "{{ .listen.address }}"}
+            {{- end }}
+            - {name: HTTP_PORT, value: "{{ .listen.port }}"}
+            {{- if ne .defaultErrorPage nil }}
+            - {name: DEFAULT_ERROR_PAGE, value: "{{ .defaultErrorPage }}"}
+            {{- end }}
+            {{- if .sendSameHttpCode }}
+            - {name: SEND_SAME_HTTP_CODE, value: "true"}
+            {{- end }}
+            {{- if .showDetails }}
+            - {name: SHOW_DETAILS, value: "true"}
+            {{- end }}
+            {{- if ne .proxyHeaders nil }}
+            - {name: PROXY_HTTP_HEADERS, value: "{{ join "," .proxyHeaders }}"}
+            {{- end }}
+            {{- if .disableBuiltInCodes }}
+            - {name: DISABLE_BUILT_IN_CODES, value: "true"}
+            {{- end }}
+            {{- if .addCode }}
+            - {name: ADD_CODE, value: {{ .addCode | toJson }}}
+            {{- end }}
+            {{- if .htmlTemplate.name }}
+            - {name: TEMPLATE_NAME, value: "{{ .htmlTemplate.name }}"}
+            {{- end }}
+            {{- if .htmlTemplate.rotationMode }}
+            - {name: ROTATION_MODE, value: "{{ .htmlTemplate.rotationMode }}"}
+            {{- end }}
+            {{- if .htmlTemplate.custom }}
+            - name: HTML_TEMPLATE
+              value: {{ .htmlTemplate.custom | toJson }}
+            {{- end }}
+            {{- if .jsonTemplate.custom }}
+            - name: JSON_TEMPLATE
+              value: {{ .jsonTemplate.custom | toJson }}
+            {{- end }}
+            {{- if .xmlTemplate.custom }}
+            - name: XML_TEMPLATE
+              value: {{ .xmlTemplate.custom | toJson }}
+            {{- end }}
+            {{- if .txtTemplate.custom }}
+            - name: TEXT_TEMPLATE
+              value: {{ .txtTemplate.custom | toJson }}
+            {{- end }}
+            {{- if .homepageUrl }}
+            - {name: HOMEPAGE_URL, value: "{{ .homepageUrl }}"}
+            {{- end }}
+            {{- if .disableL10n }}
+            - {name: DISABLE_L10N, value: "true"}
+            {{- end }}
+            {{- with $.Values.deployment.env }}
+            {{- tpl (toYaml .) $ | nindent 12 }}
+            {{- end }}
+          {{- end }}
+
+          {{- with .args }}
+          args:
+            {{- tpl (toYaml .) $ | nindent 12 }}
+          {{- end }}
+
+          {{- with .probe }}
+          livenessProbe:
+            httpGet: {port: http, path: /healthz}
+            periodSeconds: {{ .interval }}
+            initialDelaySeconds: {{ .initialDelay }}
+          readinessProbe:
+            httpGet: {port: http, path: /healthz}
+            periodSeconds: {{ .interval }}
+            initialDelaySeconds: {{ .initialDelay }}
+          {{- end }}
+
+          {{- with .resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+
+          {{- with .volumeMounts }}
+          volumeMounts:
+            {{- tpl (toYaml .) $ | nindent 12 }}
+          {{- end }}
+
+      {{- with .volumes }}
+      volumes:
+        {{- tpl (toYaml .) $ | nindent 8 }}
+      {{- end }}
+
+      {{- with .nodeSelector }}
+      nodeSelector:
+        {{- tpl (toYaml .) $ | nindent 8 }}
+      {{- end }}
+
+      {{- with .affinity }}
+      affinity:
+        {{- tpl (toYaml .) $ | nindent 8 }}
+      {{- end }}
+
+      {{- with .tolerations }}
+      tolerations:
+        {{- tpl (toYaml .) $ | nindent 8 }}
+      {{- end }}
+  {{- end }}
+{{- end }}

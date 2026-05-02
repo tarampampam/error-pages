@@ -4,21 +4,17 @@
 
 ## Binaries
 /error-pages
+/builder
 
 ## AI shit
+/.copilot
+/.cursor
 /.claude
+/.windsurf
+/.aider*
+/.gemini
 
 ## Temp dirs & trash
 /temp
 /tmp
 /*-old
-/cmd/test*
-.DS_Store
-/go.work*
-*.cache
-*.out
-*.env
-/out
-/gen
-/cover*.*
-/report.xml

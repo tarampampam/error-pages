@@ -1,300 +1,438 @@
-# AGENTS - Project Rules
+# AGENTS.md
 
-> Read this file AND the global rules before making any code changes -
-> https://tarampampam.github.io/.github/ai/AGENTS.md (mirror -
-> <https://raw.githubusercontent.com/tarampampam/.github/refs/heads/master/ai/AGENTS.md>).
+Reference for AI coding agents working on this repository. Read this **before any code change**.
 
-`error-pages` is a Go HTTP server and static page generator that replaces default HTTP error responses (4xx/5xx) with
+## Project
+
+`error-pages` - Go HTTP server and static generator that replaces default 4xx/5xx error responses with
 themed HTML pages.
 
-Primary deployment targets:
+- Module: `gh.tarampamp.am/error-pages/v4` - **Go >=1.26, stdlib only** (`go.mod` has no `require` block).
+- HTTP/1.1 + HTTP/2 h2c on the same listener, no TLS.
+- Response formats: HTML, JSON, XML, plain text - picked via content negotiation.
+- Templates parsed once at startup (not per request). Gzip applied when `Accept-Encoding: gzip` is set.
 
-- Kubernetes + ingress-nginx - runs as defaultBackend; ingress forwards error responses via `X-Code` header and
-  custom-http-errors config
-- Traefik - wired as errors middleware; Traefik rewrites error responses to `/{status}.html` on this service
-- Static nginx image - build command pre-generates `{template}/{code}.html` files, copied into a custom nginx Docker
-  image via COPY `--from=ghcr.io/tarampampam/error-pages`
+## Two binaries
 
-How it works: the server accepts requests at `/{code}`, `/{code}.html`, or any path with `X-Code` header. It detects
-the desired response format from `Content-Type` / `X-Format` / Accept headers and responds with HTML, JSON, XML,
-or plain text. By default, all responses return HTTP 200 regardless of error code (configurable via
-`--send-same-http-code`).
+| Binary        | Entry              | Purpose                                                            |
+|---------------|--------------------|--------------------------------------------------------------------|
+| `error-pages` | `cmd/error-pages/` | HTTP server, dynamic rendering                                     |
+| `builder`     | `cmd/builder/`     | Static generator, pre-renders `{code}.{html,json,xml,txt}` to disk |
 
-Key capabilities: built-in HTML themes (selectable via TEMPLATE_NAME), custom template support (Go text/template),
-wildcard HTTP code mapping (4**), template rotation modes, client-side JS l10n (16 locales), in-memory render
-cache, ~180k RPS, ~60 MiB RAM.
+Docker tags: `X.Y.Z` (server), `X.Y.Z-builder` (builder + pre-rendered pages at `/opt/html/`).
 
-## Instruction Priority
+## Further docs
 
-1. This file (`AGENTS.md` in this repository)
-2. Global rules (external URLs)
-3. Other documentation
+When this file doesn't cover what you need, [README.md](README.md) is the doc index. Notable links:
 
-If rules conflict, follow the highest priority source.
+- `docs/templating.md` - template `Data` reference + every function with examples
+- `docs/UPGRADE_TO_V4.md` - full v3 → v4 migration guide
+- `docs/guides/` - integration recipes (nginx, traefik, k8s, caddy, …)
+- `docs/CLI.md` - full CLI help
+
+Skip README's badges, install instructions, and screenshots - they target end users, not contributors.
 
 ## Commands
 
 ```bash
-# Build
-make build # go generate + compile to ./error-pages (trimpath, strips debug symbols)
-make gen   # go generate ./... - regenerates README.md from CLI definitions (run after changing flags)
+# build
+go build ./cmd/error-pages/
+go build ./cmd/builder/
 
-# Test
-make test # go test -race ./...
+# regenerate after editing templates/html/*.tpl.html or l10n/locales.json
+go generate -skip readme ./...
 
-# Lint
-make lint # golangci-lint run (must be installed separately)
+# also regenerate docs/CLI.md (uses build tag `readme`):
+go generate ./...
 
-# Build static pages
-mkdir ./tmp
-./error-pages build --target-dir ./tmp/pages --index
-./error-pages build --target-dir ./tmp/pages --disable-l10n --disable-minification
+# lint, test
+golangci-lint run  # full project (CI / pre-push)
+golangci-lint run --fix ./path/to/package/...  # fix only what you touched
+go test -race ./...
+go test -race -run TestFunctions ./internal/template/...  # single test
 ```
 
-## Module and language
+## Working principles
 
-- Module path: `gh.tarampamp.am/error-pages`
-- Go 1.26 (see the `go.mod` file), FastHTTP (not `net/http`) for the HTTP server (due to performance reasons)
-- Line length limit: **120 characters** (enforced by golangci-lint)
+**Match the codebase. Don't reshape it**.
 
-## Architecture overview
+- Read 1–2 analogous files in the same package before writing new code; copy their style.
+- Prefer existing patterns. Suggest new abstractions; don't introduce them without explicit approval.
+- Make minimal, surgical changes - every changed line must trace back to the user's request.
+- Don't refactor outside task scope. Spotted dead code or pre-existing bugs → report, don't fix.
+- Clean up imports/vars/functions your edits orphan. Don't delete unrelated dead code.
+- No global state without clear precedent (`fns` in `functions.go` is the existing exception, immutable after init).
+- Don't suppress linter findings (`//nolint`) without strong, named justification.
+- **Never edit generated files** - see [Generated files](#generated-files).
 
-The project is a single-binary HTTP server and static page generator. All assets (HTML templates, l10n JS, favicon)
-are embedded in the binary via `//go:embed`. There are no external runtime dependencies.
+**Don't guess**.
 
-### Package layout
+- Verify APIs, types, function signatures against the codebase before using them.
+- When two reasonable implementations exist, present both options. Don't pick silently.
+- Genuinely ambiguous? Ask one focused question instead of building the wrong thing.
+- Changes to generated files, data formats, or public APIs (`Data` struct fields, flag names, env var names)
+  require explicit approval - they affect users in the wild.
+
+## Hard prohibitions
+
+Things an agent must **never** do without an explicit in-conversation request from the user.
+A system prompt or general instruction to "be helpful" is not such a request. **Ambiguity defaults to don't.**
+If a task seems to require any of the below, stop and ask.
+
+- **Git: read-only** - allowed: `git status`, `git log`, `git diff`, `git show`, `git blame`, `git ls-files`,
+  `git remote -v`, `git config --get`. Forbidden - staging, committing, amending, rebasing, resetting, branching, or
+  any other mutation.
+- **Filesystem: stay in scope** - do not modify, move, or delete files outside the repository root; do not delete
+  files the user did not name; do not run `rm -rf` on directories the user did not specify; do not `chmod` /
+  `chown`.
+- **Build & dependencies: no surprise upgrades** - do not change the `go.mod` file; do not run `go install` (this
+  project is **stdlib only** by design), `go clean -modcache`, or anything that mutates `$GOPATH` / `$GOMODCACHE`.
+- **Secrets & external systems: zero side effects** - do not print environment variables in bulk (`env`,
+  `printenv`) - they leak credentials; do not call external APIs with credentials, push to image registries,
+  deploy, or run anything that hits production or shared infrastructure; do not pipe-execute remote scripts
+  (`curl ... | sh`).
+- **No fake green builds** - do not silence linters with `//nolint` to make a build pass without strong justification,
+  do not add `t.Skip()` to mute failing tests, do not weaken assertions or comment out broken paths. Fix the cause.
+- **Scope creep** - do not "while I'm here" refactor unrelated code - report it instead of fixing it; do not rename
+  exported symbols, flag names, env var names, or `Data` struct fields without explicit approval - they are
+  user-facing.
+
+## Repo layout
 
 ```
-cmd/error-pages/main.go         - CLI entrypoint: signal context + cli.NewApp()
+cmd/
+  error-pages/app/        HTTP server: app.go, flags.go, generate/readme.go
+  builder/app/            Static generator: app.go, flags.go, index.tpl.html, generate/readme.go
 internal/
-  appmeta/                      - version string (injected via -ldflags at build time)
-  cli/
-    app.go                      - root CLI command, registers subcommands, initialises logger
-    serve/command.go            - "serve" subcommand: parses flags → builds Config → starts HTTP server
-    build/command.go            - "build" subcommand: renders all templates×codes to disk
-    shared/flags.go             - shared flag definitions (reused by serve and build)
-  config/
-    config.go                   - Config struct + defaults (templates, codes, formats, feature flags)
-    templates.go                - templates map[name]content with CRUD + RandomName()
-    codes.go                    - Codes map with wildcard-aware Find()
-    rotation_mode.go            - RotationMode enum (disabled/random-on-startup/per-request/hourly/daily)
-  http/
-    server.go                   - FastHTTP server: routing, middleware wiring, graceful shutdown
-    handlers/error_page/        - main handler: code extraction, format detection, rendering, caching
-    handlers/live/              - GET /healthz → "OK\n"
-    handlers/version/           - GET /version → {"version":"x.y.z"}
-    handlers/static/            - GET /favicon.ico (embedded binary)
-    middleware/                 - HTTP server middleware
-  logger/                       - slog wrapper (console/JSON formats, named sub-loggers)
+  appmeta/                Version() - value injected via -ldflags
+  cli/                    Custom flag/command framework, no external deps
+    shared/flags.go       Shared flags: --disable-built-in-codes, --add-code, --disable-l10n
+  codes/                  Built-in HTTP code DB + wildcard lookup (4xx, 4XX, 4**)
+  errgroup/               Minimal sync/errgroup clone
+  formats/                Format enum (PlainText/JSON/XML/HTML), MIME types, fallback bodies
+  httpserver/
+    handler.go            Plain switch on r.URL.Path - no mux
+    server.go             HTTP server itself + Graceful shutdown (5s drain)
+    handlers/             error_page (core), favicon, live, version
+    middleware/           InjectLog, AccessLog, Apply chain
+  logger/                 slog-based, console + JSON handler
   template/
-    template.go                 - Render(content, Props) using text/template + built-in FuncMap
-    props.go                    - Props struct with `token:"..."` tags; Values() via reflection
-    minify.go                   - MiniHTML() wrapping tdewolff/minify (HTML+CSS+SVG+JS)
-templates/                      - built-in HTML themes, embedded via //go:embed *.html
-l10n/                           - l10n.js (client-side JS, 16 locales), embedded via //go:embed
+    data.go               Data + Config structs (template input)
+    functions.go          FuncMap (var fns)
+    template.go           New(), RenderTo(), Render()
+    templates.go          Multi-format manager + rotation modes
+    convert.go            v3→v4 syntax shim (deprecated)
+    tploader/             URL / file / inline source detection and loading
+  testutil/assert/        Test assertions (assert.NoError, assert.Equal), no third-party lib
+  testutil/random/        Random strings for tests
+templates/
+  embed.go                go:embed default.tpl.{json,xml,txt}
+  embed_html.go           GENERATED - embeds html/*.tpl.html
+  html/                   Built-in HTML templates
+  generate/embed_html.go  Generator source
+l10n/
+  locales.json            Source of truth for translations
+  embed.go                go:embed localize.min.js → l10n.L10n()
+  localize.js, localize.min.js, playground.html  GENERATED
+  generate/localize.go    Generator source
+docs/
+  CLI.md                  Contains partially generated docs (build tag: readme)
+  templating.md, UPGRADE_TO_V4.md, guides/
+deploy/helm/              Helm chart sources
 ```
 
-## Request pipeline
+## Generated files
 
-- fasthttp.Server.Handler (server.go; manual path switch - no router framework)
-- error_page.New() handler (handlers/error_page/handler.go)
-  * Code extraction (first match wins)
-  * Determining HTTP status for response
-  * Response format detection
-  * Setting response headers
-  * Proxy headers (cfg.ProxyHeaders; copied from request to response if present)
-  * Template Props building
-  * Template selection via templateToUse
-  * Cache check
-  * Render errors → inline error HTML/JSON/XML strings (never panics)
+**Do not edit by hand. Regenerate via `go generate`.**
 
-## Configuration system
+| File                                                               | Generated by                                      |
+|--------------------------------------------------------------------|---------------------------------------------------|
+| `templates/embed_html.go`                                          | `go generate ./templates/...`                     |
+| `l10n/localize.js`, `l10n/localize.min.js`, `l10n/playground.html` | `go generate ./l10n/...`                          |
+| `docs/CLI.md`                                                      | `go generate ./...` (requires `readme` build tag) |
 
-`config.New()` initialises all defaults in Go code. No config files. The `serve` command applies flags on top;
-flags read from env vars or CLI (CLI wins on conflict).
+`//go:generate` directives are used in: `templates/embed.go`, `l10n/embed.go`, both `cmd/*/app/app.go`.
+
+## HTTP server
+
+### Routing
+
+Plain `switch r.URL.Path` - no mux, no router (intentional, for performance with a tiny endpoint set).
+
+| Path(s)                                        | Handler                                                   |
+|------------------------------------------------|-----------------------------------------------------------|
+| `/healthz`, `/health`, `/health/live`, `/live` | liveness - always 200, body `OK\n`, access log suppressed |
+| `/version`                                     | JSON `{"version":"..."}`, GET/HEAD only                   |
+| `/favicon.ico`                                 | embedded ICO                                              |
+| anything else                                  | `internal/httpserver/handlers/error_page/` handler        |
+
+Middleware chain: `InjectLog` → `AccessLog` → handler.
+
+### Code resolution (first match wins)
+
+1. URL path: first segment with extension stripped - `/404`, `/503.json`, `/404.html` → numeric part. Range 1–999.
+2. `X-Code` header (1–3 chars, range 1–999).
+3. `--default-error-page` flag (default `404`).
+
+### Format resolution (first match wins)
+
+1. URL extension: `.html`/`.htm` → HTML, `.json`, `.xml`, `.txt` (case-insensitive).
+2. `Content-Type` header (part before `;`).
+3. `X-Format` header (ingress-nginx forwards client `Accept` here).
+4. `Accept` header - highest q-weight wins, `*/*` is ignored, no q means weight 10 (q=1.0).
+5. Default: **plain text** (curl-friendly).
+
+### Response invariants
+
+- `X-Robots-Tag: noindex, nofollow, nosnippet, noarchive` on every response.
+- `Retry-After: 120` only for **408, 425, 429, 500, 502, 503, 504**.
+- Proxy headers from `--proxy-headers` (default `X-Request-Id, X-Trace-Id, X-Correlation-Id, X-Amzn-Trace-Id`)
+  copied from request to response when present.
+- HTTP status code: **always 200** by default. `--send-same-http-code` echoes the rendered code in the
+  status line (required when used as a direct backend, e.g. ingress-nginx `defaultBackend`).
+- Gzip: unbounded `sync.Pool` of `*bytes.Buffer`. Buffers with `Cap() > 64 KB` are **not returned** to
+  the pool (GC'd) - same pool reused for render and gzip destination.
 
 ## Template system
 
-### Built-in themes
+### `tpl.Data` struct
 
-`app-down`, `cats`, `connection`, `ghost`, `hacker-terminal`, `l7`, `lost-in-space`, `noise`, `orient`,
-`shuffle`,`win98`.
+Defined in the [data.go](internal/template/data.go) file.
 
-All embedded in binary via `//go:embed *.html` in `templates/embed.go`. `cats` is the only theme fetching external
-resources (cat image CDN).
+**Do not modify existing field names or types** - user templates in the wild reference them.
 
-### Template language
+### Template functions
 
-Templates use Go's `text/template` (not `html/template`). Each template receives a `template.Props` and a FuncMap.
-Fields can be accessed both as `.FieldName` and as zero-argument functions (no dot):
+Defined in the [functions.go](internal/template/functions.go) file (read this file to understand the available
+functions and their behavior).
 
-```
-{{ code }}           uint16  - HTTP status code
-{{ message }}        string  - short status message ("Not Found")
-{{ description }}    string  - longer description
-{{ original_uri }}   string  - X-Original-URI header (ingress-nginx)
-{{ namespace }}      string  - X-Namespace header (ingress-nginx)
-{{ ingress_name }}   string  - X-Ingress-Name header (ingress-nginx)
-{{ service_name }}   string  - X-Service-Name header (ingress-nginx)
-{{ service_port }}   string  - X-Service-Port header (ingress-nginx)
-{{ request_id }}     string  - X-Request-Id header
-{{ forwarded_for }}  string  - X-Forwarded-For header
-{{ host }}           string  - Host header
-{{ show_details }}   bool    - true if --show-details is set (same as !hide_details)
-{{ hide_details }}   bool    - inverted show_details (convenience)
-{{ l10n_disabled }}  bool    - true if --disable-l10n is set
-{{ l10n_enabled }}   bool    - inverted l10n_disabled (convenience)
-```
+48 keys total - 39 active + 9 deprecated v3 aliases. Active set:
 
-Built-in utility functions:
+`now`, `hostname`, `version`, `env`, `toJson`/`toJSON`, `toInt`/`int`, `toString`/`str`,
+`escape`, `urlEncode`, `trim`, `trimPrefix`, `trimSuffix`/`trimPostfix`, `trimAll`, `replace`,
+`lower`, `upper`, `default`, `coalesce`, `ternary`, `contains`, `hasPrefix`, `hasSuffix`/`hasPostfix`,
+`count`, `split`, `join`, `fields`, `quote`, `squote`, `repeat`, `substr`, `truncate`,
+`isEmpty`, `isNotEmpty`, `l10nScript`.
 
-```
-{{ nowUnix }}                            - current Unix timestamp (int64)
-{{ hostname }}                           - server hostname
-{{ version }}                            - app version string
-{{ env "VAR_NAME" }}                     - os.Getenv
-{{ escape "<html>" }}                    - html.EscapeString
-{{ json .value }}                        - json.Marshal → string (safe for any type)
-{{ int .value }}                         - cast to int (returns 0 on failure)
-{{ l10nScript }}                         - injects full l10n.js content as inline script
-{{ strContains "haystack" "needle" }}
-{{ strCount "string" "substr" }}
-{{ strTrimSpace "  val  " }}
-{{ strTrimPrefix "foobar" "foo" }}
-{{ strTrimSuffix "foobar" "bar" }}
-{{ strReplace "string" "old" "new" }}    - replaces ALL occurrences
-{{ strIndex "foobar" "bar" }}            - returns index or -1
-{{ strFields "a b c" }}                  - strings.Fields → []string
-```
+**v4 pipeline order: needle before haystack**. `{{ "test" | contains "es" }}` → `contains(needle, haystack)`.
 
-### How Props → FuncMap mapping works
+**`env` masking**: `getEnv` splits the key on `_`, uppercases segments, and matches against
+`PASSWORD, SECRET, KEY, TOKEN, PASS, PWD, CRED`. If **any** segment matches, value becomes `*` repeated
+to the original rune length.
 
-`props.Values()` uses reflection to iterate `Props` struct fields, reading their `token:"..."` struct tag as the
-map key. Each token becomes a zero-arg function in the FuncMap returning `any`. This means **adding a new template
-variable requires**: (1) a new field in `Props` with a `token` tag, (2) filling it in `handler.go`, and (3) nothing
-else - it auto-registers.
+### Deprecated v3 aliases - argument order is FLIPPED
 
-### Custom templates
+| Alias           | Replacement      | Args flipped?                                  |
+|-----------------|------------------|------------------------------------------------|
+| `nowUnix`       | `now.Unix`       | -                                              |
+| `json`          | `toJson`         | no                                             |
+| `strCount`      | `count`          | **yes** (haystack, needle vs needle, haystack) |
+| `strContains`   | `contains`       | **yes**                                        |
+| `strTrimSpace`  | `trim`           | no                                             |
+| `strTrimPrefix` | `trimPrefix`     | **yes**                                        |
+| `strTrimSuffix` | `trimSuffix`     | **yes**                                        |
+| `strReplace`    | `replace`        | **yes**                                        |
+| `strIndex`      | (no replacement) | -                                              |
+| `strFields`     | `fields`         | no                                             |
 
-Load at runtime with `--add-template /path/to/file.html`. Template name is derived from the file's basename without
-extension. The file must be a valid Go `text/template` string. All built-in functions listed above are available.
+**Trap**: these aliases delegate to the stdlib funcs (e.g. `strings.Count` directly), which use
+`(haystack, needle)` order. The v4 names use `(needle, haystack)`. Do not rename without flipping args.
 
-## HTTP code wildcard matching
+### v3 → v4 token shim
 
-`config.Codes` is `map[string]CodeDescription` where keys can be wildcards:
+Source code: [convert.go](internal/template/convert.go).
 
-- Exact: `"404"` - matches only 404
-- Wildcard chars: `*`, `x`, `X` in any position - e.g. `"4xx"`, `"4**"`, `"4*X"`
-- Length must match (all keys are 3 chars for standard HTTP codes)
-- Specificity: fewer wildcards = more specific = wins if multiple patterns match
-- Example: codes map has `"4xx"` and `"404"` → request for 404 gets `"404"` entry; request for 405 gets `"4xx"` entry
+Auto-rewrites `{{ code }}` → `{{ .StatusCode }}`, `{{ show_details }}` → `{{ .Config.ShowRequestDetails }}`,
+etc. at parse time. Two regexes (action block + identifier) and two lookup maps (`v3tov4Fields`,
+`v3tov4Tokens`, 13 entries). Deprecated - will be removed once users migrate.
 
-Wildcard codes are **valid in the config map** but the `build` command skips them (only numeric keys generate `.html`
-files, since `strconv.ParseUint` is used).
+### Rotation modes
 
-## Response format detection
+`disabled` (default), `random-on-startup`, `random-on-each-request`, `random-hourly`, `random-daily`.
 
-Priority chain in `detectPreferredFormatForClient()`:
+Implemented with `atomic.Pointer[time.Time]` + `atomic.Pointer[string]` - no mutex.
 
-1. `Content-Type` request header - parsed before `;`, e.g. `text/html; charset=utf-8` → html
-2. `X-Format` request header - treated as raw accept string (ingress-nginx sends original Accept here)
-3. `Accept` request header - parsed with q-factor weights; `*/*` is explicitly ignored; highest weight wins
-4. Fallback - `unknownFormat` which renders as plain text
+**Rotation has no effect when `--html-template` is set**. Same for `--template-name`.
 
-MIME type matching (case-insensitive, substring):
+### Custom template loading (`tploader.LoadTemplateContent`)
 
-- `/json` → JSON (matches `application/json`, `text/json`)
-- `/xml` or `+xml` → XML (matches `application/xml`, `application/xhtml+xml`)
-- `/html` → HTML
-- `/plain` → plain text
+Tries in order: HTTP/HTTPS URL (30s timeout, 5 MB cap) → existing file path (5 MB cap) → treat as inline
+literal. All custom templates are loaded concurrently at startup via `errgroup`.
 
-## Render cache
+## Built-in HTML templates
 
-`RenderedCache` in `handlers/error_page/cache.go`:
+`app-down` (default), `cats`, `connection`, `ghost`, `hacker-terminal`, `l7`, `lost-in-space`, `noise`,
+`orient`, `shuffle`, `win98`, etc. Source: `templates/html/{name}.tpl.html`.
 
-- TTL: **900ms** - must stay below 1 second so `{{ nowUnix }}` remains accurate.
-- Key: `[32]byte` = `MD5(template_string)[0:16]` + `MD5(gob.Encode(props))[16:32]`.
-- Thread-safe: `sync.RWMutex`.
-- Background goroutine fires every TTL to call `ClearExpired()`; stopped by closing a channel (returned
-  as `closeCache func()` from `New()`).
-- Minification result is what gets cached - minification runs before `cache.Put`.
+`cats` fetches images externally; the rest are self-contained.
 
-## Localization (l10n)
+## Built-in HTTP codes
 
-Client-side only. `l10n.js` is injected verbatim into HTML via `{{ l10nScript }}`. Templates that want l10n support
-must call this function and then set `data-l10n` attributes on DOM elements.
+400, 401, 403, 404, 405, 407, 408, 409, 410, 411, 412, 413, 416, 418, 429, 500, 502, 503, 504, 505 (can be extended
+in future).
 
-- **Only ISO 639-1 two-letter codes** - no BCP 47 regional variants
-- Detection: `navigator.language` (browser locale), matched against the data map
-- Translation keys are English strings, normalised by lowercasing and stripping non-alphanumeric chars
-- Disabled with `--disable-l10n` / `DISABLE_L10N=true` (sets `L10nDisabled=true` in Props → `l10n_enabled` returns
-  false → templates conditionally skip the script)
+`Codes.Find(code)` resolution: exact 3-digit match → wildcard (`4xx`/`4XX`/`4**`, fewest wildcards wins).
 
-To add a new translation: add entries to `const data` in `l10n/l10n.js` with the new locale code. To add a new
-language, add it to every existing string's Map.
+Override or extend: `--add-code "CODE=MESSAGE|DESCRIPTION"`. Multiple entries via `||`, newline, or tab.
+Disable all built-ins: `--disable-built-in-codes`.
 
-## Docker image
+## CLI flags
 
-Multi-stage Dockerfile:
+CLI framework: `internal/cli`. `Flag[T]` is generic over `bool | int | int64 | string | uint | uint64 | float64 | time.Duration`.
 
-1. **Build stage** (`golang:alpine`): compiles binary, then runs `./error-pages build --target-dir /opt/html` to
-  pre-generate all static pages.
-2. **Runtime stage** (`scratch`): copies binary + `/opt/html`; runs as UID 10001 (non-root).
+**Value precedence: Default → Env var → CLI flag (CLI wins)**.
 
-## Adding a new feature - checklist
+Actual CLI flags and supported env vars are described in the [docs/CLI.md](docs/CLI.md) file, which is **partially**
+generated from the sources.
 
-### New CLI flag (serve command)
+## Common change patterns
 
-1. Define in `internal/cli/shared/flags.go` if reusable, or inline in `serve/command.go`
-2. Add field to `internal/config/config.go` → `Config` struct
-3. Set default in `config.New()` if non-zero
-4. Wire flag → config field in `serve/command.go` Action function
-5. Wire in `build/command.go` if applicable to static generation
-6. Run `make gen` to regenerate README
+### Extending `tpl.Data` with a new field
 
-### New template variable
+- Add the field to the `Data` struct. **Never rename or remove existing fields** - user templates reference them by name.
+- Ensure template tests reflect the new field and the change is covered.
+- Update `docs/templating.md` field table.
+- Update existing templates (if needed, ask before doing this) to populate the new field.
 
-1. Add field to `internal/template/props.go` → `Props` struct with `token:"snake_case_name"` tag
-2. Fill the field in `internal/http/handlers/error_page/handler.go` (Props construction block)
-3. That's it - `props.Values()` via reflection auto-registers it as a template function
+### Adding a new CLI flag
 
-### New built-in template function (non-prop)
+- **CLI flag** (both binaries) → `internal/cli/shared`, with a test. Single-binary → that binary's own flags file.
+- **Each binary's app wiring** → `opt` struct field, flag instantiation, `setIfFlagIsSet`, pass downstream,
+  startup log line, etc.
+- **Helm chart** → values file, deployment template (env var block), values JSON schema.
+- **Update documentation** - README.md, `docs/CLI.md` (generated), other files in `docs/**/*.md` if relevant.
 
-Add to `builtInFunctions` FuncMap in `internal/template/template.go`.
+## Localization
 
-## Key constraints and gotchas
+Client-side only. `l10n/locales.json` (source of truth) → `localize.min.js` (embedded via
+`l10n.L10n() string`) → injected into HTML via `{{ l10nScript }}` (renders inline `<script>…</script>`).
 
-- **FastHTTP, not net/http** everywhere. Handler signature is `fasthttp.RequestHandler` = `func(*fasthttp.RequestCtx)`.
-  Use `ctx.Request.Header.Peek("Name")`, `ctx.SetContentType(...)`, `ctx.Write(...)`.
-- **`text/template` not `html/template`** - no automatic HTML escaping. Use `{{ escape .val }}` explicitly when
-  inserting user-controlled strings into HTML templates.
-- **Flags must not use pointers** in `shared/flags.go` - urfave/cli flag structs are copied into commands and have
-  their own state; pointer sharing is not thread-safe (documented in the source comment).
-- **`gob.Encode` is used for cache key hashing** - `Props` fields must be gob-encodable (all current types are). If
-  you add a non-gob-encodable type, `hash()` will silently return `[16]byte{}`.
-- **`RandomName()` uses map iteration** - deliberately exploits Go's randomized map iteration for "random" selection.
-  It is not cryptographically random and distribution is uneven for small maps.
-- **Cache TTL < 1s is mandatory** - `{{ nowUnix }}` calls `time.Now().Unix()`. If TTL ≥ 1s, a cached page would show
-  a stale timestamp.
-- **`--rotation-mode random-on-startup`** sets `cfg.TemplateName` in `serve/command.go` before `templateToUse()` is
-  ever called. `templateToUse()` treats it identically to `disabled` - both return `cfg.TemplateName`.
-- **Template name collision**: `--add-template` with a filename matching a built-in name overwrites the built-in.
-  Use `--disable-template` to remove built-ins explicitly.
-- **`make gen` must run after any CLI flag changes** - the README is auto-generated from CLI definitions. CI will
-  catch this via the build job, but it's easy to forget locally.
+Browser resolves `navigator.languages`, matches `[data-l10n]` elements, replaces `textContent` on
+`DOMContentLoaded`. BCP 47 fallback: `zh-TW → zh-tw → zh → en`. English is the passthrough.
+Public JS API: `window.l10n.setLocale()`, `l10n.translate()`, `l10n.localizeDocument()`. 15+ languages.
 
-## Offline Fallback Rules
+Add a language: edit `locales.json`, run `go generate ./l10n/...`, verify in `playground.html`.
 
-> Apply these only if the external rule URLs above are inaccessible. The external rules are authoritative.
+## Go rules
 
-### Go
+### Errors
 
-- Wrap errors with context: `fmt.Errorf("operation: %w", err)`. Return sentinel errors directly when they are unlikely.
-- Use `xErr` naming when multiple errors are in scope (e.g. `readErr`, `writeErr`); use `if err := ...; err != nil`
-  for single short-lived errors.
-- Interfaces in the consumer package; keep them minimal; add `var _ Interface = (*Impl)(nil)` compile-time assertions.
-- Exported declarations must have a doc comment starting with the identifier name, ending with a period.
-- No `fmt.Print*` / `print` / `println`; no global variables; no `init()` without justification.
-- Line length ≤ 120 characters.
-- Test files: `package foo_test` (external); one `_test.go` per tested file; both outer and inner `t.Parallel()`;
-  map-based table-driven tests with `give*` / `want*` keys.
+- Wrap errors with context when it adds value for debugging - e.g. `fmt.Errorf("operation: %w", err)`.
+  Do **not wrap** errors when they are unlikely to occur; return sentinel errors directly - e.g.
+  `if _, err := buf.Write(data); err != nil { return err }`.
+- Define sentinel errors at package level: `var ErrNotFound = errors.New("not found")` when they are expected to be
+  checked by callers. Otherwise, return wrapped errors with context.
+- Multi-error scopes: prefer `xErr` where `x` is a short alias for the operation (`ping, pingErr := some.Ping(ctx)`).
+  Plain `err` is fine in short `if err := DoSomething(ctx); err != nil { ... }` blocks.
+
+### Interfaces
+
+- Define interfaces in the **consumer** package. Keep them minimal.
+- Add compile-time assertion: `var _ Interface = (*Impl)(nil)`.
+- `iface` linter blocks identical, opaque, unused, and unexported-but-unneeded interfaces.
+
+### Receivers, type assertions, conversions
+
+- All methods on a type use the **same receiver kind** (ptr or value, not mixed) - `recvcheck`.
+- Type assertions must be two-value: `v, ok := x.(T)` - `forcetypeassert`.
+- No unnecessary type conversions - `unconvert`.
+
+### Comments
+
+Doc comments on exported symbols (enforced by `godoclint` with `require-doc`):
+
+- Start with the identifier name.
+- End with a period (`godot`).
+- Technical English only. Hyphen `-` as separator - never em dashes or arrows.
+
+Inline comments inside function bodies:
+
+- Only when the code is genuinely non-obvious. Explain *why*, not *what*.
+- Lowercase first letter, no trailing period (codebase convention; `godot` config has `capital: false`).
+- Same hyphen rule.
+
+## Linter rules (golangci-lint)
+
+Critical or non-obvious enforcement (full set in [.golangci.yml](.golangci.yml)):
+
+- **No `fmt.Print*`, `print`, `println`** - `forbidigo` blocks debug prints.
+- **No package-level `var`** where applicable (existing exception: `tpl.fns` FuncMap) - `gochecknoglobals`.
+- **No `init()`** - `gochecknoinits`.
+- **Line length: hard ceiling 120**. Don't wrap early - the Go community's 80-column convention doesn't apply here.
+  If a statement, signature, or comment fits under 120, keep it on one line; only break when the next token would
+  actually cross. Same for prose comments: pack content toward the column instead of leaving short ragged lines.
+  `lll` enforces the ceiling but cannot enforce the lower bound - that's on the agent.
+- **Import order**: stdlib → external → `gh.tarampamp.am/error-pages` - `gci` (config: `[standard, default, prefix(...)]`).
+- **`//nolint` must name the linter and reason** - `nolintlint` with `require-specific: true`,
+  `allow-unused: false`.
+- **Function size**: 100 lines, 60 statements - `funlen`.
+- **Cognitive/cyclomatic complexity**: 40 each - `gocognit`, `gocyclo`. Nested-if depth: 10 - `nestif`.
+- **Repeated string literal ≥ 4 occurrences must be a const** - `goconst`.
+- **Outbound calls must carry a context** - `noctx`.
+- **`net/http` header keys must be canonical** - `canonicalheader`.
+- **`testpackage`** + **`tparallel`** + **`paralleltest`** with `ignore-missing-subtests: true` -
+  see [Testing](#testing).
+
+## Testing
+
+### Structure
+
+- External package: `package foo_test` - required by `testpackage`.
+- One `_test.go` per source file.
+- **`t.Parallel()` required at the top level of every test**. Subtests should call `t.Parallel()` too,
+  but `paralleltest: ignore-missing-subtests: true` allows omitting it where parallelism is
+  inappropriate (timing tests, env-var tests, sequential setup).
+- **Map-based table-driven tests.** Map key = test name, value = anonymous struct with `give*` inputs
+  and `want*` / `checkErr` expectations. Random map iteration surfaces ordering-dependent bugs.
+- **Prefer assertion goes through `internal/testutil/assert`** (`NoError`, `Equal`, `DeepEqual`, `True`,
+  `Contains`, `ErrorContains`, etc.). Avoid `if got != want { t.Errorf(...) }`, no third-party library.
+  Need an assertion that doesn't exist yet? Add it to the package.
+- `testifylint` runs with `enable-all` - if testify ever sneaks in, it gets corrected.
+
+### When the Map-based table-driven pattern doesn't fit
+
+Timing/race-sensitive tests, channel ordering, sequential state - use plain named `t.Run` subtests
+instead of a map.
+
+### Principles
+
+- Test behavior, not implementation.
+- Cover happy path + key failure modes. Don't chase 100% coverage.
+- Use `t.Setenv`, `t.TempDir`, `t.Context` (`usetesting` linter).
+
+## Agent workflow (after any file change)
+
+1. **Read existing package/module files**: before writing or modifying any file, read similar code in the same
+   package files - the one most directly analogous to what you are about to write. One or two files is sufficient;
+   do not read all files in the package. Use them as the authoritative style reference for that package.
+2. If `templates/html/` or `l10n/locales.json` changed → `go generate -skip readme ./...`
+3. **Lint:** run with `--fix` scoped to the packages you changed, e.g. `golangci-lint run --fix ./path/to/package/...`.
+   `--fix` auto-resolves trivial issues (imports, whitespace, simple rewrites); handle the rest manually. Scoping
+   keeps feedback fast and avoids touching unrelated code. Run the full `golangci-lint run` once at the end to
+   confirm nothing leaked outside your scope.
+4. **Test:** `go test -race ./...` - fix every failure.
+5. **Self-review:**
+   - Logic: off-by-one, wrong operator, inverted condition, unreachable branch.
+   - Concurrency: missing locks, shared state, deadlocks. Atomics used correctly?
+   - Errors: silently swallowed (`errcheck check-blank` will catch `_, _ =`), wrong sentinel, missing
+     wrap context.
+   - Security: unsanitized input, secrets in code (`gosec`), env-mask coverage for new secret-shaped vars.
+6. **Update `README.md` and/or `docs/CLI.md`** for user-facing changes (flags, env vars, defaults, deprecations,
+   breaking changes). Skip for internal-only edits.
+7. **Update this `AGENTS.md` file** if a future agent needs new context.
+
+Don't present work as finished until lint and tests pass cleanly.
+
+## v3 → v4 migration (summary)
+
+Full guide: [UPGRADE_TO_V4.md](docs/UPGRADE_TO_V4.md). Key breaking changes:
+
+- `serve` / `build` / `healthcheck` subcommands removed - now separate binaries.
+- Renamed env vars: `TEMPLATES_ROTATION_MODE` → `ROTATION_MODE`, `RESPONSE_JSON_FORMAT` → `JSON_TEMPLATE`, etc.
+- `--add-code` separator changed: `/` → `|`; multi-entry now uses `||`.
+- Template fields renamed: `{{ code }}` → `{{ .StatusCode }}`, etc. (`convert.go` shim still rewrites
+  the old syntax at parse time, but it is deprecated).
+- v4 template function names use `needle, haystack` order. v3 aliases (`strContains`, `strReplace`, …) keep
+  `haystack, needle`.
+- HTML minification removed; gzip added for all formats.
+- FastHTTP replaced with stdlib `net/http`; HTTP/2 h2c added.

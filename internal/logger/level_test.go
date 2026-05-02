@@ -1,80 +1,63 @@
 package logger_test
 
 import (
-	"errors"
 	"testing"
 
-	"github.com/stretchr/testify/require"
-
-	"gh.tarampamp.am/error-pages/internal/logger"
+	"gh.tarampamp.am/error-pages/v4/internal/logger"
+	"gh.tarampamp.am/error-pages/v4/internal/testutil/assert"
 )
 
 func TestLevel_String(t *testing.T) {
+	t.Parallel()
+
 	for name, tt := range map[string]struct {
-		giveLevel  logger.Level
-		wantString string
+		give logger.Level
+		want string
 	}{
-		"debug":     {giveLevel: logger.DebugLevel, wantString: "debug"},
-		"info":      {giveLevel: logger.InfoLevel, wantString: "info"},
-		"warn":      {giveLevel: logger.WarnLevel, wantString: "warn"},
-		"error":     {giveLevel: logger.ErrorLevel, wantString: "error"},
-		"<unknown>": {giveLevel: logger.Level(127), wantString: "level(127)"},
+		"debug":     {give: logger.DebugLevel, want: "debug"},
+		"info":      {give: logger.InfoLevel, want: "info"},
+		"warn":      {give: logger.WarnLevel, want: "warn"},
+		"error":     {give: logger.ErrorLevel, want: "error"},
+		"<unknown>": {give: logger.Level(127), want: "level(127)"},
 	} {
 		t.Run(name, func(t *testing.T) {
-			require.Equal(t, tt.wantString, tt.giveLevel.String())
+			t.Parallel()
+
+			assert.Equal(t, tt.want, tt.give.String())
 		})
 	}
 }
 
 func TestParseLevel(t *testing.T) {
+	t.Parallel()
+
 	for name, tt := range map[string]struct {
-		giveBytes  []byte
-		giveString string
+		give       string
 		wantLevel  logger.Level
-		wantError  error
+		wantErrMsg string
 	}{
-		"<empty value>":          {giveBytes: []byte(""), wantLevel: logger.InfoLevel},
-		"<empty value> (string)": {giveString: "", wantLevel: logger.InfoLevel},
-		"trace":                  {giveBytes: []byte("debug"), wantLevel: logger.DebugLevel},
-		"verbose":                {giveBytes: []byte("debug"), wantLevel: logger.DebugLevel},
-		"debug":                  {giveBytes: []byte("debug"), wantLevel: logger.DebugLevel},
-		"debug (string)":         {giveString: "debug", wantLevel: logger.DebugLevel},
-		"info":                   {giveBytes: []byte("info"), wantLevel: logger.InfoLevel},
-		"warn":                   {giveBytes: []byte("warn"), wantLevel: logger.WarnLevel},
-		"error":                  {giveBytes: []byte("error"), wantLevel: logger.ErrorLevel},
-		"foobar":                 {giveBytes: []byte("foobar"), wantError: errors.New("unrecognized logging level: \"foobar\"")}, //nolint:lll
+		"<empty>": {give: "", wantLevel: logger.InfoLevel},
+		"trace":   {give: "trace", wantLevel: logger.DebugLevel},
+		"verbose": {give: "verbose", wantLevel: logger.DebugLevel},
+		"debug":   {give: "debug", wantLevel: logger.DebugLevel},
+		"info":    {give: "info", wantLevel: logger.InfoLevel},
+		"warn":    {give: "warn", wantLevel: logger.WarnLevel},
+		"warning": {give: "warning", wantLevel: logger.WarnLevel},
+		"err":     {give: "err", wantLevel: logger.ErrorLevel},
+		"error":   {give: "error", wantLevel: logger.ErrorLevel},
+		"foobar":  {give: "foobar", wantErrMsg: `unrecognized logging level: "foobar"`},
 	} {
 		t.Run(name, func(t *testing.T) {
-			var (
-				l   logger.Level
-				err error
-			)
+			t.Parallel()
 
-			if tt.giveString != "" {
-				l, err = logger.ParseLevel(tt.giveString)
-			} else {
-				l, err = logger.ParseLevel(tt.giveBytes)
-			}
+			got, err := logger.ParseLevel(tt.give)
 
-			if tt.wantError == nil {
-				require.NoError(t, err)
-				require.Equal(t, tt.wantLevel, l)
+			if tt.wantErrMsg != "" {
+				assert.ErrorEqual(t, err, tt.wantErrMsg)
 			} else {
-				require.EqualError(t, err, tt.wantError.Error())
+				assert.NoError(t, err)
+				assert.Equal(t, tt.wantLevel, got)
 			}
 		})
 	}
-}
-
-func TestLevels(t *testing.T) {
-	require.Equal(t, []logger.Level{
-		logger.DebugLevel,
-		logger.InfoLevel,
-		logger.WarnLevel,
-		logger.ErrorLevel,
-	}, logger.Levels())
-}
-
-func TestLevelStrings(t *testing.T) {
-	require.Equal(t, []string{"debug", "info", "warn", "error"}, logger.LevelStrings())
 }

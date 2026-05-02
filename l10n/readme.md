@@ -1,22 +1,92 @@
 # 🔤 Localization
 
-This directory contains the file [l10n.js](l10n.js) for localizing error pages. Once the error page is loaded,
-this script runs and translates the page content to the user's locale.
+This directory contains everything related to client-side localization of error pages. The browser automatically
+detects the user's language via `navigator.languages` and replaces English strings with translated ones - no server
+involvement required.
 
-> [!NOTE]
-> In version `2.*`, the working logic was simpler: error pages loaded this script using
-> [jsdelivr.com](https://www.jsdelivr.com/) as a CDN for
-> [versioned content from the GitHub repository](https://www.jsdelivr.com/features#gh), and it translated
-> tag content with the special HTML attribute `data-l10n`.
+## How it works end-to-end
 
-By default, the error page markup contains strings in English (`en` locale). To localize the error pages to
-different locales, please follow these steps:
+```
+locales.json (source of truth - edit this)
+     │
+generate/localize.go (code generator)
+     │
+     ├── localize(.min).js (script that runs in the browser)
+     └── playground.html (standalone HTML page for manual testing of all tokens and languages)
+```
 
-1. Find your locale name on [this page](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) (column `Set 1` or `ISO 639-1:2002`)
-2. Fork this repository
-3. Edit the file [l10n.js](l10n.js) in the `data` map (append new localized strings) using the locale name from step 1
-4. Please add your locale to the [playground.html](playground.html) file to test the localization
-5. Make a PR with your changes
+### Runtime flow in the browser
+
+1. The page loads with English text in elements that carry the `data-l10n` attribute, e.g.:
+   ```html
+   <span data-l10n>Not Found</span>
+   <p data-l10n>The server can not find the requested page</p>
+   ```
+2. The inline `<script>{{ l10nScript }}</script>` block contains the `localize.min.js` script
+3. On `DOMContentLoaded` the script reads `navigator.languages`, finds translations for each `[data-l10n]` element, 
+   and replaces the element's `textContent` in-place
+4. A `MutationObserver` handles elements added dynamically after initial load
+5. English (`en`/`en-*`) is the passthrough - the original text is kept as-is
+6. BCP 47 resolution: `zh-TW` tries `zh-tw` first, then falls back to `zh`
+
+### `window.l10n` public API
+
+The script exposes a frozen object on `window.l10n`:
+
+| Method                         | Description                                                                         |
+|--------------------------------|-------------------------------------------------------------------------------------|
+| `l10n.setLocale(locale)`       | Override the locale (string or array of strings); re-localizes the page immediately |
+| `l10n.translate(token)`        | Returns the translation for a token string, or the original string if not found     |
+| `l10n.localizeDocument(root?)` | Re-localizes all `[data-l10n]` elements under `root` (defaults to `document`)       |
+
+## `locales.json` structure
+
+The file is a JSON object. Every top-level key is an English source string (called a **token**). The value is an object
+mapping [BCP 47](https://www.rfc-editor.org/rfc/rfc5646) language codes to translated strings.
+
+```json
+{
+  "$schema": "locales.schema.json",
+  "Not Found": {
+    "de": "Nicht gefunden",
+    "es": "No encontrado",
+    "fr": "Introuvable",
+    "ru": "Страница не найдена",
+    "zh": "未找到"
+  },
+  "The server can not find the requested page": {
+    "de": "Der Server kann die angeforderte Seite nicht finden",
+    "fr": "Le serveur ne peut trouver la page demandée",
+    "ru": "Сервер не смог найти запрашиваемую страницу",
+    "zh": "服务器找不到请求的页面"
+  }
+}
+```
+
+### Rules
+
+- Keys are the English strings exactly as they appear in `data-l10n` element text content
+- Token matching is case-insensitive and strips all non-alphanumeric characters, so `"Not Found"`, `"not found"`,
+  and `"NOT FOUND"` all resolve to the same token
+- Language codes must be valid BCP 47 codes
+- Every key must have at least one translation
+
+## Running the generator
+
+From the **project root**:
+
+```sh
+go generate ./l10n/...
+```
+
+## How to add a new language
+
+1. Open `locales.json`. Add your language code and translation to **every** token. A token without your language
+   code silently falls back to English
+2. Regenerate the output files
+3. Open `l10n/playground.html` in a browser. Your new language button should appear. Click it and verify every string 
+   translates correctly
+4. Send a PR with your changes (including the generated files) and add yourself to the list of translators below!
 
 ## 👍 Translators
 

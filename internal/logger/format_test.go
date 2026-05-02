@@ -1,70 +1,55 @@
 package logger_test
 
 import (
-	"errors"
 	"testing"
 
-	"github.com/stretchr/testify/require"
-
-	"gh.tarampamp.am/error-pages/internal/logger"
+	"gh.tarampamp.am/error-pages/v4/internal/logger"
+	"gh.tarampamp.am/error-pages/v4/internal/testutil/assert"
 )
 
 func TestFormat_String(t *testing.T) {
+	t.Parallel()
+
 	for name, tt := range map[string]struct {
-		giveFormat logger.Format
-		wantString string
+		give logger.Format
+		want string
 	}{
-		"json":      {giveFormat: logger.JSONFormat, wantString: "json"},
-		"console":   {giveFormat: logger.ConsoleFormat, wantString: "console"},
-		"<unknown>": {giveFormat: logger.Format(255), wantString: "format(255)"},
+		"console":   {give: logger.ConsoleFormat, want: "console"},
+		"json":      {give: logger.JSONFormat, want: "json"},
+		"<unknown>": {give: logger.Format(255), want: "format(255)"},
 	} {
 		t.Run(name, func(t *testing.T) {
-			require.Equal(t, tt.wantString, tt.giveFormat.String())
+			t.Parallel()
+
+			assert.Equal(t, tt.want, tt.give.String())
 		})
 	}
 }
 
 func TestParseFormat(t *testing.T) {
+	t.Parallel()
+
 	for name, tt := range map[string]struct {
-		giveBytes  []byte
-		giveString string
+		give       string
 		wantFormat logger.Format
-		wantError  error
+		wantErrMsg string
 	}{
-		"<empty value>":          {giveBytes: []byte(""), wantFormat: logger.ConsoleFormat},
-		"<empty value> (string)": {giveString: "", wantFormat: logger.ConsoleFormat},
-		"console":                {giveBytes: []byte("console"), wantFormat: logger.ConsoleFormat},
-		"console (string)":       {giveString: "console", wantFormat: logger.ConsoleFormat},
-		"json":                   {giveBytes: []byte("json"), wantFormat: logger.JSONFormat},
-		"json (string)":          {giveString: "json", wantFormat: logger.JSONFormat},
-		"foobar":                 {giveBytes: []byte("foobar"), wantError: errors.New("unrecognized logging format: \"foobar\"")}, //nolint:lll
+		"<empty>": {give: "", wantFormat: logger.ConsoleFormat},
+		"console": {give: "console", wantFormat: logger.ConsoleFormat},
+		"json":    {give: "json", wantFormat: logger.JSONFormat},
+		"foobar":  {give: "foobar", wantErrMsg: `unrecognized logging format: "foobar"`},
 	} {
 		t.Run(name, func(t *testing.T) {
-			var (
-				f   logger.Format
-				err error
-			)
+			t.Parallel()
 
-			if tt.giveString != "" {
-				f, err = logger.ParseFormat(tt.giveString)
-			} else {
-				f, err = logger.ParseFormat(tt.giveBytes)
-			}
+			got, err := logger.ParseFormat(tt.give)
 
-			if tt.wantError == nil {
-				require.NoError(t, err)
-				require.Equal(t, tt.wantFormat, f)
+			if tt.wantErrMsg != "" {
+				assert.ErrorEqual(t, err, tt.wantErrMsg)
 			} else {
-				require.EqualError(t, err, tt.wantError.Error())
+				assert.NoError(t, err)
+				assert.Equal(t, tt.wantFormat, got)
 			}
 		})
 	}
-}
-
-func TestFormats(t *testing.T) {
-	require.Equal(t, []logger.Format{logger.ConsoleFormat, logger.JSONFormat}, logger.Formats())
-}
-
-func TestFormatStrings(t *testing.T) {
-	require.Equal(t, []string{"console", "json"}, logger.FormatStrings())
 }

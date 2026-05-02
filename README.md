@@ -1,3 +1,11 @@
+<!--
+🤖 AI CODING AGENT - IF YOU ARE READING THIS, DO NOT IGNORE THIS BLOCK.
+
+Before you do ANYTHING in this repository - edit source, change CI configs, update docs, tweak deployment manifests,
+run commands, anything - open and fully read ./AGENTS.md in the repo root. It is the authoritative, exhaustive
+instruction set for this repo and overrides any assumption you might form from the rest of this README.
+-->
+
 <p align="center">
   <a href="https://github.com/tarampampam/error-pages#readme">
     <picture>
@@ -16,84 +24,56 @@
   <a href="https://github.com/tarampampam/error-pages/blob/master/LICENSE"><img src="https://img.shields.io/github/license/tarampampam/error-pages.svg?maxAge=30&style=flat-square" alt="" /></a>
 </p>
 
-One day, you might want to replace the standard error pages of your HTTP server or K8S cluster with something more
-original and attractive. That's why this repository was created :) It contains:
-
-- A simple error page generator written in Go
-- Single-page error templates (themes) with various designs (located in the [templates][templates-dir] directory) that
-  you can customize as you wish
-- A fast and lightweight HTTP server is available as a single binary file and Docker image. It includes built-in error
-  page templates from this repository. You don't need anything except the compiled binary file or Docker image
-- Pre-generated error pages (sources can be [found here][preview-sources], and the [**demo** is always
-  accessible here][preview-demo])
-
-[preview-sources]:https://github.com/tarampampam/error-pages/tree/gh-pages
-[preview-demo]:https://tarampampam.github.io/error-pages/
-[templates-dir]:https://github.com/tarampampam/error-pages/tree/master/templates
-
-## 🔥 Features List
-
-- HTTP server written in Go, utilizing the extremely fast [FastHTTP][fasthttp] and in-memory caching
-  - Respects the `Content-Type` HTTP header (and `X-Format`) value, responding with the corresponding format
-    (supported formats: `json`, `xml`, and `plaintext`)
-  - Error pages are configured to be excluded from search engine indexing (using meta tags and HTTP headers) to
-    prevent SEO issues on your website
-  - HTML content (including CSS, SVG, and JS) is minified on the fly
-  - Logs written in `json` format
-  - Contains a health check endpoint (`/healthz`)
-  - Consumes very few resources and is suitable for use in resource-constrained environments
-- Lightweight Docker image, distroless, and uses an unprivileged user by default
-- [Go-template](https://pkg.go.dev/text/template) tags are allowed in the templates
-- Ready for integration with [Traefik][traefik], [Ingress-nginx][ingress-nginx], and more
-- Error pages can be embedded into your own Docker image with `nginx` in a few simple steps
-- Fully configurable
-- Distributed as a Docker image and compiled binary files
-- Localized HTML error pages (🇺🇸, 🇫🇷, 🇺🇦, 🇷🇺, 🇵🇹, 🇳🇱, 🇩🇪, 🇪🇸, 🇨🇳, 🇮🇩, 🇵🇱, 🇰🇷, 🇭🇺, 🇳🇴, 🇷🇴, 🇮🇹) - translation process
-  [described here][l10n-dir] - other translations are welcome!
-
-[fasthttp]:https://github.com/valyala/fasthttp
-[traefik]:https://github.com/traefik/traefik
-[l10n-dir]:https://github.com/tarampampam/error-pages/tree/master/l10n
-
-## 🧩 Install
-
-Download the latest binary file for your OS/architecture from the [releases page][latest-release] or use our Docker image:
-
-| Registry                          | Image                             |
-|-----------------------------------|-----------------------------------|
-| [GitHub Container Registry][ghcr] | `ghcr.io/tarampampam/error-pages` |
-| [Docker Hub][docker-hub] (mirror) | `tarampampam/error-pages`         |
-
 > [!IMPORTANT]
-> Using the `latest` tag for the Docker image is highly discouraged due to potential backward-incompatible changes
-> during **major** upgrades. Please use tags in the `X.Y.Z` format.
+> If you were on v3 or earlier and want to upgrade to v4, check out the [migration guide](docs/UPGRADE_TO_V4.md).
+>
+> The `latest` Docker tag still points to the last `v3` release to avoid breaking changes for users who have not
+> migrated yet, but it will be updated to v4 after a short transition period. Please do not use the `latest` tag in
+> production - it is recommended to always pin to a specific version (at least the major version) to avoid unexpected
+> breaking changes.
 
-💣 **Or** you can also download the **already rendered** error pages pack as a [zip][pages-pack-zip] or
-[tar.gz][pages-pack-tar-gz] archive.
+If you ended up here, chances are you would like to replace your HTTP server's default error pages with something more
+original and eye-catching. That is exactly what this project is designed for - it handles this with minimal effort
+on your part.
 
-[latest-release]:https://github.com/tarampampam/error-pages/releases/latest
-[docker-hub]:https://hub.docker.com/r/tarampampam/error-pages
-[ghcr]:https://github.com/tarampampam/error-pages/pkgs/container/error-pages
-[pages-pack-zip]:https://github.com/tarampampam/error-pages/zipball/gh-pages/
-[pages-pack-tar-gz]:https://github.com/tarampampam/error-pages/tarball/gh-pages/
+It includes:
 
-## 🪂 Templates (themes)
+- A collection of HTTP error page designs (each with a unique look), along with the ability to use your own
+  custom templates
+- A lightweight HTTP server for serving these pages that integrates easily into your existing infrastructure
+- A utility for pre-rendering static HTTP error pages
 
-The following templates are built-in and available for use without any additional setup:
+Key features:
 
-| Template name     | Preview (light)                                | Preview (dark)                                |
-|-------------------|------------------------------------------------|-----------------------------------------------|
-| `app-down`        | [![][app-down-light]][app-down-link]           | [![][app-down-dark]][app-down-link]           |
-| `cats`            | [![][cats-light]][cats-link]                   | [![][cats-dark]][cats-link]                   |
-| `connection`      | [![][connection-light]][connection-link]       | [![][connection-dark]][connection-link]       |
-| `ghost`           | [![][ghost-light]][ghost-link]                 | [![][ghost-dark]][ghost-link]                 |
+- Both the HTTP server and the static generator are written in Go with zero third-party runtime dependencies
+  (stdlib only - hardcore mode)
+  * Supports HTTP/1.1 and HTTP/2 (h2c - cleartext, no TLS required)
+  * Returns error responses in the appropriate format (HTML, JSON, XML, plain text) based on client requests
+  * Gzip compression for all response formats
+  * HTML pages support localization (15+ languages), responsive design (mobile-friendly), and are fully
+    self-contained - all styles and images are embedded directly in the HTML, without loading any external resources
+  * Go template-based templating engine
+- Ships as pre-built binaries, a minimal Docker image (rootless, scratch-based), and a ready-to-use Helm chart
+  for Kubernetes
+- Works out of the box with popular reverse proxies and ingress controllers (Nginx, Traefik, etc.)
+
+## 🪂 Built-in templates
+
+The following templates are built-in and available for use without any additional setup/files:
+
+|   Template name   | Preview (light)                                | Preview (dark)                                |
+|:-----------------:|------------------------------------------------|-----------------------------------------------|
+|    `app-down`     | [![][app-down-light]][app-down-link]           | [![][app-down-dark]][app-down-link]           |
+|      `cats`       | [![][cats-light]][cats-link]                   | [![][cats-dark]][cats-link]                   |
+|   `connection`    | [![][connection-light]][connection-link]       | [![][connection-dark]][connection-link]       |
+|      `ghost`      | [![][ghost-light]][ghost-link]                 | [![][ghost-dark]][ghost-link]                 |
 | `hacker-terminal` | [![][hacker-terminal]][hacker-terminal-link]   | [![][hacker-terminal]][hacker-terminal-link]  |
-| `l7`              | [![][l7-light]][l7-link]                       | [![][l7-dark]][l7-link]                       |
-| `lost-in-space`   | [![][lost-in-space-light]][lost-in-space-link] | [![][lost-in-space-dark]][lost-in-space-link] |
-| `noise`           | [![][noise]][noise-link]                       | [![][noise]][noise-link]                      |
-| `orient`          | [![][orient-light]][orient-link]               | [![][orient-dark]][orient-link]               |
-| `shuffle`         | [![][shuffle-light]][shuffle-link]             | [![][shuffle-dark]][shuffle-link]             |
-| `win98`           | [![][win98-light]][win98-link]                 | [![][win98-dark]][win98-link]                 |
+|       `l7`        | [![][l7-light]][l7-link]                       | [![][l7-dark]][l7-link]                       |
+|  `lost-in-space`  | [![][lost-in-space-light]][lost-in-space-link] | [![][lost-in-space-dark]][lost-in-space-link] |
+|      `noise`      | [![][noise]][noise-link]                       | [![][noise]][noise-link]                      |
+|     `orient`      | [![][orient-light]][orient-link]               | [![][orient-dark]][orient-link]               |
+|     `shuffle`     | [![][shuffle-light]][shuffle-link]             | [![][shuffle-dark]][shuffle-link]             |
+|      `win98`      | [![][win98-light]][win98-link]                 | [![][win98-dark]][win98-link]                 |
 
 > [!NOTE]
 > The `cats` template is the only one of those that fetches resources (the actual cat pictures) from external
@@ -131,654 +111,170 @@ The following templates are built-in and available for use without any additiona
 [win98-dark]:https://habrastorage.org/webt/bu/zt/5w/buzt5wsr-wixk0y8xjbxvepj0a8.png
 [win98-light]:https://habrastorage.org/webt/pg/e8/f1/pge8f1ahyspmgu9vyh0jigvq_es.png
 
-## 🛠 Usage scenarios
+## 🚀 Installation
 
-### HTTP server starting, utilizing either a binary file or Docker image
+Download the latest binary for your OS/architecture from the [releases page][latest-release], or use the Docker image:
 
-First, ensure you have a precompiled binary file on your machine or have Docker/Podman installed. Next, start the
-server with the following command:
+| Registry                          | Image                             |
+|-----------------------------------|-----------------------------------|
+| [GitHub Container Registry][ghcr] | `ghcr.io/tarampampam/error-pages` |
+| [Quay.io][quay] (mirror)          | `quay.io/tarampampam/error-pages` |
+| [Docker Hub][docker-hub] (mirror) | `tarampampam/error-pages`         |
 
-```bash
-$ ./error-pages serve
-# --- or ---
-$ docker run --rm -p '8080:8080/tcp' tarampampam/error-pages serve
-```
+> [!WARNING]
+> Using the `latest` tag for Docker images is strongly discouraged, as it may introduce backward-incompatible changes
+> during **major** upgrades. Use versioned tags in the `X`, `X.Y`, or `X.Y.Z` format instead.
 
-That's it! The server will begin running and listen on address `0.0.0.0` and port `8080`. Access error pages using
-URLs like `http://127.0.0.1:8080/{page_code}.html`.
+> [!IMPORTANT]
+> The app is distributed as two separate binaries - `error-pages` (HTTP server) and `builder`. Docker tags follow this
+> convention:
+> - `X.Y.Z` (and `X.Y`, `X`) - includes the HTTP server
+> - `X.Y.Z-builder` (and `X.Y-builder`, `X-builder`) - includes the builder and a pre-rendered error pages pack
 
-To retrieve different error page codes using a static URL, use the `X-Code` HTTP header:
-
-```bash
-$ curl -H 'X-Code: 500' http://127.0.0.1:8080/
-```
-
-The server respects the `Content-Type` HTTP header (and `X-Format`), delivering responses in requested formats
-such as HTML, XML, JSON, and PlainText. Customization of these formats is possible via CLI flags or environment
-variables.
-
-For integration with [ingress-nginx][ingress-nginx] or debugging purposes, start the server with `--show-details`
-(or set the environment variable `SHOW_DETAILS=true`) to enrich error pages (including JSON and XML responses)
-with upstream proxy information.
-
-Switch themes using the `TEMPLATE_NAME` environment variable or the `--template-name` flag; available templates
-are detailed in the readme file below.
+Supported image architectures - `linux/amd64`, `linux/arm/v7`, `linux/arm64`, `linux/ppc64le`, `linux/s390x`.
+All images are signed with [Cosign][cosign] using keyless signing (GitHub OIDC).
 
 > [!TIP]
-> Use the `--rotation-mode` flag or the `TEMPLATES_ROTATION_MODE` environment variable to automate theme
-> rotation. Available modes include `random-on-startup`, `random-on-each-request`, `random-hourly`,
-> and `random-daily`.
+> If you only need the **pre-rendered static error pages pack**, you can download it as a [zip][pages-pack-zip] or
+> [tar.gz][pages-pack-tar-gz] archive.
 
-To proxy HTTP headers from requests to responses, utilize the `--proxy-headers` flag or environment variable
-(comma-separated list of headers).
+### 📦 Helm chart
 
-### 🔌 Integrations with Traefik, Nginx, Kubernetes (and more)
+A Helm chart for Kubernetes is included with each release ([download][latest-helm-chart]), published on
+[Artifact Hub][artifacthub], and also available via an OCI registry (Helm v3.8+ required):
 
-<details>
-  <summary><strong>🚀 Start the HTTP server with my custom template (theme)</strong></summary>
-
-First, create your own template file, for example `my-super-theme.html`:
-
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <title>{{ code }}</title>
-</head>
-<body>
-  <h1>YEAH! {{ message }}: {{ description }}</h1>
-</body>
-</html>
+```shell
+helm install error-pages \
+  oci://ghcr.io/tarampampam/error-pages/charts/error-pages \
+  --version X.Y.Z
 ```
 
-And simply start the server with the following command:
-
-```bash
-$ docker run --rm \
-  -v "$(pwd)/my-super-theme.html:/opt/my-template.html:ro" \
-  -p '8080:8080/tcp' ghcr.io/tarampampam/error-pages:3 serve \
-    --add-template /opt/my-template.html \
-    --template-name my-template
-# --- or ---
-$ ./error-pages serve \
-  --add-template /opt/my-template.html \
-  --template-name my-template
-```
-
-And test it:
-
-```bash
-$ curl -H "Accept: text/html" http://127.0.0.1:8080/503
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <title>503</title>
-</head>
-<body>
-  <h1>YEAH! Service Unavailable: The server is temporarily overloading or down</h1>
-</body>
-</html>
-```
-
-</details>
-
-<details>
-  <summary><strong>🚀 Generate a set of error pages using built-in or my own template</strong></summary>
-
-Generating a set of error pages is straightforward. If you prefer to use your own template, start by crafting it.
-Create a file like this:
-
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <title>{{ code }}</title>
-</head>
-<body>
-  <h1>{{ message }}: {{ description }}</h1>
-</body>
-</html>
-```
-
-Save it as `my-template.html` and use it as your custom template. Then, generate your error pages using the command:
-
-```bash
-$ mkdir -p /path/to/output
-$ ./error-pages build --add-template /path/to/your/my-template.html --target-dir /path/to/output
-```
-
-This will create error pages based on your template in the specified output directory:
-
-```bash
-$ cd /path/to/output && tree .
-├── my-template
-│   ├── 400.html
-│   ├── 401.html
-│   ├── 403.html
-│   ├── 404.html
-│   ├── 405.html
-│   ├── 407.html
-│   ├── 408.html
-│   ├── 409.html
-│   ├── 410.html
-│   ├── 411.html
-│   ├── 412.html
-│   ├── 413.html
-│   ├── 416.html
-│   ├── 418.html
-│   ├── 429.html
-│   ├── 500.html
-│   ├── 502.html
-│   ├── 503.html
-│   ├── 504.html
-│   └── 505.html
-…
-
-$ cat my-template/403.html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <title>403</title>
-</head>
-<body>
-  <h1>Forbidden: Access is forbidden to the requested page</h1>
-</body>
-</html>
-```
-
-</details>
-
-<details>
-  <summary><strong>🚀 Customize error pages within your own Nginx Docker image</strong></summary>
-
-To create this cocktail, we need two components:
-
-- Nginx configuration file
-- A Dockerfile to build the image
-
-Let's start with the Nginx configuration file:
-
-```nginx
-# File: nginx.conf
-
-server {
-  listen      80;
-  server_name localhost;
-
-  error_page 401 /_error-pages/401.html;
-  error_page 403 /_error-pages/403.html;
-  error_page 404 /_error-pages/404.html;
-  error_page 500 /_error-pages/500.html;
-  error_page 502 /_error-pages/502.html;
-  error_page 503 /_error-pages/503.html;
-
-  location ^~ /_error-pages/ {
-    internal;
-    root /usr/share/nginx/errorpages;
-  }
-
-  location / {
-    root  /usr/share/nginx/html;
-    index index.html index.htm;
-  }
-}
-```
-
-And the Dockerfile:
-
-```dockerfile
-FROM docker.io/library/nginx:1.27-alpine
-
-# override default Nginx configuration
-COPY --chown=nginx ./nginx.conf /etc/nginx/conf.d/default.conf
-
-# copy statically built error pages from the error-pages image
-# (instead of `ghost` you may use any other template)
-COPY --chown=nginx \
-     --from=ghcr.io/tarampampam/error-pages:3 \
-     /opt/html/ghost /usr/share/nginx/errorpages/_error-pages
-```
-
-Now, we can build the image:
-
-```bash
-$ docker build --tag your-nginx:local -f ./Dockerfile .
-```
-
-And voilà! Let's start the image and test if everything is working as expected:
-
-```bash
-$ docker run --rm -p '8081:80/tcp' your-nginx:local
-
-$ curl http://127.0.0.1:8081/foobar | head -n 15 # in another terminal
-```
-
-</details>
-
-<details>
-  <summary><strong>🚀 Usage with Traefik and local Docker Compose</strong></summary>
-
-Instead of thousands of words, let's take a look at one compose file:
-
-```yaml
-# file: compose.yml (or docker-compose.yml)
-
-services:
-  traefik:
-    image: docker.io/library/traefik:v3.1
-    command:
-      #- --log.level=DEBUG
-      - --api.dashboard=true # activate dashboard
-      - --api.insecure=true # enable the API in insecure mode
-      - --providers.docker=true # enable Docker backend with default settings
-      - --providers.docker.exposedbydefault=false # do not expose containers by default
-      - --entrypoints.web.address=:80 # --entrypoints.<name>.address for ports, 80 (i.e., name = web)
-    ports:
-      - "80:80/tcp" # HTTP (web)
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-    labels:
-      traefik.enable: true
-      # dashboard
-      traefik.http.routers.traefik.rule: Host(`traefik.localtest.me`)
-      traefik.http.routers.traefik.service: api@internal
-      traefik.http.routers.traefik.entrypoints: web
-      traefik.http.routers.traefik.middlewares: error-pages-middleware
-    depends_on:
-      error-pages: {condition: service_healthy}
-
-  error-pages:
-    image: ghcr.io/tarampampam/error-pages:3 # using the latest tag is highly discouraged
-    environment:
-      TEMPLATE_NAME: l7 # set the error pages template
-    labels:
-      traefik.enable: true
-      # use as "fallback" for any NON-registered services (with priority below normal)
-      traefik.http.routers.error-pages-router.rule: HostRegexp(`.+`)
-      traefik.http.routers.error-pages-router.priority: 10
-      # should say that all of your services work on https
-      traefik.http.routers.error-pages-router.entrypoints: web
-      traefik.http.routers.error-pages-router.middlewares: error-pages-middleware
-      # "errors" middleware settings
-      traefik.http.middlewares.error-pages-middleware.errors.status: 400-599
-      traefik.http.middlewares.error-pages-middleware.errors.service: error-pages-service
-      traefik.http.middlewares.error-pages-middleware.errors.query: /{status}.html
-      # define service properties
-      traefik.http.services.error-pages-service.loadbalancer.server.port: 8080
-
-  nginx-or-any-another-service:
-    image: docker.io/library/nginx:1.27-alpine
-    labels:
-      traefik.enable: true
-      traefik.http.routers.test-service.rule: Host(`test.localtest.me`)
-      traefik.http.routers.test-service.entrypoints: web
-      traefik.http.routers.test-service.middlewares: error-pages-middleware
-```
-
-After executing `docker compose up` in the same directory as the `compose.yml` file, you can:
-
-- Open the Traefik dashboard [at `traefik.localtest.me`](http://traefik.localtest.me/dashboard/#/)
-- [View customized error pages on the Traefik dashboard](http://traefik.localtest.me/foobar404)
-- Open the nginx index page [at `test.localtest.me`](http://test.localtest.me/)
-- View customized error pages for non-existent [pages](http://test.localtest.me/404) and [domains](http://404.localtest.me/)
-
-Isn't this kind of magic? 😀
-
-</details>
-
-<details>
-  <summary><strong>🚀 Kubernetes (K8s) & Ingress Nginx</strong></summary>
-
-Error-pages can be configured to work with the [ingress-nginx][ingress-nginx] helm chart in Kubernetes.
-
-- Set the `custom-http-errors` config value
-- Enable default backend
-- Set the default backend image
-
-```yaml
-controller:
-  config:
-    custom-http-errors: >-
-      401,403,404,500,501,502,503
-
-defaultBackend:
-  enabled: true
-  image:
-    repository: ghcr.io/tarampampam/error-pages
-    tag: '3' # using the latest tag is highly discouraged
-  extraEnvs:
-  - name: TEMPLATE_NAME # Optional: change the default theme
-    value: l7
-  - name: SHOW_DETAILS # Optional: enables the output of additional information on error pages
-    value: 'true'
-```
-
-</details>
-
-<details>
-  <summary><strong>🚀 Kubernetes (K8s) & Ingress Traefik</strong></summary>
-
-There are various ways to set up "error pages" in Kubernetes with Traefik. One of the most common scenarios is when
-you already have Traefik installed as an Ingress Controller with all the necessary CRDs. In this case, you still
-need to install the "error pages" as a separate service, register a middleware that will use it, and apply this
-middleware to all relevant routers.
-
-> To install Traefik using Helm, you may add the following lines to your `Chart.yaml` file:
->
-> ```yaml
-> dependencies:
-> - name: traefik
->   version: 34.1.0 # change to the latest version
->   repository: https://helm.traefik.io/traefik
-> ```
-
-I prefer to install each component in a separate namespace and use Helm to manage the installation process. So
-before we begin, let's define the following settings in the `values.yaml` file:
-
-```yaml
-errorPages:
-  enabled: true
-  appName: error-pages
-  namespace: error-pages
-  version: 3.3.1 # https://github.com/tarampampam/error-pages/releases
-  themeName: shuffle
-```
-
-Next, create the following Helm chart templates:
-
-```yaml
-# file: error-pages/namespace.yaml
-
-{{ with .Values.errorPages }}
-{{- if .enabled }}
-apiVersion: v1
-kind: Namespace
-
-metadata: {name: "{{ .namespace }}"}
-{{- end }}
-{{- end }}
-```
-
-```yaml
-# file: error-pages/deployment.yaml
-
-{{ with .Values.errorPages }}
-{{- if .enabled }}
-apiVersion: apps/v1
-kind: Deployment
-
-metadata:
-  name: "{{ .appName }}"
-  namespace: {{ .namespace }}
-  labels: {app: "{{ .appName }}"}
-
-spec:
-  replicas: 1
-  selector: {matchLabels: {app: "{{ .appName }}"}}
-  template:
-    metadata: {labels: {app: "{{ .appName }}"}}
-    spec:
-      automountServiceAccountToken: false
-      containers:
-        - name: "{{ .appName }}"
-          image: "ghcr.io/tarampampam/error-pages:{{ .version | default "latest" }}"
-          env:
-            - {name: TEMPLATE_NAME, value: "{{ .themeName | default "app-down" }}"}
-          securityContext:
-            runAsNonRoot: true
-            runAsUser: 10001
-            runAsGroup: 10001
-            readOnlyRootFilesystem: true
-          ports:
-            - {name: http, containerPort: 8080, protocol: TCP}
-          livenessProbe:
-            httpGet: {port: http, path: /healthz}
-            periodSeconds: 10
-          readinessProbe:
-            httpGet: {port: http, path: /healthz}
-            periodSeconds: 10
-          resources:
-            limits: {memory: 64Mi, cpu: 200m} # change if needed
-            requests: {memory: 16Mi, cpu: 20m}
-{{- end }}
-{{- end }}
-```
-
-```yaml
-# file: error-pages/service.yaml
-
-{{ with .Values.errorPages }}
-{{- if .enabled }}
-apiVersion: v1
-kind: Service
-
-metadata:
-  name: {{ .appName }}-service
-  namespace: {{ .namespace }}
-  labels: {app: "{{ .appName }}"}
-
-spec:
-  type: ClusterIP
-  selector: {app: "{{ .appName }}"}
-  ports: [{name: http, protocol: TCP, port: 8080, targetPort: 8080}]
-{{- end }}
-{{- end }}
-```
-
-```yaml
-# file: error-pages/middleware.yaml
-
-{{ with .Values.errorPages }}
-{{- if .enabled }}
-apiVersion: traefik.io/v1alpha1
-kind: Middleware
-
-metadata:
-  name: {{ .appName }}
-  namespace: {{ .namespace }}
-
-spec: # https://doc.traefik.io/traefik/routing/providers/kubernetes-crd/#kind-middleware
-  errors:
-    status: ["401", "403", "404", "500-599"]
-    service: {name: "{{ .appName }}-service", port: 8080}
-    query: "/{status}.html"
-{{- end }}
-{{- end }}
-```
-
-If everything was configured correctly, you should see the new middleware in your Traefik dashboard after applying
-updated Helm chart:
-
-![traefik-dashboard-middleware](https://habrastorage.org/webt/dj/to/qy/djtoqy20fpi2_qqabzeyltwlenw.png)
-
-Since our middleware is in a separate namespace, and in Traefik >=2.5 cross-namespace references for resources
-like middlewares are restricted by default, we need to enable this feature. To do so, add the following lines to
-your Traefik Helm chart values:
-
-```diff
- traefik:
-   # ...
--  globalArguments: []
-+  globalArguments: ["--providers.kubernetescrd.allowCrossNamespace=true"]
-   # ...
-```
-
-Or if you use the [Traefik Helm chart](https://helm.traefik.io/traefik) >= 36.*:
-
-```diff
- traefik:
-   # ...
-+  providers:
-+    kubernetesCRD:
-+      allowCrossNamespace: true
-   # ...
-```
-
-Now, you can apply the middleware to the necessary ingress routes:
-
-```diff
- apiVersion: traefik.io/v1alpha1
- kind: IngressRoute
-
- metadata:
-   name: some-app-http
-   namespace: some-app
-
- spec: # https://doc.traefik.io/traefik/routing/providers/kubernetes-crd/#kind-ingressroute
-   entryPoints: [websecure]
-   routes:
-     - match: Host(`my.awesome-site.com`) && PathPrefix(`/`)
-       services: [{name: "some-app-service", namespace: some-app, port: 8080}]
-+      {{- with $.Values.errorPages }}{{ if .enabled }}
-+      middlewares: [{name: "{{ .appName }}", namespace: "{{ .namespace }}"}]
-+      {{- end }}{{ end }}
-```
-
-Although this approach is quite verbose, it allows for full control over the configuration. If you have a
-better alternative, feel free to submit a PR!
-
-</details>
+All supported chart values, examples, and usage instructions can be found at [Artifact Hub][artifacthub].
+
+> Helm chart sources are located in the [deploy/helm](deploy/helm) directory of the repository.
+
+[latest-release]:https://github.com/tarampampam/error-pages/releases/latest
+[ghcr]:https://github.com/tarampampam/error-pages/pkgs/container/error-pages
+[docker-hub]:https://hub.docker.com/r/tarampampam/error-pages
+[quay]:https://quay.io/repository/tarampampam/error-pages?tab=tags
+[pages-pack-zip]:https://github.com/tarampampam/error-pages/releases/latest/download/error-pages-static.zip
+[pages-pack-tar-gz]:https://github.com/tarampampam/error-pages/releases/latest/download/error-pages-static.tar.gz
+[cosign]:https://github.com/sigstore/cosign
+[latest-helm-chart]:https://github.com/tarampampam/error-pages/releases/latest/download/helm-chart.tgz
+[artifacthub]:https://artifacthub.io/packages/helm/error-pages/error-pages
+
+## 🛠 Integration guides
+
+- **Standalone** server or builder usage:
+  - [🚀 Start the HTTP server with a custom template (theme)](docs/guides/theming.md)
+  - [🚀 Generate error pages using built-in or custom templates](docs/guides/builder.md)
+
+- With **Nginx**:
+  - [🚀 Customize error pages in your own Nginx Docker image](docs/guides/nginx_image.md)
+  - [🚀 Use Nginx as a reverse proxy with custom error pages](docs/guides/nginx_upstream.md)
+
+- With **Caddy**:
+  - [🚀 Customize error pages in your own Caddy Docker image](docs/guides/caddy_image.md)
+  - [🚀 Use Caddy as a reverse proxy with custom error pages](docs/guides/caddy_upstream.md)
+
+- With **Traefik**:
+  - [🚀 Use Traefik with a local Docker Compose setup](docs/guides/traefik_docker.md)
+
+- With **Kubernetes**:
+  - [🚀 Use error-pages as the **ingress-nginx** default backend](docs/guides/k8s_ingress_nginx.md)
+  - [🚀 Use error-pages with **Traefik** in Kubernetes](docs/guides/k8s_ingress_traefik.md)
+  - [🚀 Use error-pages with **NGINX Gateway Fabric** in Kubernetes](docs/guides/k8s_ingress_ngf.md)
+  - [🚀 Use error-pages with **Envoy Gateway** in Kubernetes](docs/guides/k8s_ingress_envoy.md)
+  - [🚀 Use error pages with **HAProxy Ingress** in Kubernetes](docs/guides/k8s_ingress_haproxy.md)
 
 ## 🦾 Performance
 
-Hardware used:
+Measured on loopback (`127.0.0.1`), single connection, no artificial load
+(`wrk -t1 -c1 -d5s --latency http://127.0.0.1:8080/...`, less is better):
 
-- 12th Gen Intel® Core™ i7-1260P (16 cores)
-- 32 GiB RAM
+|      Format | p50 (typical response time) | p90 (90% of responses complete within this time) |
+|------------:|:---------------------------:|:------------------------------------------------:|
+|        HTML |         **121 µs**          |                      262 µs                      |
+|        JSON |          **51 µs**          |                      75 µs                       |
+|         XML |          **48 µs**          |                      73 µs                       |
+|  Plain text |          **47 µs**          |                      68 µs                       |
+| HTML + gzip |         **2.4 ms**          |                      3.1 ms                      |
+| JSON + gzip |         **256 µs**          |                      510 µs                      |
 
-RPS: **~180k** 🔥 requests served without any errors, with peak memory usage ~60 MiB under the default configuration
+> [!NOTE]
+> HTML responses are large (full rendered template, ~65 KB), which is why gzip compression takes noticeably more
+> time there. JSON/XML/text are compact structured responses, so they are fastest overall.
 
-<details>
-  <summary>Performance test details (click to expand)</summary>
+## 💻 Command-line usage
 
-```shell
-$ ulimit -aH | grep file
-core file size              (blocks, -c) unlimited
-file size                   (blocks, -f) unlimited
-open files                          (-n) 1048576
-file locks                          (-x) unlimited
+For detailed instructions on using the HTTP server and the static site generator, including all supported environment
+variables and usage examples, check the [CLI documentation](docs/CLI.md).
 
-$ go build ./cmd/error-pages/ && ./error-pages --log-level warn serve
+## 🔍 How the server handles requests
 
-$ ./error-pages perftest # in separate terminal
-Starting the test to bomb ONE PAGE (code). Please, be patient...
-Test completed successfully. Here is the output:
+The three most important things to understand about how the server behaves - how it determines which error page to
+show, which format to return, and what request context it can expose.
 
-Running 15s test @ http://127.0.0.1:8080/
-  12 threads and 400 connections
-  Thread Stats   Avg      Stdev     Max   +/- Stdev
-    Latency     4.52ms    6.43ms  94.34ms   85.44%
-    Req/Sec    15.76k     2.83k   29.64k    69.20%
-  2839632 requests in 15.09s, 32.90GB read
-Requests/sec: 188185.61
-Transfer/sec:      2.18GB
+### How the error code is resolved
 
-Starting the test to bomb DIFFERENT PAGES (codes). Please, be patient...
-Test completed successfully. Here is the output:
+The server picks the HTTP status code from the **first** matching source:
 
-Running 15s test @ http://127.0.0.1:8080/
-  12 threads and 400 connections
-  Thread Stats   Avg      Stdev     Max   +/- Stdev
-    Latency     6.75ms   13.71ms 252.66ms   91.94%
-    Req/Sec    14.06k     3.25k   26.39k    71.98%
-  2534473 requests in 15.10s, 29.22GB read
-Requests/sec: 167899.78
-Transfer/sec:      1.94GB
-```
+1. Path: `/404`, `/404.html`, `/404.json`, `/503.xml`, etc.
+2. `X-Code` request header
+3. Default: `--default-error-page` (or `DEFAULT_ERROR_PAGE`, default: 404)
 
-</details>
+### How the response format is determined
 
-<!--GENERATED:CLI_DOCS-->
-<!-- Documentation inside this block generated by github.com/urfave/cli-docs/v3; DO NOT EDIT -->
-## CLI interface
+The response format is picked from the **first** matching source:
 
-Usage:
+1. Path extension: `.html`, `.htm`, `.json`, `.xml`, `.txt`
+2. `Content-Type` request header
+3. `X-Format` request header (e.g. `X-Format: application/json`)
+4. `Accept` request header
+5. Default: **plain text**
 
-```bash
-$ error-pages [GLOBAL FLAGS] [COMMAND] [COMMAND FLAGS] [ARGUMENTS...]
-```
+Supported formats: `HTML`, `JSON`, `XML`, `plain text`.
 
-Global flags:
+### Service endpoints
 
-| Name               | Description                           | Type   | Default value | Environment variables |
-|--------------------|---------------------------------------|--------|:-------------:|:---------------------:|
-| `--log-level="…"`  | Logging level (debug/info/warn/error) | string |   `"info"`    |      `LOG_LEVEL`      |
-| `--log-format="…"` | Logging format (console/json)         | string |  `"console"`  |     `LOG_FORMAT`      |
+The following HTTP endpoints can be used for health checks, monitoring, or other purposes:
 
-### `serve` command (aliases: `s`, `server`, `http`)
+| Path                                           | Description                              |
+|------------------------------------------------|------------------------------------------|
+| `/healthz`, `/health`, `/health/live`, `/live` | Liveness probe - always returns `200 OK` |
+| `/version`                                     | Returns `{"version":"..."}` as JSON      |
 
-Please start the HTTP server to serve the error pages. You can configure various options - please RTFM :D.
+### Response headers
 
-Usage:
+Every error page response includes the following headers automatically:
 
-```bash
-$ error-pages [GLOBAL FLAGS] serve [COMMAND FLAGS] [ARGUMENTS...]
-```
+| Header             | Value                                     | Notes                                              |
+|--------------------|-------------------------------------------|----------------------------------------------------|
+| `Content-Type`     | e.g. `text/html; charset=utf-8`           | Format-dependent                                   |
+| `Content-Length`   | Response body size in bytes               | Always set                                         |
+| `X-Robots-Tag`     | `noindex, nofollow, nosnippet, noarchive` | Prevents error pages from being indexed            |
+| `Retry-After`      | `120`                                     | Only for limited set of status codes               |
+| `Content-Encoding` | `gzip`                                    | Only when the client sends `Accept-Encoding: gzip` |
 
-The following flags are supported:
+Headers listed in `--proxy-headers` (default: `X-Request-Id`, `X-Trace-Id`, `X-Correlation-Id`,
+`X-Amzn-Trace-Id`) are copied from the incoming request to the response when present.
 
-| Name                                                  | Description                                                                                                                                                                                                                                                                                                               | Type          |                Default value                |    Environment variables    |
-|-------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------|:-------------------------------------------:|:---------------------------:|
-| `--listen="…"` (`-l`)                                 | The HTTP server will listen on this IP (v4 or v6) address (set 127.0.0.1/::1 for localhost, 0.0.0.0 to listen on all interfaces, or specify a custom IP)                                                                                                                                                                  | string        |                 `"0.0.0.0"`                 |        `LISTEN_ADDR`        |
-| `--port="…"` (`-p`)                                   | The TCP port number for the HTTP server to listen on (0-65535)                                                                                                                                                                                                                                                            | uint          |                   `8080`                    |        `LISTEN_PORT`        |
-| `--add-template="…"`                                  | To add a new template, provide the path to the file using this flag (the filename without the extension will be used as the template name)                                                                                                                                                                                | string        |                                             |       `ADD_TEMPLATE`        |
-| `--disable-template="…"`                              | Disable the specified template by its name (useful to disable the built-in templates and use only custom ones)                                                                                                                                                                                                            | string        |                                             |           *none*            |
-| `--add-code="…"`                                      | To add a new HTTP status code, provide the code and its message/description using this flag (the format should be '%code%=%message%/%description%'; the code may contain a wildcard '*' to cover multiple codes at once, for example, '4**' will cover all 4xx codes unless a more specific code is described previously) | string=string |                                             |           *none*            |
-| `--json-format="…"`                                   | Override the default error page response in JSON format (Go templates are supported; the error page will use this template if the client requests JSON content type)                                                                                                                                                      | string        |                                             |   `RESPONSE_JSON_FORMAT`    |
-| `--xml-format="…"`                                    | Override the default error page response in XML format (Go templates are supported; the error page will use this template if the client requests XML content type)                                                                                                                                                        | string        |                                             |    `RESPONSE_XML_FORMAT`    |
-| `--plaintext-format="…"`                              | Override the default error page response in plain text format (Go templates are supported; the error page will use this template if the client requests plain text content type or does not specify any)                                                                                                                  | string        |                                             | `RESPONSE_PLAINTEXT_FORMAT` |
-| `--template-name="…"` (`-t`, `--template`, `--theme`) | Name of the template to use for rendering error pages (built-in templates: app-down, cats, connection, ghost, hacker-terminal, l7, lost-in-space, noise, orient, shuffle, win98)                                                                                                                                          | string        |                `"app-down"`                 |       `TEMPLATE_NAME`       |
-| `--disable-l10n`                                      | Disable localization of error pages (if the template supports localization)                                                                                                                                                                                                                                               | bool          |                   `false`                   |       `DISABLE_L10N`        |
-| `--default-error-page="…"`                            | The code of the default (index page, when a code is not specified) error page to render                                                                                                                                                                                                                                   | uint          |                    `404`                    |    `DEFAULT_ERROR_PAGE`     |
-| `--send-same-http-code`                               | The HTTP response should have the same status code as the requested error page (by default, every response with an error page will have a status code of 200)                                                                                                                                                             | bool          |                   `false`                   |    `SEND_SAME_HTTP_CODE`    |
-| `--show-details`                                      | Show request details in the error page response (if supported by the template)                                                                                                                                                                                                                                            | bool          |                   `false`                   |       `SHOW_DETAILS`        |
-| `--proxy-headers="…"`                                 | HTTP headers listed here will be proxied from the original request to the error page response (comma-separated list)                                                                                                                                                                                                      | string        | `"X-Request-Id,X-Trace-Id,X-Amzn-Trace-Id"` |    `PROXY_HTTP_HEADERS`     |
-| `--rotation-mode="…"`                                 | Templates automatic rotation mode (disabled/random-on-startup/random-on-each-request/random-hourly/random-daily)                                                                                                                                                                                                          | string        |                `"disabled"`                 |  `TEMPLATES_ROTATION_MODE`  |
-| `--read-buffer-size="…"`                              | Per-connection buffer size in bytes for reading requests, this also limits the maximum header size (increase this buffer if your clients send multi-KB Request URIs and/or multi-KB headers (e.g., large cookies), note that increasing this value will increase memory consumption)                                      | uint          |                   `5120`                    |     `READ_BUFFER_SIZE`      |
-| `--disable-minification`                              | Disable the minification of HTML pages, including CSS, SVG, and JS (may be useful for debugging)                                                                                                                                                                                                                          | bool          |                   `false`                   |   `DISABLE_MINIFICATION`    |
+### HTTP status code of the response
 
-### `build` command (aliases: `b`)
+By default, the server always responds with **HTTP 200**, even when rendering error pages. This is the correct
+behavior when a reverse proxy (Nginx, Traefik, ingress-nginx) intercepts upstream error responses and replaces
+only the body - the proxy itself sends the original error status code back to the client.
 
-Build the static error pages and put them into a specified directory.
+When error-pages is used as a **direct backend** - e.g. a catch-all route, a Kubernetes default backend, or
+standalone testing - it must return the correct status code itself. Enable `--send-same-http-code`
+(or env `SEND_SAME_HTTP_CODE=true`) to make the HTTP response status match the error code being rendered.
 
-Usage:
+## 📝 Templating and Localization
 
-```bash
-$ error-pages [GLOBAL FLAGS] build [COMMAND FLAGS] [ARGUMENTS...]
-```
+For detailed instructions on using custom templates and localization features, see the
+[templating documentation](docs/templating.md).
 
-The following flags are supported:
-
-| Name                                        | Description                                                                                                                                                                                                                                                                                                               | Type          | Default value |  Environment variables |
-|---------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------|:-------------:|:----------------------:|
-| `--add-template="…"`                        | To add a new template, provide the path to the file using this flag (the filename without the extension will be used as the template name)                                                                                                                                                                                | string        |               |     `ADD_TEMPLATE`     |
-| `--disable-template="…"`                    | Disable the specified template by its name (useful to disable the built-in templates and use only custom ones)                                                                                                                                                                                                            | string        |               |         *none*         |
-| `--add-code="…"`                            | To add a new HTTP status code, provide the code and its message/description using this flag (the format should be '%code%=%message%/%description%'; the code may contain a wildcard '*' to cover multiple codes at once, for example, '4**' will cover all 4xx codes unless a more specific code is described previously) | string=string |               |         *none*         |
-| `--disable-l10n`                            | Disable localization of error pages (if the template supports localization)                                                                                                                                                                                                                                               | bool          |    `false`    |     `DISABLE_L10N`     |
-| `--index` (`-i`)                            | Generate index.html file with links to all error pages                                                                                                                                                                                                                                                                    | bool          |    `false`    |         *none*         |
-| `--target-dir="…"` (`--out`, `--dir`, `-o`) | Directory to put the built error pages into                                                                                                                                                                                                                                                                               | string        |     `"."`     |         *none*         |
-| `--disable-minification`                    | Disable the minification of HTML pages, including CSS, SVG, and JS (may be useful for debugging)                                                                                                                                                                                                                          | bool          |    `false`    | `DISABLE_MINIFICATION` |
-
-### `healthcheck` command (aliases: `chk`, `health`, `check`)
-
-Health checker for the HTTP server. The use case - docker health check.
-
-Usage:
-
-```bash
-$ error-pages [GLOBAL FLAGS] healthcheck [COMMAND FLAGS] [ARGUMENTS...]
-```
-
-The following flags are supported:
-
-| Name                | Description                                   | Type | Default value | Environment variables |
-|---------------------|-----------------------------------------------|------|:-------------:|:---------------------:|
-| `--port="…"` (`-p`) | TCP port number with the HTTP server to check | uint |    `8080`     |     `LISTEN_PORT`     |
-
-<!--/GENERATED:CLI_DOCS-->
-
-## 🦾 Contributors
+## 🧑‍🤝‍🧑 Contributors
 
 I want to say a big thank you to everyone who contributed to this project:
 
@@ -786,21 +282,27 @@ I want to say a big thank you to everyone who contributed to this project:
 
 [contributors]:https://github.com/tarampampam/error-pages/graphs/contributors
 
-## 🧠 A note on AI-assisted development
+## 🤝 Contributing & AI-assisted development
 
-AI tools are great assistants - they can autocomplete, review, summarize, and help you move faster. But they're not a
-substitute for understanding what's going on. If you're using AI to contribute here, please make sure you actually
-read, understand, and stand behind the changes you're proposing.
+Missing a feature? Found a bug you want fixed? Pull requests are welcome - and yes, you are explicitly invited to
+try implementing it with an AI coding agent.
 
-I personally write my code myself, and I encourage others to do the same. Not because AI is "bad", but because blindly
-trusting generated code tends to produce... let's say creative results.
+To give the agent a fighting chance at producing something that fits this codebase, the repo ships an
+[`AGENTS.md`](AGENTS.md) - a structured reference covering project layout, build commands, code style, generated
+files, hard prohibitions, and the full post-change workflow. It is written **for the agent**. Most modern agents
+pick it up automatically.
 
-And honestly, I'm still waiting for the day "AI-free software" becomes a trend - like organic food, but for code 😄
-Until then: trust, but verify.
+**Review every single changed line yourself**. Understand it. Be able to defend it in code review. If you cannot
+explain why a line is there and why it is correct, do not open the PR. _"The agent wrote it"_ is not an answer.
+The author of a PR is the human who opens it, not the model (at least, I hope so).
 
-## 🤖 AI Agent Instructions
+I write my own code by hand and encourage you to do the same when you can. AI is a tool, not an excuse to skip the
+thinking. Trust, but verify - and verify hard.
 
-See [AGENTS.md](AGENTS.md) for detailed guidelines for AI agents working with this repository.
+### 🤖 Setup for AI agents
+
+This repository follows the [agents.md](https://agents.md/) open standard. The canonical instructions live in
+[`AGENTS.md`](AGENTS.md).
 
 ## 👾 Support
 
@@ -820,5 +322,3 @@ If you encounter any bugs in the project, please [create an issue][new-issue] in
 This is open-sourced software licensed under the [MIT License][license].
 
 [license]:https://github.com/tarampampam/error-pages/blob/master/LICENSE
-
-[ingress-nginx]:https://github.com/kubernetes/ingress-nginx/tree/main/charts/ingress-nginx

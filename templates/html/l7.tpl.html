@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="robots" content="nofollow,noarchive,noindex">
+  <title>{{ .Message }}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- {{ if or (eq .StatusCode 408) (eq .StatusCode 425) (eq .StatusCode 429) (eq .StatusCode 500) (eq .StatusCode 502) (eq .StatusCode 503) (eq .StatusCode 504) }} -->
+  <meta http-equiv="refresh" content="30">
+  <!-- {{ end }} -->
+  <meta name="title" content="{{ .StatusCode }}: {{ .Message | escape }}">
+  <meta name="description" content="{{ .Description | escape }}">
+  <meta property="og:title" content="{{ .StatusCode }}: {{ .Message | escape }}">
+  <meta property="og:description" content="{{ .Description | escape }}">
+  <meta property="twitter:title" content="{{ .StatusCode }}: {{ .Message | escape }}">
+  <meta property="twitter:description" content="{{ .Description | escape }}">
+  <style>
+    :root {
+      --color-primary: #f7fafc;
+      --color-inverted: #a0aec0;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --color-primary: #222526;
+        --color-inverted: #fff;
+      }
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      min-height: 100%;
+      height: 100%;
+      width: 100%;
+      background-color: var(--color-primary);
+      color: var(--color-inverted);
+      font-family: sans-serif;
+      font-size: 16px;
+      word-break: keep-all;
+    }
+
+    @media screen and (min-width: 2000px) {
+      html, body {
+        font-size: 20px;
+      }
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    main {
+      display: flex;
+      flex-direction: column;
+    }
+
+    article {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    article .code h1, article .desc p {
+      font-size: 1.7em;
+      margin: 0;
+      padding: 0;
+    }
+
+    article .code {
+      border-right: 2px solid;
+      padding: 0.12em 0.7em;
+      margin: 0;
+      text-align: right;
+    }
+
+    article .code h1 {
+      font-weight: normal;
+    }
+
+    article .desc {
+      text-align: left;
+      padding: 0.7em;
+    }
+
+    article .desc p {
+      font-weight: lighter;
+      text-transform: uppercase;
+    }
+
+    /* {{ if .Config.ShowRequestDetails }} */
+    ul.details {
+      list-style: none;
+      margin: 1.2em 0 0 0;
+      padding: 0;
+      font-size: 0.8em;
+    }
+
+    ul.details li.name::first-letter {
+      font-weight: bold;
+    }
+
+    ul.details li.value {
+      font-family: monospace;
+    }
+    /* {{ end }} */
+  </style>
+</head>
+<body>
+
+<main>
+  <article>
+    <div class="code">
+      <h1>{{ .StatusCode }}</h1>
+      <!-- {{- if .Config.ShowRequestDetails -}} -->
+      <ul class="details">
+        <!-- {{- if .Host -}} -->
+        <li class="name" data-l10n>Host</li>
+        <!-- {{- end }}{{ if .OriginalURI -}} -->
+        <li class="name" data-l10n>Original URI</li>
+        <!-- {{- end }}{{ if .ForwardedFor -}} -->
+        <li class="name" data-l10n>Forwarded for</li>
+        <!-- {{- end }}{{ if .Namespace -}} -->
+        <li class="name" data-l10n>Namespace</li>
+        <!-- {{- end }}{{ if .IngressName -}} -->
+        <li class="name" data-l10n>Ingress name</li>
+        <!-- {{- end }}{{ if .ServiceName -}} -->
+        <li class="name" data-l10n>Service name</li>
+        <!-- {{- end }}{{ if .ServicePort -}} -->
+        <li class="name" data-l10n>Service port</li>
+        <!-- {{- end }}{{ if .RequestID -}} -->
+        <li class="name" data-l10n>Request ID</li>
+        <!-- {{- end -}} -->
+        <li class="name" data-l10n>Timestamp</li>
+      </ul>
+      <!-- {{- end -}} -->
+    </div>
+    <div class="desc">
+      <p data-l10n>{{ .Message }}</p>
+      <!-- {{- if .Config.ShowRequestDetails -}} -->
+      <ul class="details">
+        <!-- {{- if .Host -}} -->
+        <li class="value">{{ .Host }}</li>
+        <!-- {{- end }}{{ if .OriginalURI -}} -->
+        <li class="value">{{ .OriginalURI }}</li>
+        <!-- {{- end }}{{ if .ForwardedFor -}} -->
+        <li class="value">{{ .ForwardedFor }}</li>
+        <!-- {{- end }}{{ if .Namespace -}} -->
+        <li class="value">{{ .Namespace }}</li>
+        <!-- {{- end }}{{ if .IngressName -}} -->
+        <li class="value">{{ .IngressName }}</li>
+        <!-- {{- end }}{{ if .ServiceName -}} -->
+        <li class="value">{{ .ServiceName }}</li>
+        <!-- {{- end }}{{ if .ServicePort -}} -->
+        <li class="value">{{ .ServicePort }}</li>
+        <!-- {{- end }}{{ if .RequestID -}} -->
+        <li class="value">{{ .RequestID }}</li>
+        <!-- {{- end -}} -->
+        <li class="value">{{ now.Unix }}</li>
+      </ul>
+      <!-- {{- end -}} -->
+    </div>
+  </article>
+</main>
+
+<!-- {{- if (not .Config.L10nDisabled) -}} -->
+<script>// {{ l10nScript }}</script>
+<!-- {{- end -}} -->
+</body>
+</html>
