@@ -23,11 +23,52 @@ func TestTemplate_Render(t *testing.T) {
 		RequestID:    "test-request-id",
 		ForwardedFor: "123.123.123.123:321",
 		Host:         "test-host",
+		HomepageURL:  "https://app.example.com/home",
 		Config: tpl.Config{
 			ShowRequestDetails: true,
 			L10nDisabled:       true,
 		},
 	}
+
+	t.Run("all placeholders are substituted", func(t *testing.T) {
+		t.Parallel()
+
+		const src = `StatusCode={{ .StatusCode }}
+Message={{ .Message }}
+Description={{ .Description }}
+OriginalURI={{ .OriginalURI }}
+Namespace={{ .Namespace }}
+IngressName={{ .IngressName }}
+ServiceName={{ .ServiceName }}
+ServicePort={{ .ServicePort }}
+RequestID={{ .RequestID }}
+ForwardedFor={{ .ForwardedFor }}
+Host={{ .Host }}
+HomepageURL={{ .HomepageURL }}
+Config.ShowRequestDetails={{ .Config.ShowRequestDetails }}
+Config.L10nDisabled={{ .Config.L10nDisabled }}`
+
+		tmpl, err := tpl.New(src)
+		assert.NoError(t, err)
+
+		got, err := tmpl.Render(fullData)
+		assert.NoError(t, err)
+
+		assert.Equal(t, `StatusCode=123
+Message=Test Message
+Description=Test Description
+OriginalURI=/test
+Namespace=test-namespace
+IngressName=test-ingress
+ServiceName=test-service
+ServicePort=8080
+RequestID=test-request-id
+ForwardedFor=123.123.123.123:321
+Host=test-host
+HomepageURL=https://app.example.com/home
+Config.ShowRequestDetails=true
+Config.L10nDisabled=true`, string(got))
+	})
 
 	t.Run("render built-in templates", func(t *testing.T) {
 		t.Parallel()

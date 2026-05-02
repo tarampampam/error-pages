@@ -99,6 +99,9 @@ spec:
             - name: TEXT_TEMPLATE
               value: {{ .txtTemplate.custom | toJson }}
             {{- end }}
+            {{- if .homepageUrl }}
+            - {name: HOMEPAGE_URL, value: "{{ .homepageUrl }}"}
+            {{- end }}
             {{- if .disableL10n }}
             - {name: DISABLE_L10N, value: "true"}
             {{- end }}

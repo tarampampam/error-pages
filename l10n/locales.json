@@ -85,22 +85,22 @@
     "ro": "Verifică URL-ul",
     "it": "Ricontrolla l'URL"
   },
-  "Alternatively, go back": {
-    "fr": "Essayez de revenir en arrière",
-    "ru": "Или можете вернуться назад",
-    "uk": "Або можете повернутися назад",
-    "pt": "Como alternativa, tente voltar",
-    "nl": "Of ga terug",
-    "de": "Alternativ gehen Sie zurück",
-    "es": "Como alternativa, vuelva atrás",
-    "zh": "或返回上一页",
-    "id": "Atau, kembali",
-    "pl": "Alternatywnie wróć",
-    "ko": "혹은, 돌아가기",
-    "hu": "Alternatív megoldásként térjen vissza",
-    "no": "Alternativt, gå tilbake",
-    "ro": "Sau, întorceți-vă",
-    "it": "In alternativa, torna indietro"
+  "Go to homepage": {
+    "fr": "Aller à la page d'accueil",
+    "ru": "На главную страницу",
+    "uk": "На головну сторінку",
+    "pt": "Ir para a página inicial",
+    "nl": "Ga naar de startpagina",
+    "de": "Zur Startseite",
+    "es": "Ir a la página de inicio",
+    "zh": "前往主页",
+    "id": "Ke halaman utama",
+    "pl": "Przejdź do strony głównej",
+    "ko": "홈페이지로 이동",
+    "hu": "Ugrás a kezdőlapra",
+    "no": "Gå til hjemmesiden",
+    "ro": "Mergeți la pagina principală",
+    "it": "Vai alla pagina principale"
   },
   "Here's what might have happened": {
     "fr": "Voici ce qui aurait pu se passer",

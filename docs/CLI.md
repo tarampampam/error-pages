@@ -26,6 +26,7 @@ Options:
    --add-code="…"            Add or override HTTP status codes and their messages/descriptions (format: 'CODE=MESSAGE[|DESCRIPTION][||CODE=MESSAGE[|DESCRIPTION]...]'; CODE may contain wildcards like '4**'; separate multiple entries with '||', a newline, or a tab) [$ADD_CODE]
    --template-name="…"       Name of the built-in HTML template to use (app-down/cats/connection/ghost/hacker-terminal/l7/lost-in-space/noise/orient/shuffle/win98; ignored if a custom HTML template is set) (default: app-down) [$TEMPLATE_NAME, $HTML_TEMPLATE_NAME]
    --rotation-mode="…"       Mode for rotating built-in HTML templates (disabled/random-on-startup/random-on-each-request/random-hourly/random-daily; ignored if a custom HTML template is set) (default: disabled) [$ROTATION_MODE]
+   --homepage-url="…"        Homepage URL to show as a link in error pages (e.g. https://app.example.com/home) (default: /) [$HOMEPAGE_URL]
    --html-template="…"       Custom HTML template for error page responses (template text/URL/file path) [$HTML_TEMPLATE, $TEMPLATE]
    --json-template="…"       Custom JSON template for error page responses (template text/URL/file path) [$JSON_TEMPLATE]
    --xml-template="…"        Custom XML template for error page responses (template text/URL/file path) [$XML_TEMPLATE]
@@ -128,6 +129,7 @@ Options:
    --add-code="…"                       Add or override HTTP status codes and their messages/descriptions (format: 'CODE=MESSAGE[|DESCRIPTION][||CODE=MESSAGE[|DESCRIPTION]...]'; CODE may contain wildcards like '4**'; separate multiple entries with '||', a newline, or a tab) [$ADD_CODE]
    --template="…"                       Custom template for error pages [$TEMPLATE]
    --disable-l10n                       Disable localization of error pages (if the template supports localization) [$DISABLE_L10N]
+   --homepage-url="…"                   Homepage URL to show as a link in error pages (e.g. https://app.example.com/home) [$HOMEPAGE_URL]
    --help, -h                           Show help
    --version, -v                        Print the version
 ```

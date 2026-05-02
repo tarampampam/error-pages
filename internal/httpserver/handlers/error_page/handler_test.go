@@ -46,6 +46,7 @@ func TestNew(t *testing.T) {
 			func(_ formats.Format) (*tpl.Template, error) { return mustTemplate(t, ""), nil },
 			false,
 			false,
+			"",
 		)
 
 		for name, tc := range map[string]struct {
@@ -92,6 +93,7 @@ func TestNew(t *testing.T) {
 				func(_ formats.Format) (*tpl.Template, error) { return tmpl, nil },
 				false,
 				false,
+				"",
 			)
 		}
 
@@ -178,6 +180,7 @@ func TestNew(t *testing.T) {
 			},
 			false,
 			false,
+			"",
 		)
 
 		for name, tc := range map[string]struct {
@@ -377,6 +380,7 @@ func TestNew(t *testing.T) {
 					func(_ formats.Format) (*tpl.Template, error) { return tmpl, nil },
 					false,
 					false,
+					"",
 				)
 
 				req := httptest.NewRequest(http.MethodGet, tc.givePath, nil)
@@ -402,6 +406,7 @@ func TestNew(t *testing.T) {
 			func(_ formats.Format) (*tpl.Template, error) { return tmpl, nil },
 			false,
 			false,
+			"",
 		)
 
 		for name, tc := range map[string]struct {
@@ -479,6 +484,7 @@ func TestNew(t *testing.T) {
 					func(_ formats.Format) (*tpl.Template, error) { return tmpl, nil },
 					false,
 					false,
+					"",
 				)
 
 				req := httptest.NewRequest(http.MethodGet, "/404", nil)
@@ -542,6 +548,7 @@ func TestNew(t *testing.T) {
 					func(_ formats.Format) (*tpl.Template, error) { return tmpl, nil },
 					false,
 					false,
+					"",
 				)
 
 				req := httptest.NewRequest(http.MethodGet, tc.givePath, nil)
@@ -567,6 +574,7 @@ func TestNew(t *testing.T) {
 			},
 			false,
 			false,
+			"",
 		)
 
 		for name, tc := range map[string]struct {
@@ -605,6 +613,7 @@ func TestNew(t *testing.T) {
 			func(_ formats.Format) (*tpl.Template, error) { return nil, templaterErr },
 			false,
 			false,
+			"",
 		)
 
 		for name, tc := range map[string]struct {
@@ -644,6 +653,7 @@ func TestNew(t *testing.T) {
 			func(_ formats.Format) (*tpl.Template, error) { return badTmpl, nil },
 			false,
 			false,
+			"",
 		)
 
 		for name, tc := range map[string]struct {
@@ -689,6 +699,7 @@ func TestNew(t *testing.T) {
 				func(_ formats.Format) (*tpl.Template, error) { return tmpl, nil },
 				true,
 				false,
+				"",
 			)
 
 			req := httptest.NewRequest(http.MethodGet, "/500", nil)
@@ -723,6 +734,7 @@ func TestNew(t *testing.T) {
 				func(_ formats.Format) (*tpl.Template, error) { return tmpl, nil },
 				false,
 				false,
+				"",
 			)
 
 			req := httptest.NewRequest(http.MethodGet, "/500", nil)
@@ -752,6 +764,7 @@ func TestNew(t *testing.T) {
 			func(_ formats.Format) (*tpl.Template, error) { return tmpl, nil },
 			false,
 			false,
+			"",
 		)
 
 		wantLen := strconv.Itoa(len(tplBody))
@@ -804,6 +817,7 @@ func TestNew(t *testing.T) {
 			func(_ formats.Format) (*tpl.Template, error) { return tmpl, nil },
 			false,
 			false,
+			"",
 		)
 
 		for name, tc := range map[string]struct {
@@ -887,6 +901,7 @@ func TestNew(t *testing.T) {
 				func(_ formats.Format) (*tpl.Template, error) { return emptyTmpl, nil },
 				false,
 				false,
+				"",
 			)
 
 			req := httptest.NewRequest(http.MethodGet, "/404", nil)

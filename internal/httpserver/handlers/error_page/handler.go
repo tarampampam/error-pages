@@ -26,7 +26,7 @@ type Templater func(formats.Format) (*tpl.Template, error)
 const maxPooledBuf = 64 << 10 // 64kb
 
 // New creates a new handler that returns an error page with the specified status code and format.
-func New(
+func New( //nolint:funlen
 	log *logger.Logger,
 	defaultCode uint16,
 	respondSameStatus bool,
@@ -35,6 +35,7 @@ func New(
 	templater Templater,
 	showDetails bool,
 	l10nDisabled bool,
+	homepageURL string,
 ) http.Handler {
 	// bufPool reuses the render buffer across requests to avoid per-request heap allocation for the response body
 	bufPool := sync.Pool{New: func() any { return new(bytes.Buffer) }}
@@ -93,6 +94,7 @@ func New(
 			StatusCode:  code,
 			Message:     codeDesc.Short,
 			Description: codeDesc.Full,
+			HomepageURL: homepageURL,
 			Config: tpl.Config{
 				ShowRequestDetails: showDetails,
 				L10nDisabled:       l10nDisabled,

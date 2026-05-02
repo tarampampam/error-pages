@@ -35,6 +35,30 @@ func TestNewAddHTTPCodesFlag(t *testing.T) {
 	assert.Error(t, f.Validator(nil, "bad-entry"))
 }
 
+func TestNewHomepageURLFlag(t *testing.T) {
+	t.Parallel()
+
+	t.Run("names and env vars", func(t *testing.T) {
+		t.Parallel()
+
+		f := shared.NewHomepageURLFlag("")
+
+		assert.Equal(t, 1, len(f.Names))
+		assert.Equal(t, "homepage-url", f.Names[0])
+		assert.Equal(t, 1, len(f.EnvVars))
+		assert.Equal(t, "HOMEPAGE_URL", f.EnvVars[0])
+		assert.True(t, f.Validator == nil)
+	})
+
+	t.Run("default is forwarded", func(t *testing.T) {
+		t.Parallel()
+
+		assert.Equal(t, "", shared.NewHomepageURLFlag("").Default)
+		assert.Equal(t, "/", shared.NewHomepageURLFlag("/").Default)
+		assert.Equal(t, "https://app.example.com/home", shared.NewHomepageURLFlag("https://app.example.com/home").Default)
+	})
+}
+
 func TestNewDisableL10nFlag(t *testing.T) {
 	t.Parallel()
 

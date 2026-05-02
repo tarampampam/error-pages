@@ -37,6 +37,7 @@ type App struct {
 		addHTTPCodes        map[string]codes.Description
 		customTemplate      string
 		l10nDisabled        bool
+		homepageURL         string
 	}
 }
 
@@ -58,6 +59,7 @@ func NewApp(name string) *App {
 		addHTTPCodesFlag        = shared.NewAddHTTPCodesFlag()
 		templateFlag            = newTemplateFlag()
 		disableL10nFlag         = shared.NewDisableL10nFlag()
+		homepageURLFlag         = shared.NewHomepageURLFlag(app.opt.homepageURL)
 	)
 
 	app.cmd.Flags = []cli.Flagger{
@@ -67,6 +69,7 @@ func NewApp(name string) *App {
 		&addHTTPCodesFlag,
 		&templateFlag,
 		&disableL10nFlag,
+		&homepageURLFlag,
 	}
 
 	app.cmd.Action = func(ctx context.Context, _ *cli.Command, _ []string) error {
@@ -84,6 +87,7 @@ func NewApp(name string) *App {
 		}
 
 		setIfFlagIsSet(&app.opt.customTemplate, templateFlag)
+		setIfFlagIsSet(&app.opt.homepageURL, homepageURLFlag)
 
 		// load custom template content if a source is provided (either URL, file path, or raw template string)
 		if src := app.opt.customTemplate; src != "" {
@@ -189,6 +193,7 @@ func (a *App) renderCustomTemplate(httpCodes codes.Codes, history map[string][]h
 			StatusCode:  code,
 			Message:     desc.Short,
 			Description: desc.Full,
+			HomepageURL: a.opt.homepageURL,
 			Config:      tpl.Config{L10nDisabled: a.opt.l10nDisabled},
 		})
 		if renderErr != nil {
@@ -248,6 +253,7 @@ func (a *App) renderBuiltInTemplates(httpCodes codes.Codes, history map[string][
 				StatusCode:  code,
 				Message:     desc.Short,
 				Description: desc.Full,
+				HomepageURL: a.opt.homepageURL,
 				Config:      tpl.Config{L10nDisabled: a.opt.l10nDisabled},
 			})
 			if renderErr != nil {

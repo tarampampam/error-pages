@@ -136,7 +136,7 @@ l10n/
   localize.js, localize.min.js, playground.html  GENERATED
   generate/localize.go    Generator source
 docs/
-  CLI.md                  Contains generated docs (build tag: readme)
+  CLI.md                  Contains partially generated docs (build tag: readme)
   templating.md, UPGRADE_TO_V4.md, guides/
 deploy/helm/              Helm chart sources
 ```
@@ -282,8 +282,25 @@ CLI framework: `internal/cli`. `Flag[T]` is generic over `bool | int | int64 | s
 
 **Value precedence: Default → Env var → CLI flag (CLI wins)**.
 
-Actual CLI flags and supported env vars are described in the [docs/CLI.md](docs/CLI.md) file, which is generated from
-the sources.
+Actual CLI flags and supported env vars are described in the [docs/CLI.md](docs/CLI.md) file, which is **partially**
+generated from the sources.
+
+## Common change patterns
+
+### Extending `tpl.Data` with a new field
+
+- Add the field to the `Data` struct. **Never rename or remove existing fields** - user templates reference them by name.
+- Ensure template tests reflect the new field and the change is covered.
+- Update `docs/templating.md` field table.
+- Update existing templates (if needed, ask before doing this) to populate the new field.
+
+### Adding a new CLI flag
+
+- **CLI flag** (both binaries) → `internal/cli/shared`, with a test. Single-binary → that binary's own flags file.
+- **Each binary's app wiring** → `opt` struct field, flag instantiation, `setIfFlagIsSet`, pass downstream,
+  startup log line, etc.
+- **Helm chart** → values file, deployment template (env var block), values JSON schema.
+- **Update documentation** - README.md, `docs/CLI.md` (generated), other files in `docs/**/*.md` if relevant.
 
 ## Localization
 

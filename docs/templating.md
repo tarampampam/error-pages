@@ -25,6 +25,7 @@ All templates receive a data object with the following fields:
 | `.RequestID`                 | `string` | Unique request ID *                                                    |
 | `.ForwardedFor`              | `string` | Original client IP(s) from `X-Forwarded-For` *                         |
 | `.Host`                      | `string` | Request `Host` header *                                                |
+| `.HomepageURL`               | `string` | Homepage URL set via `--homepage-url` (empty if not configured)        |
 | `.Config.ShowRequestDetails` | `bool`   | Whether `--show-details` is enabled                                    |
 | `.Config.L10nDisabled`       | `bool`   | Whether `--disable-l10n` is set                                        |
 

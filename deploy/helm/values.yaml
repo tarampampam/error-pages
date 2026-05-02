@@ -162,5 +162,8 @@ config:
     # Set to `null` to use the built-in plain-text template.
     custom: null
 
+  # -- (string/null) Homepage URL to show as a link in error pages (e.g. https://app.example.com/home).
+  # When set, supported templates display a "Go to homepage" link pointing to this URL.
+  homepageUrl: null
   # -- (bool/null) Disable client-side localization of error pages
   disableL10n: null

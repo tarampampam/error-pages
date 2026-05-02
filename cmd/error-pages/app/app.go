@@ -44,6 +44,7 @@ type App struct {
 			addHTTPCodes        map[string]codes.Description
 			templateName        string
 			rotationMode        tpl.RotationMode
+			homepageURL         string
 			customTemplates     struct {
 				html, json, xml, text string
 			}
@@ -71,6 +72,7 @@ func NewApp(name string) *App { //nolint:funlen
 	app.opt.errorPages.proxyHeaders = []string{"X-Request-Id", "X-Trace-Id", "X-Correlation-Id", "X-Amzn-Trace-Id"}
 	app.opt.errorPages.templateName = templates.HTMLTemplateNameAppDown
 	app.opt.errorPages.rotationMode = tpl.RotationModeDisabled
+	app.opt.errorPages.homepageURL = "/"
 
 	var (
 		logLevelFlag            = newLogLevelFlag()
@@ -85,6 +87,7 @@ func NewApp(name string) *App { //nolint:funlen
 		addHTTPCodesFlag        = shared.NewAddHTTPCodesFlag()
 		templateNameFlag        = newTemplateNameFlag(allTemplateNames, app.opt.errorPages.templateName)
 		rotationModeFlag        = newRotationModeFlag(app.opt.errorPages.rotationMode)
+		homepageURLFlag         = shared.NewHomepageURLFlag(app.opt.errorPages.homepageURL)
 		htmlTemplateFlag        = newHTMLTemplateFlag()
 		jsonTemplateFlag        = newJSONTemplateFlag()
 		xmlTemplateFlag         = newXMLTemplateFlag()
@@ -105,6 +108,7 @@ func NewApp(name string) *App { //nolint:funlen
 		&addHTTPCodesFlag,
 		&templateNameFlag,
 		&rotationModeFlag,
+		&homepageURLFlag,
 		&htmlTemplateFlag,
 		&jsonTemplateFlag,
 		&xmlTemplateFlag,
@@ -150,6 +154,7 @@ func NewApp(name string) *App { //nolint:funlen
 			app.opt.errorPages.rotationMode = tpl.RotationMode(*rotationModeFlag.Value)
 		}
 
+		setIfFlagIsSet(&app.opt.errorPages.homepageURL, homepageURLFlag)
 		setIfFlagIsSet(&app.opt.errorPages.customTemplates.html, htmlTemplateFlag)
 		setIfFlagIsSet(&app.opt.errorPages.customTemplates.json, jsonTemplateFlag)
 		setIfFlagIsSet(&app.opt.errorPages.customTemplates.xml, xmlTemplateFlag)
@@ -297,6 +302,7 @@ func (a *App) run(ctx context.Context, log *logger.Logger) error {
 			templater.Get,
 			a.opt.errorPages.showDetails,
 			a.opt.errorPages.l10nDisabled,
+			a.opt.errorPages.homepageURL,
 		),
 		httpserver.WithErrorLog(logger.NewStdLog(log, logger.ErrorLevel)),
 	)
@@ -313,6 +319,7 @@ func (a *App) run(ctx context.Context, log *logger.Logger) error {
 		logger.Bool("send_same_http_code", a.opt.errorPages.sendSameHTTPCode),
 		logger.Bool("show_details", a.opt.errorPages.showDetails),
 		logger.Strings("proxy_headers", a.opt.errorPages.proxyHeaders...),
+		logger.String("homepage_url", a.opt.errorPages.homepageURL),
 		logger.Bool("l10n_disabled", a.opt.errorPages.l10nDisabled),
 	)
 

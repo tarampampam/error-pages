@@ -90,6 +90,16 @@ func ParseAddHTTPCodes(s string) (map[string]codes.Description, error) {
 	return result, nil
 }
 
+// NewHomepageURLFlag returns a flag for setting the homepage URL shown as a link in error pages.
+func NewHomepageURLFlag(def string) cli.Flag[string] {
+	return cli.Flag[string]{
+		Names:   []string{"homepage-url"},
+		Usage:   "Homepage URL to show as a link in error pages (e.g. https://app.example.com/home)",
+		EnvVars: []string{"HOMEPAGE_URL"},
+		Default: def,
+	}
+}
+
 // NewDisableL10nFlag returns a flag that disables client-side localization for templates that support it.
 func NewDisableL10nFlag() cli.Flag[bool] {
 	return cli.Flag[bool]{

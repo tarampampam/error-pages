@@ -23,6 +23,7 @@ func NewHandler(
 	templater error_page.Templater,
 	showDetails bool,
 	l10nDisabled bool,
+	homepageURL string,
 ) http.Handler {
 	const (
 		healthzEndpoint    = "/healthz"
@@ -46,6 +47,7 @@ func NewHandler(
 		templater,
 		showDetails,
 		l10nDisabled,
+		homepageURL,
 	)
 
 	return middleware.Apply(

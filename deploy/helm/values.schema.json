@@ -349,6 +349,12 @@
             }
           }
         },
+        "homepageUrl": {
+          "oneOf": [
+            {"type": "string", "minLength": 1},
+            {"type": "null"}
+          ]
+        },
         "disableL10n": {
           "oneOf": [
             {"type": "boolean"},
