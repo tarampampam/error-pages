@@ -18,42 +18,29 @@
     /*:root {*/
     /*  --color-bg-primary: #fff;*/
     /*  --color-bg-secondary: #eef6fa;*/
-    /*  --color-bg-sign: #fff;*/
-    /*  --color-text-primary: #333;*/
-    /*  --color-text-secondary: #777;*/
-    /*  --color-img-details: #f62f37;*/
-    /*  --color-img-primary: #7990a1;*/
-    /*  --color-img-secondary: #00baff;*/
     /*}*/
 
     /*@media (prefers-color-scheme: dark) {*/
     /*  :root {*/
     /*    --color-bg-primary: #222526;*/
     /*    --color-bg-secondary: #292e2f;*/
-    /*    --color-bg-sign: #262828;*/
-    /*    --color-text-primary: #fff;*/
-    /*    --color-text-secondary: #999;*/
-    /*    --color-img-details: #c72d34;*/
-    /*    --color-img-primary: #adacac;*/
-    /*    --color-img-secondary: #dedede*/
     /*  }*/
     /*}*/
 
-    /*body, html {*/
-    /*  background-color: var(--color-bg-primary);*/
-    /*  color: var(--color-text-primary);*/
-    /*  font-family: sans-serif;*/
-    /*  margin: 0;*/
-    /*  padding: 0;*/
-    /*  min-height: 100%;*/
-    /*  height: 100%;*/
-    /*  width: 100%;*/
-    /*  overflow-x: hidden;*/
-    /*  font-size: 16px;*/
-    /*  word-break: keep-all;*/
-    /*}*/
-
     *, *::before, *::after { box-sizing: border-box; }
+
+    /* visually hidden but accessible to screen readers */
+    .screen-readers-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
 
     html, body {
       margin: 0;
@@ -69,6 +56,17 @@
       justify-content: center;
       padding: clamp(1rem, 4vmin, 3rem);
       font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    }
+
+    @media (max-height: 600px), (max-width: 380px) {
+      html, body {
+        overflow: auto;
+        overscroll-behavior: auto;
+      }
+      body {
+        height: auto;
+        min-height: 100dvh;
+      }
     }
 
     main {
@@ -98,60 +96,8 @@
           margin: 0;
           font-size: clamp(0.95rem, 2.5vmin, 1.125rem);
           line-height: 1.5;
-          opacity: 0.75;
+          color: #555;
           text-wrap: pretty;
-        }
-
-        .status-chain {
-          margin: clamp(1rem, 3vmin, 1.5rem) auto 0 auto;
-          display: flex;
-          width: fit-content;
-          font-size: clamp(0.85rem, 2vmin, 0.95rem);
-
-          .status-block {
-            flex: 1 1 0;
-            padding: clamp(0.6rem, 2vmin, 0.9rem) 1rem;
-            text-align: center;
-            border: 1px solid transparent;
-
-            & + .status-block {
-              border-left: none;
-            }
-
-            &:first-child {
-              border-top-left-radius: 8px;
-              border-bottom-left-radius: 8px;
-            }
-
-            &:last-child {
-              border-top-right-radius: 8px;
-              border-bottom-right-radius: 8px;
-            }
-
-            .name {
-              display: block;
-              font-weight: 500;
-            }
-
-            .state {
-              display: block;
-              margin-top: 0.15rem;
-              font-size: 0.85em;
-              opacity: 0.7;
-            }
-
-            &.ok {
-              background-color: #e8f5ee;
-              border-color: #a4d4b4;
-              color: #2e7d4e;
-            }
-
-            &.error {
-              background-color: #fdebe9;
-              border-color: #f1b5af;
-              color: #c0382b;
-            }
-          }
         }
 
         .what-might-happened {
@@ -160,7 +106,7 @@
           p {
             margin: 0 0 0.5rem;
             font-size: clamp(0.9rem, 2.3vmin, 1rem);
-            opacity: 0.75;
+            color: #555;
           }
 
           ul {
@@ -171,7 +117,7 @@
             flex-direction: column;
             gap: 0.35rem;
             font-size: clamp(0.9rem, 2.3vmin, 1rem);
-            opacity: 0.75;
+            color: #555;
             text-align: left;
 
             li {
@@ -182,7 +128,7 @@
                 content: "›";
                 position: absolute;
                 left: 0;
-                opacity: 0.6;
+                color: #888;
                 font-weight: 700;
               }
             }
@@ -192,14 +138,16 @@
         nav {
           margin-top: clamp(1rem, 3vmin, 1.5rem);
           font-size: clamp(0.9rem, 2.3vmin, 1rem);
-          opacity: 0.75;
+          color: #555;
 
           a {
             color: inherit;
             text-decoration: underline;
             text-underline-offset: 0.2em;
             text-decoration-thickness: 1px;
-            transition: text-decoration-thickness 0.15s ease, opacity 0.15s ease;
+            transition: text-decoration-thickness 0.15s ease;
+            display: inline-block;
+            padding: 0.25rem 0.1rem;
 
             &:hover,
             &:focus-visible {
@@ -223,7 +171,7 @@
             margin: 0 0 0.6rem;
             font-size: inherit;
             font-weight: 500;
-            opacity: 0.8;
+            color: #444;
           }
 
           dl {
@@ -239,7 +187,7 @@
 
             dt {
               font-weight: normal;
-              opacity: 0.75;
+              color: #555;
               white-space: nowrap;
               text-align: end;
 
@@ -251,7 +199,7 @@
             dd {
               margin: 0;
               min-width: 0;
-              opacity: 0.85;
+              color: #333;
               text-align: left;
 
               code {
@@ -323,101 +271,94 @@
       }
     }
 
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+      }
+
+      svg#pic {
+        .diode1,
+        .diode2,
+        .diode3 {
+          opacity: 1 !important;
+        }
+      }
+    }
+
     @keyframes moveLeftScrew {
-      0%, 100% {
-        transform: rotate(0);
-      }
-      50% {
-        transform: rotate(-0.25deg);
-      }
+      0%,100% {transform:rotate(0)}
+      50%     {transform:rotate(-0.25deg)}
     }
-
     @keyframes moveRightScrew {
-      0%, 100% {
-        transform: rotate(0);
-      }
-      50% {
-        transform: rotate(0.25deg);
-      }
+      0%,100% {transform:rotate(0)}
+      50%     {transform:rotate(0.25deg)}
     }
-
     @keyframes blink1 {
-      0%, 8%   { opacity: 1; }
-      9%, 18%  { opacity: 0.15; }
-      19%, 22% { opacity: 1; }
-      23%, 30% { opacity: 0.15; }
-      31%, 38% { opacity: 1; }
-      39%, 60% { opacity: 0.15; }
-      61%, 65% { opacity: 1; }
-      66%, 100%{ opacity: 0.15; }
+      0%,8%    {opacity:1}
+      9%,18%   {opacity:.15}
+      19%,22%  {opacity:1}
+      23%,30%  {opacity:.15}
+      31%,38%  {opacity:1}
+      39%,60%  {opacity:.15}
+      61%,65%  {opacity:1}
+      66%,100% {opacity:.15}
     }
-
     @keyframes blink2 {
-      0%, 4%    { opacity: 1; }
-      5%, 11%   { opacity: 0.15; }
-      12%, 16%  { opacity: 1; }
-      17%, 20%  { opacity: 0.15; }
-      21%, 27%  { opacity: 1; }
-      28%, 32%  { opacity: 0.15; }
-      33%, 36%  { opacity: 1; }
-      37%, 44%  { opacity: 0.15; }
-      45%, 52%  { opacity: 1; }
-      53%, 58%  { opacity: 0.15; }
-      59%, 63%  { opacity: 1; }
-      64%, 72%  { opacity: 0.15; }
-      73%, 78%  { opacity: 1; }
-      79%, 100% { opacity: 0.15; }
+      0%,4%    {opacity:1}
+      5%,11%   {opacity:.15}
+      12%,16%  {opacity:1}
+      17%,20%  {opacity:.15}
+      21%,27%  {opacity:1}
+      28%,32%  {opacity:.15}
+      33%,36%  {opacity:1}
+      37%,44%  {opacity:.15}
+      45%,52%  {opacity:1}
+      53%,58%  {opacity:.15}
+      59%,63%  {opacity:1}
+      64%,72%  {opacity:.15}
+      73%,78%  {opacity:1}
+      79%,100% {opacity:.15}
     }
-
     @keyframes blink3 {
-      0%, 5%    { opacity: 1; }
-      6%, 12%   { opacity: 0.15; }
-      13%, 18%  { opacity: 1; }
-      19%, 100% { opacity: 0.15; }
+      0%,5%    {opacity:1}
+      6%,12%   {opacity:.15}
+      13%,18%  {opacity:1}
+      19%,100% {opacity:.15}
     }
   </style>
 </head>
 <body>
 <main>
-  <section class="info">
-    <h1 data-l10n>{{ .Message }}</h1>
+  <section class="info" aria-labelledby="error-title">
+    <h1 id="error-title" data-l10n>{{ .Message }}</h1>
     <p data-l10n>{{ .Description }}</p>
+
     <!-- {{ if eq .StatusCode 404 }} -->
-    <section class="what-might-happened">
-      <p><span data-l10n>Here's what might have happened</span>:</p>
+    <section class="what-might-happened" aria-labelledby="possibilities-heading">
+      <p id="possibilities-heading"><span data-l10n>Here's what might have happened</span>:</p>
       <ul>
         <li data-l10n>You may have mistyped the URL</li>
         <li data-l10n>The site or page was moved</li>
         <li data-l10n>It was never here</li>
       </ul>
     </section>
-    <!-- {{ else }} -->
-    <div class="status-chain">
-      <div class="status-block {{ if and (ge .StatusCode 400) (lt .StatusCode 500) }}error{{ else }}ok{{ end }}">
-        <span class="name" data-l10n>Browser</span>
-        <span class="state" data-l10n>{{ if and (ge .StatusCode 400) (lt .StatusCode 500) }}Error{{ else }}Working{{ end }}</span>
-      </div>
-      <div class="status-block ok">
-        <span class="name" data-l10n>Network</span>
-        <span class="state" data-l10n>Working</span>
-      </div>
-      <div class="status-block {{ if ge .StatusCode 500 }}error{{ else }}ok{{ end }}">
-        <span class="name" data-l10n>Server</span>
-        <span class="state" data-l10n>{{ if ge .StatusCode 500 }}Error{{ else }}Working{{ end }}</span>
-      </div>
-    </div>
     <!-- {{ end }} -->
+
     <!-- {{ if or (eq .StatusCode 401) (eq .StatusCode 403) (eq .StatusCode 404) }} -->
-    <nav>
+    <nav aria-labelledby="nav-heading">
+      <h2 id="nav-heading" class="screen-readers-only" data-l10n>Suggestions</h2>
       <span data-l10n>Double-check the URL</span>.
       <!-- {{ if .HomepageURL }} -->
       <a href="{{ .HomepageURL }}" data-l10n>Go to homepage</a>
       <!-- {{ end }} -->
     </nav>
     <!-- {{ end }} -->
+
     <!-- {{- if .Config.ShowRequestDetails -}} -->
-    <section class="details">
-      <h2>Request details</h2>
+    <section class="details" aria-labelledby="details-heading">
+      <h2 id="details-heading" data-l10n>Request details</h2>
       <dl>
         <!-- {{- if .Host -}} -->
         <dt data-l10n>Host</dt>
@@ -450,9 +391,10 @@
     </section>
     <!-- {{- end -}} -->
   </section>
-  <figure class="pic">
-    <svg id="pic" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500">
-      <path d="M100.31 43.593l214.941-11.34 6.379 120.902-214.941 11.34z" fill="#fff"/>
+
+  <figure class="pic" aria-hidden="true">
+    <svg id="pic" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" focusable="false" role="presentation">
+    <path d="M100.31 43.593l214.941-11.34 6.379 120.902-214.941 11.34z" fill="#fff"/>
       <path class="B" d="M321.63 153.16l-.13-2.17-.35-6.31-1.33-24.16-4.76-88.25.21.18-214.93
         11.4h0l.24-.27 6.36 120.91-.25-.23 154.62-8 44.4-2.28 11.83-.59 3.06-.15h1l-1 .07-3
         .17-11.78.65-44.34 2.41-154.78 8.2h-.23v-.24l-6.39-120.9v-.25h.25 0l214.92-11.29h.19v.2l4.56
