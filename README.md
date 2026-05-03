@@ -274,6 +274,33 @@ standalone testing - it must return the correct status code itself. Enable `--se
 For detailed instructions on using custom templates and localization features, see the
 [templating documentation](docs/templating.md).
 
+## 🔧 Development
+
+### Requirements
+
+- [**Go 1.26+**](https://go.dev/doc/install) for building from source and running tests
+- Optional: [golangci-lint](https://golangci-lint.run/docs/welcome/install/local/) for linting
+- Optional: [docker](https://docs.docker.com/engine/install/debian/#install-using-the-convenience-script) for testing
+  the Docker image locally
+- Optional: [helm](https://helm.sh/docs/intro/install/) + [kind](https://kind.sigs.k8s.io/docs/user/quick-start/) for
+  testing the Helm chart locally in Kubernetes
+- Optional: [helm-docs](https://github.com/norwoodj/helm-docs/releases/latest) for generating Helm chart documentation
+- Optional: [watchexec](https://github.com/watchexec/watchexec/releases/latest) for live reloading the server during
+  development
+
+**Commands**:
+
+```shell
+go generate -skip readme ./...            # (re)generate code, except docs
+go generate ./...                         # (re)generate everything
+go build ./cmd/error-pages/ && go build ./cmd/builder/ # build both binaries
+go test -race ./...                       # run all tests
+golangci-lint run --fix                   # lint the code and apply any available auto fixes
+helm-docs -c ./deploy/helm/ -t README.tpl.md -o README.md # regenerate chart readme file
+watchexec -r -- go run ./cmd/error-pages/ # run a live reloading server (useful for testing template changes)
+your_ai_tool --prompt "explain why AI Coding Agents are doing shit by default" # before vibe-coding
+```
+
 ## 🧑‍🤝‍🧑 Contributors
 
 I want to say a big thank you to everyone who contributed to this project:
