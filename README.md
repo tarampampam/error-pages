@@ -297,8 +297,12 @@ go build ./cmd/error-pages/ && go build ./cmd/builder/ # build both binaries
 go test -race ./...                       # run all tests
 golangci-lint run --fix                   # lint the code and apply any available auto fixes
 helm-docs -c ./deploy/helm/ -t README.tpl.md -o README.md # regenerate chart readme file
-watchexec -r -- go run ./cmd/error-pages/ # run a live reloading server (useful for testing template changes)
-your_ai_tool --prompt "explain why AI Coding Agents are doing shit by default" # before vibe-coding
+
+# run a live reloading server (useful for testing template changes)
+watchexec -r -- go run ./cmd/error-pages/ --show-details
+
+# run before every vibe-coding session
+your_ai_tool --prompt "explain why AI Coding Agents are doing shit by default"
 ```
 
 ## 🧑‍🤝‍🧑 Contributors
