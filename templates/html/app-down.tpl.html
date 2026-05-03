@@ -102,6 +102,58 @@
           text-wrap: pretty;
         }
 
+        .status-chain {
+          margin: clamp(1rem, 3vmin, 1.5rem) auto 0 auto;
+          display: flex;
+          width: fit-content;
+          font-size: clamp(0.85rem, 2vmin, 0.95rem);
+
+          .status-block {
+            flex: 1 1 0;
+            padding: clamp(0.6rem, 2vmin, 0.9rem) 1rem;
+            text-align: center;
+            border: 1px solid transparent;
+
+            & + .status-block {
+              border-left: none;
+            }
+
+            &:first-child {
+              border-top-left-radius: 8px;
+              border-bottom-left-radius: 8px;
+            }
+
+            &:last-child {
+              border-top-right-radius: 8px;
+              border-bottom-right-radius: 8px;
+            }
+
+            .name {
+              display: block;
+              font-weight: 500;
+            }
+
+            .state {
+              display: block;
+              margin-top: 0.15rem;
+              font-size: 0.85em;
+              opacity: 0.7;
+            }
+
+            &.ok {
+              background-color: #e8f5ee;
+              border-color: #a4d4b4;
+              color: #2e7d4e;
+            }
+
+            &.error {
+              background-color: #fdebe9;
+              border-color: #f1b5af;
+              color: #c0382b;
+            }
+          }
+        }
+
         .what-might-happened {
           margin-top: clamp(1rem, 3vmin, 1.5rem);
 
@@ -166,14 +218,12 @@
         .details {
           margin-top: clamp(1rem, 3vmin, 1.5rem);
           font-size: clamp(0.85rem, 2vmin, 0.95rem);
-          max-width: 100%;
 
           h2 {
             margin: 0 0 0.6rem;
             font-size: inherit;
             font-weight: 500;
             opacity: 0.8;
-            text-align: center;
           }
 
           dl {
@@ -341,6 +391,21 @@
         <li data-l10n>It was never here</li>
       </ul>
     </section>
+    <!-- {{ else }} -->
+    <div class="status-chain">
+      <div class="status-block {{ if and (ge .StatusCode 400) (lt .StatusCode 500) }}error{{ else }}ok{{ end }}">
+        <span class="name" data-l10n>Browser</span>
+        <span class="state" data-l10n>{{ if and (ge .StatusCode 400) (lt .StatusCode 500) }}Error{{ else }}Working{{ end }}</span>
+      </div>
+      <div class="status-block ok">
+        <span class="name" data-l10n>Network</span>
+        <span class="state" data-l10n>Working</span>
+      </div>
+      <div class="status-block {{ if ge .StatusCode 500 }}error{{ else }}ok{{ end }}">
+        <span class="name" data-l10n>Server</span>
+        <span class="state" data-l10n>{{ if ge .StatusCode 500 }}Error{{ else }}Working{{ end }}</span>
+      </div>
+    </div>
     <!-- {{ end }} -->
     <!-- {{ if or (eq .StatusCode 401) (eq .StatusCode 403) (eq .StatusCode 404) }} -->
     <nav>
