@@ -79,9 +79,13 @@ The following templates are built-in and available for use without any additiona
 > The `cats` template is the only one of those that fetches resources (the actual cat pictures) from external
 > servers - all other templates are self-contained.
 
+> [!TIP]
+> If you need the **pre-rendered static error pages pack**, you can download it as a [zip][pages-pack-zip] or
+> [tar.gz][pages-pack-tar-gz] archive.
+
 [app-down-link]:https://tarampampam.github.io/error-pages/app-down/404.html
-[app-down-light]:https://github.com/tarampampam/error-pages/assets/7326800/ad4b4fd7-7c7b-4bdc-a6b6-44f9ba7f77ca
-[app-down-dark]:https://github.com/tarampampam/error-pages/assets/7326800/4e668a56-a4c4-47cd-ac4d-b6b45db54ab8
+[app-down-light]:https://github.com/user-attachments/assets/c5f42b53-51cd-47c4-a22f-553d44d2a288
+[app-down-dark]:https://github.com/user-attachments/assets/135bac8c-983f-461c-97ba-e653e9b9adfe
 [cats-link]:https://tarampampam.github.io/error-pages/cats/404.html
 [cats-light]:https://github.com/tarampampam/error-pages/assets/7326800/056cd00e-bc9a-4120-8325-310d7b0ebd1b
 [cats-dark]:https://github.com/tarampampam/error-pages/assets/7326800/5689880b-f770-406c-81dd-2d28629e6f2e
@@ -133,10 +137,6 @@ Download the latest binary for your OS/architecture from the [releases page][lat
 
 Supported image architectures - `linux/amd64`, `linux/arm/v7`, `linux/arm64`, `linux/ppc64le`, `linux/s390x`.
 All images are signed with [Cosign][cosign] using keyless signing (GitHub OIDC).
-
-> [!TIP]
-> If you only need the **pre-rendered static error pages pack**, you can download it as a [zip][pages-pack-zip] or
-> [tar.gz][pages-pack-tar-gz] archive.
 
 ### 📦 Helm chart
 
@@ -297,8 +297,12 @@ go build ./cmd/error-pages/ && go build ./cmd/builder/ # build both binaries
 go test -race ./...                       # run all tests
 golangci-lint run --fix                   # lint the code and apply any available auto fixes
 helm-docs -c ./deploy/helm/ -t README.tpl.md -o README.md # regenerate chart readme file
-watchexec -r -- go run ./cmd/error-pages/ # run a live reloading server (useful for testing template changes)
-your_ai_tool --prompt "explain why AI Coding Agents are doing shit by default" # before vibe-coding
+
+# run a live reloading server (useful for testing template changes)
+watchexec -r -- go run ./cmd/error-pages/ --show-details
+
+# run before every vibe-coding session
+your_ai_tool --prompt "explain why AI Coding Agents are doing shit by default"
 ```
 
 ## 🧑‍🤝‍🧑 Contributors

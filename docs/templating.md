@@ -3,6 +3,29 @@
 Templates are parsed **once at startup**. The same template engine is used for all output formats. When a custom
 HTML template is set via `--html-template`, the `--template-name` and `--rotation-mode` flags are ignored.
 
+### Go template primer
+
+Error pages uses the standard Go [`text/template`][go-text-template] package (with HTML output treated as text to
+preserve full control over markup). If you have never written a Go template before, do not worry - it is genuinely one
+of the **simplest** templating languages around. The full mental model fits in a few minutes.
+
+**Key concepts:**
+
+- `{{ }}` - action delimiters; everything outside them is emitted verbatim.
+- `{{ .Field }}` - output a field from the data object (`.` is "current value").
+- `{{ if .Cond }} ... {{ else }} ... {{ end }}` - conditional.
+- `{{ range .Slice }} {{ . }} {{ end }}` - iteration (`.` becomes each element).
+- `{{ .Value | funcName }}` - pipeline; passes the value on the left as the last argument to the function on the right.
+- `{{ /* comment */ }}` - comment (not emitted).
+
+**Documentation**:
+
+- [`text/template` package - the complete, authoritative reference][go-text-template].
+- [Go Templates Guide](https://hackmd.io/@gekart/go-templates?utm_source=chatgpt.com) - syntax explained with
+  examples (recommended for beginners).
+
+[go-text-template]: https://pkg.go.dev/text/template
+
 > [!WARNING]
 > `{{` and `}}` are reserved as Go template delimiters - any literal occurrence causes a parse error. This is
 > common in JSDoc type annotations (`/** @param {{ id: number }} ❌ */`), CSS, etc. To work around this, you can simply
@@ -81,3 +104,5 @@ HTML pages support automatic **client-side localization** in 15+ languages, temp
 The browser detects the visitor's preferred language via `navigator.languages` and translates all `[data-l10n]`
 elements in-place - no server round-trip required. Localization can be disabled globally with `--disable-l10n`
 (or via env `DISABLE_L10N=true`).
+
+You can find more details on handling localization in templates in the [Localization documentation](../l10n/readme.md).
