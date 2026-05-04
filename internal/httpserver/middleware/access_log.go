@@ -17,9 +17,8 @@ import (
 // accessLogOnceCtxKey is a context key type for the inject log middleware to prevent duplicate injection.
 type accessLogOnceCtxKey struct{}
 
-// NewAccessLog returns a middleware that logs HTTP requests at the specified logger.Level (http errors and server
-// errors are automatically logged at higher levels). The log entry will include the request URI, method, user agent,
-// host, remote address and other relevant information.
+// NewAccessLog returns a middleware that logs HTTP requests at the specified logger.Level. The log entry will include
+// the request URI, method, user agent, host, remote address and other relevant information.
 //
 // It depends on the logger being injected into the request context by the injectLog middleware, so it should be used
 // AFTER the NewInjectLog middleware in the middleware chain.
@@ -34,7 +33,7 @@ type accessLogOnceCtxKey struct{}
 // This middleware includes a guard to prevent duplicate logging for the same request, in case it is
 // accidentally added multiple times in the middleware chain.
 func NewAccessLog(
-	lvl logger.Level, // zapcore.InfoLevel by default, because it's zero-value of the zapcore.Level
+	lvl logger.Level, // logger.InfoLevel by default, because it's the zero value of logger.Level
 	skipper func(*http.Request) bool, // optional, may be nil
 ) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
@@ -60,22 +59,9 @@ func NewAccessLog(
 			rw := &accessLogResponseWriter{orig: w}
 
 			defer func() {
-				message, level := "Request successfully processed", lvl
-
 				status := int(rw.Status.Load())
 				if status == 0 {
 					status = http.StatusOK
-				}
-
-				switch {
-				case status >= http.StatusInternalServerError: // 500
-					message, level = "Server error", logger.ErrorLevel
-				case status >= http.StatusBadRequest: // 400
-					message, level = "Client error", logger.WarnLevel
-				case status >= http.StatusMultipleChoices: // 300
-					message = "Redirection"
-				case status >= http.StatusContinue && status < http.StatusOK: // 1xx
-					message = "Informational"
 				}
 
 				attrs := []logger.Attr{
@@ -101,7 +87,7 @@ func NewAccessLog(
 					)
 				}
 
-				log.Log(level, message, attrs...)
+				log.Log(lvl, "Request successfully processed", attrs...)
 			}()
 
 			next.ServeHTTP(rw, r)

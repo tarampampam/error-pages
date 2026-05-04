@@ -98,7 +98,7 @@ func (l *Logger) With(f ...Attr) *Logger {
 
 // Log logs a message at the given level. Use it directly when the level is determined at runtime.
 //
-//nolint:contextcheck,nolintlint // zap-like API: context is intentionally not threaded through log calls
+//nolint:contextcheck,nolintlint // context is intentionally not threaded through log calls
 func (l *Logger) Log(level Level, msg string, f ...Attr) {
 	slogLevel := slog.Level(level)
 

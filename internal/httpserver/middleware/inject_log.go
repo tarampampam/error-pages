@@ -10,7 +10,7 @@ import (
 // injectLogOnceCtxKey is a context key type for the inject log middleware to prevent duplicate injection.
 type injectLogOnceCtxKey struct{}
 
-// NewInjectLog returns a new middleware that injects the provided zap.Logger into the request context.
+// NewInjectLog returns a new middleware that injects the provided logger.Logger into the request context.
 //
 // This allows downstream handlers to retrieve the logger from the context and have access to these fields for
 // logging purposes.
