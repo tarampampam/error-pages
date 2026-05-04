@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="robots" content="nofollow,noarchive,noindex">
-  <title>{{ .Message }}</title>
+  <title data-l10n>{{ .Message }}</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <!-- {{ if or (eq .StatusCode 408) (eq .StatusCode 425) (eq .StatusCode 429) (eq .StatusCode 500) (eq .StatusCode 502) (eq .StatusCode 503) (eq .StatusCode 504) }} -->
   <meta http-equiv="refresh" content="30">
@@ -141,11 +141,6 @@
     .details p::before {
       content: "$ ";
     }
-
-    .details code {
-      font-size: 0.9em;
-    }
-
     /* {{ end }} */
   </style>
 </head>
@@ -156,6 +151,19 @@
   <h1><span data-l10n>Error</span> <span class="error_code">{{ .StatusCode }}</span></h1>
   <p class="output" data-l10n>{{ .Description }}.</p>
   <p class="output"><span data-l10n>Good luck</span>.</p>
+
+  <!-- {{ if .HomepageURL }} -->
+  <p class="output"><a href="{{ .HomepageURL }}" data-l10n>Go to homepage</a></p>
+  <!-- {{ end }} -->
+
+  <!-- {{- if .Links -}} -->
+  <p class="output">
+  <!-- {{- range .Links -}} -->
+  <a href="{{ .URL }}" data-l10n>{{ .Label }}</a>
+  <!-- {{- end -}} -->
+  </p>
+  <!-- {{- end -}} -->
+
   <!-- {{- if .Config.ShowRequestDetails -}} -->
   <div class="details">
     <!-- {{- if .Host -}} -->

@@ -193,6 +193,23 @@
       color: var(--color-text-secondary);
     }
 
+    footer .links {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 1em;
+      font-size: clamp(0.9rem, 2.3vmin, 1rem);
+      margin: clamp(2rem, 5vmin, 3.5rem) 0;
+    }
+
+    footer .links a {
+      color: var(--color-text-secondary);
+      text-decoration: underline;
+      font-size: .85em;
+    }
+
     /* {{ if .Config.ShowRequestDetails }} */
     footer .details {
       margin-top: 20px;
@@ -308,6 +325,16 @@
   </div>
 </div>
 <footer>
+  <nav class="links" aria-label="Additional links">
+    <!-- {{ if .HomepageURL }} -->
+    <a href="{{ .HomepageURL }}" data-l10n>Go to homepage</a>
+    <!-- {{ end }} -->
+
+    <!-- {{- range .Links -}} -->
+    <a href="{{ .URL }}" data-l10n>{{ .Label }}</a>
+    <!-- {{- end -}} -->
+  </nav>
+
   <!-- {{- if .Config.ShowRequestDetails -}} -->
   <div class="details">
     <ul>

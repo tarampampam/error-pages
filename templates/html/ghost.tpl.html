@@ -106,6 +106,25 @@
       opacity: .9;
     }
 
+    .links {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 1em;
+      font-size: clamp(0.9rem, 2.3vmin, 1rem);
+      margin: 1em 0;
+    }
+
+    .links a {
+      color: var(--color-inverted);
+      text-decoration: underline;
+      font-weight: lighter;
+      font-size: .85em;
+      opacity: 0.75;
+    }
+
     /* {{ if .Config.ShowRequestDetails }} */
     table.details {
       table-layout: fixed;
@@ -189,6 +208,16 @@
 
   <h3><span data-l10n>Error</span> {{ .StatusCode }}</h3>
   <p class="description" data-l10n>{{ .Description }}</p>
+
+  <nav class="links" aria-label="Additional links">
+    <!-- {{ if .HomepageURL }} -->
+    <a href="{{ .HomepageURL }}" data-l10n>Go to homepage</a>
+    <!-- {{ end }} -->
+
+    <!-- {{- range .Links -}} -->
+    <a href="{{ .URL }}" data-l10n>{{ .Label }}</a>
+    <!-- {{- end -}} -->
+  </nav>
 
   <!-- {{- if .Config.ShowRequestDetails -}} -->
   <table class="details">

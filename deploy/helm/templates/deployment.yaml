@@ -75,7 +75,15 @@ spec:
             - {name: DISABLE_BUILT_IN_CODES, value: "true"}
             {{- end }}
             {{- if .addCode }}
-            - {name: ADD_CODE, value: {{ .addCode | toJson }}}
+              {{- $parts := list -}}
+              {{- range .addCode -}}
+                {{- $e := printf "%s=%s" .code .message -}}
+                {{- if .description -}}{{- $e = printf "%s|%s" $e .description -}}{{- end -}}
+                {{- $parts = append $parts $e -}}
+              {{- end }}
+            - name: ADD_CODE
+              value: |
+{{ join "\n" $parts | indent 16 }}
             {{- end }}
             {{- if .htmlTemplate.name }}
             - {name: TEMPLATE_NAME, value: "{{ .htmlTemplate.name }}"}
@@ -101,6 +109,15 @@ spec:
             {{- end }}
             {{- if .homepageUrl }}
             - {name: HOMEPAGE_URL, value: "{{ .homepageUrl }}"}
+            {{- end }}
+            {{- if .addLink }}
+              {{- $parts := list -}}
+              {{- range .addLink -}}
+                {{- $parts = append $parts (printf "%s=%s" .label .url) -}}
+              {{- end }}
+            - name: ADD_LINK
+              value: |
+{{ join "\n" $parts | indent 16 }}
             {{- end }}
             {{- if .disableL10n }}
             - {name: DISABLE_L10N, value: "true"}
