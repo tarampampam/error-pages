@@ -2,7 +2,9 @@
 
 apiVersion: v2
 name: error-pages
-description: Pretty server's error pages for Kubernetes
+description: |
+  Tiny, zero-dep HTTP server that serves clean, themeable, and localized HTTP error pages - designed as a drop-in
+  solution for Traefik, Nginx, Kubernetes, and more
 
 type: application
 version: 0.0.0 # will be replaced by the release workflow
@@ -10,7 +12,7 @@ appVersion: 0.0.0 # will be replaced by the release workflow
 icon: https://hsto.org/webt/rm/9y/ww/rm9ywwx3gjv9agwkcmllhsuyo7k.png
 home: https://github.com/tarampampam/error-pages
 sources: [https://github.com/tarampampam/error-pages]
-keywords: [error-pages, http, errors, ingress-nginx, traefik, kubernetes, nginx]
+keywords: [error-pages, http, errors, ingress-nginx, traefik, envoy, haproxy, kubernetes, nginx, '404']
 
 annotations:
   artifacthub.io/license: MIT

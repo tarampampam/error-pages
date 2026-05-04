@@ -60,7 +60,7 @@ ARG APP_VERSION="undefined@docker"
 # docs: https://github.com/opencontainers/image-spec/blob/master/annotations.md
 LABEL \
     org.opencontainers.image.title="error-pages" \
-    org.opencontainers.image.description="Pretty server's error pages" \
+    org.opencontainers.image.description="Tiny HTTP server that serves clean, themeable, localized HTTP error pages" \
     org.opencontainers.image.url="https://github.com/tarampampam/error-pages" \
     org.opencontainers.image.source="https://github.com/tarampampam/error-pages" \
     org.opencontainers.image.vendor="tarampampam" \
