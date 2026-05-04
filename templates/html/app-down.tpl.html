@@ -111,7 +111,7 @@
       max-width: min(100%, 64rem);
       max-height: 100%;
 
-      section {
+      section.info {
         flex: 0 1 auto;
         min-width: 0;
         max-width: 50ch;
@@ -200,6 +200,7 @@
         .details {
           margin-top: clamp(1rem, 3vmin, 1.5rem);
           font-size: clamp(0.85rem, 2vmin, 0.95rem);
+          text-align: center;
 
           h2 {
             margin: 0 0 0.6rem;
@@ -390,7 +391,7 @@
 
     <!-- {{ if or (eq .StatusCode 401) (eq .StatusCode 403) (eq .StatusCode 404) }} -->
     <nav aria-labelledby="nav-heading">
-      <h2 id="nav-heading" class="screen-readers-only" data-l10n>Suggestions</h2>
+      <h2 id="nav-heading" class="screen-readers-only">Suggestions</h2>
       <span data-l10n>Double-check the URL</span>.
       <!-- {{ if .HomepageURL }} -->
       <a href="{{ .HomepageURL }}" data-l10n>Go to homepage</a>
