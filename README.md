@@ -87,7 +87,7 @@ The following templates are built-in and available for use without any additiona
 [app-down-light]:https://github.com/user-attachments/assets/c5f42b53-51cd-47c4-a22f-553d44d2a288
 [app-down-dark]:https://github.com/user-attachments/assets/135bac8c-983f-461c-97ba-e653e9b9adfe
 [cats-link]:https://tarampampam.github.io/error-pages/cats/404.html
-[cats-light]:https://github.com/user-attachments/assets/dd084472-3c91-45c2-b1e7-183029cf5147
+[cats-light]:https://github.com/user-attachments/assets/7bea967e-a427-4ba2-a3a3-d71b9986ecfc
 [cats-dark]:https://github.com/user-attachments/assets/f9b945b2-3e19-44d5-842b-0c43c55d9b70
 [connection-link]:https://tarampampam.github.io/error-pages/connection/404.html
 [connection-light]:https://github.com/tarampampam/error-pages/assets/7326800/099ecc2d-e724-4d9c-b5ed-66ddabd71139
