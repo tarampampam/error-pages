@@ -52,7 +52,7 @@ func TestNewAccessLog(t *testing.T) {
 					assert.True(t, e.Attrs["duration"].Duration() >= 0)
 				},
 			},
-			"3xx: logged at configured level with redirection message": {
+			"3xx: logged at configured level with success message": {
 				giveRequest:      httptest.NewRequest(http.MethodGet, "/old", nil),
 				giveDefaultLevel: logger.InfoLevel,
 				giveHandler:      func(w http.ResponseWriter, r *http.Request) { w.WriteHeader(http.StatusMovedPermanently) },
@@ -60,31 +60,31 @@ func TestNewAccessLog(t *testing.T) {
 					assert.Equal(t, 1, rec.Len())
 					e := rec.Records()[0]
 					assert.Equal(t, logger.InfoLevel, e.Level)
-					assert.Contains(t, e.Message, "Redirection")
+					assert.Contains(t, e.Message, "successfully processed")
 					assert.Equal(t, int64(http.StatusMovedPermanently), e.Attrs["status_code"].Int64())
 				},
 			},
-			"4xx: always logged at warn level regardless of configured level": {
+			"4xx: logged at configured level with success message": {
 				giveRequest:      httptest.NewRequest(http.MethodPost, "/protected", nil),
 				giveDefaultLevel: logger.DebugLevel,
 				giveHandler:      func(w http.ResponseWriter, r *http.Request) { w.WriteHeader(http.StatusUnauthorized) },
 				checkLogEntry: func(t *testing.T, rec *logger.Recorder) {
 					assert.Equal(t, 1, rec.Len())
 					e := rec.Records()[0]
-					assert.Equal(t, logger.WarnLevel, e.Level)
-					assert.Contains(t, e.Message, "Client error")
+					assert.Equal(t, logger.DebugLevel, e.Level)
+					assert.Contains(t, e.Message, "successfully processed")
 					assert.Equal(t, int64(http.StatusUnauthorized), e.Attrs["status_code"].Int64())
 				},
 			},
-			"5xx: always logged at error level regardless of configured level": {
+			"5xx: logged at configured level with success message": {
 				giveRequest:      httptest.NewRequest(http.MethodGet, "/crash", nil),
 				giveDefaultLevel: logger.DebugLevel,
 				giveHandler:      func(w http.ResponseWriter, r *http.Request) { w.WriteHeader(http.StatusInternalServerError) },
 				checkLogEntry: func(t *testing.T, rec *logger.Recorder) {
 					assert.Equal(t, 1, rec.Len())
 					e := rec.Records()[0]
-					assert.Equal(t, logger.ErrorLevel, e.Level)
-					assert.Contains(t, e.Message, "Server error")
+					assert.Equal(t, logger.DebugLevel, e.Level)
+					assert.Contains(t, e.Message, "successfully processed")
 					assert.Equal(t, int64(http.StatusInternalServerError), e.Attrs["status_code"].Int64())
 				},
 			},

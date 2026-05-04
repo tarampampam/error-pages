@@ -60,22 +60,9 @@ func NewAccessLog(
 			rw := &accessLogResponseWriter{orig: w}
 
 			defer func() {
-				message, level := "Request successfully processed", lvl
-
 				status := int(rw.Status.Load())
 				if status == 0 {
 					status = http.StatusOK
-				}
-
-				switch {
-				case status >= http.StatusInternalServerError: // 500
-					message, level = "Server error", logger.ErrorLevel
-				case status >= http.StatusBadRequest: // 400
-					message, level = "Client error", logger.WarnLevel
-				case status >= http.StatusMultipleChoices: // 300
-					message = "Redirection"
-				case status >= http.StatusContinue && status < http.StatusOK: // 1xx
-					message = "Informational"
 				}
 
 				attrs := []logger.Attr{
@@ -101,7 +88,7 @@ func NewAccessLog(
 					)
 				}
 
-				log.Log(level, message, attrs...)
+				log.Log(lvl, "Request successfully processed", attrs...)
 			}()
 
 			next.ServeHTTP(rw, r)
