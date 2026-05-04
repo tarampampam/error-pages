@@ -84,8 +84,8 @@ The following templates are built-in and available for use without any additiona
 > [tar.gz][pages-pack-tar-gz] archive.
 
 [app-down-link]:https://tarampampam.github.io/error-pages/app-down/404.html
-[app-down-light]:https://github.com/user-attachments/assets/135bac8c-983f-461c-97ba-e653e9b9adfe
-[app-down-dark]:https://github.com/user-attachments/assets/c5f42b53-51cd-47c4-a22f-553d44d2a288
+[app-down-light]:https://github.com/user-attachments/assets/c5f42b53-51cd-47c4-a22f-553d44d2a288
+[app-down-dark]:https://github.com/user-attachments/assets/135bac8c-983f-461c-97ba-e653e9b9adfe
 [cats-link]:https://tarampampam.github.io/error-pages/cats/404.html
 [cats-light]:https://github.com/tarampampam/error-pages/assets/7326800/056cd00e-bc9a-4120-8325-310d7b0ebd1b
 [cats-dark]:https://github.com/tarampampam/error-pages/assets/7326800/5689880b-f770-406c-81dd-2d28629e6f2e
