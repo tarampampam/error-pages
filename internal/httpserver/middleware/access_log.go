@@ -17,9 +17,8 @@ import (
 // accessLogOnceCtxKey is a context key type for the inject log middleware to prevent duplicate injection.
 type accessLogOnceCtxKey struct{}
 
-// NewAccessLog returns a middleware that logs HTTP requests at the specified logger.Level (http errors and server
-// errors are automatically logged at higher levels). The log entry will include the request URI, method, user agent,
-// host, remote address and other relevant information.
+// NewAccessLog returns a middleware that logs HTTP requests at the specified logger.Level. The log entry will include
+// the request URI, method, user agent, host, remote address and other relevant information.
 //
 // It depends on the logger being injected into the request context by the injectLog middleware, so it should be used
 // AFTER the NewInjectLog middleware in the middleware chain.
@@ -34,7 +33,7 @@ type accessLogOnceCtxKey struct{}
 // This middleware includes a guard to prevent duplicate logging for the same request, in case it is
 // accidentally added multiple times in the middleware chain.
 func NewAccessLog(
-	lvl logger.Level, // zapcore.InfoLevel by default, because it's zero-value of the zapcore.Level
+	lvl logger.Level, // logger.InfoLevel by default, because it's the zero value of logger.Level
 	skipper func(*http.Request) bool, // optional, may be nil
 ) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
