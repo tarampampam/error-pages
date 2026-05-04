@@ -17,17 +17,35 @@
   <meta property="twitter:description" content="{{ .Description | escape }}">
   <meta name="format-detection" content="telephone=no">
   <style>
-    /*:root {*/
-    /*  --color-bg-primary: #fff;*/
-    /*  --color-bg-secondary: #eef6fa;*/
-    /*}*/
+    :root {
+      --color-bg-primary: #ffffff;
+      --color-text-primary: #000000;
+      --color-text-emphasis: #333333;
+      --color-text-heading: #444444;
+      --color-text-secondary: #555555;
+      --color-text-subtle: #888888;
+      --color-illust-ink: #263238;
+      --color-illust-accent: #ff725e;
+      --color-illust-surface: #e0e0e0;
+      --color-illust-surface-soft: #f5f5f5;
+      --color-illust-shade: #455a64;
+    }
 
-    /*@media (prefers-color-scheme: dark) {*/
-    /*  :root {*/
-    /*    --color-bg-primary: #222526;*/
-    /*    --color-bg-secondary: #292e2f;*/
-    /*  }*/
-    /*}*/
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --color-bg-primary: #18181b;
+        --color-text-primary: #e4e4e7;
+        --color-text-emphasis: #d4d4d8;
+        --color-text-heading: #b8b8be;
+        --color-text-secondary: #a1a1aa;
+        --color-text-subtle: #71717a;
+        --color-illust-ink: #cbd5e1;
+        --color-illust-accent: #ff8a75;
+        --color-illust-surface: #3f3f46;
+        --color-illust-surface-soft: #27272a;
+        --color-illust-shade: #94a3b8;
+      }
+    }
 
     *, *::before, *::after { box-sizing: border-box; }
 
@@ -58,6 +76,8 @@
       justify-content: center;
       padding: clamp(1rem, 4vmin, 3rem);
       font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--color-bg-primary);
+      color: var(--color-text-primary);
     }
 
     @media (max-height: 600px), (max-width: 380px) {
@@ -98,7 +118,7 @@
           margin: 0;
           font-size: clamp(0.95rem, 2.5vmin, 1.125rem);
           line-height: 1.5;
-          color: #555;
+          color: var(--color-text-secondary);
           text-wrap: pretty;
         }
 
@@ -108,7 +128,7 @@
           p {
             margin: 0 0 0.5rem;
             font-size: clamp(0.9rem, 2.3vmin, 1rem);
-            color: #555;
+            color: var(--color-text-secondary);
           }
 
           ul {
@@ -119,7 +139,7 @@
             flex-direction: column;
             gap: 0.35rem;
             font-size: clamp(0.9rem, 2.3vmin, 1rem);
-            color: #555;
+            color: var(--color-text-secondary);
             text-align: left;
 
             li {
@@ -130,7 +150,7 @@
                 content: "›";
                 position: absolute;
                 left: 0;
-                color: #888;
+                color: var(--color-text-subtle);
                 font-weight: 700;
               }
             }
@@ -140,7 +160,7 @@
         nav {
           margin-top: clamp(1rem, 3vmin, 1.5rem);
           font-size: clamp(0.9rem, 2.3vmin, 1rem);
-          color: #555;
+          color: var(--color-text-secondary);
 
           a {
             color: inherit;
@@ -173,7 +193,7 @@
             margin: 0 0 0.6rem;
             font-size: inherit;
             font-weight: 500;
-            color: #444;
+            color: var(--color-text-heading);
           }
 
           dl {
@@ -189,7 +209,7 @@
 
             dt {
               font-weight: normal;
-              color: #555;
+              color: var(--color-text-secondary);
               white-space: nowrap;
               text-align: end;
 
@@ -201,7 +221,7 @@
             dd {
               margin: 0;
               min-width: 0;
-              color: #333;
+              color: var(--color-text-emphasis);
               text-align: left;
 
               code {
@@ -232,11 +252,14 @@
       svg#pic {
         user-select: none;
 
-        .B {fill: #263238}
-        .C {fill: #ff725e}
-        .D {fill: #e0e0e0}
-        .E {fill: #f5f5f5}
-        .F {fill: #455a64}
+        .B {fill: var(--color-illust-ink)}
+        .C {fill: var(--color-illust-accent)}
+        .D {fill: var(--color-illust-surface)}
+        .E {fill: var(--color-illust-surface-soft)}
+        .F {fill: var(--color-illust-shade)}
+
+        /* speech-bubble / paper interiors — inline fill="#fff" gets overridden here */
+        path[fill="#fff"] { fill: var(--color-bg-primary); }
 
         g.screw-right {
           animation: moveRightScrew 1s ease-in-out infinite alternate;
@@ -264,12 +287,12 @@
       main {
         flex-direction: row;
         align-items: center;
-      }
-      section {
-        text-align: left;
-      }
-      figure {
-        width: min(35vmin, 18rem);
+        section {
+          text-align: left;
+        }
+        figure {
+          width: min(35vmin, 18rem);
+        }
       }
     }
 
@@ -342,7 +365,7 @@
       <p id="possibilities-heading"><span data-l10n>Here's what might have happened</span>:</p>
       <ul>
         <li data-l10n>You may have mistyped the URL</li>
-        <li data-l10n>The site or page was moved</li>
+        <li data-l10n>The site was moved</li>
         <li data-l10n>It was never here</li>
       </ul>
     </section>
@@ -396,7 +419,7 @@
 
   <figure class="pic" aria-hidden="true">
     <svg id="pic" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" focusable="false" role="presentation">
-    <path d="M100.31 43.593l214.941-11.34 6.379 120.902-214.941 11.34z" fill="#fff"/>
+      <path d="M100.31 43.593l214.941-11.34 6.379 120.902-214.941 11.34z" fill="#fff"/>
       <path class="B" d="M321.63 153.16l-.13-2.17-.35-6.31-1.33-24.16-4.76-88.25.21.18-214.93
         11.4h0l.24-.27 6.36 120.91-.25-.23 154.62-8 44.4-2.28 11.83-.59 3.06-.15h1l-1 .07-3
         .17-11.78.65-44.34 2.41-154.78 8.2h-.23v-.24l-6.39-120.9v-.25h.25 0l214.92-11.29h.19v.2l4.56
