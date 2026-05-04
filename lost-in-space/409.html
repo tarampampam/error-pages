@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="robots" content="nofollow,noarchive,noindex">
-  <title>Conflict</title>
+  <title data-l10n>Conflict</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <!--  -->
   <meta name="title" content="409: Conflict">
@@ -94,6 +94,20 @@
     h2 {
       font-size: 2em;
       font-weight: bold;
+    }
+
+    nav {
+      display: inline-flex;
+      align-items: flex-start;
+      flex-direction: row;
+      margin: 1em 0;
+      gap: .7em;
+    }
+
+    nav a {
+      color: var(--color-text-primary);
+      opacity: .75;
+      font-size: 0.9em;
     }
 
     /*  */
@@ -405,6 +419,11 @@
     <h1>409</h1>
     <h2><span data-l10n>UH OH</span>! <span data-l10n>Conflict</span></h2>
     <p data-l10n>The request could not be completed because of a conflict</p>
+
+    <nav aria-label="Additional links">
+      <!--  -->
+      <!---->
+    </nav>
 
     <!---->
   </div>

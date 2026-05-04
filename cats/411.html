@@ -3,70 +3,153 @@
 <head>
   <meta charset="utf-8">
   <meta name="robots" content="nofollow,noarchive,noindex">
-  <title>Length Required</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-l10n>Length Required</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <!--  -->
   <meta name="title" content="411: Length Required">
   <meta name="description" content="The &#34;Content-Length&#34; is not defined. The server will not accept the request without it">
   <meta property="og:title" content="411: Length Required">
   <meta property="og:description" content="The &#34;Content-Length&#34; is not defined. The server will not accept the request without it">
+  <meta property="og:locale" content="en_US">
   <meta property="twitter:title" content="411: Length Required">
   <meta property="twitter:description" content="The &#34;Content-Length&#34; is not defined. The server will not accept the request without it">
+  <meta name="format-detection" content="telephone=no">
   <style>
     :root {
-      --color-primary: #fff;
-      --color-inverted: #202020;
+      --color-bg: #e8e1d2;
+      --color-text: #2a2520;
+      --color-polaroid: #fcf9f1;
+      --color-shadow: rgba(50, 30, 20, 0.28);
     }
 
     @media (prefers-color-scheme: dark) {
       :root {
-        --color-primary: #000;
-        --color-inverted: #fff;
+        --color-bg: #1a1714;
+        --color-text: #d4ccba;
+        --color-polaroid: #ddd5c2;
+        --color-shadow: rgba(0, 0, 0, 0.55);
       }
+    }
+
+    @view-transition {
+      navigation: auto;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
     }
 
     html, body {
       margin: 0;
       padding: 0;
-      min-height: 100%;
-      height: 100%;
-      width: 100%;
-      background-color: var(--color-primary);
-      color: var(--color-inverted);
-      font-family: sans-serif;
-      font-size: 16px;
-      word-break: keep-all;
-    }
-
-    @media screen and (min-width: 2000px) {
-      html, body {
-        font-size: 22px;
-      }
+      overflow: hidden;
+      overscroll-behavior: none;
     }
 
     body {
+      height: 100dvh;
       display: flex;
-      justify-content: center;
       align-items: center;
+      justify-content: center;
+      padding: clamp(1rem, 4vmin, 3rem);
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--color-bg);
+      color: var(--color-text);
+    }
+
+    @media (max-height: 600px), (max-width: 380px) {
+      html, body {
+        overflow: auto;
+        overscroll-behavior: auto;
+      }
+      body {
+        height: auto;
+        min-height: 100dvh;
+      }
+    }
+
+    main {
+      display: flex;
       flex-direction: column;
-      height: 100%;
-    }
+      align-items: center;
+      justify-content: center;
+      gap: clamp(1rem, 2vmin, 1.5rem);
+      max-width: min(100%, 64rem);
+      max-height: 100%;
 
-    article img {
-      width: 100%;
-      max-width: 750px;
-      box-shadow: 0 30px 0 -20px rgba(0, 0, 0, 0.2);
-    }
+      article {
+        position: relative;
+        padding: 1em 1em clamp(10px, 20%, 15%);
+        width: 90%;
+        max-width: 600px;
+        box-sizing: border-box;
+        transform: rotate(-2.5deg);
+        transition: transform 0.4s ease;
 
-    /*  */
+        &::before {
+          content: "";
+          position: absolute;
+          inset: 0;
+          background: var(--color-polaroid);
+          box-shadow: 0 12px 28px var(--color-shadow), 0 3px 6px var(--color-shadow);
+          z-index: -1;
+        }
+
+        &::after {
+          content: "";
+          position: absolute;
+          inset: 0;
+          background: var(--color-polaroid);
+          box-shadow: 0 8px 18px var(--color-shadow);
+          transform: rotate(4deg) translate(7px, 8px);
+          z-index: -2;
+        }
+
+        &:hover {
+          transform: rotate(0) scale(1.02);
+        }
+
+        img {
+          display: block;
+          width: 100%;
+          height: auto;
+          aspect-ratio: 5 / 4;
+          box-shadow: none;
+          user-select: none;
+        }
+      }
+
+      nav.links {
+        margin-top: 1em;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1.5em;
+        width: 100%;
+
+        a {
+          color: var(--color-text);
+          opacity: .7;
+        }
+      }
+
+      /*  */
+    }
   </style>
 </head>
 <body>
-<article>
-  <img src="https://http.cat/411.jpg" alt="Length Required">
-</article>
+<main>
+  <article>
+    <img src="https://http.cat/411.jpg" alt="Length Required" decoding="async" width="750" height="600">
+  </article>
 
-<!---->
+  <nav class="links" aria-label="Additional links">
+    <!--  -->
+    <!---->
+  </nav>
+
+  <!---->
+</main>
 
 <!---->
 <script>// // Code generated automatically. DO NOT EDIT. This is a script for the localization of error pages.

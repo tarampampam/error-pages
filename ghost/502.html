@@ -106,6 +106,25 @@
       opacity: .9;
     }
 
+    .links {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 1em;
+      font-size: clamp(0.9rem, 2.3vmin, 1rem);
+      margin: 1em 0;
+    }
+
+    .links a {
+      color: var(--color-inverted);
+      text-decoration: underline;
+      font-weight: lighter;
+      font-size: .85em;
+      opacity: 0.75;
+    }
+
     /*  */
   </style>
 </head>
@@ -154,6 +173,12 @@
 
   <h3><span data-l10n>Error</span> 502</h3>
   <p class="description" data-l10n>The server received an invalid response from the upstream server</p>
+
+  <nav class="links" aria-label="Additional links">
+    <!--  -->
+
+    <!---->
+  </nav>
 
   <!---->
 </article>

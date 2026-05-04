@@ -68,6 +68,23 @@
       margin: 0;
     }
 
+    .hidden td, .hidden a {
+      opacity: 0;
+      font-size: 0;
+    }
+
+    .links {
+      display: flex;
+      gap: 1em;
+      margin-top: 1em;
+    }
+
+    .links a {
+      transition: opacity 1.4s, font-size .3s;
+      color: var(--color-inverted);
+      font-size: 0.85em;
+    }
+
     /*  */
   </style>
 </head>
@@ -78,6 +95,11 @@
       <h1 class="source">418: <span data-l10n>I'm a teapot</span></h1>
       <h1 class="target"></h1>
     </div>
+
+    <nav aria-label="Additional links" class="links hidden">
+      <!--  -->
+      <!---->
+    </nav>
 
     <!---->
   </article>
@@ -162,7 +184,22 @@
 
   (new Shuffle(document.getElementById('error_text'))).start();
 
-  // 
+  window.setTimeout(function () {
+    const $details = document.getElementById('details');
+    const $links = document.getElementsByClassName('links');
+
+    if ($details && $details.classList.contains('hidden')) {
+      $details.classList.remove('hidden');
+    }
+
+    if ($links) {
+      for (const $el of $links) {
+        if ($el.classList.contains('hidden')) {
+          $el.classList.remove('hidden');
+        }
+      }
+    }
+  }, 550);
 </script>
 
 <!---->

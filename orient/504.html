@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="robots" content="nofollow,noarchive,noindex">
-  <title>Gateway Timeout</title>
+  <title data-l10n>Gateway Timeout</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <!--  -->
   <meta http-equiv="refresh" content="30">
@@ -111,6 +111,19 @@
       /* */
     }
 
+    nav {
+      display: inline-flex;
+      align-items: flex-start;
+      flex-direction: row;
+      margin: 0 0 2em 0;
+      gap: .7em;
+    }
+
+    nav a {
+      color: var(--color-text-secondary);
+      font-size: 0.9em;
+    }
+
     /*  */
 
     @media (min-width: 768px) {
@@ -168,6 +181,10 @@
       <div class="code">504</div>
       <div class="space"></div>
       <p class="description" data-l10n>The gateway has timed out</p>
+      <nav aria-label="Additional links">
+        <!--  -->
+        <!---->
+      </nav>
       <!--  -->
     </div>
   </div>

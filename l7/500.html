@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="robots" content="nofollow,noarchive,noindex">
-  <title>Internal Server Error</title>
+  <title data-l10n>Internal Server Error</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <!--  -->
   <meta http-equiv="refresh" content="30">
@@ -61,6 +61,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      flex-direction: row;
     }
 
     article .code h1, article .desc p {
@@ -91,6 +92,21 @@
     }
 
     /*  */
+
+    main nav {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: row;
+      margin-top: 1.5em;
+      gap: .7em;
+    }
+
+    main nav a {
+      color: var(--color-inverted);
+      opacity: .75;
+      font-size: 0.9em;
+    }
   </style>
 </head>
 <body>
@@ -106,6 +122,11 @@
       <!---->
     </div>
   </article>
+
+  <nav aria-label="Additional links">
+    <!--  -->
+    <!---->
+  </nav>
 </main>
 
 <!---->
