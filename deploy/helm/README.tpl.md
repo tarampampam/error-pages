@@ -1,7 +1,3 @@
-# {{ template "chart.name" . }}
-
-{{ template "chart.description" . }}
-
 ## Installing the chart
 
 ```shell
