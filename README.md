@@ -282,9 +282,10 @@ For detailed instructions on using custom templates and localization features, s
 - Optional: [golangci-lint](https://golangci-lint.run/docs/welcome/install/local/) for linting
 - Optional: [docker](https://docs.docker.com/engine/install/debian/#install-using-the-convenience-script) for testing
   the Docker image locally
-- Optional: [helm](https://helm.sh/docs/intro/install/) + [kind](https://kind.sigs.k8s.io/docs/user/quick-start/) for
-  testing the Helm chart locally in Kubernetes
+- Optional: [helm](https://helm.sh/docs/intro/install/) + [kind](https://kind.sigs.k8s.io/docs/user/quick-start/) + docker
+  for testing the Helm chart locally in Kubernetes
 - Optional: [helm-docs](https://github.com/norwoodj/helm-docs/releases/latest) for generating Helm chart documentation
+- Optional: [wrk](https://github.com/wg/wrk) for benchmarking the server performance
 - Optional: [watchexec](https://github.com/watchexec/watchexec/releases/latest) for live reloading the server during
   development
 
@@ -329,11 +330,6 @@ The author of a PR is the human who opens it, not the model (at least, I hope so
 
 I write my own code by hand and encourage you to do the same when you can. AI is a tool, not an excuse to skip the
 thinking. Trust, but verify - and verify hard.
-
-### 🤖 Setup for AI agents
-
-This repository follows the [agents.md](https://agents.md/) open standard. The canonical instructions live in
-[`AGENTS.md`](AGENTS.md).
 
 ## 👾 Support
 
