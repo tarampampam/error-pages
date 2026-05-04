@@ -48,11 +48,29 @@ All templates receive a data object with the following fields:
 | `.RequestID`                 | `string` | Unique request ID *                                                    |
 | `.ForwardedFor`              | `string` | Original client IP(s) from `X-Forwarded-For` *                         |
 | `.Host`                      | `string` | Request `Host` header *                                                |
-| `.HomepageURL`               | `string` | Homepage URL set via `--homepage-url` (empty if not configured)        |
-| `.Config.ShowRequestDetails` | `bool`   | Whether `--show-details` is enabled                                    |
-| `.Config.L10nDisabled`       | `bool`   | Whether `--disable-l10n` is set                                        |
+| `.HomepageURL`               | `string`    | Homepage URL set via `--homepage-url` (empty if not configured)        |
+| `.Links`                     | `[]Link`    | Extra links set via `--add-link` (empty slice if not configured)       |
+| `.Config.ShowRequestDetails` | `bool`      | Whether `--show-details` is enabled                                    |
+| `.Config.L10nDisabled`       | `bool`      | Whether `--disable-l10n` is set                                        |
 
 > `*` - Requires `--show-details`
+
+Each element of `.Links` has the following sub-fields:
+
+| Sub-field     | Type     | Description           |
+|---------------|----------|-----------------------|
+| `.Label`      | `string` | Link text             |
+| `.URL`        | `string` | Target URL            |
+
+Example usage in a custom template:
+
+```html
+{{ if .Links }}
+<nav>
+  {{ range .Links }}<a href="{{ .URL }}">{{ .Label }}</a>{{ end }}
+</nav>
+{{ end }}
+```
 
 In addition to the fields above, templates also have access to a set of built-in functions (see below), which are
 pipeline-friendly (needle before haystack): `{{ .Message | default "Unknown" | upper }}`.

@@ -5,6 +5,7 @@ import (
 
 	"gh.tarampamp.am/error-pages/v4/internal/cli/shared"
 	"gh.tarampamp.am/error-pages/v4/internal/codes"
+	tpl "gh.tarampamp.am/error-pages/v4/internal/template"
 	"gh.tarampamp.am/error-pages/v4/internal/testutil/assert"
 )
 
@@ -180,6 +181,109 @@ func TestParseAddHTTPCodes(t *testing.T) {
 			t.Parallel()
 
 			got, err := shared.ParseAddHTTPCodes(tt.give)
+
+			if tt.checkErr != nil {
+				tt.checkErr(t, err)
+			} else {
+				assert.NoError(t, err)
+				assert.DeepEqual(t, tt.want, got)
+			}
+		})
+	}
+}
+
+func TestNewAddLinksFlag(t *testing.T) {
+	t.Parallel()
+
+	f := shared.NewAddLinksFlag()
+
+	assert.Equal(t, 1, len(f.Names))
+	assert.Equal(t, "add-link", f.Names[0])
+	assert.Equal(t, 1, len(f.EnvVars))
+	assert.Equal(t, "ADD_LINK", f.EnvVars[0])
+	assert.True(t, f.Validator != nil)
+
+	assert.NoError(t, f.Validator(nil, "Status Page=https://status.example.com"))
+	assert.Error(t, f.Validator(nil, "bad-entry"))
+}
+
+func TestParseLinks(t *testing.T) {
+	t.Parallel()
+
+	for name, tt := range map[string]struct {
+		give     string
+		want     []tpl.Link
+		checkErr func(*testing.T, error)
+	}{
+		"empty string": {
+			give: "",
+			want: []tpl.Link{},
+		},
+		"single entry": {
+			give: "Status Page=https://status.example.com",
+			want: []tpl.Link{{Label: "Status Page", URL: "https://status.example.com"}},
+		},
+		"url with equals sign": {
+			give: "Search=https://example.com/search?q=foo&page=1",
+			want: []tpl.Link{{Label: "Search", URL: "https://example.com/search?q=foo&page=1"}},
+		},
+		"multiple entries/double pipe separator": {
+			give: "Status=https://status.example.com||Contact=https://example.com/contact",
+			want: []tpl.Link{
+				{Label: "Status", URL: "https://status.example.com"},
+				{Label: "Contact", URL: "https://example.com/contact"},
+			},
+		},
+		"multiple entries/newline separator": {
+			give: "Status=https://status.example.com\nContact=https://example.com/contact",
+			want: []tpl.Link{
+				{Label: "Status", URL: "https://status.example.com"},
+				{Label: "Contact", URL: "https://example.com/contact"},
+			},
+		},
+		"multiple entries/tab separator": {
+			give: "Status=https://status.example.com\tContact=https://example.com/contact",
+			want: []tpl.Link{
+				{Label: "Status", URL: "https://status.example.com"},
+				{Label: "Contact", URL: "https://example.com/contact"},
+			},
+		},
+		"empty entries in the middle are skipped": {
+			give: "Status=https://status.example.com||||Contact=https://example.com/contact",
+			want: []tpl.Link{
+				{Label: "Status", URL: "https://status.example.com"},
+				{Label: "Contact", URL: "https://example.com/contact"},
+			},
+		},
+		"whitespace trimmed around label and url": {
+			give: "  Status Page  =  https://status.example.com  ",
+			want: []tpl.Link{{Label: "Status Page", URL: "https://status.example.com"}},
+		},
+		"missing equals sign": {
+			give:     "Status Page",
+			checkErr: func(t *testing.T, err error) { assert.ErrorContains(t, err, "missing '='") },
+		},
+		"empty label": {
+			give:     "=https://status.example.com",
+			checkErr: func(t *testing.T, err error) { assert.ErrorContains(t, err, "missing label") },
+		},
+		"whitespace-only label": {
+			give:     "   =https://status.example.com",
+			checkErr: func(t *testing.T, err error) { assert.ErrorContains(t, err, "missing label") },
+		},
+		"empty url": {
+			give:     "Status=",
+			checkErr: func(t *testing.T, err error) { assert.ErrorContains(t, err, "missing URL") },
+		},
+		"whitespace-only url": {
+			give:     "Status=   ",
+			checkErr: func(t *testing.T, err error) { assert.ErrorContains(t, err, "missing URL") },
+		},
+	} {
+		t.Run(name, func(t *testing.T) {
+			t.Parallel()
+
+			got, err := shared.ParseLinks(tt.give)
 
 			if tt.checkErr != nil {
 				tt.checkErr(t, err)

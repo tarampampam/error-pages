@@ -127,10 +127,12 @@ config:
   proxyHeaders: null
   # -- (bool/null) Disable built-in HTTP status code descriptions
   disableBuiltInCodes: null
-  # -- (string/null) Add or override HTTP status codes. Format: `CODE=MESSAGE[\|DESCRIPTION]` (`CODE` supports wildcards like `4**`).
-  # Separate multiple entries with newlines
+  # -- ([]object/null) Add or override HTTP status codes. Each entry must have `code` and `message` (required), and
+  # optionally `description`. `code` supports wildcards like `4**`.
   # @default -- *all built-in codes*
-  addCode: null
+  addCode: null # Array<{code: string, message: string, description?: string}>
+  # -- ([]object/null) Extra links to display on error pages. Each entry must have `label` and `url` (both required).
+  addLink: null # Array<{label: string, url: string}>
 
   htmlTemplate:
     # -- (string/null) Built-in HTML template name (**ignored when `custom` is set**).

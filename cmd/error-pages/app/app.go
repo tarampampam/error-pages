@@ -45,6 +45,7 @@ type App struct {
 			templateName        string
 			rotationMode        tpl.RotationMode
 			homepageURL         string
+			links               []tpl.Link
 			customTemplates     struct {
 				html, json, xml, text string
 			}
@@ -88,6 +89,7 @@ func NewApp(name string) *App { //nolint:funlen
 		templateNameFlag        = newTemplateNameFlag(allTemplateNames, app.opt.errorPages.templateName)
 		rotationModeFlag        = newRotationModeFlag(app.opt.errorPages.rotationMode)
 		homepageURLFlag         = shared.NewHomepageURLFlag(app.opt.errorPages.homepageURL)
+		addLinksFlag            = shared.NewAddLinksFlag()
 		htmlTemplateFlag        = newHTMLTemplateFlag()
 		jsonTemplateFlag        = newJSONTemplateFlag()
 		xmlTemplateFlag         = newXMLTemplateFlag()
@@ -109,6 +111,7 @@ func NewApp(name string) *App { //nolint:funlen
 		&templateNameFlag,
 		&rotationModeFlag,
 		&homepageURLFlag,
+		&addLinksFlag,
 		&htmlTemplateFlag,
 		&jsonTemplateFlag,
 		&xmlTemplateFlag,
@@ -155,6 +158,13 @@ func NewApp(name string) *App { //nolint:funlen
 		}
 
 		setIfFlagIsSet(&app.opt.errorPages.homepageURL, homepageURLFlag)
+
+		if addLinksFlag.Value != nil && addLinksFlag.IsSet() {
+			if parsed, err := shared.ParseLinks(*addLinksFlag.Value); err == nil {
+				app.opt.errorPages.links = parsed
+			}
+		}
+
 		setIfFlagIsSet(&app.opt.errorPages.customTemplates.html, htmlTemplateFlag)
 		setIfFlagIsSet(&app.opt.errorPages.customTemplates.json, jsonTemplateFlag)
 		setIfFlagIsSet(&app.opt.errorPages.customTemplates.xml, xmlTemplateFlag)
@@ -303,6 +313,7 @@ func (a *App) run(ctx context.Context, log *logger.Logger) error {
 			a.opt.errorPages.showDetails,
 			a.opt.errorPages.l10nDisabled,
 			a.opt.errorPages.homepageURL,
+			a.opt.errorPages.links,
 		),
 		httpserver.WithErrorLog(logger.NewStdLog(log, logger.ErrorLevel)),
 	)
@@ -320,6 +331,7 @@ func (a *App) run(ctx context.Context, log *logger.Logger) error {
 		logger.Bool("show_details", a.opt.errorPages.showDetails),
 		logger.Strings("proxy_headers", a.opt.errorPages.proxyHeaders...),
 		logger.String("homepage_url", a.opt.errorPages.homepageURL),
+		logger.Int("links_count", len(a.opt.errorPages.links)),
 		logger.Bool("l10n_disabled", a.opt.errorPages.l10nDisabled),
 	)
 

@@ -20,15 +20,23 @@ type Data struct {
 	ForwardedFor string // (ingress-nginx, Envoy Gateway) the value of the `X-Forwarded-For` header
 	Host         string // the value of the `Host` header
 	HomepageURL  string // homepage URL (optional, set via --homepage-url)
+	Links        []Link // additional links to display on the error page (optional, set via --add-link)
 	Config       Config // configuration values
 
 	// TODO: add incoming request headers as a map[string]string field, so they can be used in the templates?
 }
 
+// Link represents a labeled hyperlink that can be displayed in error page templates.
+//
+// DO NOT MODIFY EXISTING FIELDS OR THEIR TYPES.
+type Link struct {
+	Label string // link text shown to the user
+	URL   string // target URL
+}
+
 // Config holds configuration values that can be used in the templates.
 //
-// DO NOT MODIFY EXISTING FIELDS OR THEIR TYPES, as they are used in the templates and may be referenced in
-// the template files.
+// DO NOT MODIFY EXISTING FIELDS OR THEIR TYPES.
 type Config struct {
 	ShowRequestDetails bool // show request details?
 	L10nDisabled       bool // disable localization feature?

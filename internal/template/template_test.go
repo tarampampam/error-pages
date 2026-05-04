@@ -24,6 +24,10 @@ func TestTemplate_Render(t *testing.T) {
 		ForwardedFor: "123.123.123.123:321",
 		Host:         "test-host",
 		HomepageURL:  "https://app.example.com/home",
+		Links: []tpl.Link{
+			{Label: "Status Page", URL: "https://status.example.com"},
+			{Label: "Contact", URL: "https://example.com/contact"},
+		},
 		Config: tpl.Config{
 			ShowRequestDetails: true,
 			L10nDisabled:       true,
@@ -46,7 +50,9 @@ ForwardedFor={{ .ForwardedFor }}
 Host={{ .Host }}
 HomepageURL={{ .HomepageURL }}
 Config.ShowRequestDetails={{ .Config.ShowRequestDetails }}
-Config.L10nDisabled={{ .Config.L10nDisabled }}`
+Config.L10nDisabled={{ .Config.L10nDisabled }}
+{{ range .Links }}Link={{ .Label }}={{ .URL }}
+{{ end }}`
 
 		tmpl, err := tpl.New(src)
 		assert.NoError(t, err)
@@ -67,7 +73,10 @@ ForwardedFor=123.123.123.123:321
 Host=test-host
 HomepageURL=https://app.example.com/home
 Config.ShowRequestDetails=true
-Config.L10nDisabled=true`, string(got))
+Config.L10nDisabled=true
+Link=Status Page=https://status.example.com
+Link=Contact=https://example.com/contact
+`, string(got))
 	})
 
 	t.Run("render built-in templates", func(t *testing.T) {
@@ -95,6 +104,22 @@ Config.L10nDisabled=true`, string(got))
 
 					_, err = template.Render(tpl.Data{})
 					assert.NoError(t, err)
+				})
+
+				t.Run("links rendered", func(t *testing.T) {
+					t.Parallel()
+
+					template, err := tpl.New(content)
+					assert.NoError(t, err)
+
+					rendered, renderErr := template.Render(tpl.Data{
+						Links: []tpl.Link{
+							{Label: "My Status Page", URL: "https://status.example.com"},
+						},
+					})
+					assert.NoError(t, renderErr)
+					assert.Contains(t, string(rendered), "My Status Page")
+					assert.Contains(t, string(rendered), "https://status.example.com")
 				})
 			})
 		}

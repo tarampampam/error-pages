@@ -36,6 +36,7 @@ func New( //nolint:funlen
 	showDetails bool,
 	l10nDisabled bool,
 	homepageURL string,
+	links []tpl.Link,
 ) http.Handler {
 	// bufPool reuses the render buffer across requests to avoid per-request heap allocation for the response body
 	bufPool := sync.Pool{New: func() any { return new(bytes.Buffer) }}
@@ -95,6 +96,7 @@ func New( //nolint:funlen
 			Message:     codeDesc.Short,
 			Description: codeDesc.Full,
 			HomepageURL: homepageURL,
+			Links:       links,
 			Config: tpl.Config{
 				ShowRequestDetails: showDetails,
 				L10nDisabled:       l10nDisabled,
