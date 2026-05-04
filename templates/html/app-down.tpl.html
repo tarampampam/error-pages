@@ -174,6 +174,15 @@
           font-size: clamp(0.9rem, 2.3vmin, 1rem);
           color: var(--color-text-secondary);
 
+          /* {{ if .Links }} */
+          ul {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            font-size: clamp(0.9rem, 2.3vmin, 1rem);
+          }
+          /* {{ end }} */
+
           a {
             color: inherit;
             text-decoration: underline;
@@ -399,6 +408,16 @@
     </nav>
     <!-- {{ end }} -->
 
+    <!-- {{- if .Links -}} -->
+    <nav class="extra-links" aria-label="Additional links">
+      <ul>
+        <!-- {{- range .Links -}} -->
+        <li data-l10n><a href="{{ .URL }}" data-l10n>{{ .Label }}</a></li>
+        <!-- {{- end -}} -->
+      </ul>
+    </nav>
+    <!-- {{- end -}} -->
+
     <!-- {{- if .Config.ShowRequestDetails -}} -->
     <section class="details" aria-labelledby="details-heading">
       <h2 id="details-heading" data-l10n>Request details</h2>
@@ -436,6 +455,7 @@
   </section>
 
   <figure class="pic" aria-hidden="true">
+    <!-- region svg-pic -->
     <svg id="pic" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" focusable="false" role="presentation">
       <path d="M100.31 43.593l214.941-11.34 6.379 120.902-214.941 11.34z" class="Z"/>
       <path class="B" d="M321.63 153.16l-.13-2.17-.35-6.31-1.33-24.16-4.76-88.25.21.18-214.93
@@ -935,6 +955,7 @@
           100.39 0 0 1 .26 10.32 100.39 100.39 0 0 1-.26 10.32z"/>
       </defs>
     </svg>
+    <!-- endregion -->
   </figure>
 </main>
 

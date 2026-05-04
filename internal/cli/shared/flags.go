@@ -6,6 +6,7 @@ import (
 
 	"gh.tarampamp.am/error-pages/v4/internal/cli"
 	"gh.tarampamp.am/error-pages/v4/internal/codes"
+	tpl "gh.tarampamp.am/error-pages/v4/internal/template"
 )
 
 // NewDisableBuiltInCodesFlag returns a flag that disables the built-in HTTP status code descriptions.
@@ -98,6 +99,58 @@ func NewHomepageURLFlag(def string) cli.Flag[string] {
 		EnvVars: []string{"HOMEPAGE_URL"},
 		Default: def,
 	}
+}
+
+// NewAddLinksFlag returns a flag for adding extra labeled links to error pages.
+func NewAddLinksFlag() cli.Flag[string] {
+	return cli.Flag[string]{
+		Names: []string{"add-link"},
+		Usage: "Add extra links to error pages " +
+			"(format: 'LABEL=URL[||LABEL=URL...]'; separate multiple entries with '||', a newline, or a tab)",
+		EnvVars: []string{"ADD_LINK"},
+		Validator: func(_ *cli.Command, s string) error {
+			_, err := ParseLinks(s)
+
+			return err
+		},
+	}
+}
+
+// ParseLinks parses the --add-link flag value into a slice of Link pairs.
+// Entries are separated by '||', newline, or tab; each entry has the format 'LABEL=URL' where only
+// the first '=' is used as the split point so that URLs containing '=' are handled correctly.
+// Returns an error if any entry is malformed.
+func ParseLinks(s string) ([]tpl.Link, error) {
+	s = strings.ReplaceAll(s, "\n", "||")
+	s = strings.ReplaceAll(s, "\t", "||")
+
+	parts := strings.Split(s, "||")
+	result := make([]tpl.Link, 0, len(parts))
+
+	for _, entry := range parts {
+		if entry = strings.TrimSpace(entry); entry == "" {
+			continue
+		}
+
+		label, url, ok := strings.Cut(entry, "=")
+		if !ok {
+			return nil, fmt.Errorf("wrong link entry %q: missing '='", entry)
+		}
+
+		label = strings.TrimSpace(label)
+		if label == "" {
+			return nil, fmt.Errorf("missing label in link entry %q", entry)
+		}
+
+		url = strings.TrimSpace(url)
+		if url == "" {
+			return nil, fmt.Errorf("missing URL in link entry %q", entry)
+		}
+
+		result = append(result, tpl.Link{Label: label, URL: url})
+	}
+
+	return result, nil
 }
 
 // NewDisableL10nFlag returns a flag that disables client-side localization for templates that support it.

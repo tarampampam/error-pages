@@ -27,6 +27,7 @@ Options:
    --template-name="…"       Name of the built-in HTML template to use (app-down/cats/connection/ghost/hacker-terminal/l7/lost-in-space/noise/orient/shuffle/win98; ignored if a custom HTML template is set) (default: app-down) [$TEMPLATE_NAME, $HTML_TEMPLATE_NAME]
    --rotation-mode="…"       Mode for rotating built-in HTML templates (disabled/random-on-startup/random-on-each-request/random-hourly/random-daily; ignored if a custom HTML template is set) (default: disabled) [$ROTATION_MODE]
    --homepage-url="…"        Homepage URL to show as a link in error pages (e.g. https://app.example.com/home) (default: /) [$HOMEPAGE_URL]
+   --add-link="…"            Add extra links to error pages (format: 'LABEL=URL[||LABEL=URL...]'; separate multiple entries with '||', a newline, or a tab) [$ADD_LINK]
    --html-template="…"       Custom HTML template for error page responses (template text/URL/file path) [$HTML_TEMPLATE, $TEMPLATE]
    --json-template="…"       Custom JSON template for error page responses (template text/URL/file path) [$JSON_TEMPLATE]
    --xml-template="…"        Custom XML template for error page responses (template text/URL/file path) [$XML_TEMPLATE]
@@ -109,6 +110,17 @@ ADD_CODE="418=I'm a teapot|Short and stout
 499=Client Closed Request|The client closed the connection"
 ```
 
+### Adding extra links
+
+Add custom, labeled links (e.g. status page, contact, policy) to be displayed on every error page. Format: `LABEL=URL`.
+
+```bash
+# multiple links separated by || or newlines
+error-pages --add-link "Status Page=https://status.example.com||Contact=https://example.com/contact"
+```
+
+URLs may contain `=` signs - only the first `=` in each entry is used as the separator.
+
 ## Templates builder
 
 <!--GENERATED:BUILDER_CLI-->
@@ -130,6 +142,7 @@ Options:
    --template="…"                       Custom template for error pages [$TEMPLATE]
    --disable-l10n                       Disable localization of error pages (if the template supports localization) [$DISABLE_L10N]
    --homepage-url="…"                   Homepage URL to show as a link in error pages (e.g. https://app.example.com/home) [$HOMEPAGE_URL]
+   --add-link="…"                       Add extra links to error pages (format: 'LABEL=URL[||LABEL=URL...]'; separate multiple entries with '||', a newline, or a tab) [$ADD_LINK]
    --help, -h                           Show help
    --version, -v                        Print the version
 ```
@@ -180,4 +193,12 @@ builder --out ./error-pages --index
 ├── 403.html
 ├── 404.html
 └── ...
+```
+
+### Adding extra links
+
+The `--add-link` flag works the same way as in the HTTP server - see [Adding extra links](#adding-extra-links) above.
+
+```bash
+builder --add-link "Status Page=https://status.example.com||Contact=https://example.com/contact" --out ./error-pages
 ```

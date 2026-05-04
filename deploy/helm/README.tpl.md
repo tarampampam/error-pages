@@ -107,9 +107,44 @@ Override descriptions or add non-standard codes (e.g. `499`, `4**` wildcard):
 
 ```yaml
 config:
-  addCode: |
-    499=Client Closed Request|The client closed the connection before the server finished responding.
-    4**=Client Error|Something went wrong on the client side.
+  addCode:
+    - {code: "4**", message: "Client Error", description: "Something went wrong on the client side"}
+    - code: "499"
+      message: "Client Closed Request"
+      description: "The client closed the connection before the server finished responding"
+```
+
+Via `--set` (`--set-string` is required for numeric-looking codes like `499`):
+
+```shell
+helm install error-pages oci://ghcr.io/tarampampam/error-pages/charts/error-pages \
+  --set-string 'config.addCode[0].code=4**' \
+  --set 'config.addCode[0].message=Client Error' \
+  --set-string 'config.addCode[1].code=499' \
+  --set 'config.addCode[1].message=Client Closed Request' \
+  --set 'config.addCode[1].description=The client closed the connection before the server finished responding'
+```
+
+### Adding extra links
+
+Display additional links (status page, contact, privacy policy, etc.) on all error pages:
+
+```yaml
+config:
+  addLink:
+    - {label: "Status Page", url: "https://status.example.com"}
+    - {label: "Contact Support", url: "https://example.com/contact"}
+    - {label: "Privacy Policy", url: "https://example.com/privacy"}
+```
+
+Via `--set`:
+
+```shell
+helm install error-pages oci://ghcr.io/tarampampam/error-pages/charts/error-pages \
+  --set 'config.addLink[0].label=Status Page' \
+  --set 'config.addLink[0].url=https://status.example.com' \
+  --set 'config.addLink[1].label=Contact Support' \
+  --set 'config.addLink[1].url=https://example.com/contact'
 ```
 
 ## 💊 Support

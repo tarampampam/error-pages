@@ -10,6 +10,7 @@ import (
 	"gh.tarampamp.am/error-pages/v4/internal/httpserver/handlers/version"
 	"gh.tarampamp.am/error-pages/v4/internal/httpserver/middleware"
 	"gh.tarampamp.am/error-pages/v4/internal/logger"
+	tpl "gh.tarampamp.am/error-pages/v4/internal/template"
 )
 
 // NewHandler creates a new HTTP handler that serves all server endpoints. It does not use MUX because the
@@ -24,6 +25,7 @@ func NewHandler(
 	showDetails bool,
 	l10nDisabled bool,
 	homepageURL string,
+	links []tpl.Link,
 ) http.Handler {
 	const (
 		healthzEndpoint    = "/healthz"
@@ -48,6 +50,7 @@ func NewHandler(
 		showDetails,
 		l10nDisabled,
 		homepageURL,
+		links,
 	)
 
 	return middleware.Apply(

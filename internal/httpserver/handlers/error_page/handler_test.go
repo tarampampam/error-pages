@@ -47,6 +47,7 @@ func TestNew(t *testing.T) {
 			false,
 			false,
 			"",
+			nil,
 		)
 
 		for name, tc := range map[string]struct {
@@ -94,6 +95,7 @@ func TestNew(t *testing.T) {
 				false,
 				false,
 				"",
+				nil,
 			)
 		}
 
@@ -181,6 +183,7 @@ func TestNew(t *testing.T) {
 			false,
 			false,
 			"",
+			nil,
 		)
 
 		for name, tc := range map[string]struct {
@@ -381,6 +384,7 @@ func TestNew(t *testing.T) {
 					false,
 					false,
 					"",
+					nil,
 				)
 
 				req := httptest.NewRequest(http.MethodGet, tc.givePath, nil)
@@ -407,6 +411,7 @@ func TestNew(t *testing.T) {
 			false,
 			false,
 			"",
+			nil,
 		)
 
 		for name, tc := range map[string]struct {
@@ -485,6 +490,7 @@ func TestNew(t *testing.T) {
 					false,
 					false,
 					"",
+					nil,
 				)
 
 				req := httptest.NewRequest(http.MethodGet, "/404", nil)
@@ -549,6 +555,7 @@ func TestNew(t *testing.T) {
 					false,
 					false,
 					"",
+					nil,
 				)
 
 				req := httptest.NewRequest(http.MethodGet, tc.givePath, nil)
@@ -575,6 +582,7 @@ func TestNew(t *testing.T) {
 			false,
 			false,
 			"",
+			nil,
 		)
 
 		for name, tc := range map[string]struct {
@@ -614,6 +622,7 @@ func TestNew(t *testing.T) {
 			false,
 			false,
 			"",
+			nil,
 		)
 
 		for name, tc := range map[string]struct {
@@ -654,6 +663,7 @@ func TestNew(t *testing.T) {
 			false,
 			false,
 			"",
+			nil,
 		)
 
 		for name, tc := range map[string]struct {
@@ -700,6 +710,7 @@ func TestNew(t *testing.T) {
 				true,
 				false,
 				"",
+				nil,
 			)
 
 			req := httptest.NewRequest(http.MethodGet, "/500", nil)
@@ -735,6 +746,7 @@ func TestNew(t *testing.T) {
 				false,
 				false,
 				"",
+				nil,
 			)
 
 			req := httptest.NewRequest(http.MethodGet, "/500", nil)
@@ -765,6 +777,7 @@ func TestNew(t *testing.T) {
 			false,
 			false,
 			"",
+			nil,
 		)
 
 		wantLen := strconv.Itoa(len(tplBody))
@@ -818,6 +831,7 @@ func TestNew(t *testing.T) {
 			false,
 			false,
 			"",
+			nil,
 		)
 
 		for name, tc := range map[string]struct {
@@ -902,6 +916,7 @@ func TestNew(t *testing.T) {
 				false,
 				false,
 				"",
+				nil,
 			)
 
 			req := httptest.NewRequest(http.MethodGet, "/404", nil)
