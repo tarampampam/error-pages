@@ -1,5 +1,16 @@
 <!DOCTYPE html>
 <!--
+{{ if .HomepageURL }}
+Homepage: {{ .HomepageURL }}
+{{ end }}
+
+{{ if .Links }}
+Links:
+{{ range .Links }}
+- {{ .Label }}: {{ .URL }}
+{{ end }}
+{{ end }}
+
 {{ if .Config.ShowRequestDetails }}
     {{ if .Host }}Host: {{ .Host }}{{ end }}
     {{ if .OriginalURI }}Original URI: {{ .OriginalURI }}{{ end }}
