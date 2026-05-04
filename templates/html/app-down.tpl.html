@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="robots" content="nofollow,noarchive,noindex">
-  <title>{{ .Message }}</title>
+  <title data-l10n>{{ .Message }}</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <!-- {{ if or (eq .StatusCode 408) (eq .StatusCode 425) (eq .StatusCode 429) (eq .StatusCode 500) (eq .StatusCode 502) (eq .StatusCode 503) (eq .StatusCode 504) }} -->
   <meta http-equiv="refresh" content="30">
@@ -25,10 +25,13 @@
       --color-text-secondary: #555555;
       --color-text-subtle: #888888;
       --color-illust-ink: #263238;
+      --color-illust-ink2: #263238;
+      --color-illust-ink3: #263238;
       --color-illust-accent: #ff725e;
       --color-illust-surface: #e0e0e0;
       --color-illust-surface-soft: #f5f5f5;
       --color-illust-shade: #455a64;
+      --color-bg-gradient-outer: #e9e9ef;
     }
 
     @media (prefers-color-scheme: dark) {
@@ -40,11 +43,18 @@
         --color-text-secondary: #a1a1aa;
         --color-text-subtle: #71717a;
         --color-illust-ink: #cbd5e1;
+        --color-illust-ink2: #202024;
+        --color-illust-ink3: #35383a;
         --color-illust-accent: #ff8a75;
         --color-illust-surface: #3f3f46;
         --color-illust-surface-soft: #27272a;
-        --color-illust-shade: #94a3b8;
+        --color-illust-shade: #444a54;
+        --color-bg-gradient-outer: #111114;
       }
+    }
+
+    @view-transition {
+      navigation: auto;
     }
 
     *, *::before, *::after { box-sizing: border-box; }
@@ -77,6 +87,7 @@
       padding: clamp(1rem, 4vmin, 3rem);
       font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
       background-color: var(--color-bg-primary);
+      background-image: radial-gradient(closest-corner, var(--color-bg-primary) 50%, var(--color-bg-gradient-outer));
       color: var(--color-text-primary);
     }
 
@@ -105,10 +116,11 @@
         min-width: 0;
         max-width: 50ch;
         text-align: center;
+        view-transition-name: error-info;
 
         h1 {
           margin: 0 0 clamp(0.5rem, 2vmin, 1rem);
-          font-size: clamp(1.5rem, 5.5vmin, 2.75rem);
+          font-size: clamp(2rem, 5.5vmin, 2.75rem);
           line-height: 1.15;
           text-wrap: balance;
           overflow-wrap: anywhere;
@@ -241,6 +253,7 @@
         width: min(70vmin, 20rem);
         aspect-ratio: 1 / 1;
         margin: 0;
+        view-transition-name: error-illustration;
 
         svg, img {
           width: 100%;
@@ -253,6 +266,8 @@
         user-select: none;
 
         .B {fill: var(--color-illust-ink)}
+        .B2 {fill: var(--color-illust-ink2)}
+        .B3 {fill: var(--color-illust-ink3)}
         .C {fill: var(--color-illust-accent)}
         .D {fill: var(--color-illust-surface)}
         .E {fill: var(--color-illust-surface-soft)}
@@ -299,6 +314,10 @@
         animation-duration: 0.001ms !important;
         animation-iteration-count: 1 !important;
         transition-duration: 0.001ms !important;
+      }
+
+      @view-transition {
+        navigation: none;
       }
 
       svg#pic {
@@ -359,14 +378,14 @@
     <p data-l10n>{{ .Description }}</p>
 
     <!-- {{ if eq .StatusCode 404 }} -->
-    <section class="what-might-happened" aria-labelledby="possibilities-heading">
+    <div class="what-might-happened" aria-labelledby="possibilities-heading">
       <p id="possibilities-heading"><span data-l10n>Here's what might have happened</span>:</p>
       <ul>
         <li data-l10n>You may have mistyped the URL</li>
         <li data-l10n>The site was moved</li>
         <li data-l10n>It was never here</li>
       </ul>
-    </section>
+    </div>
     <!-- {{ end }} -->
 
     <!-- {{ if or (eq .StatusCode 401) (eq .StatusCode 403) (eq .StatusCode 404) }} -->
@@ -466,7 +485,7 @@
         13.72 13.72 0 0 1 4.83-4 14.59 14.59 0 0 1 17.3-8.8zm-13.68 13.77a5 5 0 0 0 .62 2.55 2.71
         2.71 0 0 0 2.55 1.41 1.94 1.94 0 0 0 1.19-1 2.7 2.7 0 0 0 .18-2.19 4.16 4.16 0 0
         0-4.23-2.14h-.18a7.26 7.26 0 0 0-.13 1.37zm14.45-39.83c-13 1.63-28.11-2.62-35.38-13l2-2.46s7.66
-        12.86 33.48 11.92" class="B"/>
+        12.86 33.48 11.92" class="B3"/>
       <g class="F">
         <path d="M93.47 274a13.18 13.18 0 0 1-2.26 2.46 13.18 13.18 0 0 1 2.26-2.46zm3 2.35a6.9 6.9 0
           0 1-1 1.4 7.52 7.52 0 0 1-1.12 1.25 7 7 0 0 1 1-1.41 6.78 6.78 0 0 1 1.12-1.24zm3.66 1.86a6.32
@@ -508,7 +527,7 @@
         9.27 0 0 1 1.16 3.39l.26-.34a12.37 12.37 0 0 0 .38-13.94l3.82-2.6a17 17 0 0 1-.53 19.35 13.58
         13.58 0 0 1-4.82 4 14.61 14.61 0 0 1-17.3 8.8zm13.67-13.77a5 5 0 0 0-.62-2.55 2.66 2.66 0 0
         0-2.54-1.4 1.87 1.87 0 0 0-1.19 1 2.7 2.7 0 0 0-.19 2.19 4.16 4.16 0 0 0 4.24 2.14h.18a8.17
-        8.17 0 0 0 .12-1.38z" class="B"/>
+        8.17 0 0 0 .12-1.38z" class="B3"/>
       <g class="F">
         <path d="M392.82 270.25a12.53 12.53 0 0 1 2.07-.94 12.19 12.19 0 0 1 2.15-.74 12.54 12.54 0 0
           1-2.07.93 12.79 12.79 0 0 1-2.15.75zm.66 2.81a12.59 12.59 0 0 1 2.25-.5 11.66 11.66 0 0 1
@@ -617,7 +636,7 @@
         <rect x="120.17" y="454.45" width="258.95" height="10.34" rx="4.07"/>
         <rect x="122.3" y="178.07" width="252.26" height="232.51" rx="3.38"/>
       </g>
-      <path d="M135.46 195.14h224.13v204.37H135.46z" class="B"/>
+      <path d="M135.46 195.14h224.13v204.37H135.46z" class="B2"/>
       <path d="M141.01 270.18h208.16v51.64H141.01z" class="F"/>
       <g class="B">
         <use href="#C"/>
