@@ -24,7 +24,7 @@ Follow the [kind guide](install_k8s_kind.md) to install the prerequisites.
 
 ```shell
 $ helm upgrade --install envoy-gateway oci://docker.io/envoyproxy/gateway-helm \
-  --version 1.6.7 \
+  --version 1.7.2 \
   --namespace envoy-gateway-system \
   --create-namespace \
   --wait \
@@ -288,7 +288,7 @@ httproute.gateway.networking.k8s.io/error-pages-catchall created
 > [!WARNING]
 > **Envoy Gateway does not support dynamic status code substitution in `replaceFullPath`**. There is no `{status}`,
 > `%RESPONSE_CODE%`, or any other placeholder - the value is a plain static string baked into the xDS config at
-> translation time (at least for now - May 2026, Envoy Gateway chart v1.6.7).
+> translation time (at least for now - May 2026, Envoy Gateway chart v1.7.2).
 >
 > **Each intercepted status code requires its own explicit rule**. Catch-all ranges like `400-499 → /404`
 > silently map every distinct backend error (403, 429, 422, etc.) to a single misleading page and report the
@@ -348,7 +348,7 @@ Backend error - styled HTML:
 ```shell
 $ curl -si -H "Accept: text/html" http://httpbin.localtest.me/status/404 | head -n 13
 HTTP/1.1 404 Not Found
-content-length: 52980
+content-length: 53355
 content-type: text/html; charset=utf-8
 x-request-id: d8d3e89c-206b-4afa-bb47-d141fa6a6afc
 x-robots-tag: noindex, nofollow, nosnippet, noarchive
@@ -359,7 +359,7 @@ date: ...
 <head>
   <meta charset="utf-8">
   <meta name="robots" content="nofollow,noarchive,noindex">
-  <title>Not Found</title>
+  <title data-l10n>Not Found</title>
 ```
 
 Backend error - JSON via Accept header:
