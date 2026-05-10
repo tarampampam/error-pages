@@ -69,9 +69,13 @@ deployment:
 service:
   # -- Enable service (`service.yaml` is not rendered when disabled)
   enabled: true
+  # -- Additional service annotations (e.g. for MetalLB, monitoring or service discovery, supports templating).
+  annotations: {}
   # -- Sets the service type more information can be
   # [found here](https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types)
   type: ClusterIP
+  # -- Limit access to the load balancer to specific CIDR ranges. Works only with type: LoadBalancer.
+  loadBalancerSourceRanges: []
   # -- Sets the port, more information can be
   # [found here](https://kubernetes.io/docs/concepts/services-networking/service/#field-spec-ports)
   port: 8080
