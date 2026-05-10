@@ -185,9 +185,18 @@
       "type": "object",
       "properties": {
         "enabled": {"type": "boolean"},
+        "annotations": {
+          "type": "object",
+          "additionalProperties": {"type": "string", "minLength": 1}
+        },
         "type": {
           "type": "string",
           "enum": ["ClusterIP", "NodePort", "LoadBalancer"]
+        },
+        "loadBalancerSourceRanges": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1, "pattern": "^\\S+$"},
+          "uniqueItems": true
         },
         "port": {"type": "integer", "minimum": 1, "maximum": 65535}
       }
