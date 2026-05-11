@@ -112,7 +112,7 @@ func New( //nolint:funlen
 			tplData.ServicePort = r.Header.Get("X-Service-Port")   // (ingress-nginx) port number of the Service backing the backend
 			tplData.RequestID = r.Header.Get("X-Request-Id")       // unique ID that identifies the request - same as for backend service
 			tplData.ForwardedFor = r.Header.Get("X-Forwarded-For") // the value of the `X-Forwarded-For` header
-			tplData.Host = r.Header.Get("Host")                    // the value of the `Host` header
+			tplData.Host = r.Host                                  // the value of the `Host` header
 		}
 
 		buf, ok := bufPool.Get().(*bytes.Buffer)
