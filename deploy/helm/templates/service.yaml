@@ -5,12 +5,20 @@ kind: Service
 metadata:
   name: {{ include "error-pages.fullname" . }}
   namespace: {{ template "error-pages.namespace" . }}
+  {{- with .Values.service.annotations }}
+  annotations:
+    {{- tpl (toYaml .) $ | nindent 4 }}
+  {{- end }}
   labels:
     {{- include "error-pages.commonLabels" . | nindent 4 }}
 
 spec:
   {{- with .Values.service }}
   type: {{ .type }}
+  {{- if and (eq .type "LoadBalancer") .loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+    {{- toYaml .loadBalancerSourceRanges | nindent 4 }}
+  {{- end }}
   ports:
     - name: http
       port: {{ .port }}
