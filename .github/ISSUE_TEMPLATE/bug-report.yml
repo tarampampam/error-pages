@@ -13,7 +13,10 @@ body:
       options:
         - label: I have searched the existing issues
           required: true
-        - label: And it has nothing to do with Traefik
+        - label: |
+            This issue is about `error-pages` itself (template rendering, Helm chart, configuration,
+            or application behavior), **not** the proxy, ingress controller, or orchestrator I integrate
+            it with
           required: true
 
   - type: textarea
@@ -28,7 +31,7 @@ body:
       label: Steps to reproduce
       description: Steps to reproduce the behavior
       placeholder: |
-        1. Start the container using command ...
+        1. Start the container using the command ...
         2. Send an HTTP request using this curl command ...
         3. See error
 
@@ -40,7 +43,7 @@ body:
         Please copy and paste any relevant configuration files. This will be automatically formatted
         into code (yaml), so no need for backticks.
       render: yaml
-      placeholder: Traefik, docker-compose, helm, etc.
+      placeholder: Traefik, docker-compose, Helm, etc.
 
   - type: textarea
     id: logs
