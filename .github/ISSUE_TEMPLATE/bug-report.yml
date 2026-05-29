@@ -14,8 +14,8 @@ body:
         - label: I have searched the existing issues
           required: true
         - label: |
-            This issue is about `error-pages` itself (template rendering, Helm chart, configuration,
-            or application behavior), **not** the proxy, ingress controller, or orchestrator I integrate
+            This issue is about **error-pages** itself _(template rendering, Helm chart, configuration,
+            or application behavior)_, **not** the proxy, ingress controller, or orchestrator I integrate
             it with
           required: true
 
