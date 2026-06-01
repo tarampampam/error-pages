@@ -46,7 +46,7 @@ jobs:
       - uses: golangci/golangci-lint-action@v9
         with:
           # renovate: source=github-releases name=golangci/golangci-lint extractVersion=^(?<version>v.+)$
-          version: v2.12.0
+          version: v2.12.2
 
   go-test:
     name: Run unit tests
