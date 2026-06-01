@@ -106,7 +106,7 @@ jobs:
       - uses: mikefarah/yq@v4
         with:
           cmd: yq -i '(.version, .appVersion) = "${{ steps.slug.outputs.version-semantic }}"' ./deploy/helm/Chart.yaml
-      - uses: losisin/helm-docs-github-action@v1
+      - uses: losisin/helm-docs-github-action@v2
         with:
           chart-search-root: ./deploy/helm
           template-files: README.tpl.md
@@ -156,7 +156,7 @@ jobs:
         with:
           name: error-pages-static
           path: .artifact
-      - uses: peaceiris/actions-gh-pages@v4
+      - uses: peaceiris/actions-gh-pages@v4.1.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: .artifact
@@ -254,7 +254,7 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
           tags: ${{ steps.builder-tags.outputs.list }}
-      - uses: sigstore/cosign-installer@v4.1.1
+      - uses: sigstore/cosign-installer@v4.1.2
       - run: |
           cosign sign --yes \
             "${{ env.HUB_IMAGE }}@${{ steps.push-server.outputs.digest }}" \
@@ -298,7 +298,7 @@ jobs:
           DIGEST=$(oras resolve \
             "ghcr.io/tarampampam/error-pages/charts/error-pages:${{ steps.slug.outputs.version-semantic }}")
           echo "digest=${DIGEST}" >> "$GITHUB_OUTPUT"
-      - uses: sigstore/cosign-installer@v4.1.1
+      - uses: sigstore/cosign-installer@v4.1.2
       - run: |
           cosign sign --yes \
             "ghcr.io/tarampampam/error-pages/charts/error-pages@${{ steps.push-chart.outputs.digest }}"
