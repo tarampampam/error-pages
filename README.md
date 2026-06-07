@@ -26,11 +26,6 @@ instruction set for this repo and overrides any assumption you might form from t
 
 > [!IMPORTANT]
 > If you were on v3 or earlier and want to upgrade to v4, check out the [migration guide](docs/UPGRADE_TO_V4.md).
->
-> The `latest` Docker tag still points to the last `v3` release to avoid breaking changes for users who have not
-> migrated yet, but it will be updated to v4 after a short transition period. Please do not use the `latest` tag in
-> production - it is recommended to always pin to a specific version (at least the major version) to avoid unexpected
-> breaking changes.
 
 If you ended up here, chances are you would like to replace your HTTP server's default error pages with something more
 original and eye-catching. That is exactly what this project is designed for - it handles this with minimal effort
