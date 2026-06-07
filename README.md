@@ -79,8 +79,8 @@ The following templates are built-in and available for use without any additiona
 > [tar.gz][pages-pack-tar-gz] archive.
 
 [app-down-link]:https://tarampampam.github.io/error-pages/app-down/404.html
-[app-down-light]:https://github.com/user-attachments/assets/c5f42b53-51cd-47c4-a22f-553d44d2a288
-[app-down-dark]:https://github.com/user-attachments/assets/135bac8c-983f-461c-97ba-e653e9b9adfe
+[app-down-light]:https://habrastorage.org/webt/4d/55/04/4d5504d21fc8dd64e9418aef387ca0b6.png
+[app-down-dark]:https://habrastorage.org/webt/ff/f5/1e/fff51e593cebcf9db3280c8830218e00.png
 [cats-link]:https://tarampampam.github.io/error-pages/cats/404.html
 [cats-light]:https://github.com/user-attachments/assets/7bea967e-a427-4ba2-a3a3-d71b9986ecfc
 [cats-dark]:https://github.com/user-attachments/assets/f9b945b2-3e19-44d5-842b-0c43c55d9b70
