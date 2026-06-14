@@ -1353,7 +1353,7 @@
       return false; // note has no data-l10n attribute
     }
 
-    const fromAttribute = el.getAttribute(L10N_ATTR) ?? null;
+    const fromAttribute = el.getAttribute(L10N_ATTR) || null;
 
     // the original raw text may be stored in the data attribute (if we already localized this element before), or
     // read from the element's textContent (it means this is the first time we localize this element)
