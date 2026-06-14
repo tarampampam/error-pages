@@ -1428,8 +1428,10 @@
         el.setAttribute(L10N_ATTR, ''); // remove the attribute value after restoring the original text
       }
 
-      // leave breadcrumbs for debugging purposes
-      console.debug('[l10n] Unable to localize element', el, 'to language', language);
+      if (language) {
+        // leave breadcrumbs for debugging purposes
+        console.debug('[l10n] Unable to localize element', el, 'to language', language);
+      }
     }
 
     return false;
@@ -1503,19 +1505,26 @@
           return; // unsupported language, do nothing
         }
 
-        state.translateTo = resolveLang(lang); // mutate the state with the new language to translate to
+        state.translateTo = lang; // mutate the state with the new language to translate to
         localizeDocument(lang); // force re-localization of the entire document
       },
       /** @param {string} text */
       translate: (text) => translateText(text, state.translateTo),
-      /** @param {string|null} language */
+      /**
+       * Localizes the entire document to the provided language.
+       *
+       * If the provided language is null, unsupported, or the default one (English), all elements will be restored
+       * to their original text.
+       *
+       * @param {string|null} language
+       */
       localizeDocument: (language) => {
         const newLang = resolveLang(language);
         if (newLang) {
           state.translateTo = newLang; // mutate the state with the new language to translate to
         }
 
-        localizeDocument(newLang || state.translateTo || 'en') // force re-localization of the entire document
+        localizeDocument(newLang || state.translateTo) // force re-localization of the entire document
       },
     }),
     writable: false,
