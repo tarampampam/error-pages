@@ -41,6 +41,20 @@
   ]);
 
   /**
+   * Resolves a BCP 47 language tag using the provided lookup, trying an exact match first, then the base language
+   * (e.g., 'zh-TW' → 'zh'). Returns the resolved code, or null if neither matches.
+   *
+   * @param {string} lang - lowercase BCP 47 language tag
+   * @param {function(string): boolean} has - returns true if the code is available
+   * @returns {string|null}
+   */
+  const resolveLang = (lang, has) => {
+    if (has(lang)) { return lang; }
+    const base = lang.split('-')[0];
+    return (base !== lang && has(base)) ? base : null;
+  };
+
+  /**
    * Translates the given raw text to the provided language, if possible. If not, this will return null.
    *
    * @param {string} text - the raw text to translate (usually in English)
@@ -48,22 +62,19 @@
    * @returns {string|null}
    */
   const translateText = (text, language) => {
-    const token = t(text);
+    if (!language) {
+      return null; // no language to translate to
+    }
+
     const lang = language.trim().toLowerCase();
 
-    const translations = locales.get(token);
+    const translations = locales.get(t(text));
     if (!translations || !translations.size) {
       return null; // no translations for this text
     }
 
-    if (lang && translations.has(lang)) {
-      const result = translations.get(lang)
-      if (result) {
-        return result;
-      }
-    }
-
-    return null; // no translation for this language
+    const resolved = resolveLang(lang, (l) => translations.has(l));
+    return (resolved && translations.get(resolved)) || null;
   }
 
   // attribute name and selector for elements that can be localized
@@ -106,7 +117,11 @@
 
       el.textContent = localized;
     } else {
-      console.debug('[l10n] Unable to localize element', el, 'to language', language);
+      if (fromAttribute) {
+        el.textContent = fromAttribute; // restore original when no translation available (e.g., switching back to English)
+      } else if (language) {
+        console.debug('[l10n] Unable to localize element', el, 'to language', language);
+      }
 
       return false; // no translation available
     }
@@ -173,10 +188,18 @@
   Object.defineProperty(window, 'l10n', {
     value: Object.freeze({
       setLocale(locale) {
-        locale = locale.trim().toLowerCase();
+        locale = (Array.isArray(locale) ? locale[0] ?? '' : locale).trim().toLowerCase();
 
-        translateTo = locale; // overwrite the auto-detected language with the user-provided one
-        localizeDocument(locale); // force re-localization of the entire document
+        // BCP 47 base language fallback (e.g., 'zh-TW' → 'zh')
+        if (locale && !supported.has(locale)) {
+          const base = locale.split('-')[0];
+          if (base !== locale && supported.has(base)) {
+            locale = base;
+          }
+        }
+
+        translateTo = locale || null; // overwrite the auto-detected language with the user-provided one
+        localizeDocument(translateTo); // force re-localization of the entire document
       },
       translate: (text) => translateText(text, translateTo),
       localizeDocument,

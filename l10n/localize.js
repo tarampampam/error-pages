@@ -1313,6 +1313,10 @@
    * @returns {string|null}
    */
   const translateText = (text, language) => {
+    if (!language) {
+      return null; // no language to translate to
+    }
+
     const token = t(text);
     const lang = language.trim().toLowerCase();
 
@@ -1322,7 +1326,16 @@
     }
 
     if (lang && translations.has(lang)) {
-      const result = translations.get(lang)
+      const result = translations.get(lang);
+      if (result) {
+        return result;
+      }
+    }
+
+    // BCP 47 base language fallback (e.g., 'zh-TW' → 'zh')
+    const base = lang.split('-')[0];
+    if (base !== lang && translations.has(base)) {
+      const result = translations.get(base);
       if (result) {
         return result;
       }
@@ -1371,7 +1384,11 @@
 
       el.textContent = localized;
     } else {
-      console.debug('[l10n] Unable to localize element', el, 'to language', language);
+      if (fromAttribute) {
+        el.textContent = fromAttribute; // restore original when no translation available (e.g., switching back to English)
+      } else if (language) {
+        console.debug('[l10n] Unable to localize element', el, 'to language', language);
+      }
 
       return false; // no translation available
     }
@@ -1438,10 +1455,18 @@
   Object.defineProperty(window, 'l10n', {
     value: Object.freeze({
       setLocale(locale) {
-        locale = locale.trim().toLowerCase();
+        locale = (Array.isArray(locale) ? locale[0] ?? '' : locale).trim().toLowerCase();
 
-        translateTo = locale; // overwrite the auto-detected language with the user-provided one
-        localizeDocument(locale); // force re-localization of the entire document
+        // BCP 47 base language fallback (e.g., 'zh-TW' → 'zh')
+        if (locale && !supported.has(locale)) {
+          const base = locale.split('-')[0];
+          if (base !== locale && supported.has(base)) {
+            locale = base;
+          }
+        }
+
+        translateTo = locale || null; // overwrite the auto-detected language with the user-provided one
+        localizeDocument(translateTo); // force re-localization of the entire document
       },
       translate: (text) => translateText(text, translateTo),
       localizeDocument,
