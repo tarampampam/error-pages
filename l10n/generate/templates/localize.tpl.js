@@ -41,17 +41,20 @@
   ]);
 
   /**
-   * Resolves a BCP 47 language tag using the provided lookup, trying an exact match first, then the base language
-   * (e.g., 'zh-TW' → 'zh'). Returns the resolved code, or null if neither matches.
+   * Resolves a BCP 47 language tag against a Set or Map, trying an exact match first, then the base language
+   * (e.g., 'zh-TW' -> 'zh'). Returns the resolved code, or null if neither matches.
    *
    * @param {string} lang - lowercase BCP 47 language tag
-   * @param {function(string): boolean} has - returns true if the code is available
+   * @param {Set<string>|Map<string, *>} lookup - collection with a .has() method
    * @returns {string|null}
    */
-  const resolveLang = (lang, has) => {
-    if (has(lang)) { return lang; }
+  const resolveLang = (lang, lookup) => {
+    if (lookup.has(lang)) {
+      return lang;
+    }
+
     const base = lang.split('-')[0];
-    return (base !== lang && has(base)) ? base : null;
+    return (base !== lang && lookup.has(base)) ? base : null;
   };
 
   /**
@@ -73,7 +76,7 @@
       return null; // no translations for this text
     }
 
-    const resolved = resolveLang(lang, (l) => translations.has(l));
+    const resolved = resolveLang(lang, translations);
     return (resolved && translations.get(resolved)) || null;
   }
 
@@ -153,15 +156,8 @@
    */
   let translateTo = (() => {
     for (const lang of (navigator.languages || []).map((l) => l.toLowerCase())) {
-      if (supported.has(lang)) { // quick exact match
-        return lang;
-      }
-
-      // since lang is BCP 47 language tag, we can try to match the base language (e.g., 'en' from 'en-US')
-      const base = lang.split('-')[0];
-      if (base !== lang && supported.has(base)) {
-        return base;
-      }
+      const resolved = resolveLang(lang, supported);
+      if (resolved) { return resolved; }
     }
 
     return null;
@@ -187,20 +183,14 @@
 
   Object.defineProperty(window, 'l10n', {
     value: Object.freeze({
+      /** @param {string|string[]} locale */
       setLocale(locale) {
         locale = (Array.isArray(locale) ? locale[0] ?? '' : locale).trim().toLowerCase();
 
-        // BCP 47 base language fallback (e.g., 'zh-TW' → 'zh')
-        if (locale && !supported.has(locale)) {
-          const base = locale.split('-')[0];
-          if (base !== locale && supported.has(base)) {
-            locale = base;
-          }
-        }
-
-        translateTo = locale || null; // overwrite the auto-detected language with the user-provided one
+        translateTo = resolveLang(locale, supported); // overwrite the auto-detected language with the user-provided one
         localizeDocument(translateTo); // force re-localization of the entire document
       },
+      /** @param {string} text */
       translate: (text) => translateText(text, translateTo),
       localizeDocument,
     }),
