@@ -69,12 +69,12 @@
       return lang; // exact match
     }
 
-    const baseParts = lang.split('-'); // get base language (e.g., 'zh' from 'zh-TW')
+    const baseParts = lang.split('-');
     if (baseParts.length < 2) {
       return null; // no base language to fall back to
     }
 
-    const base = baseParts[0];
+    const base = baseParts[0]; // base language (e.g., 'zh' from 'zh-TW')
     if (supported.has(base)) {
       return base; // base language match
     }
@@ -138,7 +138,7 @@
       return false; // node has no data-l10n attribute
     }
 
-    const fromAttribute = el.getAttribute(L10N_ATTR) || null;
+    const fromAttribute = el.getAttribute(L10N_ATTR) || null; // '' means "not yet promoted" - treat same as absent
 
     // on first localization the original text lives in textContent; afterward it is promoted to the data-l10n
     // attribute so subsequent calls can always read the original from there, regardless of the current textContent
@@ -194,8 +194,8 @@
   /**
    * Localizes the entire document by localizing all elements with the data-l10n attribute to the provided language.
    *
-   * In case when provided language is null, unsupported, or the default one (English), all elements will be restored
-   * to their original text.
+   * In case when provided language is null, unsupported, or the default one (English), previously localized elements
+   * will be restored to their original text.
    *
    * @param {string|null} language
    */
