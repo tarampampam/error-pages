@@ -81,15 +81,14 @@ func writeJSFiles(locales localesData, jsPath, jsMinPath string) ([]byte, error)
 
 	// prepare tokens for the template by converting the locales map into a slice of Token structs
 	tokens := make([]Token, 0, len(locales))
-
-	supportedLangCodesSet := make(map[string]struct{})
+	seen := make(map[string]struct{})
 
 	for key, keyTokens := range locales {
 		translations := make([]Translation, 0, len(keyTokens))
 		for langCode, value := range keyTokens {
 			langCode = strings.TrimSpace(strings.ToLower(langCode)) // always trim and lowercase the language code
 			translations = append(translations, Translation{LangCode: langCode, Value: value})
-			supportedLangCodesSet[langCode] = struct{}{}
+			seen[langCode] = struct{}{}
 		}
 
 		sort.Slice(translations, func(i, j int) bool { return translations[i].LangCode < translations[j].LangCode })
@@ -99,7 +98,7 @@ func writeJSFiles(locales localesData, jsPath, jsMinPath string) ([]byte, error)
 
 	sort.Slice(tokens, func(i, j int) bool { return tokens[i].Key < tokens[j].Key })
 
-	supportedLangCodes := slices.Collect(maps.Keys(supportedLangCodesSet))
+	supportedLangCodes := slices.Collect(maps.Keys(seen))
 	sort.Strings(supportedLangCodes)
 
 	tmpl, tErr := template.New("l10n").Funcs(template.FuncMap{
