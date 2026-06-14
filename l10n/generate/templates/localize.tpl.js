@@ -1,4 +1,4 @@
-(() => {
+(() => { // TODO: refactor this file; it's currently difficult to read and maintain
   'use strict';
 
   const L10N_ATTR = 'data-l10n';
@@ -100,6 +100,10 @@
   /** @param {Document|Element} [root] */
   const localizeDocument = (root = document) => {
     root.querySelectorAll(L10N_SELECTOR).forEach(localizeEl);
+
+    if (locales.length > 0 && !locales[0].startsWith('en')) {
+      document.documentElement.setAttribute('lang', locales[0]);
+    }
   };
 
   // observe the document for new elements with the data-l10n attribute and localize them
