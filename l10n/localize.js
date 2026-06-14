@@ -20,7 +20,7 @@
    *
    * @type {Map<string, Map<string, string>>}
    */
-  const locales = new Map([
+  const locales = Object.freeze(new Map([
     [t("Access is forbidden to the requested page"), new Map([
       ["de", "Der Zugriff auf die angeforderte Seite ist verboten"],
       ["es", "El acceso está prohibido para la página solicitada"],
@@ -1296,37 +1296,62 @@
       ["uk", "помилка на стороні сервера"],
       ["zh", "服务端错误"],
     ])],
-  ]);
+  ]));
 
   /**
    * Set of supported language codes for quick lookup (each code is always in lowercase).
    *
    * @type {Set<string>}
    */
-  const supported = new Set(["de", "es", "fr", "hu", "id", "it", "ko", "nl", "no", "pl", "pt", "ro", "ru", "uk", "zh"]);
+  const supported = Object.freeze(new Set(["de", "es", "fr", "hu", "id", "it", "ko", "nl", "no", "pl", "pt", "ro", "ru", "uk", "zh"]));
 
   /**
-   * Resolves a BCP 47 language tag against a Set or Map, trying an exact match first, then the base language
-   * (e.g., 'zh-TW' -> 'zh'). Returns the resolved code, or null if neither matches.
+   * Resolves a BCP 47 language tag to a supported language code, falling back to the base language if necessary.
+   * Returns null if no match is found.
    *
-   * @param {string} lang - lowercase BCP 47 language tag
-   * @param {Set<string>|Map<string, *>} lookup - collection with a .has() method
+   * @example
+   * ```js
+   * const supported = new Set(['en', 'fr', 'zh', 'zh-TW']);
+   *
+   * resolveLang('fr'); // returns 'fr'
+   * resolveLang('fr-CA'); // returns 'fr'
+   * resolveLang('zh-TW'); // returns 'zh-TW'
+   * resolveLang('zh-HK'); // returns 'zh'
+   * resolveLang('es'); // returns null
+   * ```
+   *
+   * @param {string} lang - BCP 47 language tag
    * @returns {string|null}
    */
-  const resolveLang = (lang, lookup) => {
-    if (lookup.has(lang)) {
-      return lang;
+  const resolveLang = (lang) => {
+    if (!lang || typeof lang !== 'string') {
+      return null; // invalid input
     }
 
-    const base = lang.split('-')[0];
-    return (base !== lang && lookup.has(base)) ? base : null;
+    lang = lang.trim().toLowerCase();
+
+    if (supported.has(lang)) {
+      return lang; // exact match
+    }
+
+    const baseParts = lang.split('-'); // get base language (e.g., 'zh' from 'zh-TW')
+    if (baseParts.length < 2) {
+      return null; // no base language to fall back to
+    }
+
+    const base = baseParts[0];
+    if (supported.has(base)) {
+      return base; // base language match
+    }
+
+    return null; // no match found
   };
 
   /**
-   * Translates the given raw text to the provided language, if possible. If not, this will return null.
+   * Translates the given raw text to the provided language. Returns null if no translation is available.
    *
    * @param {string} text - the raw text to translate (usually in English)
-   * @param {string} language - the language code to translate to (will be normalized)
+   * @param {string|null} language - the language code to translate to (will be normalized)
    * @returns {string|null}
    */
   const translateText = (text, language) => {
@@ -1334,15 +1359,23 @@
       return null; // no language to translate to
     }
 
-    const lang = language.trim().toLowerCase();
+    const lang = resolveLang(language);
+    if (!lang) {
+      return null; // unsupported language
+    }
 
+    // get all translations for the given text (tokenized)
     const translations = locales.get(t(text));
     if (!translations || !translations.size) {
       return null; // no translations for this text
     }
 
-    const resolved = resolveLang(lang, translations);
-    return (resolved && translations.get(resolved)) || null;
+    const translated = translations.get(lang);
+    if (translated) {
+      return translated; // we found it!
+    }
+
+    return null; // no translation available for this language
   }
 
   // attribute name and selector for elements that can be localized
@@ -1351,26 +1384,29 @@
 
   /**
    * Localizes the given element by translating its text content to the provided language, if possible. The original
-   * text is stored in the data-l10n attribute (if not already stored) to allow for re-localization when the language
+   * text is stored in the data-l10n attribute (if not already stored) to allow re-localization when the language
    * changes.
    *
+   * In case the element has no translation for the given language, it will be restored to its original text and the
+   * data-l10n attribute will be cleared.
+   *
    * @param {Element} el
-   * @param {string} language
+   * @param {string|null} language
    * @returns {boolean}
    */
   const localizeElement = (el, language) => {
     if (!el || el.nodeType !== 1) {
-      return false; // process only element nodes
+      return false; // skip non-element nodes
     }
 
     if (!el.hasAttribute(L10N_ATTR)) {
-      return false; // note has no data-l10n attribute
+      return false; // node has no data-l10n attribute
     }
 
     const fromAttribute = el.getAttribute(L10N_ATTR) || null;
 
-    // the original raw text may be stored in the data attribute (if we already localized this element before), or
-    // read from the element's textContent (it means this is the first time we localize this element)
+    // on first localization the original text lives in textContent; afterward it is promoted to the data-l10n
+    // attribute so subsequent calls can always read the original from there, regardless of the current textContent
     const elementText = fromAttribute ?? el.textContent ?? null;
     if (!elementText) {
       return false; // no text to translate
@@ -1384,49 +1420,52 @@
       }
 
       el.textContent = localized;
+
+      return true;
     } else {
       if (fromAttribute) {
-        el.textContent = fromAttribute; // restore original when no translation available (e.g., switching back to English)
-      } else if (language) {
-        console.debug('[l10n] Unable to localize element', el, 'to language', language);
+        el.textContent = fromAttribute; // restore original when no translation available
+        el.setAttribute(L10N_ATTR, ''); // remove the attribute value after restoring the original text
       }
 
-      return false; // no translation available
+      // leave breadcrumbs for debugging purposes
+      console.debug('[l10n] Unable to localize element', el, 'to language', language);
     }
 
-    return true;
+    return false;
+  }
+
+  /**
+   * The state of the localization system.
+   *
+   * @type { {translateTo: string|null} }
+   */
+  const state = {
+    // determine the initial language to translate to based on the user's browser settings and the supported languages
+    translateTo: (() => {
+      for (const lang of (navigator.languages || []).map((l) => l.toLowerCase())) {
+        const resolved = resolveLang(lang);
+        if (resolved) {
+          return resolved;
+        }
+      }
+
+      return null;
+    })()
   }
 
   /**
    * Localizes the entire document by localizing all elements with the data-l10n attribute to the provided language.
    *
+   * In case when provided language is null, unsupported, or the default one (English), all elements will be restored
+   * to their original text.
+   *
    * @param {string|null} language
    */
   const localizeDocument = (language) => {
-    if (!language) {
-      return; // no language provided, do not localize
-    }
-
     document.querySelectorAll(L10N_SELECTOR).forEach((el) => localizeElement(el, language));
-    document.documentElement.setAttribute('lang', language);
+    document.documentElement.setAttribute('lang', language || 'en');
   }
-
-  /**
-   * Determines the best language to translate to based on the user's browser settings and supported languages.
-   * If no supported language is found - this will be null (the default page language (English) will be used).
-   *
-   * In other words - here we decide which language to use for the page.
-   *
-   * @type {string|null}
-   */
-  let translateTo = (() => {
-    for (const lang of (navigator.languages || []).map((l) => l.toLowerCase())) {
-      const resolved = resolveLang(lang, supported);
-      if (resolved) { return resolved; }
-    }
-
-    return null;
-  })();
 
   // start observing the document for new elements with the data-l10n attribute (required for localizing dynamically
   // added content)
@@ -1434,14 +1473,14 @@
     for (const mutation of mutations) {
       for (const node of mutation.addedNodes) {
         if (node.nodeType !== 1) {
-          continue; // process only element nodes
+          continue; // skip non-element nodes
         }
 
         if (node.hasAttribute(L10N_ATTR)) {
-          localizeElement(node, translateTo);
+          localizeElement(node, state.translateTo);
         }
 
-        node.querySelectorAll(L10N_SELECTOR).forEach((el) => localizeElement(el, translateTo));
+        node.querySelectorAll(L10N_SELECTOR).forEach((el) => localizeElement(el, state.translateTo));
       }
     }
   }).observe(document.documentElement, {childList: true, subtree: true});
@@ -1450,14 +1489,34 @@
     value: Object.freeze({
       /** @param {string|string[]} locale */
       setLocale(locale) {
-        locale = (Array.isArray(locale) ? locale[0] ?? '' : locale).trim().toLowerCase();
+        if (!locale) {
+          return; // no locale provided, do nothing
+        }
 
-        translateTo = resolveLang(locale, supported); // overwrite the auto-detected language with the user-provided one
-        localizeDocument(translateTo); // force re-localization of the entire document
+        // supporting both string and array is required for backwards compatibility with the old API, but we will
+        // only consider the first locale in the array if an array is provided
+        const loc = (Array.isArray(locale) ? locale[0] ?? '' : locale).trim().toLowerCase();
+
+        // resolve the language to a supported one
+        const lang = resolveLang(loc);
+        if (!lang) {
+          return; // unsupported language, do nothing
+        }
+
+        state.translateTo = resolveLang(lang); // mutate the state with the new language to translate to
+        localizeDocument(lang); // force re-localization of the entire document
       },
       /** @param {string} text */
-      translate: (text) => translateText(text, translateTo),
-      localizeDocument,
+      translate: (text) => translateText(text, state.translateTo),
+      /** @param {string|null} language */
+      localizeDocument: (language) => {
+        const newLang = resolveLang(language);
+        if (newLang) {
+          state.translateTo = newLang; // mutate the state with the new language to translate to
+        }
+
+        localizeDocument(newLang || state.translateTo || 'en') // force re-localization of the entire document
+      },
     }),
     writable: false,
     enumerable: false,
@@ -1465,6 +1524,6 @@
   });
 
   document.readyState === 'loading'
-    ? document.addEventListener('DOMContentLoaded', () => localizeDocument(translateTo))
-    : localizeDocument(translateTo);
+    ? document.addEventListener('DOMContentLoaded', () => localizeDocument(state.translateTo))
+    : localizeDocument(state.translateTo);
 })();
