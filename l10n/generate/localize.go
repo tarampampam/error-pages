@@ -6,9 +6,12 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"maps"
 	"os"
+	"slices"
 	"sort"
 	"strconv"
+	"strings"
 	"text/template"
 
 	"gh.tarampamp.am/error-pages/v4/l10n/generate/jsmin"
@@ -78,11 +81,14 @@ func writeJSFiles(locales localesData, jsPath, jsMinPath string) ([]byte, error)
 
 	// prepare tokens for the template by converting the locales map into a slice of Token structs
 	tokens := make([]Token, 0, len(locales))
+	seen := make(map[string]struct{})
 
 	for key, keyTokens := range locales {
 		translations := make([]Translation, 0, len(keyTokens))
 		for langCode, value := range keyTokens {
+			langCode = strings.TrimSpace(strings.ToLower(langCode)) // always trim and lowercase the language code
 			translations = append(translations, Translation{LangCode: langCode, Value: value})
+			seen[langCode] = struct{}{}
 		}
 
 		sort.Slice(translations, func(i, j int) bool { return translations[i].LangCode < translations[j].LangCode })
@@ -92,6 +98,9 @@ func writeJSFiles(locales localesData, jsPath, jsMinPath string) ([]byte, error)
 
 	sort.Slice(tokens, func(i, j int) bool { return tokens[i].Key < tokens[j].Key })
 
+	supportedLangCodes := slices.Collect(maps.Keys(seen))
+	sort.Strings(supportedLangCodes)
+
 	tmpl, tErr := template.New("l10n").Funcs(template.FuncMap{
 		"quote": strconv.Quote,
 	}).Parse(localizeTpl)
@@ -100,7 +109,13 @@ func writeJSFiles(locales localesData, jsPath, jsMinPath string) ([]byte, error)
 	}
 
 	var jsBuf bytes.Buffer
-	if err := tmpl.Execute(&jsBuf, struct{ Tokens []Token }{tokens}); err != nil {
+	if err := tmpl.Execute(&jsBuf, struct {
+		Tokens             []Token
+		SupportedLangCodes []string
+	}{
+		Tokens:             tokens,
+		SupportedLangCodes: supportedLangCodes,
+	}); err != nil {
 		return nil, err
 	}
 
