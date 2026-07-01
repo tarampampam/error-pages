@@ -17,7 +17,7 @@ jobs:
         os: [linux, darwin, windows]
         arch: [amd64, arm64]
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: actions/setup-go@v6
         with: {go-version-file: go.mod}
       - uses: gacts/github-slug@v1
@@ -62,7 +62,7 @@ jobs:
     name: Build the static pages
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: actions/setup-go@v6
         with: {go-version-file: go.mod}
       - uses: gacts/github-slug@v1
@@ -99,7 +99,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults: {run: {working-directory: ./deploy/helm}}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: azure/setup-helm@v5
       - uses: gacts/github-slug@v1
         id: slug
@@ -177,7 +177,7 @@ jobs:
       QUAY_IMAGE: quay.io/tarampampam/error-pages
       TARGET_PLATFORMS: linux/amd64,linux/arm/v7,linux/arm64,linux/ppc64le,linux/s390x
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: gacts/github-slug@v1
         id: slug
       - uses: docker/setup-qemu-action@v4
@@ -273,7 +273,7 @@ jobs:
     defaults: {run: {working-directory: ./deploy/helm}}
     needs: [build-helm-chart, build-docker-image]
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: azure/setup-helm@v5
       - uses: gacts/github-slug@v1
         id: slug
@@ -311,7 +311,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build-docker-image, publish-helm-chart]
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: gacts/github-slug@v1
         id: slug
       - uses: gacts/add-to-release-notes@v1
