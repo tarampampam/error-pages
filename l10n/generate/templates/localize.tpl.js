@@ -46,13 +46,15 @@
    *
    * @example
    * ```js
-   * const supported = new Set(['en', 'fr', 'zh', 'zh-TW']);
+   * const supported = new Set(['fr', 'zh', 'zh-TW']);
    *
-   * resolveLang('fr'); // returns 'fr'
+   * resolveLang('en');    // returns 'en' (English - early return, not checked against supported)
+   * resolveLang('en-US'); // returns 'en'
+   * resolveLang('fr');    // returns 'fr'
    * resolveLang('fr-CA'); // returns 'fr'
    * resolveLang('zh-TW'); // returns 'zh-TW'
    * resolveLang('zh-HK'); // returns 'zh'
-   * resolveLang('es'); // returns null
+   * resolveLang('es');    // returns null
    * ```
    *
    * @param {string} lang - BCP 47 language tag
@@ -64,6 +66,10 @@
     }
 
     lang = lang.trim().toLowerCase();
+
+    if (lang === 'en' || lang.startsWith('en-')) {
+      return 'en'; // English is the default language (https://github.com/tarampampam/error-pages/issues/416)
+    }
 
     if (supported.has(lang)) {
       return lang; // exact match
@@ -163,7 +169,7 @@
         el.setAttribute(L10N_ATTR, ''); // remove the attribute value after restoring the original text
       }
 
-      if (language) {
+      if (language && supported.has(resolveLang(language))) {
         // leave breadcrumbs for debugging purposes
         console.debug('[l10n] Unable to localize element', el, 'to language', language);
       }
@@ -182,6 +188,10 @@
     translateTo: (() => {
       for (const lang of (navigator.languages || []).map((l) => l.toLowerCase())) {
         const resolved = resolveLang(lang);
+        if (resolved === 'en') {
+          return null; // English is the default, no translation needed
+        }
+
         if (resolved) {
           return resolved;
         }
