@@ -105,6 +105,7 @@
   const $langSwitch = document.getElementById('lang-switch');
 
   [
+    "en",
     {{ range $i, $el := .LangCodes }}{{ if $i }},
     {{ end }}{{ $el | quote }}{{ end }}
   ].forEach((lang) => {
