@@ -273,7 +273,7 @@ For detailed instructions on using custom templates and localization features, s
 
 ### Requirements
 
-- [**Go 1.26+**](https://go.dev/doc/install) for building from source and running tests
+- [**Go 1.27+**](https://go.dev/doc/install) for building from source and running tests
 - Optional: [golangci-lint](https://golangci-lint.run/docs/welcome/install/local/) for linting
 - Optional: [docker](https://docs.docker.com/engine/install/debian/#install-using-the-convenience-script) for testing
   the Docker image locally
