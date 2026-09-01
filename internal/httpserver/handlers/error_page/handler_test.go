@@ -719,7 +719,7 @@ func TestNew(t *testing.T) {
 			req.Header.Set("X-Ingress-Name", "my-ingress")
 			req.Header.Set("X-Service-Name", "my-service")
 			req.Header.Set("X-Service-Port", "8080")
-			req.Header.Set("X-Request-Id", "abc-123")
+			req.Header.Set("X-Request-ID", "abc-123")
 			req.Header.Set("X-Forwarded-For", "1.2.3.4")
 			req.Header.Set("Host", "example.com")
 

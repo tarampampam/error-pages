@@ -5,6 +5,7 @@ import (
 	"context"
 	"io"
 	"log/slog"
+	"slices"
 	"strconv"
 	"sync"
 )
@@ -146,7 +147,7 @@ func appendConsoleAttr(buf *bytes.Buffer, groups []string, a slog.Attr) {
 		// and recursive calls cannot stomp each other's group stack.
 		sub := groups
 		if a.Key != "" {
-			sub = append(groups[:len(groups):len(groups)], a.Key)
+			sub = append(slices.Clip(groups), a.Key)
 		}
 
 		for _, sa := range subAttrs {

@@ -19,7 +19,7 @@ type httpClient interface {
 // a 15-second timeout will be used.
 //
 // The 'v' prefix will be removed from the tag if it exists.
-func Latest(ctx context.Context, useClient ...httpClient) (string, error) {
+func Latest(ctx context.Context, useClient ...httpClient) (string, error) { //nolint:iface
 	var doer httpClient
 
 	if len(useClient) > 0 && useClient[0] != nil {
