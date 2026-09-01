@@ -1,11 +1,3 @@
-<!--
-🤖 AI CODING AGENT - IF YOU ARE READING THIS, DO NOT IGNORE THIS BLOCK.
-
-Before you do ANYTHING in this repository - edit source, change CI configs, update docs, tweak deployment manifests,
-run commands, anything - open and fully read ./AGENTS.md in the repo root. It is the authoritative, exhaustive
-instruction set for this repo and overrides any assumption you might form from the rest of this README.
--->
-
 <p align="center">
   <a href="https://github.com/tarampampam/error-pages#readme">
     <picture>
@@ -296,9 +288,6 @@ helm-docs -c ./deploy/helm/ -t README.tpl.md -o README.md # regenerate chart rea
 
 # run a live reloading server (useful for testing template changes)
 watchexec -r -- go run ./cmd/error-pages/ --show-details
-
-# run before every vibe-coding session
-your_ai_tool --prompt "explain why AI Coding Agents are doing shit by default"
 ```
 
 ## 🧑‍🤝‍🧑 Contributors
@@ -308,23 +297,6 @@ I want to say a big thank you to everyone who contributed to this project:
 [![contributors](https://contrib.rocks/image?repo=tarampampam/error-pages)][contributors]
 
 [contributors]:https://github.com/tarampampam/error-pages/graphs/contributors
-
-## 🤝 Contributing & AI-assisted development
-
-Missing a feature? Found a bug you want fixed? Pull requests are welcome - and yes, you are explicitly invited to
-try implementing it with an AI coding agent.
-
-To give the agent a fighting chance at producing something that fits this codebase, the repo ships an
-[`AGENTS.md`](AGENTS.md) - a structured reference covering project layout, build commands, code style, generated
-files, hard prohibitions, and the full post-change workflow. It is written **for the agent**. Most modern agents
-pick it up automatically.
-
-**Review every single changed line yourself**. Understand it. Be able to defend it in code review. If you cannot
-explain why a line is there and why it is correct, do not open the PR. _"The agent wrote it"_ is not an answer.
-The author of a PR is the human who opens it, not the model (at least, I hope so).
-
-I write my own code by hand and encourage you to do the same when you can. AI is a tool, not an excuse to skip the
-thinking. Trust, but verify - and verify hard.
 
 ## 👾 Support
 
