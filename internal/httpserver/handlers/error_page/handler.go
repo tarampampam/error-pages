@@ -60,7 +60,8 @@ func New( //nolint:funlen
 		}
 
 		httpStatus := http.StatusOK
-		if respondSameStatus {
+		// net/http panics on statuses below 100, so those pages keep the default status
+		if respondSameStatus && code >= http.StatusContinue {
 			httpStatus = int(code)
 		}
 

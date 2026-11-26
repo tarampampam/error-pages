@@ -94,7 +94,8 @@ func newDefaultCodeToRenderFlag(def uint) cli.Flag[uint] {
 		EnvVars: []string{"DEFAULT_ERROR_PAGE"},
 		Default: def,
 		Validator: func(_ *cli.Command, code uint) error {
-			if code > 999 { //nolint:mnd
+			// codes below 100 cannot be sent as an HTTP status
+			if code < 100 || code > 999 { //nolint:mnd
 				return fmt.Errorf("wrong HTTP code [%d] for the default error page", code)
 			}
 
