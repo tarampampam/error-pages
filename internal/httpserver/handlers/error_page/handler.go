@@ -134,7 +134,9 @@ func New( //nolint:funlen
 		buf = gzipCompress(r, w, buf, &bufPool)
 
 		w.Header().Set("Content-Length", strconv.Itoa(buf.Len()))
-		w.WriteHeader(min(999, max(100, httpStatus))) // issue#435, panic's guard, see [net/http.checkWriteHeaderCode]
+
+		// issue#435, panic's guard, see [net/http.checkWriteHeaderCode]
+		w.WriteHeader(min(999, max(100, httpStatus))) //nolint:mnd
 
 		if r.Method == http.MethodGet {
 			if _, err := buf.WriteTo(w); err != nil {
