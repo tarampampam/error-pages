@@ -60,7 +60,7 @@ func New( //nolint:funlen
 		}
 
 		httpStatus := http.StatusOK
-		if respondSameStatus {
+		if respondSameStatus && code >= 100 && code <= 999 { // issue#435, invalid codes are ignored
 			httpStatus = int(code)
 		}
 
@@ -134,7 +134,7 @@ func New( //nolint:funlen
 		buf = gzipCompress(r, w, buf, &bufPool)
 
 		w.Header().Set("Content-Length", strconv.Itoa(buf.Len()))
-		w.WriteHeader(httpStatus)
+		w.WriteHeader(min(999, max(100, httpStatus))) // issue#435, panic's guard, see [net/http.checkWriteHeaderCode]
 
 		if r.Method == http.MethodGet {
 			if _, err := buf.WriteTo(w); err != nil {
