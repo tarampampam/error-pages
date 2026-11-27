@@ -107,7 +107,7 @@ linters:
     godox: {keywords: [BUG, HACK]}
     copyloopvar: {check-alias: true}
     dogsled: {max-blank-identifiers: 3}
-    exhaustive: {check: [switch, map]}
+    exhaustive: {check: [switch, mapliteral]}
     forbidigo:
       forbid:
         - {pattern: ^(fmt\.Print(|f|ln)|print(|ln))$, msg: 'debug print statements must not be committed'}
