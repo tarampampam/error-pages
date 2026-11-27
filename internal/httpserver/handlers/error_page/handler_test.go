@@ -370,6 +370,8 @@ func TestNew(t *testing.T) {
 			"true: reflects 503":            {true, 404, "/503", http.StatusServiceUnavailable},
 			"true: reflects 404":            {true, 404, "/404", http.StatusNotFound},
 			"true: uses default code for /": {true, 418, "/", http.StatusTeapot},
+			"not panics on code < 100":      {true, 404, "/99", http.StatusOK},
+			"not panics on code > 999":      {true, 404, "/1000", 404},
 		} {
 			t.Run(name, func(t *testing.T) {
 				t.Parallel()
